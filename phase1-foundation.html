@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>screenings4u Admin</title>
+  <link rel="icon" type="image/png" href="../images/fav.png">
+  <link rel="stylesheet" href="../assets/css/admin-core.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-config.js"></script>
+  <script src="../assets/js/core/config.js"></script>
+  <script src="../assets/js/core/auth.js"></script>
+  <script src="../assets/js/core/permissions.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/audit.js"></script>
+  <script src="../assets/js/core/events.js"></script>
+  <script src="../assets/js/core/storage.js"></script>
+</head>
+<body>
+  <div class="s4u-app">
+    <aside class="s4u-sidebar" id="s4uSidebar">
+      <div class="s4u-sidebar-inner">
+        <div class="s4u-brand">
+          <img src="../images/logo.png" alt="screenings4u">
+          <div>
+            <strong>ADMIN CONSOLE</strong>
+            <span>Operations &amp; LMS</span>
+          </div>
+        </div>
+
+        <nav class="s4u-nav" aria-label="Admin navigation">
+          <div class="s4u-nav-section">Operations</div>
+          <a class="s4u-nav-link active" href="../admin-dashboard.html">
+            <span class="s4u-nav-icon">▦</span>Dashboard
+          </a>
+          <a class="s4u-nav-link" href="../admin-customers.html">
+            <span class="s4u-nav-icon">♙</span>Customers
+          </a>
+          <a class="s4u-nav-link" href="../admin-accounts.html">
+            <span class="s4u-nav-icon">♙</span>Accounts
+          </a>
+          <a class="s4u-nav-link" href="../admin-orders.html">
+            <span class="s4u-nav-icon">▤</span>Orders
+          </a>
+          <a class="s4u-nav-link" href="../admin-billing.html">
+            <span class="s4u-nav-icon">$</span>Billing
+          </a>
+
+          <div class="s4u-nav-section">DOT Compliance</div>
+          <div class="s4u-nav-group" id="dotGroup">
+            <button class="s4u-nav-toggle" type="button" aria-expanded="false">
+              <span class="s4u-nav-icon">▣</span>DOT Consortium
+              <span class="s4u-nav-chevron">⌄</span>
+            </button>
+            <div class="s4u-nav-children">
+              <a href="../admin-dot-consortium.html">Overview</a>
+              <a href="../admin-dot-employers.html">Employers</a>
+              <a href="../admin-dot-drivers.html">Drivers</a>
+              <a href="../admin-dot-random.html">Random Selection</a>
+              <a href="../admin-dot-testing.html">DOT Testing</a>
+              <a href="../admin-dot-mis.html">MIS Reports</a>
+              <a href="../admin-dot-certificates.html">Certificates</a>
+            </div>
+          </div>
+
+          <div class="s4u-nav-section">Training &amp; LMS</div>
+          <div class="s4u-nav-group" id="lmsGroup">
+            <button class="s4u-nav-toggle" type="button" aria-expanded="false">
+              <span class="s4u-nav-icon">▤</span>Training &amp; LMS
+              <span class="s4u-nav-chevron">⌄</span>
+            </button>
+            <div class="s4u-nav-children">
+              <a href="../admin-lms-courses.html">Courses</a>
+              <a href="../admin-lms-course-manager.html">Course Manager</a>
+              <a href="../admin-students.html">Students</a>
+              <a href="../admin-student-progress.html">Progress</a>
+              <a href="../admin-lms-assessment-builder.html">Assessments</a>
+              <a href="../admin-lms-lesson-builder.html">Lessons</a>
+              <a href="../admin-lms-course-preview.html">Course Preview</a>
+              <a href="../admin-lms-lesson-preview.html">Lesson Preview</a>
+              <a href="../admin-lms-certificate.html">Certificates</a>
+            </div>
+          </div>
+
+          <div class="s4u-nav-section">Communications</div>
+          <a class="s4u-nav-link" href="../admin-email.html">
+            <span class="s4u-nav-icon">✉</span>Email
+          </a>
+          <a class="s4u-nav-link" href="../admin-meetings.html">
+            <span class="s4u-nav-icon">◉</span>Meetings
+          </a>
+          <a class="s4u-nav-link" href="../admin-support.html">
+            <span class="s4u-nav-icon">?</span>Support
+          </a>
+
+          <div class="s4u-nav-section">System</div>
+          <a class="s4u-nav-link" href="../admin-audit.html">
+            <span class="s4u-nav-icon">▧</span>Audit Log
+          </a>
+          <a class="s4u-nav-link" href="../admin-automations.html">
+            <span class="s4u-nav-icon">↻</span>Automations
+          </a>
+          <a class="s4u-nav-link" href="global-settings.html">
+            <span class="s4u-nav-icon">⚙</span>Global Settings
+          </a>
+        </nav>
+
+        <div class="s4u-sidebar-footer">
+          <a class="s4u-nav-link" href="../index.html">
+            <span class="s4u-nav-icon">↗</span>View Website
+          </a>
+          <button class="s4u-nav-link" id="s4uLogout" type="button">
+            <span class="s4u-nav-icon">↪</span>Sign Out
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="s4u-main">
+      <header class="s4u-topbar">
+        <div class="s4u-topbar-title">Operations</div>
+        <div class="s4u-topbar-actions">
+          <button class="s4u-button" id="s4uSidebarToggle" type="button">☰</button>
+        </div>
+      </header>
+
+      <div class="s4u-content">
+        <header class="s4u-page-header">
+          <div>
+            <div class="s4u-page-kicker">SCREENINGS4U ADMIN</div>
+            <h1>Platform Foundation</h1>
+            <p>Enterprise operations, compliance, commerce, and training.</p>
+          </div>
+          <div class="s4u-toolbar">
+            <button class="s4u-button primary" id="foundationCheck" type="button">Run Foundation Check</button>
+          </div>
+        </header>
+
+        <section class="s4u-section">
+          <div class="s4u-section-header">
+            <div>
+              <h2>Phase 1 Foundation</h2>
+              <p>Identity, authorization, audit, events, notifications, and documents.</p>
+            </div>
+          </div>
+          <div class="s4u-section-body">
+            <table class="s4u-table">
+              <tbody>
+                <tr><td>Authentication</td><td><span class="s4u-status" id="authStatus">Checking…</span></td></tr>
+                <tr><td>RBAC</td><td><span class="s4u-status" id="rbacStatus">Checking…</span></td></tr>
+                <tr><td>Audit Log</td><td><span class="s4u-status" id="auditStatus">Checking…</span></td></tr>
+                <tr><td>System Events</td><td><span class="s4u-status" id="eventStatus">Checking…</span></td></tr>
+                <tr><td>Documents</td><td><span class="s4u-status" id="documentStatus">Checking…</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const client = window.S4UAuth.getClient();
+
+  async function check() {
+    const auth = await window.S4UAuth.getSession();
+    document.getElementById("authStatus").textContent =
+      auth?.user ? "Connected" : "Not signed in";
+    document.getElementById("authStatus").className =
+      `s4u-status ${auth?.user ? "success" : "danger"}`;
+
+    if (!auth?.user) return;
+
+    const checks = [
+      ["rbacStatus", "has_permission", { requested_permission: "dashboard.read", requested_organization: null }],
+      ["auditStatus", "audit_log", null],
+      ["eventStatus", "system_events", null],
+      ["documentStatus", "documents", null]
+    ];
+
+    for (const [id, target, args] of checks) {
+      try {
+        let ok = false;
+
+        if (target === "has_permission") {
+          const { data, error } = await client.rpc(target, args);
+          if (error) throw error;
+          ok = data === true;
+        } else {
+          const { error } = await client.from(target).select("id").limit(1);
+          if (error) throw error;
+          ok = true;
+        }
+
+        document.getElementById(id).textContent = ok ? "Ready" : "Unavailable";
+        document.getElementById(id).className = `s4u-status ${ok ? "success" : "danger"}`;
+      } catch (error) {
+        console.error(target, error);
+        document.getElementById(id).textContent = "Needs configuration";
+        document.getElementById(id).className = "s4u-status warning";
+      }
+    }
+  }
+
+  document.getElementById("foundationCheck").addEventListener("click", check);
+
+  document.getElementById("s4uLogout").addEventListener("click", () => {
+    window.S4UUI.modal({
+      title: "Sign out?",
+      message: "Your current administrator session will be closed.",
+      showCancel: true,
+      onConfirm: () => window.S4UAuth.signOut()
+    });
+  });
+
+  document.querySelectorAll(".s4u-nav-toggle").forEach(button => {
+    button.addEventListener("click", () => {
+      const group = button.closest(".s4u-nav-group");
+      const open = group.classList.toggle("open");
+      button.setAttribute("aria-expanded", String(open));
+    });
+  });
+
+  document.getElementById("s4uSidebarToggle").addEventListener("click", () => {
+    document.getElementById("s4uSidebar").classList.toggle("mobile-open");
+  });
+
+  await check();
+});
+</script>
+</body>
+</html>
