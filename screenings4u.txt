@@ -1,0 +1,138 @@
+screenings4u
+│
+├── OPERATIONS
+│   ├── Dashboard
+│   ├── Customers
+│   ├── Accounts
+│   ├── Orders
+│   ├── Billing
+│   ├── Proposals
+│   └── Documents
+│
+├── DOT COMPLIANCE
+│   ├── Consortium
+│   ├── Employers
+│   ├── Drivers
+│   ├── Random Selection
+│   ├── DOT Testing
+│   ├── MIS Reports
+│   └── Certificates
+│
+├── TRAINING / LMS
+│   ├── LMS Dashboard
+│   ├── Courses
+│   ├── Course Manager
+│   ├── Lessons
+│   ├── Assessments
+│   ├── Students
+│   ├── Enrollments
+│   ├── Progress
+│   └── Certificates
+│
+├── COMMUNICATIONS
+│   ├── Email
+│   ├── Meetings
+│   ├── Messages
+│   └── Support
+│
+├── CONTENT
+│   └── Blog
+│
+└── SYSTEM
+    ├── Automations
+    ├── Audit Log
+    ├── Users & Roles
+    ├── Integrations
+    └── Settings
+
+
+
+    screenings4u
+│
+├── PLATFORM ADMINISTRATION
+│   │
+│   ├── Admin Profiles
+│   ├── Roles
+│   ├── Permissions
+│   └── Audit
+│
+├── CUSTOMERS
+│   │
+│   ├── Customer Profiles
+│   ├── Customer Orders
+│   ├── Customer Order Items
+│   ├── Customer Invoices
+│   ├── Customer Invoice Items
+│   ├── Customer Invoice Payments
+│   ├── Customer Documents
+│   ├── Customer Training
+│   └── Customer Support
+│
+├── EMPLOYERS
+│   │
+│   ├── Employer Profiles
+│   ├── Employer Members
+│   ├── Employer Employees
+│   ├── Employer Drivers
+│   ├── Employer Locations
+│   ├── Employer Team
+│   │
+│   ├── Employer Orders
+│   ├── Employer Order Items
+│   │
+│   ├── Employer DOT Consortiums
+│   ├── Employer Random Pools
+│   ├── Employer Random Selections
+│   ├── Employer DOT Tests
+│   ├── Employer DOT Test Results
+│   ├── Employer MIS Reports
+│   ├── Employer Certificates
+│   └── Employer Clearinghouse
+│
+├── BILLING
+│   │
+│   ├── Customer Invoices
+│   ├── Customer Invoice Payments
+│   │
+│   ├── Employer Invoices
+│   └── Employer Invoice Payments
+│
+├── TRAINING
+│   │
+│   ├── Courses
+│   ├── Lessons
+│   ├── Assessments
+│   ├── Enrollments
+│   ├── Progress
+│   └── Certificates
+│
+├── COMMUNICATIONS
+│   │
+│   ├── Email Campaigns
+│   ├── Microsoft Teams Meetings
+│   ├── Scheduled Meetings
+│   ├── In-Person Meetings
+│   ├── Internal Messaging
+│   ├── External Chat
+│   └── Support Tickets
+│
+├── PROPOSALS
+│   │
+│   ├── Employer Proposals
+│   ├── Employer Proposal Items
+│   └── Employer Proposal Events
+│
+├── AUTOMATIONS
+│   │
+│   ├── Automations
+│   ├── Triggers
+│   ├── Actions
+│   ├── Runs
+│   └── Logs
+│
+└── SYSTEM
+    │
+    ├── Audit Logs
+    ├── System Events
+    ├── Integrations
+    └── Global Settings

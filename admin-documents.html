@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document Management | screenings4u Admin</title>
+<link rel="icon" type="image/png" href="images/fav.png">
+
+<link rel="stylesheet" href="assets/css/admin-core.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/ui.js"></script>
+
+<style>
+/* ============================================================
+   screenings4u — ADMIN DOCUMENT MANAGEMENT
+   Complete single-file page styles
+   ============================================================ */
+
+.documents-page{padding:22px 24px 34px;max-width:none}
+.documents-header{min-height:116px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid #e3e8ef}
+.documents-heading{min-width:0}
+.documents-kicker{margin-bottom:5px;color:#f05a00;font-size:11px;line-height:1;font-weight:900;letter-spacing:.045em}
+.documents-heading h1{margin:0;color:#173d78;font-size:clamp(36px,3vw,44px);line-height:.98;font-weight:800;letter-spacing:-.045em}
+.documents-heading p{max-width:760px;margin:9px 0 0;color:#52627a;font-size:13px;line-height:1.45}
+
+.documents-actions{flex:0 0 auto;display:flex;align-items:center;gap:10px}
+.documents-actions .documents-btn,
+.documents-actions a.documents-btn{
+  min-width:126px;height:43px;display:inline-flex!important;align-items:center!important;
+  justify-content:center!important;gap:8px!important;padding:0 18px!important;
+  border:1px solid #cbd7e5!important;border-radius:9px!important;
+  background:#fff!important;color:#173d78!important;font-size:11px!important;
+  font-weight:900!important;line-height:1!important;text-decoration:none!important;
+  box-sizing:border-box;cursor:pointer
+}
+.documents-actions .documents-btn:hover{background:#f4f7fb!important;border-color:#aebfd3!important}
+.documents-actions .documents-btn.primary{
+  min-width:150px;border-color:#f05a00!important;background:#f05a00!important;color:#fff!important
+}
+.documents-actions .documents-btn.primary:hover{background:#d94f00!important;border-color:#d94f00!important}
+.documents-btn-icon{font-size:17px;line-height:1}
+
+.documents-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:22px}
+.documents-kpi{
+  min-width:0;min-height:153px;padding:17px 20px;background:#fff;
+  border:1px solid #dfe5ed;border-radius:10px;
+  box-shadow:0 3px 10px rgba(20,48,82,.055)
+}
+.documents-kpi-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.documents-kpi-label{color:#5f6d83;font-size:10px;line-height:1;font-weight:900;letter-spacing:.075em}
+.documents-kpi-mark{
+  width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:9px;background:#edf4fc;color:#17519b;font-size:16px;font-weight:900
+}
+.documents-kpi:nth-child(2) .documents-kpi-mark{background:#eaf7f0;color:#16804d}
+.documents-kpi:nth-child(3) .documents-kpi-mark{background:#fff3e5;color:#c96a00}
+.documents-kpi:nth-child(4) .documents-kpi-mark{background:#fceeee;color:#b64141}
+.documents-kpi strong{display:block;margin-top:20px;color:#183f7c;font-size:30px;line-height:1;font-weight:800;letter-spacing:-.04em}
+.documents-kpi small{display:block;margin-top:12px;color:#647189;font-size:10px;line-height:1.3}
+
+.documents-grid{
+  display:grid;grid-template-columns:minmax(0,1.34fr) minmax(360px,1fr);
+  gap:16px 22px;margin-top:16px
+}
+.documents-card{
+  min-width:0;overflow:hidden;background:#fff;border:1px solid #dfe5ed;
+  border-radius:10px;box-shadow:0 3px 11px rgba(20,48,82,.055)
+}
+.documents-card-header{
+  min-height:82px;display:flex;align-items:center;justify-content:space-between;
+  gap:18px;padding:17px 23px;border-bottom:1px solid #e3e8ef
+}
+.documents-card-header h2{
+  margin:0;color:#173d78;font-size:19px;line-height:1.15;
+  font-weight:800;letter-spacing:-.025em
+}
+.documents-card-header p{margin:6px 0 0;color:#607089;font-size:11px;line-height:1.3}
+.documents-header-link{color:#17519b;text-decoration:none;font-size:10px;font-weight:900}
+.documents-header-link span{padding-left:5px;font-size:16px}
+
+.documents-list{padding:9px 12px}
+.documents-row{
+  min-height:76px;display:grid;grid-template-columns:40px minmax(0,1fr) auto;
+  align-items:center;gap:12px;padding:8px 10px;border-radius:8px;
+  color:inherit;text-decoration:none
+}
+.documents-row:hover{background:#f7f9fc}
+.documents-row-icon{
+  width:40px;height:40px;display:inline-flex;align-items:center;
+  justify-content:center;border-radius:9px;background:#edf4fc;
+  color:#17519b;font-size:14px;font-weight:900
+}
+.documents-row:nth-child(2) .documents-row-icon{background:#eaf7f0;color:#16804d}
+.documents-row:nth-child(3) .documents-row-icon{background:#fff3e5;color:#c96a00}
+.documents-row:nth-child(4) .documents-row-icon{background:#fceeee;color:#b64141}
+.documents-row:nth-child(5) .documents-row-icon{background:#f0eefb;color:#6045a8}
+.documents-row strong{display:block;color:#173b73;font-size:13px;line-height:1.2;font-weight:800}
+.documents-row small{display:block;margin-top:5px;color:#617088;font-size:10px;line-height:1.25}
+.documents-arrow{padding-right:7px;color:#667a98;font-size:22px}
+
+.documents-side{display:grid;grid-template-rows:auto auto;gap:16px}
+.documents-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:13px}
+.documents-action{
+  min-height:93px;display:flex;flex-direction:column;justify-content:center;
+  padding:12px 15px;border:1px solid #dfe5ed;border-radius:8px;
+  background:#fff;color:inherit;text-decoration:none
+}
+.documents-action:hover{border-color:#bfcfe2;background:#f9fbfe;transform:translateY(-1px)}
+.documents-action-mark{display:block;color:#f05a00;font-size:21px;line-height:.8;font-weight:700}
+.documents-action strong{display:block;margin-top:10px;color:#173b73;font-size:12px;line-height:1.15;font-weight:800}
+.documents-action small{display:block;margin-top:5px;color:#647189;font-size:10px;line-height:1.2}
+
+.documents-resources{padding:7px 13px 12px}
+.documents-resources a{
+  min-height:45px;display:flex;align-items:center;justify-content:space-between;
+  gap:15px;padding:0 10px;border-bottom:1px solid #edf0f4;
+  color:#173b73;text-decoration:none;font-size:11px;font-weight:800
+}
+.documents-resources a:last-child{border-bottom:0}
+.documents-resources a:hover{background:#f7f9fc}
+.documents-resources span:last-child{color:#667a98;font-size:17px}
+
+@media(max-width:1250px){
+  .documents-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .documents-grid{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr)}
+}
+@media(max-width:1050px){
+  .documents-header{align-items:flex-start;flex-direction:column}
+  .documents-actions{width:100%}
+  .documents-actions .documents-btn{flex:1 1 0}
+  .documents-grid{grid-template-columns:1fr}
+  .documents-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+}
+@media(max-width:700px){
+  .documents-page{padding:18px 14px 22px}
+  .documents-header{min-height:0;padding-bottom:18px}
+  .documents-kpis{gap:9px}
+  .documents-kpi{min-height:128px;padding:14px}
+  .documents-kpi strong{margin-top:14px;font-size:25px}
+  .documents-side{grid-template-columns:1fr}
+  .documents-card-header{padding-left:17px;padding-right:17px}
+}
+@media(max-width:500px){
+  .documents-actions{flex-direction:column}
+  .documents-actions .documents-btn{width:100%;flex:none}
+}
+@media(max-width:430px){
+  .documents-kpis{grid-template-columns:1fr}
+  .documents-row{grid-template-columns:38px minmax(0,1fr) auto;padding-left:5px;padding-right:5px}
+}
+</style>
+</head>
+
+<body>
+<div class="s4u-app">
+
+  <nav class="s4u-nav" id="adminNavigation" aria-label="Admin navigation"></nav>
+
+  <main class="s4u-main">
+    <div class="documents-page">
+
+      <header class="documents-header">
+        <div class="documents-heading">
+          <div class="documents-kicker">ENTERPRISE / DOCUMENT CONTROL</div>
+          <h1>Document Management</h1>
+          <p>Manage enterprise documents, records, approvals, and document-related operational workflows from dedicated management pages.</p>
+        </div>
+
+        <div class="documents-actions">
+          <a class="documents-btn" href="admin-documents.html">
+            <span class="documents-btn-icon">↻</span>
+            Refresh
+          </a>
+          <a class="documents-btn primary" href="admin-document-create.html">
+            <span class="documents-btn-icon">+</span>
+            Create Document
+          </a>
+        </div>
+      </header>
+
+      <section class="documents-kpis" aria-label="Document metrics">
+        <article class="documents-kpi">
+          <div class="documents-kpi-top">
+            <span class="documents-kpi-label">TOTAL DOCUMENTS</span>
+            <span class="documents-kpi-mark">▤</span>
+          </div>
+          <strong>—</strong>
+          <small>All managed enterprise documents</small>
+        </article>
+
+        <article class="documents-kpi">
+          <div class="documents-kpi-top">
+            <span class="documents-kpi-label">ACTIVE</span>
+            <span class="documents-kpi-mark">✓</span>
+          </div>
+          <strong>—</strong>
+          <small>Documents currently active</small>
+        </article>
+
+        <article class="documents-kpi">
+          <div class="documents-kpi-top">
+            <span class="documents-kpi-label">PENDING REVIEW</span>
+            <span class="documents-kpi-mark">!</span>
+          </div>
+          <strong>—</strong>
+          <small>Documents requiring review</small>
+        </article>
+
+        <article class="documents-kpi">
+          <div class="documents-kpi-top">
+            <span class="documents-kpi-label">ARCHIVED</span>
+            <span class="documents-kpi-mark">□</span>
+          </div>
+          <strong>—</strong>
+          <small>Archived document records</small>
+        </article>
+      </section>
+
+      <section class="documents-grid">
+
+        <article class="documents-card">
+          <header class="documents-card-header">
+            <div>
+              <h2>Document Management</h2>
+              <p>Each document workflow opens on its own management page.</p>
+            </div>
+            <a class="documents-header-link" href="admin-documents-all.html">
+              Open Directory <span>→</span>
+            </a>
+          </header>
+
+          <div class="documents-list">
+            <a class="documents-row" href="admin-documents-all.html">
+              <span class="documents-row-icon">01</span>
+              <span>
+                <strong>All Documents</strong>
+                <small>Review and manage the complete enterprise document registry.</small>
+              </span>
+              <span class="documents-arrow">→</span>
+            </a>
+
+            <a class="documents-row" href="admin-documents-active.html">
+              <span class="documents-row-icon">02</span>
+              <span>
+                <strong>Active Documents</strong>
+                <small>Manage documents currently in active operational use.</small>
+              </span>
+              <span class="documents-arrow">→</span>
+            </a>
+
+            <a class="documents-row" href="admin-documents-review.html">
+              <span class="documents-row-icon">03</span>
+              <span>
+                <strong>Review Queue</strong>
+                <small>Open documents awaiting administrative review or approval.</small>
+              </span>
+              <span class="documents-arrow">→</span>
+            </a>
+
+            <a class="documents-row" href="admin-documents-expiring.html">
+              <span class="documents-row-icon">04</span>
+              <span>
+                <strong>Expiring Documents</strong>
+                <small>Review documents that require renewal or updated records.</small>
+              </span>
+              <span class="documents-arrow">→</span>
+            </a>
+
+            <a class="documents-row" href="admin-documents-archive.html">
+              <span class="documents-row-icon">05</span>
+              <span>
+                <strong>Document Archive</strong>
+                <small>Access archived enterprise document records and history.</small>
+              </span>
+              <span class="documents-arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <aside class="documents-side">
+
+          <article class="documents-card">
+            <header class="documents-card-header">
+              <div>
+                <h2>Document Actions</h2>
+                <p>Each action opens its own management page.</p>
+              </div>
+            </header>
+
+            <div class="documents-action-grid">
+              <a class="documents-action" href="admin-document-create.html">
+                <span class="documents-action-mark">+</span>
+                <strong>Create Document</strong>
+                <small>Open document creation</small>
+              </a>
+
+              <a class="documents-action" href="admin-documents-review.html">
+                <span class="documents-action-mark">→</span>
+                <strong>Review Queue</strong>
+                <small>Open pending review</small>
+              </a>
+
+              <a class="documents-action" href="admin-documents-expiring.html">
+                <span class="documents-action-mark">!</span>
+                <strong>Expiring</strong>
+                <small>Open renewal management</small>
+              </a>
+
+              <a class="documents-action" href="admin-documents-archive.html">
+                <span class="documents-action-mark">✓</span>
+                <strong>Archive</strong>
+                <small>Open archived records</small>
+              </a>
+            </div>
+          </article>
+
+          <article class="documents-card">
+            <header class="documents-card-header">
+              <div>
+                <h2>Related Management</h2>
+                <p>Connected enterprise operations.</p>
+              </div>
+            </header>
+
+            <div class="documents-resources">
+              <a href="admin-clients.html"><span>Client Management</span><span>→</span></a>
+              <a href="admin-employers.html"><span>Employer Management</span><span>→</span></a>
+              <a href="admin-audit.html"><span>Audit Management</span><span>→</span></a>
+            </div>
+          </article>
+
+        </aside>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/admin-navigation.js"></script>
+
+<script>
+(function () {
+  "use strict";
+  const LOGIN_PAGE="admin-login.html";
+  const TABLE="documents";
+
+  document.addEventListener("DOMContentLoaded", init);
+
+  async function init(){
+    const client=getClient();
+    try{
+      const session=await requireSession(client);
+      if(!session) return;
+      bindRefresh(client);
+      await loadPage(client);
+    }catch(e){
+      console.error("Document page wiring failed:",e);
+      setAll("—");
+    }
+  }
+
+  function getClient(){
+    if(window.S4UAuth?.getClient) return window.S4UAuth.getClient();
+    if(window.supabaseClient?.from) return window.supabaseClient;
+    if(window.supabase?.from) return window.supabase;
+    return null;
+  }
+
+  async function requireSession(client){
+    if(window.S4UAuth?.requireSession) return window.S4UAuth.requireSession(LOGIN_PAGE);
+    if(!client?.auth) return true;
+    const {data,error}=await client.auth.getSession();
+    if(error) throw error;
+    if(!data?.session){ location.replace(LOGIN_PAGE); return null; }
+    return data.session;
+  }
+
+  function kpis(){ return [...document.querySelectorAll(".documents-kpi strong")]; }
+  function setKpi(i,v){ if(kpis()[i]) kpis()[i].textContent=v==null?"—":Number(v).toLocaleString(); }
+  function setAll(v){ kpis().forEach(x=>x.textContent=v); }
+
+  function status(row){
+    return String(row.status||row.document_status||row.state||"").trim().toLowerCase();
+  }
+  function expires(row){
+    const v=row.expires_at||row.expiration_date||row.expires_on||row.expiry_date;
+    if(!v) return false;
+    const d=new Date(v);
+    if(Number.isNaN(d)) return false;
+    const days=(d-Date.now())/86400000;
+    return days>=0 && days<=30;
+  }
+
+  async function loadPage(client){
+    if(!client){ setAll("—"); return; }
+
+    const {data,error}=await client.from(TABLE).select("*");
+    if(error){ console.error("Documents load failed:",error); setAll("—"); return; }
+
+    const rows=data||[];
+    const active=rows.filter(r=>["active","approved","published","current"].includes(status(r))).length;
+    const review=rows.filter(r=>["pending","review","pending_review","requires_review"].includes(status(r))).length;
+    const archived=rows.filter(r=>["archived","inactive"].includes(status(r))).length;
+    const expiring=rows.filter(expires).length;
+
+    setKpi(0,rows.length);
+    setKpi(1,active);
+    setKpi(2,review);
+    setKpi(3,archived);
+
+    wireTargets(rows.length,active,review,expiring,archived);
+  }
+
+  function wireTargets(total,active,review,expiring,archived){
+    document.querySelectorAll(".documents-row").forEach(row=>{
+      const text=(row.textContent||"").toLowerCase();
+      const small=row.querySelector("small");
+      if(!small) return;
+      const original=small.dataset.original||small.textContent;
+      small.dataset.original=original;
+      let count=null;
+      if(text.includes("all documents")) count=total;
+      else if(text.includes("active documents")) count=active;
+      else if(text.includes("review queue")) count=review;
+      else if(text.includes("expiring documents")) count=expiring;
+      else if(text.includes("archive")) count=archived;
+      if(count!==null) small.textContent=`${count.toLocaleString()} records • ${original}`;
+    });
+  }
+
+  function bindRefresh(client){
+    const refresh=[...document.querySelectorAll("a")].find(a =>
+      /refresh/i.test(a.textContent||"") &&
+      (a.getAttribute("href")==="admin-documents.html" || a.classList.contains("documents-btn"))
+    );
+    if(!refresh) return;
+    refresh.addEventListener("click",async e=>{
+      e.preventDefault();
+      if(refresh.dataset.loading==="1") return;
+      refresh.dataset.loading="1";
+      refresh.style.pointerEvents="none";
+      try{ await loadPage(client); }
+      finally{ refresh.dataset.loading=""; refresh.style.pointerEvents=""; }
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

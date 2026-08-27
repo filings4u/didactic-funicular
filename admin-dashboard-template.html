@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOT Consortium | screenings4u Admin</title>
+  <link rel="icon" type="image/png" href="images/fav.png">
+
+  <link rel="stylesheet" href="assets/css/admin-core.css">
+  <link rel="stylesheet" href="assets/css/dot-consortium.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/permissions.js"></script>
+  <script src="assets/js/ui.js"></script>
+</head>
+
+<body>
+  <div class="s4u-app">
+    <nav class="s4u-nav" id="adminNavigation" aria-label="Admin navigation"></nav>
+
+    <main class="s4u-main">
+      <div class="dot-page">
+
+        <header class="dot-page-header">
+          <div class="dot-page-heading">
+            <div class="s4u-page-kicker">DOT COMPLIANCE</div>
+            <h1>Consortium</h1>
+            <p>Manage DOT consortium programs, employers, drivers, random testing, and compliance workflows.</p>
+          </div>
+
+          <div class="dot-page-actions">
+            <button class="s4u-button" id="refreshDotBtn" type="button">
+              <span class="dot-button-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M20 11a8 8 0 0 0-14.9-4M4 13a8 8 0 0 0 14.9 4"/>
+                  <path d="M5 3v4h4M19 21v-4h-4"/>
+                </svg>
+              </span>
+              Refresh
+            </button>
+          </div>
+        </header>
+
+
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/js/admin-navigation.js"></script>
+  <script src="assets/js/dot-consortium.js"></script>
+</body>
+</html>

@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Create Random Program | screenings4u Admin</title>
+<link rel="stylesheet" href="assets/css/admin-core.css">
+<link rel="icon" type="image/png" href="images/fav.png">
+
+<style>
+/* ============================================================
+   screenings4u — RANDOM PROGRAM CREATE
+   Built to match the existing DOT Consortium admin shell.
+   ============================================================ */
+
+.dot-page{padding:22px 24px 34px;max-width:none}
+.dot-page-header{min-height:116px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid #e3e8ef}
+.dot-page-heading{min-width:0}
+.dot-page-heading .s4u-page-kicker{margin-bottom:5px;color:#f05a00;font-size:11px;line-height:1;font-weight:900;letter-spacing:.045em}
+.dot-page-heading h1{margin:0;color:#173d78;font-size:clamp(36px,3vw,44px);line-height:.98;font-weight:800;letter-spacing:-.045em}
+.dot-page-heading p{max-width:720px;margin:9px 0 0;color:#52627a;font-size:13px;line-height:1.45}
+.dot-page-actions{flex:0 0 auto;display:flex;align-items:center}
+.dot-page-actions .s4u-button{min-width:105px;height:43px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-color:#cbd7e5;border-radius:9px;font-size:11px;font-weight:900}
+
+/* Main management form */
+.dot-main-grid{display:grid;grid-template-columns:minmax(0,1.34fr) minmax(360px,1fr);gap:16px 22px;margin-top:22px;align-items:start}
+.dot-main-column,.dot-side-column{min-width:0}
+.dot-main-column{display:grid;gap:16px}
+.dot-side-column{display:grid;gap:16px;align-content:start}
+.dot-main-grid .s4u-section{min-width:0;margin:0;overflow:hidden;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 11px rgba(20,48,82,.055)}
+.dot-main-grid .s4u-section-header{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 23px;border-bottom:1px solid #e3e8ef}
+.dot-main-grid .s4u-section-header h2{margin:0;color:#173d78;font-size:19px;line-height:1.15;font-weight:800;letter-spacing:-.025em}
+.dot-main-grid .s4u-section-header p{margin:6px 0 0;color:#607089;font-size:11px;line-height:1.3}
+
+.dot-form-fields{padding:20px 23px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 18px}
+.dot-field{display:grid;gap:7px;min-width:0}
+.dot-field.full{grid-column:1/-1}
+.dot-field label,.dot-field-label{color:#43536d;font-size:10px;line-height:1.1;font-weight:900;letter-spacing:.035em}
+.dot-field input,.dot-field select,.dot-field textarea{width:100%;min-width:0;box-sizing:border-box;border:1px solid #cfd8e5;border-radius:8px;padding:11px 12px;background:#fff;color:#263850;font:inherit;font-size:12px;outline:none;transition:border-color .16s ease,box-shadow .16s ease}
+.dot-field input:focus,.dot-field select:focus,.dot-field textarea:focus{border-color:#7d9bc5;box-shadow:0 0 0 3px rgba(50,90,163,.09)}
+.dot-field textarea{min-height:96px;resize:vertical}
+
+.dot-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dot-choice-card{min-height:72px;display:flex;align-items:flex-start;gap:10px;padding:13px;border:1px solid #dfe5ed;border-radius:9px;background:#fff;cursor:pointer;transition:border-color .16s ease,background .16s ease}
+.dot-choice-card:hover{border-color:#bfcfe2;background:#f9fbfe}
+.dot-choice-card input{width:15px;height:15px;margin:1px 0 0;accent-color:#325aa3}
+.dot-choice-card strong{display:block;color:#173b73;font-size:12px;line-height:1.2;font-weight:800}
+.dot-choice-card small{display:block;margin-top:4px;color:#647189;font-size:10px;line-height:1.35}
+
+.dot-section-actions{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:17px 23px;border-top:1px solid #edf0f4}
+.dot-section-actions .s4u-button{min-height:42px;border-radius:8px;font-size:11px;font-weight:900}
+.dot-section-actions .s4u-button-primary{background:#325aa3;border-color:#325aa3}
+
+/* Summary / side content */
+.dot-summary-list{padding:8px 20px 14px}
+.dot-summary-row{min-height:46px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #edf0f4;font-size:11px}
+.dot-summary-row:last-child{border-bottom:0}
+.dot-summary-row span{color:#647189}
+.dot-summary-row strong{color:#173b73;font-weight:800;text-align:right}
+.dot-note{padding:18px 23px 20px}
+.dot-note h3{margin:0 0 9px;color:#173d78;font-size:13px;font-weight:800}
+.dot-note ul{margin:0;padding-left:17px}
+.dot-note li{margin:7px 0;color:#617088;font-size:11px;line-height:1.45}
+.dot-hidden{display:none!important}
+
+/* Responsive */
+@media(max-width:1250px){
+  .dot-main-grid{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr)}
+}
+@media(max-width:1050px){
+  .dot-page-header{align-items:flex-start;flex-direction:column}
+  .dot-page-actions{width:100%}
+  .dot-page-actions .s4u-button{width:100%}
+  .dot-main-grid{grid-template-columns:1fr}
+  .dot-side-column{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+}
+@media(max-width:700px){
+  .dot-page{padding:18px 14px 22px}
+  .dot-page-header{min-height:0;padding-bottom:18px}
+  .dot-page-heading h1{font-size:36px}
+  .dot-page-heading p{font-size:12px}
+  .dot-main-grid .s4u-section-header{min-height:auto;padding:17px}
+  .dot-form-fields{grid-template-columns:1fr;padding:17px}
+  .dot-field.full{grid-column:auto}
+  .dot-choice-grid{grid-template-columns:1fr}
+  .dot-side-column{grid-template-columns:1fr}
+  .dot-section-actions{padding:16px 17px;flex-direction:column-reverse}
+  .dot-section-actions .s4u-button{width:100%}
+}
+
+
+/* ============================================================
+   FINAL BUTTON OVERRIDES — match admin dashboard controls
+   ============================================================ */
+.dot-page-header > .s4u-button,
+.dot-section-actions > .s4u-button,
+.dot-section-actions > button.s4u-button{
+  appearance:none !important;
+  -webkit-appearance:none !important;
+  box-sizing:border-box !important;
+  height:43px !important;
+  min-width:0 !important;
+  padding:0 18px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:8px !important;
+  border:1px solid #cbd7e5 !important;
+  border-radius:9px !important;
+  background:#fff !important;
+  color:#173d78 !important;
+  font-family:inherit !important;
+  font-size:11px !important;
+  font-weight:900 !important;
+  line-height:1 !important;
+  text-decoration:none !important;
+  white-space:nowrap !important;
+  cursor:pointer !important;
+  box-shadow:0 2px 5px rgba(20,48,82,.06) !important;
+  transition:background .16s ease,border-color .16s ease,transform .16s ease,box-shadow .16s ease !important;
+}
+
+.dot-page-header > .s4u-button:hover,
+.dot-section-actions > .s4u-button:hover{
+  background:#f7f9fc !important;
+  border-color:#aebed2 !important;
+  color:#173d78 !important;
+  transform:translateY(-1px);
+}
+
+.dot-section-actions > button.s4u-button-primary{
+  min-width:180px !important;
+  background:#325aa3 !important;
+  border-color:#325aa3 !important;
+  color:#fff !important;
+  box-shadow:0 3px 8px rgba(50,90,163,.20) !important;
+}
+
+.dot-section-actions > button.s4u-button-primary:hover{
+  background:#244b8d !important;
+  border-color:#244b8d !important;
+  color:#fff !important;
+}
+
+.dot-section-actions > button.s4u-button-primary:disabled{
+  opacity:.65 !important;
+  cursor:not-allowed !important;
+  transform:none !important;
+}
+
+.dot-section-actions{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:10px !important;
+}
+
+@media(max-width:700px){
+  .dot-page-header > .s4u-button,
+  .dot-section-actions > .s4u-button,
+  .dot-section-actions > button.s4u-button{
+    width:100% !important;
+  }
+}
+
+
+/* ============================================================
+   SELECT CONTROLS + BACK BUTTON
+   ============================================================ */
+
+.dot-field select{
+  width:100% !important;
+  height:43px !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+  display:block !important;
+  padding:0 38px 0 12px !important;
+  border:1px solid #cfd8e5 !important;
+  border-radius:8px !important;
+  background-color:#fff !important;
+  color:#263850 !important;
+  font-family:inherit !important;
+  font-size:12px !important;
+  font-weight:600 !important;
+  line-height:1.2 !important;
+  cursor:pointer !important;
+  opacity:1 !important;
+}
+
+.dot-field select:focus{
+  border-color:#325aa3 !important;
+  box-shadow:0 0 0 3px rgba(50,90,163,.10) !important;
+  outline:none !important;
+}
+
+.dot-field select option{
+  background:#fff;
+  color:#263850;
+  font-size:12px;
+  font-weight:500;
+}
+
+/* Orange Back button / blue hover */
+.dot-page-header > .s4u-button,
+.dot-page-actions > .s4u-button{
+  background:#f05a00 !important;
+  border-color:#f05a00 !important;
+  color:#fff !important;
+  box-shadow:0 3px 8px rgba(240,90,0,.18) !important;
+}
+
+.dot-page-header > .s4u-button:hover,
+.dot-page-actions > .s4u-button:hover{
+  background:#325aa3 !important;
+  border-color:#325aa3 !important;
+  color:#fff !important;
+  box-shadow:0 3px 8px rgba(50,90,163,.20) !important;
+}
+/* ============================================================
+   RANDOM PROGRAM SUCCESS MODAL
+   ============================================================ */
+.random-success-modal{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.random-success-modal.is-open{display:flex;}
+.random-success-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(16,35,66,.48);
+  backdrop-filter:blur(2px);
+}
+.random-success-card{
+  position:relative;
+  z-index:1;
+  width:min(100%,460px);
+  padding:34px 32px 30px;
+  background:#fff;
+  border:1px solid #dfe5ed;
+  border-radius:14px;
+  box-shadow:0 22px 60px rgba(16,35,66,.25);
+  text-align:center;
+}
+.random-success-close{
+  position:absolute;
+  top:12px;
+  right:14px;
+  width:34px;
+  height:34px;
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  color:#607089;
+  font-size:26px;
+  line-height:1;
+  cursor:pointer;
+}
+.random-success-close:hover{background:#f3f6fa;color:#173d78;}
+.random-success-icon{
+  width:58px;
+  height:58px;
+  margin:0 auto 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:#eaf7f0;
+  color:#16804d;
+  font-size:30px;
+  font-weight:900;
+}
+.random-success-kicker{
+  margin-bottom:8px;
+  color:#f05a00;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.11em;
+}
+.random-success-card h2{
+  margin:0;
+  color:#173d78;
+  font-size:24px;
+  line-height:1.2;
+  font-weight:800;
+}
+.random-success-card p{
+  margin:11px auto 0;
+  max-width:350px;
+  color:#607089;
+  font-size:13px;
+  line-height:1.5;
+}
+.random-success-actions{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-top:24px;
+}
+.random-success-actions a{
+  min-height:43px;
+  padding:0 18px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:9px;
+  text-decoration:none;
+  font-size:11px;
+  font-weight:900;
+}
+.random-success-secondary{
+  background:#fff;
+  border:1px solid #cbd7e5;
+  color:#173d78;
+}
+.random-success-secondary:hover{
+  background:#f7f9fc;
+  border-color:#9fb2cc;
+}
+.random-success-primary{
+  background:#325aa3;
+  border:1px solid #325aa3;
+  color:#fff;
+  box-shadow:0 3px 8px rgba(50,90,163,.18);
+}
+.random-success-primary:hover{
+  background:#244b8d;
+  border-color:#244b8d;
+}
+@media(max-width:520px){
+  .random-success-card{padding:30px 20px 22px;}
+  .random-success-actions{flex-direction:column;}
+  .random-success-actions a{width:100%;}
+}
+
+
+/* ============================================================
+   RANDOM PROGRAM ERROR MODAL — replaces all browser alerts
+   ============================================================ */
+.random-error-modal{
+  position:fixed;
+  inset:0;
+  z-index:100000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.random-error-modal.is-open{display:flex;}
+.random-error-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(16,35,66,.48);
+  backdrop-filter:blur(2px);
+}
+.random-error-card{
+  position:relative;
+  z-index:1;
+  width:min(100%,460px);
+  padding:34px 32px 30px;
+  background:#fff;
+  border:1px solid #dfe5ed;
+  border-radius:14px;
+  box-shadow:0 22px 60px rgba(16,35,66,.25);
+  text-align:center;
+}
+.random-error-close{
+  position:absolute;
+  top:12px;
+  right:14px;
+  width:34px;
+  height:34px;
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  color:#607089;
+  font-size:26px;
+  line-height:1;
+  cursor:pointer;
+}
+.random-error-close:hover{background:#f3f6fa;color:#173d78;}
+.random-error-icon{
+  width:58px;
+  height:58px;
+  margin:0 auto 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:#fff1e8;
+  color:#f05a00;
+  font-size:31px;
+  font-weight:900;
+}
+.random-error-kicker{
+  margin-bottom:8px;
+  color:#f05a00;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.11em;
+}
+.random-error-card h2{
+  margin:0;
+  color:#173d78;
+  font-size:24px;
+  line-height:1.2;
+  font-weight:800;
+}
+.random-error-card p{
+  margin:11px auto 0;
+  max-width:360px;
+  color:#607089;
+  font-size:13px;
+  line-height:1.5;
+  white-space:pre-line;
+}
+.random-error-actions{
+  display:flex;
+  justify-content:center;
+  margin-top:24px;
+}
+.random-error-primary{
+  min-width:110px;
+  min-height:43px;
+  padding:0 20px;
+  border:1px solid #325aa3;
+  border-radius:9px;
+  background:#325aa3;
+  color:#fff;
+  font:inherit;
+  font-size:11px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 3px 8px rgba(50,90,163,.18);
+}
+.random-error-primary:hover{
+  background:#244b8d;
+  border-color:#244b8d;
+}
+
+</style>
+</head>
+<body>
+<div class="s4u-app">
+<nav class="s4u-nav" id="adminNavigation" aria-label="Admin navigation"></nav>
+<main class="s4u-main"><div class="dot-page">
+<header class="dot-page-header"><div class="dot-page-heading"><div class="s4u-page-kicker">RANDOM PROGRAMS / CREATE</div><h1>Create Random Program</h1><p>Create a DOT or NON-DOT random testing program with either a consortium or dedicated employer pool.</p></div><a class="s4u-button" href="admin-random-programs.html">← Back to Programs</a></header>
+
+<div class="dot-main-grid">
+<form class="dot-main-column" id="createRandomProgramForm">
+<section class="s4u-section"><div class="s4u-section-header"><h2>Program Identity</h2><p>Define the program record and program year.</p></div><div class="dot-form-fields">
+<div class="dot-field full"><label for="programName">Program Name *</label><input id="programName" required placeholder="Example: 2026 FMCSA Consortium Pool"></div>
+<div class="dot-field"><label for="programYear">Program Year *</label><input id="programYear" type="number" min="2020" max="2100" required></div>
+<div class="dot-field"><label for="programStatus">Status *</label><select id="programStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+</div></section>
+
+<section class="s4u-section"><div class="s4u-section-header"><h2>Program Structure</h2><p>Select the regulatory type and pool structure.</p></div><div class="dot-form-fields">
+<div class="dot-field full"><label>Program Type *</label><div class="dot-choice-grid">
+<label class="dot-choice-card"><input type="radio" name="programType" value="DOT" checked><span><strong>DOT</strong><small>DOT-regulated employees. A DOT agency is required.</small></span></label>
+<label class="dot-choice-card"><input type="radio" name="programType" value="NON_DOT"><span><strong>NON-DOT</strong><small>Non-DOT employee random testing program.</small></span></label>
+</div></div>
+<div class="dot-field full"><label>Pool Type *</label><div class="dot-choice-grid">
+<label class="dot-choice-card"><input type="radio" name="poolType" value="CONSORTIUM" checked><span><strong>Consortium Pool</strong><small>Multiple enrolled employers contribute eligible employees to one program pool.</small></span></label>
+<label class="dot-choice-card"><input type="radio" name="poolType" value="DEDICATED"><span><strong>Dedicated Employer Pool</strong><small>One employer has its own dedicated random testing pool.</small></span></label>
+</div></div>
+<div class="dot-field" id="agencyField"><label for="dotAgency">DOT Agency *</label><select id="dotAgency"><option value="FMCSA">FMCSA</option><option value="FRA">FRA</option><option value="FTA">FTA</option><option value="FAA">FAA</option><option value="USCG">USCG</option><option value="PHMSA">PHMSA</option></select></div>
+<div class="dot-field dot-hidden" id="dedicatedEmployerField"><label for="dedicatedEmployer">Dedicated Employer *</label><select id="dedicatedEmployer"><option value="">Loading employers…</option></select></div>
+</div></section>
+
+<section class="s4u-section"><div class="s4u-section-header"><h2>Annual Testing Rates</h2><p>Enter the annual percentage requirements for this program.</p></div><div class="dot-form-fields">
+<div class="dot-field"><label for="drugRate">Drug Rate (%) *</label><input id="drugRate" type="number" min="0" max="100" step="0.01" required value="25"></div>
+<div class="dot-field"><label for="alcoholRate">Alcohol Rate (%) *</label><input id="alcoholRate" type="number" min="0" max="100" step="0.01" required value="10"></div>
+</div></section>
+
+<section class="s4u-section"><div class="s4u-section-header"><h2>Program Notes</h2><p>Optional internal administration notes.</p></div><div class="dot-form-fields"><div class="dot-field full"><label for="programNotes">Notes</label><textarea id="programNotes" placeholder="Internal notes about this program..."></textarea></div></div>
+<div class="dot-section-actions"><a class="s4u-button" href="admin-random-programs.html">Cancel</a><button class="s4u-button s4u-button-primary" id="saveProgramBtn" type="submit">Create Random Program</button></div></section>
+</form>
+
+<aside class="dot-side-column">
+<section class="s4u-section"><div class="s4u-section-header"><h2>Program Summary</h2><p>Updates as you configure the program.</p></div><div class="dot-note"><div class="dot-summary-list"><div class="dot-summary-row"><span>Type</span><strong id="summaryType">DOT</strong></div><div class="dot-summary-row"><span>Pool</span><strong id="summaryPool">Consortium</strong></div><div class="dot-summary-row"><span>Agency</span><strong id="summaryAgency">FMCSA</strong></div><div class="dot-summary-row"><span>Drug Rate</span><strong id="summaryDrug">25%</strong></div><div class="dot-summary-row"><span>Alcohol Rate</span><strong id="summaryAlcohol">10%</strong></div></div></div></section>
+<section class="s4u-section"><div class="s4u-section-header"><h2>What Happens Next</h2></div><div class="dot-note"><h3>After the program is created</h3><ul><li>Consortium programs can enroll multiple employers.</li><li>Dedicated programs are tied to one employer.</li><li>Eligible employees become part of the program pool according to the program structure.</li><li>Quarterly selections use the stored program rates and annual tracking records.</li></ul></div></section>
+</aside>
+</div>
+</div></main></div>
+
+<div class="random-success-modal" id="randomSuccessModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="randomSuccessTitle">
+  <div class="random-success-backdrop" data-close-success-modal></div>
+  <div class="random-success-card" role="document">
+    <button type="button" class="random-success-close" id="closeSuccessModal" aria-label="Close">×</button>
+    <div class="random-success-icon" aria-hidden="true">✓</div>
+    <div class="random-success-kicker">PROGRAM CREATED</div>
+    <h2 id="randomSuccessTitle">Random Program Created Successfully</h2>
+    <p id="randomSuccessMessage">The random program has been saved to the database.</p>
+    <div class="random-success-actions">
+      <a class="random-success-secondary" href="admin-random-programs.html">Back to Programs</a>
+      <a class="random-success-primary" id="viewCreatedProgramBtn" href="#">View Program</a>
+    </div>
+  </div>
+</div>
+
+
+<div class="random-error-modal" id="randomErrorModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="randomErrorTitle">
+  <div class="random-error-backdrop" data-close-error-modal></div>
+  <div class="random-error-card" role="document">
+    <button type="button" class="random-error-close" id="closeErrorModal" aria-label="Close">×</button>
+    <div class="random-error-icon" aria-hidden="true">!</div>
+    <div class="random-error-kicker">ACTION REQUIRED</div>
+    <h2 id="randomErrorTitle">Unable to Create Program</h2>
+    <p id="randomErrorMessage">Something prevented the program from being saved.</p>
+    <div class="random-error-actions">
+      <button type="button" class="random-error-primary" id="errorModalOkBtn">OK</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+
+<!--
+  Supabase bootstrap MUST run before auth.js.
+  supabase-config.js uses SCREENINGS4U_* names, while the existing
+  auth.js expects the standard SUPABASE_* names.
+-->
+<script>
+(function () {
+  "use strict";
+
+  window.SUPABASE_URL =
+    window.SUPABASE_URL ||
+    window.SCREENINGS4U_SUPABASE_URL;
+
+  window.SUPABASE_ANON_KEY =
+    window.SUPABASE_ANON_KEY ||
+    window.SCREENINGS4U_SUPABASE_ANON_KEY;
+
+  if (
+    !window.supabaseClient &&
+    window.supabase &&
+    typeof window.supabase.createClient === "function" &&
+    window.SUPABASE_URL &&
+    window.SUPABASE_ANON_KEY
+  ) {
+    window.supabaseClient = window.supabase.createClient(
+      window.SUPABASE_URL,
+      window.SUPABASE_ANON_KEY
+    );
+  }
+}());
+</script>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/admin-navigation.js"></script>
+<script>
+(function(){
+"use strict";
+const year=new Date().getFullYear();
+document.getElementById("programYear").value=year;
+document.addEventListener("DOMContentLoaded", function(){
+  bind();
+  updateUI();
+  init();
+});
+
+async function init(){
+  try {
+    if (
+      window.S4UAuth &&
+      typeof window.S4UAuth.requireSession === "function"
+    ) {
+      const session = await window.S4UAuth.requireSession(
+        "admin-login.html"
+      );
+
+      if (!session) return;
+    }
+
+    const c = await waitForSupabaseClient();
+
+    if (!c) {
+      throw new Error(
+        "The shared Supabase client could not be found."
+      );
+    }
+
+    await loadEmployers();
+
+  } catch (error) {
+    console.error(
+      "admin-random-program-create initialization failed:",
+      error
+    );
+
+    const select = document.getElementById("dedicatedEmployer");
+
+    if (select) {
+      select.innerHTML =
+        '<option value="">Unable to connect to the database</option>';
+    }
+
+    showErrorModal(
+      error && error.message
+        ? error.message
+        : "The page could not initialize its database connection.",
+      "Database Connection Unavailable"
+    );
+  }
+}
+function client(){
+  /*
+   * supabase-config.js provides the project URL and anon key.
+   * Create the shared client here if another admin script has not
+   * already created window.supabaseClient.
+   */
+  if (
+    window.supabaseClient &&
+    typeof window.supabaseClient.from === "function"
+  ) {
+    return window.supabaseClient;
+  }
+
+  if (
+    window.supabase &&
+    typeof window.supabase.createClient === "function" &&
+    window.SCREENINGS4U_SUPABASE_URL &&
+    window.SCREENINGS4U_SUPABASE_ANON_KEY
+  ) {
+    window.supabaseClient = window.supabase.createClient(
+      window.SCREENINGS4U_SUPABASE_URL,
+      window.SCREENINGS4U_SUPABASE_ANON_KEY
+    );
+
+    return window.supabaseClient;
+  }
+
+  return null;
+}
+
+async function waitForSupabaseClient(timeoutMs = 2500){
+  const started = Date.now();
+
+  while (Date.now() - started < timeoutMs) {
+    const c = client();
+
+    if (c) return c;
+
+    await new Promise(function(resolve){
+      window.setTimeout(resolve, 100);
+    });
+  }
+
+  return client();
+}
+function bind(){
+  document.querySelectorAll('input[name="programType"],input[name="poolType"]').forEach(function(el){
+    el.addEventListener("change",updateUI);
+  });
+
+  ["dotAgency","drugRate","alcoholRate"].forEach(function(id){
+    const element = document.getElementById(id);
+    if (element) {
+      element.addEventListener("input",updateUI);
+      element.addEventListener("change",updateUI);
+    }
+  });
+
+  const form = document.getElementById("createRandomProgramForm");
+  if (form) {
+    form.addEventListener("submit",saveProgram);
+  }
+
+  const closeButton = document.getElementById("closeSuccessModal");
+  if (closeButton) {
+    closeButton.addEventListener("click",closeSuccessModal);
+  }
+
+  document.querySelectorAll("[data-close-success-modal]").forEach(function(element){
+    element.addEventListener("click",closeSuccessModal);
+  });
+
+  const closeErrorButton = document.getElementById("closeErrorModal");
+  const errorOkButton = document.getElementById("errorModalOkBtn");
+
+  if (closeErrorButton) {
+    closeErrorButton.addEventListener("click",closeErrorModal);
+  }
+
+  if (errorOkButton) {
+    errorOkButton.addEventListener("click",closeErrorModal);
+  }
+
+  document.querySelectorAll("[data-close-error-modal]").forEach(function(element){
+    element.addEventListener("click",closeErrorModal);
+  });
+}
+function selected(name){return document.querySelector(`input[name="${name}"]:checked`)?.value;}
+function updateUI(){
+  const type=selected("programType"), pool=selected("poolType");
+  const agencyField=document.getElementById("agencyField"), employerField=document.getElementById("dedicatedEmployerField");
+  agencyField.classList.toggle("dot-hidden",type!=="DOT");
+  employerField.classList.toggle("dot-hidden",pool!=="DEDICATED");
+  document.getElementById("dotAgency").required=type==="DOT";
+  document.getElementById("dedicatedEmployer").required=pool==="DEDICATED";
+  document.getElementById("summaryType").textContent=type==="DOT"?"DOT":"NON-DOT";
+  document.getElementById("summaryPool").textContent=pool==="CONSORTIUM"?"Consortium":"Dedicated";
+  document.getElementById("summaryAgency").textContent=type==="DOT"?document.getElementById("dotAgency").value:"Not Applicable";
+  document.getElementById("summaryDrug").textContent=(document.getElementById("drugRate").value||0)+"%";
+  document.getElementById("summaryAlcohol").textContent=(document.getElementById("alcoholRate").value||0)+"%";
+}
+async function loadEmployers(){
+  const c = client();
+  const select = document.getElementById("dedicatedEmployer");
+
+  if (!select) return;
+
+  if (!c || typeof c.from !== "function") {
+    throw new Error("Supabase client is not available.");
+  }
+
+  select.innerHTML =
+    '<option value="">Loading employers…</option>';
+
+  const { data, error } = await c
+    .from("employer_profiles")
+    .select("id, employer_name, status")
+    .order("employer_name");
+
+  if (error) {
+    console.error("Unable to load employers:", error);
+    select.innerHTML =
+      '<option value="">Unable to load employers</option>';
+    return;
+  }
+
+  const rows = (data || []).filter(function(employer){
+    return String(
+      employer.status || ""
+    ).toLowerCase() !== "inactive";
+  });
+
+  select.innerHTML =
+    '<option value="">Select employer</option>' +
+    rows.map(function(employer){
+      return '<option value="' +
+        esc(employer.id) +
+        '">' +
+        esc(employer.employer_name) +
+        '</option>';
+    }).join("");
+}
+async function saveProgram(e){
+  e.preventDefault();
+
+  const form = e.currentTarget;
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+  const c = await waitForSupabaseClient();
+
+  if (!c || typeof c.from !== "function") {
+    showErrorModal(
+      "The database connection could not be initialized. The program was not created. Please verify that the Supabase configuration file is loading correctly.",
+      "Database Connection Unavailable"
+    );
+    return;
+  }
+
+  const btn = document.getElementById("saveProgramBtn");
+  const originalText = btn ? btn.textContent : "Create Random Program";
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Creating…";
+  }
+
+  try {
+    const type = selected("programType");
+    const pool = selected("poolType");
+
+    const dedicatedEmployerId =
+      pool === "DEDICATED"
+        ? document.getElementById("dedicatedEmployer").value
+        : null;
+
+    if (pool === "DEDICATED" && !dedicatedEmployerId) {
+      throw new Error("Please select the dedicated employer.");
+    }
+
+    const payload = {
+      name: document.getElementById("programName").value.trim(),
+      program_year: Number(document.getElementById("programYear").value),
+      drug_rate: Number(document.getElementById("drugRate").value),
+      alcohol_rate: Number(document.getElementById("alcoholRate").value),
+      status: document.getElementById("programStatus").value,
+      notes: document.getElementById("programNotes").value.trim() || null,
+      program_type: type,
+      pool_type: pool,
+      dot_agency:
+        type === "DOT"
+          ? document.getElementById("dotAgency").value
+          : null,
+      dedicated_employer_id: dedicatedEmployerId
+    };
+
+    const result = await c
+      .from("dot_random_programs")
+      .insert([payload])
+      .select("id, name")
+      .single();
+
+    if (result.error) {
+      throw result.error;
+    }
+
+    if (!result.data || !result.data.id) {
+      throw new Error(
+        "The database did not return the newly created program ID."
+      );
+    }
+
+    showSuccessModal(
+      result.data.id,
+      result.data.name || payload.name
+    );
+
+  } catch (error) {
+    console.error("Unable to create random program:", error);
+
+    showErrorModal(
+      error && error.message
+        ? error.message
+        : "An unexpected database error occurred. The program was not created.",
+      "Unable to Create Program"
+    );
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  }
+}
+
+function showSuccessModal(programId, programName){
+  const modal = document.getElementById("randomSuccessModal");
+  const message = document.getElementById("randomSuccessMessage");
+  const viewButton = document.getElementById("viewCreatedProgramBtn");
+
+  if (message) {
+    message.textContent =
+      '"' + programName + '" has been successfully created and saved to the database.';
+  }
+
+  if (viewButton) {
+    viewButton.href =
+      "admin-random-program-detail.html?id=" +
+      encodeURIComponent(programId);
+  }
+
+  if (modal) {
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden","false");
+  }
+}
+
+function closeSuccessModal(){
+  const modal = document.getElementById("randomSuccessModal");
+
+  if (modal) {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden","true");
+  }
+}
+
+function showErrorModal(message, title){
+  const modal = document.getElementById("randomErrorModal");
+  const titleElement = document.getElementById("randomErrorTitle");
+  const messageElement = document.getElementById("randomErrorMessage");
+
+  if (titleElement && title) {
+    titleElement.textContent = title;
+  }
+
+  if (messageElement) {
+    messageElement.textContent = message ||
+      "Something prevented the program from being saved.";
+  }
+
+  if (modal) {
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden","false");
+  }
+}
+
+function closeErrorModal(){
+  const modal = document.getElementById("randomErrorModal");
+
+  if (modal) {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden","true");
+  }
+}
+function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+})();
+</script>
+</body></html>

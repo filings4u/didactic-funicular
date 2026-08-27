@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DOT Compliance | Client Portal</title><link rel="stylesheet" href="../assets/css/admin-core.css"><link rel="stylesheet" href="../assets/css/dot-consortium.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../assets/js/supabase-config.js"></script>
+<script src="../assets/js/config.js"></script><script src="../assets/js/auth.js"></script><script src="../assets/js/permissions.js"></script><script src="../assets/js/ui.js"></script>
+</head><body><div class="s4u-app"><aside class="s4u-sidebar"><div class="s4u-sidebar-inner">
+<div class="s4u-brand"><img src="../images/logo.png" alt="screenings4u"><div><strong>CLIENT PORTAL</strong><span>DOT Compliance</span></div></div>
+<nav class="s4u-nav"><a class="s4u-nav-link" href="../client-dashboard.html">Dashboard</a><div class="s4u-nav-section">Compliance</div>
+<a class="s4u-nav-link active" href="client-dot-compliance.html">DOT Compliance</a><a class="s4u-nav-link" href="client-dot-drivers.html">Drivers</a><a class="s4u-nav-link" href="client-dot-tests.html">Testing</a><a class="s4u-nav-link" href="client-dot-documents.html">Documents</a></nav>
+<div class="s4u-sidebar-footer"><button class="s4u-nav-link" id="logoutButton" type="button">Sign Out</button></div>
+</div></aside><main class="s4u-main"><header class="s4u-topbar"><div class="s4u-topbar-title">DOT Compliance</div></header><div class="s4u-content">
+<header class="s4u-page-header"><div><div class="s4u-page-kicker">CLIENT PORTAL</div><h1>DOT Compliance</h1><p>View your consortium program, drivers, testing activity and compliance documents.</p></div></header>
+<section class="s4u-module-grid">
+<div class="s4u-section s4u-module-card"><h2>Program</h2><div id="programStatus" class="s4u-kpi">—</div><p class="s4u-muted">Current consortium status.</p></div>
+<div class="s4u-section s4u-module-card"><h2>Drivers</h2><div id="driverCount" class="s4u-kpi">—</div><p class="s4u-muted">Drivers in your organization.</p></div>
+<div class="s4u-section s4u-module-card"><h2>Testing</h2><div id="testCount" class="s4u-kpi">—</div><p class="s4u-muted">DOT test orders.</p></div>
+<div class="s4u-section s4u-module-card wide"><h2>Compliance Documents</h2><p class="s4u-muted">Enrollment certificates and other documents will appear here as they are issued.</p><a class="s4u-button primary" href="client-dot-documents.html">View Documents</a></div>
+<div class="s4u-section s4u-module-card wide"><h2>Clearinghouse</h2><p class="s4u-muted">Clearinghouse queries and violation reporting are handled through authorized workflows. Your portal will show relevant status and records available to your organization.</p></div>
+</section></div></main></div>
+<script>
+(async()=>{
+ try{
+  const s=await S4UAuth.requireSession("../client-login.html");if(!s)return;
+  const c=S4UAuth.getClient();
+  const uid=s.user.id;
+  const {data:member}=await c.from("organization_members").select("organization_id").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
+  if(!member)throw new Error("No active organization membership was found.");
+  const org=member.organization_id;
+  const [p,d,t]=await Promise.all([
+   c.from("dot_consortium_programs").select("status").eq("organization_id",org).eq("status","active").limit(1).maybeSingle(),
+   c.from("dot_drivers").select("id",{count:"exact",head:true}).eq("organization_id",org),
+   c.from("dot_test_orders").select("id",{count:"exact",head:true}).eq("organization_id",org)
+  ]);
+  document.getElementById("programStatus").textContent=p.data?.status==="active"?"Active":"Not enrolled";
+  document.getElementById("driverCount").textContent=d.count??0;
+  document.getElementById("testCount").textContent=t.count??0;
+ }catch(e){console.error(e);S4UUI.toast(e.message||"Unable to load compliance.","error")}
+ document.getElementById("logoutButton").onclick=()=>S4UAuth.signOut();
+})();
+</script></body></html>

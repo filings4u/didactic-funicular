@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOT Employer Management | screenings4u Admin</title>
+<link rel="icon" type="image/png" href="images/fav.png">
+
+<link rel="stylesheet" href="assets/css/admin-core.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/ui.js"></script>
+
+
+<style>
+/* ============================================================
+   screenings4u — DOT COMPLIANCE MANAGEMENT
+   Complete single-file page styles
+   ============================================================ */
+
+.dot-page{padding:22px 24px 34px;max-width:none}
+.dot-header{min-height:116px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid #e3e8ef}
+.dot-heading{min-width:0}
+.dot-kicker{margin-bottom:5px;color:#f05a00;font-size:11px;line-height:1;font-weight:900;letter-spacing:.045em}
+.dot-heading h1{margin:0;color:#173d78;font-size:clamp(36px,3vw,44px);line-height:.98;font-weight:800;letter-spacing:-.045em}
+.dot-heading p{max-width:760px;margin:9px 0 0;color:#52627a;font-size:13px;line-height:1.45}
+
+.dot-actions{flex:0 0 auto;display:flex;align-items:center;gap:10px}
+.dot-actions .dot-btn,
+.dot-actions a.dot-btn{
+  min-width:126px;height:43px;display:inline-flex!important;align-items:center!important;
+  justify-content:center!important;gap:8px!important;padding:0 18px!important;
+  border:1px solid #cbd7e5!important;border-radius:9px!important;
+  background:#fff!important;color:#173d78!important;font-size:11px!important;
+  font-weight:900!important;line-height:1!important;text-decoration:none!important;
+  box-sizing:border-box;cursor:pointer
+}
+.dot-actions .dot-btn:hover{background:#f4f7fb!important;border-color:#aebfd3!important}
+.dot-actions .dot-btn.primary{
+  min-width:158px;border-color:#f05a00!important;background:#f05a00!important;color:#fff!important
+}
+.dot-actions .dot-btn.primary:hover{background:#d94f00!important;border-color:#d94f00!important}
+.dot-btn-icon{font-size:17px;line-height:1}
+
+.dot-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:22px}
+.dot-kpi{min-width:0;min-height:153px;padding:17px 20px;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 10px rgba(20,48,82,.055)}
+.dot-kpi-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dot-kpi-label{color:#5f6d83;font-size:10px;line-height:1;font-weight:900;letter-spacing:.075em}
+.dot-kpi-mark{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-size:16px;font-weight:900}
+.dot-kpi:nth-child(2) .dot-kpi-mark{background:#eaf7f0;color:#16804d}
+.dot-kpi:nth-child(3) .dot-kpi-mark{background:#fff3e5;color:#c96a00}
+.dot-kpi:nth-child(4) .dot-kpi-mark{background:#fceeee;color:#b64141}
+.dot-kpi strong{display:block;margin-top:20px;color:#183f7c;font-size:30px;line-height:1;font-weight:800;letter-spacing:-.04em}
+.dot-kpi small{display:block;margin-top:12px;color:#647189;font-size:10px;line-height:1.3}
+
+.dot-grid{display:grid;grid-template-columns:minmax(0,1.34fr) minmax(360px,1fr);gap:16px 22px;margin-top:16px}
+.dot-card{min-width:0;overflow:hidden;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 11px rgba(20,48,82,.055)}
+.dot-card-header{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 23px;border-bottom:1px solid #e3e8ef}
+.dot-card-header h2{margin:0;color:#173d78;font-size:19px;line-height:1.15;font-weight:800;letter-spacing:-.025em}
+.dot-card-header p{margin:6px 0 0;color:#607089;font-size:11px;line-height:1.3}
+.dot-header-link{color:#17519b;text-decoration:none;font-size:10px;font-weight:900}
+.dot-header-link span{padding-left:5px;font-size:16px}
+
+.dot-list{padding:9px 12px}
+.dot-row{min-height:76px;display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;color:inherit;text-decoration:none}
+.dot-row:hover{background:#f7f9fc}
+.dot-row-icon{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-size:12px;font-weight:900}
+.dot-row:nth-child(2) .dot-row-icon{background:#eaf7f0;color:#16804d}
+.dot-row:nth-child(3) .dot-row-icon{background:#fff3e5;color:#c96a00}
+.dot-row:nth-child(4) .dot-row-icon{background:#fceeee;color:#b64141}
+.dot-row:nth-child(5) .dot-row-icon{background:#f0eefb;color:#6045a8}
+.dot-row strong{display:block;color:#173b73;font-size:13px;line-height:1.2;font-weight:800}
+.dot-row small{display:block;margin-top:5px;color:#617088;font-size:10px;line-height:1.25}
+.dot-arrow{padding-right:7px;color:#667a98;font-size:22px}
+
+.dot-side{display:grid;grid-template-rows:auto auto;gap:16px}
+.dot-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:13px}
+.dot-action{min-height:93px;display:flex;flex-direction:column;justify-content:center;padding:12px 15px;border:1px solid #dfe5ed;border-radius:8px;background:#fff;color:inherit;text-decoration:none}
+.dot-action:hover{border-color:#bfcfe2;background:#f9fbfe;transform:translateY(-1px)}
+.dot-action-mark{display:block;color:#f05a00;font-size:21px;line-height:.8;font-weight:700}
+.dot-action strong{display:block;margin-top:10px;color:#173b73;font-size:12px;line-height:1.15;font-weight:800}
+.dot-action small{display:block;margin-top:5px;color:#647189;font-size:10px;line-height:1.2}
+
+.dot-resources{padding:7px 13px 12px}
+.dot-resources a{min-height:45px;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:0 10px;border-bottom:1px solid #edf0f4;color:#173b73;text-decoration:none;font-size:11px;font-weight:800}
+.dot-resources a:last-child{border-bottom:0}
+.dot-resources a:hover{background:#f7f9fc}
+.dot-resources span:last-child{color:#667a98;font-size:17px}
+
+@media(max-width:1250px){
+  .dot-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dot-grid{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr)}
+}
+@media(max-width:1050px){
+  .dot-header{align-items:flex-start;flex-direction:column}
+  .dot-actions{width:100%}
+  .dot-actions .dot-btn{flex:1 1 0}
+  .dot-grid{grid-template-columns:1fr}
+  .dot-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+}
+@media(max-width:700px){
+  .dot-page{padding:18px 14px 22px}
+  .dot-header{min-height:0;padding-bottom:18px}
+  .dot-kpis{gap:9px}
+  .dot-kpi{min-height:128px;padding:14px}
+  .dot-kpi strong{margin-top:14px;font-size:25px}
+  .dot-side{grid-template-columns:1fr}
+  .dot-card-header{padding-left:17px;padding-right:17px}
+}
+@media(max-width:500px){
+  .dot-actions{flex-direction:column}
+  .dot-actions .dot-btn{width:100%;flex:none}
+}
+@media(max-width:430px){
+  .dot-kpis{grid-template-columns:1fr}
+  .dot-row{grid-template-columns:38px minmax(0,1fr) auto;padding-left:5px;padding-right:5px}
+}
+</style>
+
+</head>
+
+<body>
+<div class="s4u-app">
+
+  <nav class="s4u-nav" id="adminNavigation" aria-label="Admin navigation"></nav>
+
+  <main class="s4u-main">
+    <div class="dot-page">
+
+      <header class="dot-header">
+        <div class="dot-heading">
+          <div class="dot-kicker">DOT COMPLIANCE / EMPLOYERS</div>
+          <h1>DOT Employer Management</h1>
+          <p>Manage DOT-regulated employers, compliance programs, and employer-level testing requirements.</p>
+        </div>
+
+        <div class="dot-actions">
+          <a class="dot-btn" href="admin-dot-employers.html">
+            <span class="dot-btn-icon">↻</span>
+            Refresh
+          </a>
+
+          <a class="dot-btn primary" href="admin-dot-employer-create.html">
+            <span class="dot-btn-icon">+</span>
+            Create Employer
+          </a>
+        </div>
+      </header>
+
+      <section class="dot-kpis" aria-label="DOT compliance metrics">
+        <article class="dot-kpi">
+  <div class="dot-kpi-top"><span class="dot-kpi-label">TOTAL EMPLOYERS</span><span class="dot-kpi-mark">▤</span></div>
+  <strong>—</strong><small>All DOT-regulated employers</small>
+</article>
+<article class="dot-kpi">
+  <div class="dot-kpi-top"><span class="dot-kpi-label">ACTIVE PROGRAMS</span><span class="dot-kpi-mark">✓</span></div>
+  <strong>—</strong><small>Employers with active DOT programs</small>
+</article>
+<article class="dot-kpi">
+  <div class="dot-kpi-top"><span class="dot-kpi-label">REVIEW QUEUE</span><span class="dot-kpi-mark">!</span></div>
+  <strong>—</strong><small>Employers requiring compliance review</small>
+</article>
+<article class="dot-kpi">
+  <div class="dot-kpi-top"><span class="dot-kpi-label">COMPLIANCE STATUS</span><span class="dot-kpi-mark">□</span></div>
+  <strong>—</strong><small>Employer records being monitored</small>
+</article>
+      </section>
+
+      <section class="dot-grid">
+
+        <article class="dot-card">
+          <header class="dot-card-header">
+            <div>
+              <h2>DOT Employer Management</h2>
+              <p>Each DOT compliance workflow opens on its own management page.</p>
+            </div>
+            <a class="dot-header-link" href="admin-dot-employers-all.html">
+              Open Directory <span>→</span>
+            </a>
+          </header>
+
+          <div class="dot-list">
+            <a class="dot-row" href="admin-dot-employers-all.html">
+  <span class="dot-row-icon">01</span>
+  <span><strong>All DOT Employers</strong><small>Review the complete DOT employer registry.</small></span>
+  <span class="dot-arrow">→</span>
+</a>
+<a class="dot-row" href="admin-dot-employers-active.html">
+  <span class="dot-row-icon">02</span>
+  <span><strong>Active Employers</strong><small>Manage employers with active DOT compliance programs.</small></span>
+  <span class="dot-arrow">→</span>
+</a>
+<a class="dot-row" href="admin-dot-employer-onboarding.html">
+  <span class="dot-row-icon">03</span>
+  <span><strong>Employer Onboarding</strong><small>Open the DOT employer onboarding management page.</small></span>
+  <span class="dot-arrow">→</span>
+</a>
+<a class="dot-row" href="admin-dot-employer-review.html">
+  <span class="dot-row-icon">04</span>
+  <span><strong>Compliance Review</strong><small>Review employer records requiring administrative attention.</small></span>
+  <span class="dot-arrow">→</span>
+</a>
+<a class="dot-row" href="admin-dot-employer-programs.html">
+  <span class="dot-row-icon">05</span>
+  <span><strong>Employer Programs</strong><small>Manage DOT testing and compliance program assignments.</small></span>
+  <span class="dot-arrow">→</span>
+</a>
+          </div>
+        </article>
+
+        <aside class="dot-side">
+
+          <article class="dot-card">
+            <header class="dot-card-header">
+              <div>
+                <h2>Management Actions</h2>
+                <p>Each action opens its own management page.</p>
+              </div>
+            </header>
+
+            <div class="dot-action-grid">
+              <a class="dot-action" href="admin-dot-employer-create.html">
+  <span class="dot-action-mark">+</span>
+  <strong>Create Employer</strong>
+  <small>Open employer creation</small>
+</a>
+<a class="dot-action" href="admin-dot-employers-all.html">
+  <span class="dot-action-mark">→</span>
+  <strong>Employer Directory</strong>
+  <small>Open all employer records</small>
+</a>
+<a class="dot-action" href="admin-dot-employer-review.html">
+  <span class="dot-action-mark">!</span>
+  <strong>Compliance Review</strong>
+  <small>Open review queue</small>
+</a>
+<a class="dot-action" href="admin-dot-employer-programs.html">
+  <span class="dot-action-mark">✓</span>
+  <strong>Active Programs</strong>
+  <small>Open program management</small>
+</a>
+            </div>
+          </article>
+
+          <article class="dot-card">
+            <header class="dot-card-header">
+              <div>
+                <h2>Related DOT Compliance</h2>
+                <p>Connected compliance management areas.</p>
+              </div>
+            </header>
+
+            <div class="dot-resources">
+              <a href="admin-dot-drivers.html"><span>DOT Drivers</span><span>→</span></a>
+<a href="admin-dot-testing.html"><span>DOT Testing</span><span>→</span></a>
+<a href="admin-mis-reports.html"><span>MIS Reports</span><span>→</span></a>
+            </div>
+          </article>
+
+        </aside>
+      </section>
+
+    </div>
+  </main>
+
+</div>
+
+<script src="assets/js/admin-navigation.js"></script>
+
+<script>
+/* ============================================================
+   screenings4u — DOT COMPLIANCE MANAGEMENT
+   No pop-ups or modal workflows are used on this page.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  document.addEventListener("DOMContentLoaded", async function () {
+    try {
+      if (
+        window.S4UAuth &&
+        typeof window.S4UAuth.requireSession === "function"
+      ) {
+        const session = await window.S4UAuth.requireSession("admin-login.html");
+
+        if (!session) {
+          return;
+        }
+      }
+    } catch (error) {
+      console.error("admin-dot-employers.html initialization failed:", error);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

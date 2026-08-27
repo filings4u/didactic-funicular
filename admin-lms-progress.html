@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Progress Management | screenings4u Admin</title>
+<link rel="icon" type="image/png" href="images/fav.png">
+
+<link rel="stylesheet" href="assets/css/admin-core.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/ui.js"></script>
+
+
+<style>
+/* ============================================================
+   screenings4u — TRAINING / LMS MANAGEMENT
+   Complete single-file page styles
+   ============================================================ */
+.lms-page{padding:22px 24px 34px;max-width:none}
+.lms-header{min-height:116px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid #e3e8ef}
+.lms-heading{min-width:0}.lms-kicker{margin-bottom:5px;color:#f05a00;font-size:11px;line-height:1;font-weight:900;letter-spacing:.045em}
+.lms-heading h1{margin:0;color:#173d78;font-size:clamp(36px,3vw,44px);line-height:.98;font-weight:800;letter-spacing:-.045em}
+.lms-heading p{max-width:760px;margin:9px 0 0;color:#52627a;font-size:13px;line-height:1.45}
+.lms-actions{flex:0 0 auto;display:flex;align-items:center;gap:10px}
+.lms-actions .lms-btn,.lms-actions a.lms-btn{min-width:126px;height:43px;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;padding:0 18px!important;border:1px solid #cbd7e5!important;border-radius:9px!important;background:#fff!important;color:#173d78!important;font-size:11px!important;font-weight:900!important;line-height:1!important;text-decoration:none!important;box-sizing:border-box;cursor:pointer}
+.lms-actions .lms-btn:hover{background:#f4f7fb!important;border-color:#aebfd3!important}
+.lms-actions .lms-btn.primary{min-width:158px;border-color:#f05a00!important;background:#f05a00!important;color:#fff!important}
+.lms-actions .lms-btn.primary:hover{background:#d94f00!important;border-color:#d94f00!important}
+.lms-btn-icon{font-size:17px;line-height:1}
+.lms-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:22px}
+.lms-kpi{min-width:0;min-height:153px;padding:17px 20px;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 10px rgba(20,48,82,.055)}
+.lms-kpi-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.lms-kpi-label{color:#5f6d83;font-size:10px;line-height:1;font-weight:900;letter-spacing:.075em}
+.lms-kpi-mark{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-size:16px;font-weight:900}
+.lms-kpi:nth-child(2) .lms-kpi-mark{background:#eaf7f0;color:#16804d}.lms-kpi:nth-child(3) .lms-kpi-mark{background:#fff3e5;color:#c96a00}.lms-kpi:nth-child(4) .lms-kpi-mark{background:#fceeee;color:#b64141}
+.lms-kpi strong{display:block;margin-top:20px;color:#183f7c;font-size:30px;line-height:1;font-weight:800;letter-spacing:-.04em}.lms-kpi small{display:block;margin-top:12px;color:#647189;font-size:10px;line-height:1.3}
+.lms-grid{display:grid;grid-template-columns:minmax(0,1.34fr) minmax(360px,1fr);gap:16px 22px;margin-top:16px}
+.lms-card{min-width:0;overflow:hidden;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 11px rgba(20,48,82,.055)}
+.lms-card-header{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 23px;border-bottom:1px solid #e3e8ef}
+.lms-card-header h2{margin:0;color:#173d78;font-size:19px;line-height:1.15;font-weight:800;letter-spacing:-.025em}.lms-card-header p{margin:6px 0 0;color:#607089;font-size:11px;line-height:1.3}
+.lms-header-link{color:#17519b;text-decoration:none;font-size:10px;font-weight:900}.lms-header-link span{padding-left:5px;font-size:16px}
+.lms-list{padding:9px 12px}.lms-row{min-height:76px;display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;color:inherit;text-decoration:none}.lms-row:hover{background:#f7f9fc}
+.lms-row-icon{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-size:12px;font-weight:900}
+.lms-row:nth-child(2) .lms-row-icon{background:#eaf7f0;color:#16804d}.lms-row:nth-child(3) .lms-row-icon{background:#fff3e5;color:#c96a00}.lms-row:nth-child(4) .lms-row-icon{background:#fceeee;color:#b64141}.lms-row:nth-child(5) .lms-row-icon{background:#f0eefb;color:#6045a8}
+.lms-row strong{display:block;color:#173b73;font-size:13px;line-height:1.2;font-weight:800}.lms-row small{display:block;margin-top:5px;color:#617088;font-size:10px;line-height:1.25}.lms-arrow{padding-right:7px;color:#667a98;font-size:22px}
+.lms-side{display:grid;grid-template-rows:auto auto;gap:16px}.lms-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:13px}
+.lms-action{min-height:93px;display:flex;flex-direction:column;justify-content:center;padding:12px 15px;border:1px solid #dfe5ed;border-radius:8px;background:#fff;color:inherit;text-decoration:none}.lms-action:hover{border-color:#bfcfe2;background:#f9fbfe;transform:translateY(-1px)}
+.lms-action-mark{display:block;color:#f05a00;font-size:21px;line-height:.8;font-weight:700}.lms-action strong{display:block;margin-top:10px;color:#173b73;font-size:12px;line-height:1.15;font-weight:800}.lms-action small{display:block;margin-top:5px;color:#647189;font-size:10px;line-height:1.2}
+.lms-resources{padding:7px 13px 12px}.lms-resources a{min-height:45px;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:0 10px;border-bottom:1px solid #edf0f4;color:#173b73;text-decoration:none;font-size:11px;font-weight:800}.lms-resources a:last-child{border-bottom:0}.lms-resources a:hover{background:#f7f9fc}.lms-resources span:last-child{color:#667a98;font-size:17px}
+@media(max-width:1250px){.lms-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.lms-grid{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr)}}
+@media(max-width:1050px){.lms-header{align-items:flex-start;flex-direction:column}.lms-actions{width:100%}.lms-actions .lms-btn{flex:1 1 0}.lms-grid{grid-template-columns:1fr}.lms-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}}
+@media(max-width:700px){.lms-page{padding:18px 14px 22px}.lms-header{min-height:0;padding-bottom:18px}.lms-kpis{gap:9px}.lms-kpi{min-height:128px;padding:14px}.lms-kpi strong{margin-top:14px;font-size:25px}.lms-side{grid-template-columns:1fr}.lms-card-header{padding-left:17px;padding-right:17px}}
+@media(max-width:500px){.lms-actions{flex-direction:column}.lms-actions .lms-btn{width:100%;flex:none}}
+@media(max-width:430px){.lms-kpis{grid-template-columns:1fr}.lms-row{grid-template-columns:38px minmax(0,1fr) auto;padding-left:5px;padding-right:5px}}
+</style>
+
+</head>
+<body>
+<div class="s4u-app">
+  <nav class="s4u-nav" id="adminNavigation" aria-label="Admin navigation"></nav>
+
+  <main class="s4u-main">
+    <div class="lms-page">
+
+      <header class="lms-header">
+        <div class="lms-heading">
+          <div class="lms-kicker">TRAINING / LMS / PROGRESS</div>
+          <h1>Learning Progress Management</h1>
+          <p>Monitor student learning progress, course completion activity, and enterprise training performance.</p>
+        </div>
+
+        <div class="lms-actions">
+          <a class="lms-btn" href="admin-lms-progress.html">
+            <span class="lms-btn-icon">↻</span>
+            Refresh
+          </a>
+
+          <a class="lms-btn primary" href="admin-lms-progress-dashboard.html">
+            <span class="lms-btn-icon">+</span>
+            Progress Dashboard
+          </a>
+        </div>
+      </header>
+
+      <section class="lms-kpis" aria-label="Training management metrics">
+        <article class="lms-kpi"><div class="lms-kpi-top"><span class="lms-kpi-label">ACTIVE LEARNERS</span><span class="lms-kpi-mark">▤</span></div><strong>—</strong><small>Students with active learning activity</small></article>
+<article class="lms-kpi"><div class="lms-kpi-top"><span class="lms-kpi-label">IN PROGRESS</span><span class="lms-kpi-mark">✓</span></div><strong>—</strong><small>Courses currently in progress</small></article>
+<article class="lms-kpi"><div class="lms-kpi-top"><span class="lms-kpi-label">COMPLETED</span><span class="lms-kpi-mark">!</span></div><strong>—</strong><small>Completed learning activity</small></article>
+<article class="lms-kpi"><div class="lms-kpi-top"><span class="lms-kpi-label">REQUIRES REVIEW</span><span class="lms-kpi-mark">□</span></div><strong>—</strong><small>Progress records requiring attention</small></article>
+      </section>
+
+      <section class="lms-grid">
+
+        <article class="lms-card">
+          <header class="lms-card-header">
+            <div>
+              <h2>Learning Progress Management</h2>
+              <p>Each training and LMS workflow opens on its own management page.</p>
+            </div>
+            <a class="lms-header-link" href="admin-lms-progress-dashboard.html">
+              Open Directory <span>→</span>
+            </a>
+          </header>
+
+          <div class="lms-list">
+            <a class="lms-row" href="admin-lms-progress-dashboard.html"><span class="lms-row-icon">01</span><span><strong>Progress Dashboard</strong><small>Open the learning progress monitoring workspace.</small></span><span class="lms-arrow">→</span></a>
+<a class="lms-row" href="admin-lms-student-progress.html"><span class="lms-row-icon">02</span><span><strong>Student Progress</strong><small>Review progress by individual student.</small></span><span class="lms-arrow">→</span></a>
+<a class="lms-row" href="admin-lms-course-progress.html"><span class="lms-row-icon">03</span><span><strong>Course Progress</strong><small>Review progress across managed courses.</small></span><span class="lms-arrow">→</span></a>
+<a class="lms-row" href="admin-lms-progress-completed.html"><span class="lms-row-icon">04</span><span><strong>Completion Records</strong><small>Review completed learning activity.</small></span><span class="lms-arrow">→</span></a>
+<a class="lms-row" href="admin-lms-progress-review.html"><span class="lms-row-icon">05</span><span><strong>Progress Review</strong><small>Open records requiring administrative attention.</small></span><span class="lms-arrow">→</span></a>
+          </div>
+        </article>
+
+        <aside class="lms-side">
+
+          <article class="lms-card">
+            <header class="lms-card-header">
+              <div>
+                <h2>Management Actions</h2>
+                <p>Each action opens its own management page.</p>
+              </div>
+            </header>
+
+            <div class="lms-action-grid">
+              <a class="lms-action" href="admin-lms-progress-dashboard.html"><span class="lms-action-mark">→</span><strong>Progress Dashboard</strong><small>Open monitoring workspace</small></a>
+<a class="lms-action" href="admin-lms-student-progress.html"><span class="lms-action-mark">→</span><strong>Student Progress</strong><small>Open learner progress</small></a>
+<a class="lms-action" href="admin-lms-progress-completed.html"><span class="lms-action-mark">✓</span><strong>Completed</strong><small>Open completion records</small></a>
+<a class="lms-action" href="admin-lms-progress-review.html"><span class="lms-action-mark">!</span><strong>Review Queue</strong><small>Open attention records</small></a>
+            </div>
+          </article>
+
+          <article class="lms-card">
+            <header class="lms-card-header">
+              <div>
+                <h2>Related Training</h2>
+                <p>Connected learning management areas.</p>
+              </div>
+            </header>
+
+            <div class="lms-resources">
+              <a href="admin-lms-students.html"><span>Students</span><span>→</span></a>
+<a href="admin-lms-enrollments.html"><span>Enrollments</span><span>→</span></a>
+<a href="admin-lms-certificates.html"><span>Certificates</span><span>→</span></a>
+            </div>
+          </article>
+
+        </aside>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/admin-navigation.js"></script>
+
+<script>
+/* ============================================================
+   screenings4u — TRAINING / LMS MANAGEMENT
+   No pop-ups or modal workflows are used on this page.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  document.addEventListener("DOMContentLoaded", async function () {
+    try {
+      if (
+        window.S4UAuth &&
+        typeof window.S4UAuth.requireSession === "function"
+      ) {
+        const session = await window.S4UAuth.requireSession("admin-login.html");
+
+        if (!session) {
+          return;
+        }
+      }
+    } catch (error) {
+      console.error("admin-lms-progress.html initialization failed:", error);
+    }
+  });
+})();
+</script>
+</body>
+</html>

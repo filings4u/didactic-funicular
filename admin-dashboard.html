@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | screenings4u Admin</title>
+  <link rel="icon" type="image/png" href="images/fav.png">
+
+  <link rel="stylesheet" href="assets/css/admin-core.css">
+  <link rel="stylesheet" href="assets/css/admin-dashboard.css">
+
+  <!-- Supabase must load before the application's authentication layer. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+
+  <!-- Core security modules. -->
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
+
+  <!-- Admin dashboard session-security configuration. -->
+  <script>
+    window.S4U_DASHBOARD_SECURITY_CONFIG = {
+      timeoutMinutes: 15,
+      warningSeconds: 60,
+      loginPage: "admin-login.html"
+    };
+  </script>
+
+  <!-- Fixed path: dashboard-security.js belongs in assets/js/. -->
+  <script src="assets/js/dashboard-security.js"></script>
+
+  <script src="assets/js/permissions.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/audit.js"></script>
+  <script src="assets/js/events.js"></script>
+  <script src="assets/js/storage.js"></script>
+</head>
+
+<body data-s4u-portal="admin">
+  <div class="s4u-app">
+    <nav
+      class="s4u-nav"
+      id="adminNavigation"
+      aria-label="Admin navigation"
+    ></nav>
+
+    <main class="s4u-main">
+      <div class="s4u-content dashboard-content">
+
+        <header class="s4u-page-header dashboard-header">
+          <div class="dashboard-title">
+            <div class="s4u-page-kicker">SCREENINGS4U ADMIN</div>
+            <h1>Dashboard</h1>
+            <p>
+              Overview of operations, customers, orders, compliance, and
+              training.
+            </p>
+          </div>
+
+          <div class="dashboard-header-panel">
+            <div class="dashboard-status-block">
+              <div class="dashboard-panel-label">SYSTEM STATUS</div>
+
+              <div class="dashboard-status-line">
+                <span
+                  class="dashboard-status-light"
+                  id="dashboardStatusLight"
+                ></span>
+                <strong id="dashboardHealth">CHECKING</strong>
+              </div>
+
+              <div
+                class="dashboard-status-message"
+                id="dashboardStatusMessage"
+              >
+                Checking platform services...
+              </div>
+            </div>
+
+            <div class="dashboard-panel-divider"></div>
+
+            <div class="dashboard-datetime-block">
+              <div class="dashboard-panel-label">DATE &amp; TIME</div>
+
+              <div class="dashboard-date-line">
+                <span class="dashboard-date-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <rect
+                      x="4"
+                      y="5"
+                      width="16"
+                      height="15"
+                      rx="2"
+                    ></rect>
+                    <path d="M8 3v4M16 3v4M4 9h16"></path>
+                  </svg>
+                </span>
+                <span id="dashboardDate">—</span>
+              </div>
+
+              <div class="dashboard-time-line">
+                <span class="dashboard-time-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="8.5"></circle>
+                    <path d="M12 7.5v5l3.2 1.8"></path>
+                  </svg>
+                </span>
+                <span id="dashboardTime">—</span>
+              </div>
+            </div>
+
+            <button
+              class="dashboard-refresh"
+              id="dashboardRefresh"
+              type="button"
+            >
+              <span
+                class="dashboard-refresh-icon"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M20 11a8 8 0 0 0-14.7-4.2L4 9"></path>
+                  <path d="M4 4v5h5"></path>
+                  <path d="M4 13a8 8 0 0 0 14.7 4.2L20 15"></path>
+                  <path d="M20 20v-5h-5"></path>
+                </svg>
+              </span>
+              <span>Refresh</span>
+            </button>
+
+            <button
+              class="s4u-button dashboard-mobile-toggle"
+              id="s4uSidebarToggle"
+              type="button"
+              aria-label="Open navigation"
+            >
+              ☰
+            </button>
+          </div>
+        </header>
+
+        <section
+          class="dashboard-metrics"
+          aria-label="Platform overview"
+        >
+          <article class="dashboard-metric-card">
+            <div class="dashboard-metric-top">
+              <span class="dashboard-metric-label">Customers</span>
+              <span
+                class="dashboard-metric-icon"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="6"></circle>
+                </svg>
+              </span>
+            </div>
+
+            <strong id="metricCustomers">—</strong>
+            <span class="dashboard-metric-note">
+              Active customer records
+            </span>
+          </article>
+
+          <article class="dashboard-metric-card">
+            <div class="dashboard-metric-top">
+              <span class="dashboard-metric-label">Accounts</span>
+              <span
+                class="dashboard-metric-icon"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect
+                    x="7"
+                    y="5"
+                    width="10"
+                    height="15"
+                    rx="2"
+                  ></rect>
+                  <path d="M9.5 9h5M9.5 12h5M10 16h4"></path>
+                </svg>
+              </span>
+            </div>
+
+            <strong id="metricAccounts">—</strong>
+            <span class="dashboard-metric-note">
+              Customer accounts
+            </span>
+          </article>
+
+          <article class="dashboard-metric-card">
+            <div class="dashboard-metric-top">
+              <span class="dashboard-metric-label">Orders</span>
+              <span
+                class="dashboard-metric-icon"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M7 7h12M7 12h12M7 17h12"></path>
+                  <circle cx="4" cy="7" r="1"></circle>
+                  <circle cx="4" cy="12" r="1"></circle>
+                  <circle cx="4" cy="17" r="1"></circle>
+                </svg>
+              </span>
+            </div>
+
+            <strong id="metricOrders">—</strong>
+            <span class="dashboard-metric-note">
+              Orders in the system
+            </span>
+          </article>
+
+          <article class="dashboard-metric-card">
+            <div class="dashboard-metric-top">
+              <span class="dashboard-metric-label">Billing</span>
+              <span
+                class="dashboard-metric-icon"
+                aria-hidden="true"
+              >
+                <span class="dashboard-dollar">$</span>
+              </span>
+            </div>
+
+            <strong id="metricBilling">—</strong>
+            <span class="dashboard-metric-note">
+              Billing records
+            </span>
+          </article>
+
+          <article class="dashboard-metric-card">
+            <div class="dashboard-metric-top">
+              <span class="dashboard-metric-label">DOT Drivers</span>
+              <span
+                class="dashboard-metric-icon"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="m12 4 7 8-7 8-7-8 7-8Z"></path>
+                </svg>
+              </span>
+            </div>
+
+            <strong id="metricDrivers">—</strong>
+            <span class="dashboard-metric-note">
+              Driver records
+            </span>
+          </article>
+
+          <article class="dashboard-metric-card">
+            <div class="dashboard-metric-top">
+              <span class="dashboard-metric-label">Courses</span>
+              <span
+                class="dashboard-metric-icon"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M5 5.5A2.5 2.5 0 0 1 7.5 3H20v16H7.5A2.5 2.5 0 0 0 5 21.5V5.5Z"
+                  ></path>
+                  <path
+                    d="M5 19.5A2.5 2.5 0 0 1 7.5 17H20"
+                  ></path>
+                </svg>
+              </span>
+            </div>
+
+            <strong id="metricCourses">—</strong>
+            <span class="dashboard-metric-note">
+              Published LMS courses
+            </span>
+          </article>
+        </section>
+
+        <section class="dashboard-grid">
+          <article
+            class="s4u-section dashboard-overview-card"
+          >
+            <div class="s4u-section-header">
+              <div>
+                <h2>Operations Overview</h2>
+                <p>
+                  Key areas that need attention across the platform.
+                </p>
+              </div>
+            </div>
+
+            <div class="dashboard-overview-list">
+              <a
+                class="dashboard-overview-row"
+                href="admin-customers.html"
+              >
+                <span
+                  class="dashboard-overview-symbol"
+                  aria-hidden="true"
+                >
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="6"></circle>
+                  </svg>
+                </span>
+
+                <span>
+                  <strong>Customers</strong>
+                  <small>
+                    Manage customer records and relationships
+                  </small>
+                </span>
+
+                <span class="dashboard-arrow">→</span>
+              </a>
+
+              <a
+                class="dashboard-overview-row"
+                href="admin-orders.html"
+              >
+                <span
+                  class="dashboard-overview-symbol"
+                  aria-hidden="true"
+                >
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M7 7h12M7 12h12M7 17h12"></path>
+                    <circle cx="4" cy="7" r="1"></circle>
+                    <circle cx="4" cy="12" r="1"></circle>
+                    <circle cx="4" cy="17" r="1"></circle>
+                  </svg>
+                </span>
+
+                <span>
+                  <strong>Orders</strong>
+                  <small>
+                    Review and manage operational orders
+                  </small>
+                </span>
+
+                <span class="dashboard-arrow">→</span>
+              </a>
+
+              <a
+                class="dashboard-overview-row"
+                href="admin-billing.html"
+              >
+                <span
+                  class="dashboard-overview-symbol"
+                  aria-hidden="true"
+                >
+                  <span class="dashboard-dollar">$</span>
+                </span>
+
+                <span>
+                  <strong>Billing</strong>
+                  <small>
+                    Review billing activity and account status
+                  </small>
+                </span>
+
+                <span class="dashboard-arrow">→</span>
+              </a>
+
+              <a
+                class="dashboard-overview-row"
+                href="admin-dot-consortium.html"
+              >
+                <span
+                  class="dashboard-overview-symbol"
+                  aria-hidden="true"
+                >
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="m12 4 7 8-7 8-7-8 7-8Z"></path>
+                  </svg>
+                </span>
+
+                <span>
+                  <strong>DOT Compliance</strong>
+                  <small>
+                    Manage consortium and compliance operations
+                  </small>
+                </span>
+
+                <span class="dashboard-arrow">→</span>
+              </a>
+            </div>
+          </article>
+
+          <article
+            class="s4u-section dashboard-actions-card"
+          >
+            <div class="s4u-section-header">
+              <div>
+                <h2>Quick Actions</h2>
+                <p>Common administrative tasks.</p>
+              </div>
+            </div>
+
+            <div class="dashboard-action-grid">
+              <a
+                href="admin-customers.html"
+                class="dashboard-action"
+              >
+                <span class="dashboard-action-plus">+</span>
+                <strong>New Customer</strong>
+                <small>Create a customer record</small>
+              </a>
+
+              <a
+                href="admin-orders.html"
+                class="dashboard-action"
+              >
+                <span class="dashboard-action-plus">+</span>
+                <strong>New Order</strong>
+                <small>Start an operational order</small>
+              </a>
+
+              <a
+                href="admin-proposals.html"
+                class="dashboard-action"
+              >
+                <span class="dashboard-action-plus">+</span>
+                <strong>New Proposal</strong>
+                <small>Create a proposal</small>
+              </a>
+
+              <a
+                href="admin-lms-courses.html"
+                class="dashboard-action"
+              >
+                <span class="dashboard-action-plus">+</span>
+                <strong>New Course</strong>
+                <small>Open the course manager</small>
+              </a>
+            </div>
+          </article>
+
+          <article
+            class="s4u-section dashboard-activity-card"
+          >
+            <div class="s4u-section-header">
+              <div>
+                <h2>Recent Activity</h2>
+                <p>
+                  Latest administrative activity available to this
+                  account.
+                </p>
+              </div>
+
+              <a
+                href="admin-audit.html"
+                class="dashboard-view-link"
+              >
+                View Audit Log
+                <span aria-hidden="true">›</span>
+              </a>
+            </div>
+
+            <div
+              id="recentActivity"
+              class="dashboard-activity-list"
+            >
+              <div class="dashboard-empty">
+                <span
+                  class="dashboard-empty-icon"
+                  aria-hidden="true"
+                >
+                  <svg viewBox="0 0 48 48" fill="none">
+                    <path d="M12 5h18l9 9v27H12z"></path>
+                    <path d="M30 5v10h9"></path>
+                    <circle cx="32" cy="32" r="7"></circle>
+                    <path d="M32 28.5v4l2.5 1.5"></path>
+                  </svg>
+                </span>
+
+                <div>
+                  <strong>No recent activity to display.</strong>
+                  <small>
+                    Activity will appear here once available.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Page functionality. -->
+  <script src="assets/js/admin-dashboard.js"></script>
+
+  <!-- Navigation loads after the navigation target exists in the DOM. -->
+  <script src="assets/js/admin-navigation.js"></script>
+</body>
+</html>

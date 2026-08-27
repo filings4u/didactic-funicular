@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Settings | screenings4u Admin</title>
+<link rel="icon" type="image/png" href="images/fav.png">
+<link rel="stylesheet" href="assets/css/admin-core.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/ui.js"></script>
+
+<style>
+/* ============================================================
+   screenings4u — ENTERPRISE MANAGEMENT PAGE
+   Single-file page styles
+   ============================================================ */
+.enterprise-page{padding:22px 24px 34px;max-width:none}
+.enterprise-header{min-height:116px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid #e3e8ef}
+.enterprise-heading{min-width:0}.enterprise-kicker{margin-bottom:5px;color:#f05a00;font-size:11px;line-height:1;font-weight:900;letter-spacing:.045em}
+.enterprise-heading h1{margin:0;color:#173d78;font-size:clamp(36px,3vw,44px);line-height:.98;font-weight:800;letter-spacing:-.045em}
+.enterprise-heading p{max-width:760px;margin:9px 0 0;color:#52627a;font-size:13px;line-height:1.45}
+.enterprise-actions{flex:0 0 auto;display:flex;align-items:center;gap:10px}
+.enterprise-actions .enterprise-btn,.enterprise-actions a.enterprise-btn{min-width:126px;height:43px;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;padding:0 18px!important;border:1px solid #cbd7e5!important;border-radius:9px!important;background:#fff!important;color:#173d78!important;font-size:11px!important;font-weight:900!important;line-height:1!important;text-decoration:none!important;box-sizing:border-box}
+.enterprise-actions .enterprise-btn:hover{background:#f4f7fb!important;border-color:#aebfd3!important}
+.enterprise-actions .enterprise-btn.primary{min-width:150px;border-color:#f05a00!important;background:#f05a00!important;color:#fff!important}
+.enterprise-actions .enterprise-btn.primary:hover{background:#d94f00!important;border-color:#d94f00!important}
+.enterprise-icon{font-size:17px;line-height:1}
+.enterprise-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:22px}
+.enterprise-kpi{min-width:0;min-height:153px;padding:17px 20px;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 10px rgba(20,48,82,.055)}
+.enterprise-kpi-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.enterprise-kpi-label{color:#5f6d83;font-size:10px;line-height:1;font-weight:900;letter-spacing:.075em}
+.enterprise-kpi-mark{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-weight:900}
+.enterprise-kpi:nth-child(2) .enterprise-kpi-mark{background:#eaf7f0;color:#16804d}.enterprise-kpi:nth-child(3) .enterprise-kpi-mark{background:#fff3e5;color:#c96a00}.enterprise-kpi:nth-child(4) .enterprise-kpi-mark{background:#fceeee;color:#b64141}
+.enterprise-kpi strong{display:block;margin-top:20px;color:#183f7c;font-size:30px;line-height:1;font-weight:800;letter-spacing:-.04em}.enterprise-kpi small{display:block;margin-top:12px;color:#647189;font-size:10px;line-height:1.3}
+.enterprise-grid{display:grid;grid-template-columns:minmax(0,1.34fr) minmax(360px,1fr);gap:16px 22px;margin-top:16px}.enterprise-card{min-width:0;overflow:hidden;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 11px rgba(20,48,82,.055)}
+.enterprise-card-header{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 23px;border-bottom:1px solid #e3e8ef}.enterprise-card-header h2{margin:0;color:#173d78;font-size:19px;line-height:1.15;font-weight:800;letter-spacing:-.025em}.enterprise-card-header p{margin:6px 0 0;color:#607089;font-size:11px;line-height:1.3}
+.enterprise-header-link{color:#17519b;text-decoration:none;font-size:10px;font-weight:900}.enterprise-header-link span{padding-left:5px;font-size:16px}
+.enterprise-list{padding:9px 12px}.enterprise-row{min-height:76px;display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;color:inherit;text-decoration:none}.enterprise-row:hover{background:#f7f9fc}
+.enterprise-row-icon{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-weight:900}.enterprise-row:nth-child(2) .enterprise-row-icon{background:#fff3e5;color:#c96a00}.enterprise-row:nth-child(3) .enterprise-row-icon{background:#eaf7f0;color:#16804d}.enterprise-row:nth-child(4) .enterprise-row-icon{background:#fceeee;color:#b64141}
+.enterprise-row strong{display:block;color:#173b73;font-size:13px;line-height:1.2;font-weight:800}.enterprise-row small{display:block;margin-top:5px;color:#617088;font-size:10px;line-height:1.25}.enterprise-arrow{padding-right:7px;color:#667a98;font-size:22px}
+.enterprise-side{display:grid;grid-template-rows:auto auto;gap:16px}.enterprise-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:13px}.enterprise-action{min-height:93px;display:flex;flex-direction:column;justify-content:center;padding:12px 15px;border:1px solid #dfe5ed;border-radius:8px;background:#fff;color:inherit;text-decoration:none}.enterprise-action:hover{border-color:#bfcfe2;background:#f9fbfe;transform:translateY(-1px)}
+.enterprise-action-mark{display:block;color:#f05a00;font-size:21px;line-height:.8;font-weight:700}.enterprise-action strong{display:block;margin-top:10px;color:#173b73;font-size:12px;line-height:1.15;font-weight:800}.enterprise-action small{display:block;margin-top:5px;color:#647189;font-size:10px;line-height:1.2}
+.enterprise-resources{padding:7px 13px 12px}.enterprise-resources a{min-height:45px;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:0 10px;border-bottom:1px solid #edf0f4;color:#173b73;text-decoration:none;font-size:11px;font-weight:800}.enterprise-resources a:last-child{border-bottom:0}.enterprise-resources a:hover{background:#f7f9fc}.enterprise-resources span:last-child{color:#667a98;font-size:17px}
+@media(max-width:1250px){.enterprise-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.enterprise-grid{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr)}}@media(max-width:1050px){.enterprise-header{align-items:flex-start;flex-direction:column}.enterprise-actions{width:100%}.enterprise-actions .enterprise-btn{flex:1 1 0}.enterprise-grid{grid-template-columns:1fr}.enterprise-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}}@media(max-width:700px){.enterprise-page{padding:18px 14px 22px}.enterprise-header{min-height:0;padding-bottom:18px}.enterprise-kpis{gap:9px}.enterprise-kpi{min-height:128px;padding:14px}.enterprise-kpi strong{margin-top:14px;font-size:25px}.enterprise-side{grid-template-columns:1fr}.enterprise-card-header{padding-left:17px;padding-right:17px}}@media(max-width:500px){.enterprise-actions{flex-direction:column}.enterprise-actions .enterprise-btn{width:100%;flex:none}}@media(max-width:430px){.enterprise-kpis{grid-template-columns:1fr}.enterprise-row{grid-template-columns:38px minmax(0,1fr) auto;padding-left:5px;padding-right:5px}}
+</style>
+
+</head>
+<body>
+<div class="s4u-app">
+<nav class="s4u-nav" id="adminNavigation" aria-label="Admin navigation"></nav>
+<main class="s4u-main">
+<div class="enterprise-page">
+<header class="enterprise-header">
+<div class="enterprise-heading"><div class="enterprise-kicker">CENTRAL CONTROL PLANE</div><h1>Global Settings</h1><p>Manage system-wide configuration, enterprise controls, pricing, and operational standards.</p></div>
+<div class="enterprise-actions"><a class="enterprise-btn" href="admin-global-settings.html"><span class="enterprise-icon">↻</span> Refresh</a><a class="enterprise-btn primary" href="admin-system-settings.html"><span class="enterprise-icon">+</span> System Settings</a></div>
+</header>
+<section class="enterprise-kpis"><article class="enterprise-kpi"><div class="enterprise-kpi-top"><span class="enterprise-kpi-label">SYSTEM SETTINGS</span><span class="enterprise-kpi-mark">•</span></div><strong>—</strong><small>Central configuration records</small></article>
+<article class="enterprise-kpi"><div class="enterprise-kpi-top"><span class="enterprise-kpi-label">ACTIVE CONTROLS</span><span class="enterprise-kpi-mark">•</span></div><strong>—</strong><small>Enabled platform controls</small></article>
+<article class="enterprise-kpi"><div class="enterprise-kpi-top"><span class="enterprise-kpi-label">PRICING RULES</span><span class="enterprise-kpi-mark">•</span></div><strong>—</strong><small>Managed pricing records</small></article>
+<article class="enterprise-kpi"><div class="enterprise-kpi-top"><span class="enterprise-kpi-label">REVIEW ITEMS</span><span class="enterprise-kpi-mark">•</span></div><strong>—</strong><small>Settings requiring review</small></article></section>
+<section class="enterprise-grid">
+<article class="enterprise-card"><header class="enterprise-card-header"><div><h2>Global Settings</h2><p>Open a dedicated page for each enterprise management workflow.</p></div><a class="enterprise-header-link" href="admin-system-settings.html">Open Directory <span>→</span></a></header><div class="enterprise-list"><a class="enterprise-row" href="admin-system-settings.html"><span class="enterprise-row-icon">1</span><span><strong>System Settings</strong><small>Open system-wide configuration management.</small></span><span class="enterprise-arrow">→</span></a>
+<a class="enterprise-row" href="admin-global-pricing.html"><span class="enterprise-row-icon">2</span><span><strong>Global Pricing</strong><small>Manage centrally controlled pricing.</small></span><span class="enterprise-arrow">→</span></a>
+<a class="enterprise-row" href="admin-website-settings.html"><span class="enterprise-row-icon">3</span><span><strong>Website Settings</strong><small>Open public website configuration.</small></span><span class="enterprise-arrow">→</span></a>
+<a class="enterprise-row" href="admin-notification-settings.html"><span class="enterprise-row-icon">4</span><span><strong>Notification Settings</strong><small>Manage enterprise notification rules.</small></span><span class="enterprise-arrow">→</span></a>
+<a class="enterprise-row" href="admin-integration-settings.html"><span class="enterprise-row-icon">5</span><span><strong>Integration Settings</strong><small>Review connected system configuration.</small></span><span class="enterprise-arrow">→</span></a></div></article>
+<aside class="enterprise-side">
+<article class="enterprise-card"><header class="enterprise-card-header"><div><h2>Management Actions</h2><p>Each action opens its own management page.</p></div></header><div class="enterprise-action-grid"><a class="enterprise-action" href="admin-system-settings.html"><span class="enterprise-action-mark">+</span><strong>System Settings</strong><small>Open management page</small></a>
+<a class="enterprise-action" href="admin-global-pricing.html"><span class="enterprise-action-mark">→</span><strong>Global Pricing</strong><small>Open management page</small></a>
+<a class="enterprise-action" href="admin-website-settings.html"><span class="enterprise-action-mark">✓</span><strong>Website Settings</strong><small>Open management page</small></a>
+<a class="enterprise-action" href="admin-notification-settings.html"><span class="enterprise-action-mark">!</span><strong>Notification Settings</strong><small>Open management page</small></a></div></article>
+<article class="enterprise-card"><header class="enterprise-card-header"><div><h2>Related Management</h2><p>Connected enterprise operations.</p></div></header><div class="enterprise-resources"><a href="admin-roles.html"><span>Roles & Permissions</span><span>→</span></a>
+<a href="admin-audit.html"><span>Audit Management</span><span>→</span></a>
+<a href="admin-billing.html"><span>Billing</span><span>→</span></a></div></article>
+</aside>
+</section>
+</div>
+</main>
+</div>
+<script src="assets/js/admin-navigation.js"></script>
+<script>
+(function(){"use strict";
+document.addEventListener("DOMContentLoaded", async function(){
+  try {
+    if (window.S4UAuth && typeof window.S4UAuth.requireSession === "function") {
+      const session = await window.S4UAuth.requireSession("admin-login.html");
+      if (!session) return;
+    }
+  } catch (error) { console.error("admin-global-settings.html initialization failed:", error); }
+});
+})();
+</script>
+</body>
+</html>

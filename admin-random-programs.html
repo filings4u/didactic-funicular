@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Random Programs | screenings4u Admin</title>
+
+  <link rel="icon" type="image/png" href="images/fav.png">
+
+  <link rel="stylesheet" href="assets/css/admin-core.css">
+  <link rel="stylesheet" href="assets/css/dot-consortium.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/permissions.js"></script>
+  <script src="assets/js/ui.js"></script>
+</head>
+
+<body>
+
+  <div class="s4u-app">
+
+    <nav
+      class="s4u-nav"
+      id="adminNavigation"
+      aria-label="Admin navigation">
+    </nav>
+
+    <main class="s4u-main">
+
+      <div class="dot-page">
+
+        <!-- =====================================================
+             PAGE HEADER
+        ====================================================== -->
+
+        <header class="dot-page-header">
+
+          <div class="dot-page-heading">
+            <div class="s4u-page-kicker">
+              RANDOM TESTING
+            </div>
+
+            <h1>Random Programs</h1>
+
+            <p>
+              Manage DOT and NON-DOT random testing programs,
+              consortium pools, dedicated employer pools, enrollment,
+              and annual selection requirements.
+            </p>
+          </div>
+
+          <div class="dot-page-actions">
+
+            <button
+              class="s4u-button"
+              id="refreshProgramsBtn"
+              type="button">
+
+              <span
+                class="dot-button-icon"
+                aria-hidden="true">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none">
+
+                  <path d="M20 11a8 8 0 0 0-14.9-4"/>
+                  <path d="M4 13a8 8 0 0 0 14.9 4"/>
+                  <path d="M5 3v4h4"/>
+                  <path d="M19 21v-4h-4"/>
+
+                </svg>
+
+              </span>
+
+              Refresh
+
+            </button>
+
+            <a
+              class="s4u-button s4u-button-primary"
+              href="admin-random-program-create.html">
+
+              + Create Program
+
+            </a>
+
+          </div>
+
+        </header>
+
+
+        <!-- =====================================================
+             KPI CARDS
+        ====================================================== -->
+
+        <section
+          class="dot-kpi-grid"
+          aria-label="Random program metrics">
+
+
+          <!-- TOTAL PROGRAMS -->
+
+          <article class="dot-kpi-card">
+
+            <div class="dot-kpi-top">
+
+              <span class="dot-kpi-label">
+                PROGRAMS
+              </span>
+
+              <span class="dot-kpi-icon">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none">
+
+                  <path d="M4 20h16"/>
+                  <path d="M6 20V8l6-4 6 4v12"/>
+                  <path d="M9 20v-5h6v5"/>
+                  <path d="M9 9h.01"/>
+                  <path d="M12 9h.01"/>
+                  <path d="M15 9h.01"/>
+
+                </svg>
+
+              </span>
+
+            </div>
+
+            <strong id="totalProgramsCount">
+              —
+            </strong>
+
+            <span>
+              Total random programs
+            </span>
+
+          </article>
+
+
+          <!-- ACTIVE PROGRAMS -->
+
+          <article class="dot-kpi-card">
+
+            <div class="dot-kpi-top">
+
+              <span class="dot-kpi-label">
+                ACTIVE
+              </span>
+
+              <span class="dot-kpi-icon">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none">
+
+                  <path d="M5 12l4 4L19 6"/>
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="9"/>
+
+                </svg>
+
+              </span>
+
+            </div>
+
+            <strong id="activeProgramsCount">
+              —
+            </strong>
+
+            <span>
+              Active programs
+            </span>
+
+          </article>
+
+
+          <!-- CONSORTIUM POOLS -->
+
+          <article class="dot-kpi-card">
+
+            <div class="dot-kpi-top">
+
+              <span class="dot-kpi-label">
+                CONSORTIUM
+              </span>
+
+              <span class="dot-kpi-icon">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none">
+
+                  <circle
+                    cx="8"
+                    cy="8"
+                    r="3"/>
+
+                  <circle
+                    cx="16"
+                    cy="8"
+                    r="3"/>
+
+                  <path d="M3 20c0-3 2-5 5-5"/>
+                  <path d="M21 20c0-3-2-5-5-5"/>
+                  <path d="M8 20c0-3 2-5 4-5s4 2 4 5"/>
+
+                </svg>
+
+              </span>
+
+            </div>
+
+            <strong id="consortiumProgramsCount">
+              —
+            </strong>
+
+            <span>
+              Shared employer pools
+            </span>
+
+          </article>
+
+
+          <!-- DEDICATED POOLS -->
+
+          <article class="dot-kpi-card">
+
+            <div class="dot-kpi-top">
+
+              <span class="dot-kpi-label">
+                DEDICATED
+              </span>
+
+              <span class="dot-kpi-icon">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none">
+
+                  <path d="M4 20h16"/>
+                  <path d="M6 20V6h12v14"/>
+                  <path d="M9 10h2"/>
+                  <path d="M13 10h2"/>
+                  <path d="M9 14h2"/>
+                  <path d="M13 14h2"/>
+
+                </svg>
+
+              </span>
+
+            </div>
+
+            <strong id="dedicatedProgramsCount">
+              —
+            </strong>
+
+            <span>
+              Employer-specific pools
+            </span>
+
+          </article>
+
+
+          <!-- ELIGIBLE EMPLOYEES -->
+
+          <article class="dot-kpi-card">
+
+            <div class="dot-kpi-top">
+
+              <span class="dot-kpi-label">
+                ELIGIBLE POOL
+              </span>
+
+              <span class="dot-kpi-icon">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none">
+
+                  <circle
+                    cx="12"
+                    cy="7"
+                    r="3"/>
+
+                  <path d="M5 21c0-4 3-7 7-7s7 3 7 7"/>
+
+                </svg>
+
+              </span>
+
+            </div>
+
+            <strong id="eligibleEmployeesCount">
+              —
+            </strong>
+
+            <span>
+              Employees across active programs
+            </span>
+
+          </article>
+
+        </section>
+
+
+        <!-- =====================================================
+             MAIN CONTENT
+        ====================================================== -->
+
+        <section class="dot-content-grid">
+
+
+          <!-- ===================================================
+               LEFT COLUMN
+          ==================================================== -->
+
+          <div class="dot-main-column">
+
+
+            <!-- PROGRAM DIRECTORY -->
+
+            <article class="s4u-section">
+
+              <header class="s4u-section-header">
+
+                <div>
+
+                  <h2>
+                    Program Directory
+                  </h2>
+
+                  <p>
+                    Manage DOT and NON-DOT random testing programs.
+                  </p>
+
+                </div>
+
+
+                <div
+                  class="dot-section-actions">
+
+                  <select
+                    id="programTypeFilter"
+                    class="s4u-input"
+                    aria-label="Filter program type">
+
+                    <option value="">
+                      All Types
+                    </option>
+
+                    <option value="DOT">
+                      DOT
+                    </option>
+
+                    <option value="NON_DOT">
+                      NON-DOT
+                    </option>
+
+                  </select>
+
+
+                  <select
+                    id="poolTypeFilter"
+                    class="s4u-input"
+                    aria-label="Filter pool type">
+
+                    <option value="">
+                      All Pools
+                    </option>
+
+                    <option value="CONSORTIUM">
+                      Consortium
+                    </option>
+
+                    <option value="DEDICATED">
+                      Dedicated
+                    </option>
+
+                  </select>
+
+                </div>
+
+              </header>
+
+
+              <div class="s4u-table-wrap">
+
+                <table class="s4u-table">
+
+                  <thead>
+
+                    <tr>
+
+                      <th>
+                        Program
+                      </th>
+
+                      <th>
+                        Year
+                      </th>
+
+                      <th>
+                        Type
+                      </th>
+
+                      <th>
+                        Agency
+                      </th>
+
+                      <th>
+                        Pool
+                      </th>
+
+                      <th>
+                        Rates
+                      </th>
+
+                      <th>
+                        Employers
+                      </th>
+
+                      <th>
+                        Eligible
+                      </th>
+
+                      <th>
+                        Status
+                      </th>
+
+                      <th>
+                        Actions
+                      </th>
+
+                    </tr>
+
+                  </thead>
+
+
+                  <tbody
+                    id="randomProgramsTableBody">
+
+                    <tr>
+
+                      <td
+                        colspan="10"
+                        class="s4u-table-empty">
+
+                        Loading random programs…
+
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </article>
+
+
+            <!-- PROGRAM OPERATIONS -->
+
+            <article class="s4u-section">
+
+              <header class="s4u-section-header">
+
+                <div>
+
+                  <h2>
+                    Program Operations
+                  </h2>
+
+                  <p>
+                    Manage the major areas of the random testing system.
+                  </p>
+
+                </div>
+
+              </header>
+
+
+              <div class="dot-operation-list">
+
+
+                <a
+                  class="dot-operation-row"
+                  href="admin-random-program-create.html">
+
+                  <span class="dot-operation-icon">
+
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none">
+
+                      <path d="M12 5v14"/>
+                      <path d="M5 12h14"/>
+
+                    </svg>
+
+                  </span>
+
+
+                  <span>
+
+                    <strong>
+                      Create Random Program
+                    </strong>
+
+                    <small>
+                      Create DOT or NON-DOT consortium and dedicated programs.
+                    </small>
+
+                  </span>
+
+
+                  <span class="dot-operation-arrow">
+                    →
+                  </span>
+
+                </a>
+
+
+                <a
+                  class="dot-operation-row"
+                  href="admin-random-program-employers.html">
+
+                  <span class="dot-operation-icon">
+
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none">
+
+                      <circle
+                        cx="8"
+                        cy="8"
+                        r="3"/>
+
+                      <circle
+                        cx="16"
+                        cy="8"
+                        r="3"/>
+
+                      <path d="M3 20c0-3 2-5 5-5"/>
+                      <path d="M21 20c0-3-2-5-5-5"/>
+
+                    </svg>
+
+                  </span>
+
+
+                  <span>
+
+                    <strong>
+                      Program Employers
+                    </strong>
+
+                    <small>
+                      Manage employers enrolled in consortium programs.
+                    </small>
+
+                  </span>
+
+
+                  <span class="dot-operation-arrow">
+                    →
+                  </span>
+
+                </a>
+
+
+                <a
+                  class="dot-operation-row"
+                  href="admin-dot-random-selections.html">
+
+                  <span class="dot-operation-icon">
+
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none">
+
+                      <path d="M4 4h16v16H4z"/>
+                      <path d="M8 9h8"/>
+                      <path d="M8 13h5"/>
+
+                    </svg>
+
+                  </span>
+
+
+                  <span>
+
+                    <strong>
+                      Random Selections
+                    </strong>
+
+                    <small>
+                      Run quarterly selections and review completed events.
+                    </small>
+
+                  </span>
+
+
+                  <span class="dot-operation-arrow">
+                    →
+                  </span>
+
+                </a>
+
+
+                <a
+                  class="dot-operation-row"
+                  href="admin-random-program-year-stats.html">
+
+                  <span class="dot-operation-icon">
+
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none">
+
+                      <path d="M4 19V5"/>
+                      <path d="M4 19h16"/>
+                      <path d="M8 16v-5"/>
+                      <path d="M12 16V8"/>
+                      <path d="M16 16V6"/>
+
+                    </svg>
+
+                  </span>
+
+
+                  <span>
+
+                    <strong>
+                      Program Year Statistics
+                    </strong>
+
+                    <small>
+                      Review annual targets and completed selection totals.
+                    </small>
+
+                  </span>
+
+
+                  <span class="dot-operation-arrow">
+                    →
+                  </span>
+
+                </a>
+
+
+              </div>
+
+            </article>
+
+
+          </div>
+
+
+          <!-- ===================================================
+               RIGHT COLUMN
+          ==================================================== -->
+
+          <aside class="dot-side-column">
+
+
+            <!-- QUICK ACTIONS -->
+
+            <article class="s4u-section dot-action-card">
+
+              <header class="s4u-section-header">
+
+                <div>
+
+                  <h2>
+                    Quick Actions
+                  </h2>
+
+                  <p>
+                    Common program management tasks.
+                  </p>
+
+                </div>
+
+              </header>
+
+
+              <div class="dot-action-grid">
+
+
+                <a
+                  class="dot-action"
+                  href="admin-random-program-create.html">
+
+                  <span class="dot-action-plus">
+                    +
+                  </span>
+
+                  <strong>
+                    Create Program
+                  </strong>
+
+                  <small>
+                    Start a new random program
+                  </small>
+
+                </a>
+
+
+                <a
+                  class="dot-action"
+                  href="admin-random-program-employers.html">
+
+                  <span class="dot-action-plus">
+                    +
+                  </span>
+
+                  <strong>
+                    Enroll Employer
+                  </strong>
+
+                  <small>
+                    Add an employer to a program
+                  </small>
+
+                </a>
+
+
+                <a
+                  class="dot-action"
+                  href="admin-dot-random-selections.html">
+
+                  <span class="dot-action-plus">
+                    →
+                  </span>
+
+                  <strong>
+                    Random Selections
+                  </strong>
+
+                  <small>
+                    Open quarterly selections
+                  </small>
+
+                </a>
+
+
+                <a
+                  class="dot-action"
+                  href="admin-random-program-year-stats.html">
+
+                  <span class="dot-action-plus">
+                    ✓
+                  </span>
+
+                  <strong>
+                    Year Statistics
+                  </strong>
+
+                  <small>
+                    Review annual requirements
+                  </small>
+
+                </a>
+
+
+              </div>
+
+            </article>
+
+
+            <!-- PROGRAM TYPES -->
+
+            <article class="s4u-section dot-compliance-card">
+
+              <header class="s4u-section-header">
+
+                <div>
+
+                  <h2>
+                    Program Types
+                  </h2>
+
+                  <p>
+                    Available random testing structures.
+                  </p>
+
+                </div>
+
+              </header>
+
+
+              <div class="dot-resource-list">
+
+                <a href="admin-random-programs.html">
+
+                  <span>
+                    DOT Consortium Programs
+                  </span>
+
+                  <span>
+                    →
+                  </span>
+
+                </a>
+
+
+                <a href="admin-random-programs.html">
+
+                  <span>
+                    NON-DOT Consortium Programs
+                  </span>
+
+                  <span>
+                    →
+                  </span>
+
+                </a>
+
+
+                <a href="admin-random-programs.html">
+
+                  <span>
+                    Dedicated Employer Pools
+                  </span>
+
+                  <span>
+                    →
+                  </span>
+
+                </a>
+
+
+              </div>
+
+            </article>
+
+
+            <!-- RELATED OPERATIONS -->
+
+            <article class="s4u-section dot-compliance-card">
+
+              <header class="s4u-section-header">
+
+                <div>
+
+                  <h2>
+                    Related Operations
+                  </h2>
+
+                  <p>
+                    Connected compliance workflows.
+                  </p>
+
+                </div>
+
+              </header>
+
+
+              <div class="dot-resource-list">
+
+                <a href="admin-dot-employers.html">
+
+                  <span>
+                    Employers
+                  </span>
+
+                  <span>
+                    →
+                  </span>
+
+                </a>
+
+
+                <a href="admin-dot-drivers.html">
+
+                  <span>
+                    DOT Drivers
+                  </span>
+
+                  <span>
+                    →
+                  </span>
+
+                </a>
+
+
+                <a href="admin-dot-random-selections.html">
+
+                  <span>
+                    Random Selections
+                  </span>
+
+                  <span>
+                    →
+                  </span>
+
+                </a>
+
+
+              </div>
+
+            </article>
+
+
+          </aside>
+
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <script src="assets/js/admin-navigation.js"></script>
+
+  <script src="assets/js/random-programs.js"></script>
+
+</body>
+</html>
