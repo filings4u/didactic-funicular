@@ -139,10 +139,10 @@
         </div>
 
         <div class="dot-actions">
-          <a class="dot-btn" href="admin-random-selections.html">
+          <button class="dot-btn" id="refreshRandomSelectionsBtn" type="button">
             <span class="dot-btn-icon">↻</span>
-            Refresh
-          </a>
+            <span id="refreshRandomSelectionsLabel">Refresh</span>
+          </button>
 
           <a class="dot-btn primary" href="admin-random-selection-create.html">
             <span class="dot-btn-icon">+</span>
@@ -154,19 +154,19 @@
       <section class="dot-kpis" aria-label="DOT compliance metrics">
         <article class="dot-kpi">
   <div class="dot-kpi-top"><span class="dot-kpi-label">SELECTIONS</span><span class="dot-kpi-mark">▤</span></div>
-  <strong>—</strong><small>Managed random selection cycles</small>
+  <strong id="randomSelectionsTotal">—</strong><small>Managed random selection cycles</small>
 </article>
 <article class="dot-kpi">
   <div class="dot-kpi-top"><span class="dot-kpi-label">ACTIVE POOLS</span><span class="dot-kpi-mark">✓</span></div>
-  <strong>—</strong><small>Current eligible driver pools</small>
+  <strong id="randomPoolsActive">—</strong><small>Current eligible driver pools</small>
 </article>
 <article class="dot-kpi">
   <div class="dot-kpi-top"><span class="dot-kpi-label">PENDING</span><span class="dot-kpi-mark">!</span></div>
-  <strong>—</strong><small>Selections requiring completion</small>
+  <strong id="randomSelectionsPending">—</strong><small>Selections requiring completion</small>
 </article>
 <article class="dot-kpi">
   <div class="dot-kpi-top"><span class="dot-kpi-label">COMPLETED</span><span class="dot-kpi-mark">□</span></div>
-  <strong>—</strong><small>Completed selection records</small>
+  <strong id="randomSelectionsCompleted">—</strong><small>Completed selection records</small>
 </article>
       </section>
 
@@ -273,30 +273,192 @@
 
 <script>
 /* ============================================================
-   screenings4u — DOT COMPLIANCE MANAGEMENT
-   No pop-ups or modal workflows are used on this page.
+   screenings4u — RANDOM SELECTION MANAGEMENT
+   Wired to actual DOT tables:
+   dot_random_selections
+   dot_random_pools
+   dot_consortium_drivers
    ============================================================ */
+
 (function () {
   "use strict";
 
-  document.addEventListener("DOMContentLoaded", async function () {
-    try {
-      if (
-        window.S4UAuth &&
-        typeof window.S4UAuth.requireSession === "function"
-      ) {
-        const session = await window.S4UAuth.requireSession("admin-login.html");
+  document.addEventListener("DOMContentLoaded", initializeRandomSelections);
 
-        if (!session) {
-          return;
-        }
-      }
-    } catch (error) {
-      console.error("admin-random-selections.html initialization failed:", error);
+  async function initializeRandomSelections() {
+    const refreshButton = document.getElementById("refreshRandomSelectionsBtn");
+
+    if (refreshButton) {
+      refreshButton.addEventListener("click", loadRandomSelectionData);
     }
-  });
+
+    await loadRandomSelectionData();
+  }
+
+  async function loadRandomSelectionData() {
+    setLoadingState(true);
+
+    try {
+      const client = await getSupabaseClient();
+
+      if (!client) {
+        throw new Error("Supabase client is unavailable.");
+      }
+
+      /* Actual dot_random_selections columns */
+      const selectionsQuery = client
+        .from("dot_random_selections")
+        .select(`
+          id,
+          random_pool_id,
+          selection_period,
+          selected_at,
+          selection_seed,
+          drug_target,
+          alcohol_target,
+          selected_driver_ids,
+          status,
+          notes,
+          created_at,
+          updated_at
+        `);
+
+      /* Actual dot_random_pools columns */
+      const poolsQuery = client
+        .from("dot_random_pools")
+        .select(`
+          id,
+          consortium_id,
+          program_year,
+          drug_rate,
+          alcohol_rate,
+          selection_frequency,
+          active,
+          created_at,
+          updated_at
+        `);
+
+      const [selectionsResult, poolsResult] = await Promise.all([
+        selectionsQuery,
+        poolsQuery
+      ]);
+
+      if (selectionsResult.error) {
+        throw selectionsResult.error;
+      }
+
+      if (poolsResult.error) {
+        throw poolsResult.error;
+      }
+
+      const selections = Array.isArray(selectionsResult.data)
+        ? selectionsResult.data
+        : [];
+
+      const pools = Array.isArray(poolsResult.data)
+        ? poolsResult.data
+        : [];
+
+      const pendingSelections = selections.filter(function (selection) {
+        return [
+          "selected",
+          "notified",
+          "in_progress"
+        ].includes(selection.status);
+      }).length;
+
+      const completedSelections = selections.filter(function (selection) {
+        return selection.status === "completed";
+      }).length;
+
+      const activePools = pools.filter(function (pool) {
+        return pool.active === true;
+      }).length;
+
+      setMetric("randomSelectionsTotal", selections.length);
+      setMetric("randomPoolsActive", activePools);
+      setMetric("randomSelectionsPending", pendingSelections);
+      setMetric("randomSelectionsCompleted", completedSelections);
+
+    } catch (error) {
+      console.error("Random Selection Management load failed:", error);
+      setErrorState(error);
+    } finally {
+      setLoadingState(false);
+    }
+  }
+
+  async function getSupabaseClient() {
+    if (
+      window.S4UAuth &&
+      typeof window.S4UAuth.getClient === "function"
+    ) {
+      const client = window.S4UAuth.getClient();
+
+      if (client && typeof client.from === "function") {
+        return client;
+      }
+    }
+
+    if (
+      window.supabaseClient &&
+      typeof window.supabaseClient.from === "function"
+    ) {
+      return window.supabaseClient;
+    }
+
+    if (
+      window.screenings4uSupabase &&
+      typeof window.screenings4uSupabase.from === "function"
+    ) {
+      return window.screenings4uSupabase;
+    }
+
+    return null;
+  }
+
+  function setMetric(id, value) {
+    const element = document.getElementById(id);
+
+    if (element) {
+      element.textContent = Number(value || 0).toLocaleString();
+    }
+  }
+
+  function setLoadingState(isLoading) {
+    const button = document.getElementById("refreshRandomSelectionsBtn");
+    const label = document.getElementById("refreshRandomSelectionsLabel");
+
+    if (button) {
+      button.disabled = isLoading;
+      button.setAttribute("aria-busy", String(isLoading));
+    }
+
+    if (label) {
+      label.textContent = isLoading ? "Loading..." : "Refresh";
+    }
+  }
+
+  function setErrorState(error) {
+    [
+      "randomSelectionsTotal",
+      "randomPoolsActive",
+      "randomSelectionsPending",
+      "randomSelectionsCompleted"
+    ].forEach(function (id) {
+      const element = document.getElementById(id);
+
+      if (element) {
+        element.textContent = "—";
+      }
+    });
+
+    console.error(
+      "DOT random selection database error:",
+      error
+    );
+  }
 })();
 </script>
-
 </body>
 </html>

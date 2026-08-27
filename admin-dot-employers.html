@@ -139,10 +139,10 @@
         </div>
 
         <div class="dot-actions">
-          <a class="dot-btn" href="admin-dot-employers.html">
+          <button class="dot-btn" id="refreshEmployersBtn" type="button">
             <span class="dot-btn-icon">↻</span>
-            Refresh
-          </a>
+            <span id="refreshEmployersLabel">Refresh</span>
+          </button>
 
           <a class="dot-btn primary" href="admin-dot-employer-create.html">
             <span class="dot-btn-icon">+</span>
@@ -154,19 +154,19 @@
       <section class="dot-kpis" aria-label="DOT compliance metrics">
         <article class="dot-kpi">
   <div class="dot-kpi-top"><span class="dot-kpi-label">TOTAL EMPLOYERS</span><span class="dot-kpi-mark">▤</span></div>
-  <strong>—</strong><small>All DOT-regulated employers</small>
+  <strong id="employerTotal">—</strong><small>All DOT-regulated employers</small>
 </article>
 <article class="dot-kpi">
   <div class="dot-kpi-top"><span class="dot-kpi-label">ACTIVE PROGRAMS</span><span class="dot-kpi-mark">✓</span></div>
-  <strong>—</strong><small>Employers with active DOT programs</small>
+  <strong id="employerActivePrograms">—</strong><small>Employers with active DOT programs</small>
 </article>
 <article class="dot-kpi">
   <div class="dot-kpi-top"><span class="dot-kpi-label">REVIEW QUEUE</span><span class="dot-kpi-mark">!</span></div>
-  <strong>—</strong><small>Employers requiring compliance review</small>
+  <strong id="employerReview">—</strong><small>Employers requiring compliance review</small>
 </article>
 <article class="dot-kpi">
   <div class="dot-kpi-top"><span class="dot-kpi-label">COMPLIANCE STATUS</span><span class="dot-kpi-mark">□</span></div>
-  <strong>—</strong><small>Employer records being monitored</small>
+  <strong id="employerMonitored">—</strong><small>Employer records being monitored</small>
 </article>
       </section>
 
@@ -272,29 +272,150 @@
 <script src="assets/js/admin-navigation.js"></script>
 
 <script>
-/* ============================================================
-   screenings4u — DOT COMPLIANCE MANAGEMENT
-   No pop-ups or modal workflows are used on this page.
-   ============================================================ */
 (function () {
   "use strict";
 
-  document.addEventListener("DOMContentLoaded", async function () {
-    try {
-      if (
-        window.S4UAuth &&
-        typeof window.S4UAuth.requireSession === "function"
-      ) {
-        const session = await window.S4UAuth.requireSession("admin-login.html");
+  document.addEventListener("DOMContentLoaded", initializeDotEmployers);
 
-        if (!session) {
-          return;
-        }
-      }
-    } catch (error) {
-      console.error("admin-dot-employers.html initialization failed:", error);
+  async function initializeDotEmployers() {
+    const refreshButton = document.getElementById("refreshEmployersBtn");
+
+    if (refreshButton) {
+      refreshButton.addEventListener("click", loadEmployerMetrics);
     }
-  });
+
+    await loadEmployerMetrics();
+  }
+
+  async function loadEmployerMetrics() {
+    setLoadingState(true);
+
+    try {
+      const client = await waitForSupabaseClient();
+
+      if (!client || typeof client.from !== "function") {
+        throw new Error("Supabase client is unavailable.");
+      }
+
+      const employerResult = await client
+        .from("employer_profiles")
+        .select("id, employer_name, status");
+
+      if (employerResult.error) throw employerResult.error;
+
+      const employers = employerResult.data || [];
+      const employerIds = employers.map(function (row) { return row.id; });
+
+      const normalized = employers.map(function (row) {
+        return {
+          id: row.id,
+          status: String(row.status || "").trim().toLowerCase()
+        };
+      });
+
+      const total = employers.length;
+
+      const review = normalized.filter(function (row) {
+        return ["review", "pending", "needs_review", "incomplete"].includes(row.status);
+      }).length;
+
+      let activePrograms = 0;
+      let monitored = 0;
+
+      if (employerIds.length) {
+        const enrollmentResult = await client
+          .from("dot_random_program_employers")
+          .select("employer_id, status")
+          .in("employer_id", employerIds);
+
+        if (enrollmentResult.error) throw enrollmentResult.error;
+
+        const activeEnrollmentEmployerIds = new Set(
+          (enrollmentResult.data || [])
+            .filter(function (row) {
+              return String(row.status || "").trim().toLowerCase() === "active";
+            })
+            .map(function (row) { return row.employer_id; })
+        );
+
+        activePrograms = activeEnrollmentEmployerIds.size;
+        monitored = activeEnrollmentEmployerIds.size;
+      }
+
+      updateMetric("employerTotal", total);
+      updateMetric("employerActivePrograms", activePrograms);
+      updateMetric("employerReview", review);
+      updateMetric("employerMonitored", monitored);
+
+    } catch (error) {
+      console.error("DOT Employer Management load failed:", error);
+      setMetricError();
+    } finally {
+      setLoadingState(false);
+    }
+  }
+
+  function getSupabaseClient() {
+    if (window.S4UAuth && typeof window.S4UAuth.getClient === "function") {
+      const client = window.S4UAuth.getClient();
+      if (client && typeof client.from === "function") return client;
+    }
+
+    if (window.screenings4uSupabase && typeof window.screenings4uSupabase.from === "function") {
+      return window.screenings4uSupabase;
+    }
+
+    if (window.supabaseClient && typeof window.supabaseClient.from === "function") {
+      return window.supabaseClient;
+    }
+
+    return null;
+  }
+
+  async function waitForSupabaseClient(timeoutMs) {
+    const timeout = timeoutMs || 3000;
+    const started = Date.now();
+
+    while (Date.now() - started < timeout) {
+      const client = getSupabaseClient();
+      if (client) return client;
+      await new Promise(function (resolve) { window.setTimeout(resolve, 100); });
+    }
+
+    return getSupabaseClient();
+  }
+
+  function updateMetric(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = Number(value || 0).toLocaleString();
+  }
+
+  function setLoadingState(isLoading) {
+    const button = document.getElementById("refreshEmployersBtn");
+    const label = document.getElementById("refreshEmployersLabel");
+
+    if (button) {
+      button.disabled = !!isLoading;
+      button.style.opacity = isLoading ? ".7" : "";
+      button.style.pointerEvents = isLoading ? "none" : "";
+    }
+
+    if (label) {
+      label.textContent = isLoading ? "Loading..." : "Refresh";
+    }
+  }
+
+  function setMetricError() {
+    [
+      "employerTotal",
+      "employerActivePrograms",
+      "employerReview",
+      "employerMonitored"
+    ].forEach(function (id) {
+      const element = document.getElementById(id);
+      if (element) element.textContent = "—";
+    });
+  }
 })();
 </script>
 

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Learning Progress | screenings4u Learning Center</title>
+<link rel="icon" type="image/png" href="images/fav.png">
+<style>
+:root{--s4u-blue:#325aa3;--s4u-blue-dark:#24467f;--s4u-orange:#ff6b00;--s4u-bg:#f5f7fa;--s4u-surface:#fff;--s4u-border:#dfe5ec;--s4u-text:#172033;--s4u-muted:#687386;--s4u-soft:#f0f3f7;--s4u-sidebar:252px;--s4u-topbar:70px;--shadow:0 4px 18px rgba(24,36,60,.06)}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--s4u-bg);color:var(--s4u-text)}a{text-decoration:none}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--s4u-sidebar);background:#fff;border-right:1px solid var(--s4u-border);display:flex;flex-direction:column;z-index:5}.brand{height:var(--s4u-topbar);display:grid;place-items:center;border-bottom:1px solid var(--s4u-border)}.brand img{max-width:180px;max-height:44px}.nav{padding:18px 14px;flex:1}.label{font-size:10px;letter-spacing:1px;font-weight:800;color:var(--s4u-muted);margin:10px}.link{display:flex;align-items:center;gap:12px;padding:12px 11px;margin:3px 0;border-radius:7px;color:var(--s4u-text);font-size:13px;font-weight:bold}.link:hover,.link.active{background:#edf2fb;color:var(--s4u-blue)}.ico{width:20px;text-align:center}.profile{margin:14px;padding:12px;background:var(--s4u-soft);border-radius:8px;font-size:12px;color:var(--s4u-blue);font-weight:bold}
+.main{margin-left:var(--s4u-sidebar);min-height:100vh}.topbar{height:var(--s4u-topbar);background:#fff;border-bottom:1px solid var(--s4u-border);display:flex;align-items:center;justify-content:space-between;padding:0 28px}.top-left{display:flex;align-items:center}.menu{width:38px;height:38px;border:1px solid var(--s4u-border);background:#fff;border-radius:7px;color:var(--s4u-blue);margin-right:13px;cursor:pointer}.topbar h1{margin:0;color:var(--s4u-blue);font-size:16px}.topbar p{margin:4px 0 0;color:var(--s4u-muted);font-size:11px}.content{max-width:1400px;margin:auto;padding:28px}
+.hero{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}.hero h2{margin:0;color:var(--s4u-blue);font-size:26px}.hero p{margin:8px 0 0;color:var(--s4u-muted);font-size:13px}.period{border:1px solid var(--s4u-border);background:#fff;border-radius:7px;padding:10px 13px;color:var(--s4u-blue);font-size:12px;font-weight:bold}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}.metric{background:#fff;border:1px solid var(--s4u-border);border-radius:8px;padding:19px;box-shadow:var(--shadow)}.metric .name{font-size:11px;color:var(--s4u-muted);font-weight:bold}.metric .num{color:var(--s4u-blue);font-size:27px;font-weight:800;margin-top:8px}.metric .sub{font-size:10px;color:var(--s4u-muted);margin-top:5px}
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,.8fr);gap:20px}.card{background:#fff;border:1px solid var(--s4u-border);border-radius:8px;box-shadow:var(--shadow)}.card-head{padding:18px 20px;border-bottom:1px solid var(--s4u-border);display:flex;justify-content:space-between;align-items:center}.card-head h3{margin:0;color:var(--s4u-blue);font-size:15px}.card-head span{font-size:11px;color:var(--s4u-muted)}
+.course-row{padding:18px 20px;border-bottom:1px solid var(--s4u-border)}.course-row:last-child{border:0}.course-title{display:flex;justify-content:space-between;gap:10px}.course-title h4{margin:0;color:var(--s4u-text);font-size:13px}.course-title b{font-size:12px;color:var(--s4u-blue)}.course-meta{font-size:10px;color:var(--s4u-muted);margin:7px 0}.bar{height:8px;background:var(--s4u-soft);border-radius:99px;overflow:hidden}.fill{height:100%;background:var(--s4u-blue);border-radius:99px}.orange{background:var(--s4u-orange)}.course-actions{display:flex;justify-content:space-between;margin-top:11px;align-items:center}.status{font-size:10px;color:var(--s4u-muted)}.continue{font-size:11px;color:var(--s4u-orange);font-weight:bold}
+.activity{padding:15px 20px;border-bottom:1px solid var(--s4u-border);display:flex;gap:11px}.activity:last-child{border:0}.activity-icon{width:30px;height:30px;border-radius:50%;background:#edf2fb;color:var(--s4u-blue);display:grid;place-items:center;font-size:12px;font-weight:bold;flex:0 0 auto}.activity b{font-size:11px;color:var(--s4u-text)}.activity p{font-size:10px;color:var(--s4u-muted);margin:4px 0 0;line-height:1.4}.attention{margin-top:20px;padding:20px}.attention h3{margin:0 0 12px;color:var(--s4u-blue);font-size:15px}.attention-row{background:#fff8f2;border-left:4px solid var(--s4u-orange);padding:13px;margin-top:10px;font-size:11px;line-height:1.5}.attention-row b{color:var(--s4u-text)}.empty{padding:28px;color:var(--s4u-muted);font-size:12px;text-align:center}
+.collapsed .sidebar{width:72px}.collapsed .main{margin-left:72px}.collapsed .link span,.collapsed .label,.collapsed .profile{display:none}.collapsed .link{justify-content:center}
+@media(max-width:1000px){.metrics{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}@media(max-width:700px){.sidebar{transform:translateX(-100%);transition:.2s}.mobile .sidebar{transform:none}.main,.collapsed .main{margin-left:0}.content{padding:16px}.topbar{padding:0 16px}.hero{display:block}.period{margin-top:15px;display:inline-block}.metrics{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div id="shell">
+<aside class="sidebar"><div class="brand"><img src="images/logo.png" alt="Screenings4u"></div>
+<nav class="nav"><div class="label">LEARNING</div>
+<a class="link" href="lms-dashboard.html"><b class="ico">D</b><span>Dashboard</span></a>
+<a class="link" href="lms-my-courses.html"><b class="ico">M</b><span>My Courses</span></a>
+<a class="link" href="lms-courses.html"><b class="ico">B</b><span>Browse Courses</span></a>
+<div class="label">MY RECORDS</div>
+<a class="link active" href="lms-progress.html"><b class="ico">P</b><span>Learning Progress</span></a>
+<a class="link" href="lms-certificates.html"><b class="ico">C</b><span>Certificates</span></a></nav>
+<div class="profile">JL &nbsp; Learner Account</div></aside>
+<main class="main"><header class="topbar"><div class="top-left"><button class="menu" id="menu">☰</button><div><h1>Learning Progress</h1><p>Screenings4u Learning Center</p></div></div></header>
+<div class="content">
+<section class="hero"><div><h2>Your Learning Progress</h2><p>Track your course completion, learning activity, quizzes, and assessments in one place.</p></div><div class="period">All Learning Activity</div></section>
+<section class="metrics">
+<div class="metric"><div class="name">ACTIVE COURSES</div><div class="num">3</div><div class="sub">Courses currently in progress</div></div>
+<div class="metric"><div class="name">COMPLETED COURSES</div><div class="num">2</div><div class="sub">All completion requirements met</div></div>
+<div class="metric"><div class="name">OVERALL PROGRESS</div><div class="num">68%</div><div class="sub">Across active enrollments</div></div>
+<div class="metric"><div class="name">CERTIFICATES</div><div class="num">2</div><div class="sub">Available learning records</div></div>
+</section>
+<section class="grid"><div>
+<div class="card"><div class="card-head"><h3>Course Progress</h3><span>Active Enrollments</span></div>
+<div class="course-row"><div class="course-title"><h4>DOT Drug & Alcohol Training</h4><b>45%</b></div><div class="course-meta">Section 2 of 4 · 4 lessons remaining</div><div class="bar"><div class="fill" style="width:45%"></div></div><div class="course-actions"><span class="status">In Progress</span><a class="continue" href="lms-course.html">Continue Course →</a></div></div>
+<div class="course-row"><div class="course-title"><h4>Reasonable Suspicion Training</h4><b>82%</b></div><div class="course-meta">Final assessment available</div><div class="bar"><div class="fill" style="width:82%"></div></div><div class="course-actions"><span class="status">Almost Complete</span><a class="continue" href="lms-course.html">Continue Course →</a></div></div>
+<div class="course-row"><div class="course-title"><h4>Workplace Drug-Free Awareness</h4><b>18%</b></div><div class="course-meta">Started · 7 lessons remaining</div><div class="bar"><div class="fill orange" style="width:18%"></div></div><div class="course-actions"><span class="status">Needs Attention</span><a class="continue" href="lms-course.html">Resume Course →</a></div></div>
+</div>
+<div class="card attention"><h3>Courses Needing Attention</h3><div class="attention-row"><b>Workplace Drug-Free Awareness</b><br>Continue your course to maintain learning momentum. You have not completed a lesson recently.</div></div>
+</div>
+<aside><div class="card"><div class="card-head"><h3>Recent Activity</h3><span>Latest</span></div>
+<div class="activity"><div class="activity-icon">✓</div><div><b>Lesson completed</b><p>Learning Objectives · DOT Drug & Alcohol Training</p></div></div>
+<div class="activity"><div class="activity-icon">Q</div><div><b>Quiz completed</b><p>Drug Testing Fundamentals Knowledge Check</p></div></div>
+<div class="activity"><div class="activity-icon">▶</div><div><b>Course resumed</b><p>Reasonable Suspicion Training</p></div></div>
+<div class="activity"><div class="activity-icon">C</div><div><b>Certificate issued</b><p>Workplace Safety Fundamentals</p></div></div>
+</div></aside></section>
+<div class="card" style="margin-top:20px"><div class="card-head"><h3>How Progress Is Recorded</h3></div><div class="empty">When the LMS data layer is connected, this page will combine enrollment status, lesson completion, content block completion, quiz attempts, and assessment attempts to show actual learner progress.</div></div>
+</div></main></div>
+<script>const shell=document.getElementById("shell");document.getElementById("menu").onclick=()=>{if(innerWidth<700)shell.classList.toggle("mobile");else shell.classList.toggle("collapsed")};</script>
+</body></html>

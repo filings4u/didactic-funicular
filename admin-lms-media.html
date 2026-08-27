@@ -8,8 +8,7 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Student Management | Screenings4u Learning Center</title>
-  <link rel="icon" type="image/png" href="images/fav.png">
+  <title>Media Management | Screenings4u Learning Center</title>
 
   <link
     rel="stylesheet"
@@ -18,7 +17,7 @@
 
   <style>
     /* ============================================================
-       STUDENT MANAGEMENT PAGE
+       MEDIA MANAGEMENT PAGE
        ============================================================ */
 
     .lms-brand.lms-brand-logo-only {
@@ -41,16 +40,6 @@
       object-fit: contain;
     }
 
-    .lms-page-context-label {
-      color: var(--s4u-blue);
-      font-weight: 800;
-    }
-
-    .lms-page-context-title {
-      color: var(--s4u-orange);
-      font-weight: 800;
-    }
-
     .lms-breadcrumbs {
       display: flex;
       align-items: center;
@@ -67,9 +56,7 @@
       text-decoration: none;
     }
 
-    .lms-breadcrumbs a:hover {
-      color: var(--s4u-orange);
-    }
+    .lms-breadcrumbs a:hover { color: var(--s4u-orange); }
 
     .page-heading {
       display: flex;
@@ -78,8 +65,6 @@
       gap: 24px;
       margin-bottom: 22px;
     }
-
-    .page-heading-copy { min-width: 0; }
 
     .page-eyebrow {
       margin-bottom: 8px;
@@ -99,21 +84,21 @@
     }
 
     .page-heading p {
-      max-width: 800px;
+      max-width: 790px;
       margin: 9px 0 0;
       color: var(--s4u-text);
       font-size: .92rem;
       line-height: 1.6;
     }
 
-    .student-stats {
+    .media-stats {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 16px;
       margin-bottom: 20px;
     }
 
-    .student-stat {
+    .media-stat {
       min-height: 126px;
       padding: 19px 20px;
       background: var(--s4u-surface);
@@ -123,7 +108,7 @@
       box-sizing: border-box;
     }
 
-    .student-stat-label {
+    .media-stat-label {
       color: var(--s4u-muted);
       font-size: .72rem;
       font-weight: 800;
@@ -131,7 +116,7 @@
       text-transform: uppercase;
     }
 
-    .student-stat-value {
+    .media-stat-value {
       margin-top: 14px;
       color: var(--s4u-blue);
       font-size: 1.65rem;
@@ -139,7 +124,7 @@
       letter-spacing: -.03em;
     }
 
-    .student-stat-note {
+    .media-stat-note {
       margin-top: 7px;
       color: var(--s4u-text);
       font-size: .75rem;
@@ -154,10 +139,10 @@
       gap: 18px;
     }
 
-    .student-filters {
+    .media-filters {
       padding: 18px 20px;
       display: grid;
-      grid-template-columns: minmax(240px, 1.6fr) minmax(170px, 1fr) minmax(170px, 1fr) minmax(170px, 1fr) auto;
+      grid-template-columns: minmax(250px, 1.7fr) minmax(180px, 1fr) minmax(180px, 1fr) minmax(150px, .8fr) auto;
       gap: 12px;
       border-bottom: 1px solid var(--s4u-border);
       background: #fbfcfe;
@@ -175,8 +160,8 @@
       text-transform: uppercase;
     }
 
-    .student-filters input,
-    .student-filters select {
+    .media-filters input,
+    .media-filters select {
       width: 100%;
       min-height: 42px;
       padding: 0 12px;
@@ -190,8 +175,8 @@
       box-sizing: border-box;
     }
 
-    .student-filters input:focus,
-    .student-filters select:focus {
+    .media-filters input:focus,
+    .media-filters select:focus {
       border-color: var(--s4u-blue);
       box-shadow: 0 0 0 3px rgba(50, 90, 163, .10);
     }
@@ -203,18 +188,18 @@
 
     .filter-action .lms-btn { min-height: 42px; }
 
-    .student-table-wrap {
+    .media-table-wrap {
       width: 100%;
       overflow-x: auto;
     }
 
-    .student-table {
+    .media-table {
       width: 100%;
-      min-width: 1080px;
+      min-width: 1120px;
       border-collapse: collapse;
     }
 
-    .student-table thead th {
+    .media-table thead th {
       padding: 13px 18px;
       color: var(--s4u-blue);
       background: var(--s4u-soft);
@@ -226,7 +211,7 @@
       text-transform: uppercase;
     }
 
-    .student-table tbody td {
+    .media-table tbody td {
       padding: 15px 18px;
       color: var(--s4u-text);
       border-bottom: 1px solid var(--s4u-border);
@@ -234,61 +219,52 @@
       vertical-align: middle;
     }
 
-    .student-table tbody tr:last-child td { border-bottom: 0; }
-    .student-table tbody tr:hover { background: #fbfcfe; }
+    .media-table tbody tr:last-child td { border-bottom: 0; }
+    .media-table tbody tr:hover { background: #fbfcfe; }
 
-    .student-profile {
-      min-width: 205px;
-    }
-
-    .student-name {
+    .media-name {
       color: var(--s4u-blue);
       font-weight: 800;
       text-decoration: none;
     }
 
-    .student-name:hover { color: var(--s4u-orange); }
+    .media-name:hover { color: var(--s4u-orange); }
 
-    .student-email {
+    .media-meta {
       margin-top: 4px;
       color: var(--s4u-muted);
       font-size: .72rem;
     }
 
-    .number-value {
-      color: var(--s4u-blue);
-      font-weight: 800;
-    }
-
-    .activity-date {
-      color: var(--s4u-muted);
-      font-size: .76rem;
-    }
-
-    .status-badge {
+    .usage-tag {
       display: inline-flex;
       align-items: center;
       min-height: 26px;
       padding: 0 9px;
+      color: var(--s4u-blue);
+      background: #eef3fb;
       border-radius: 20px;
       font-size: .7rem;
       font-weight: 800;
       white-space: nowrap;
     }
 
-    .status-active {
-      color: var(--s4u-blue);
-      background: var(--s4u-blue-soft);
-    }
-
-    .status-completed {
-      color: #267044;
-      background: #eaf6ee;
-    }
-
-    .status-none {
+    .usage-unused {
       color: var(--s4u-muted);
       background: var(--s4u-soft);
+    }
+
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 9px;
+      color: #9a5b00;
+      background: #fff4df;
+      border-radius: 20px;
+      font-size: .7rem;
+      font-weight: 800;
+      white-space: nowrap;
     }
 
     .table-actions {
@@ -320,7 +296,7 @@
       text-decoration: none;
     }
 
-    .empty-students {
+    .empty-media {
       padding: 34px 24px;
       color: var(--s4u-muted);
       text-align: center;
@@ -328,7 +304,7 @@
       line-height: 1.55;
     }
 
-    .student-source-note {
+    .media-data-note {
       margin-top: 20px;
       padding: 16px 18px;
       color: var(--s4u-muted);
@@ -339,13 +315,11 @@
       line-height: 1.6;
     }
 
-    .student-source-note strong {
-      color: var(--s4u-blue);
-    }
+    .media-data-note strong { color: var(--s4u-blue); }
 
     @media (max-width: 1180px) {
-      .student-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .student-filters { grid-template-columns: 1fr 1fr; }
+      .media-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .media-filters { grid-template-columns: 1fr 1fr; }
     }
 
     @media (max-width: 760px) {
@@ -353,14 +327,14 @@
       .page-heading .lms-btn { width: 100%; }
       .management-card .lms-card-header { flex-direction: column; }
       .management-card .lms-card-header .lms-btn { width: 100%; }
-      .student-stats { grid-template-columns: 1fr; }
-      .student-filters { grid-template-columns: 1fr; }
+      .media-stats { grid-template-columns: 1fr; }
+      .media-filters { grid-template-columns: 1fr; }
       .filter-action .lms-btn { width: 100%; }
     }
   </style>
 </head>
 
-<body data-s4u-portal="admin">
+<body>
 
   <div class="lms-app">
 
@@ -438,7 +412,7 @@
             </li>
 
             <li class="lms-nav-item">
-              <a href="admin-lms-students.html" class="lms-nav-link active">
+              <a href="admin-lms-students.html" class="lms-nav-link">
                 <span class="lms-nav-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
                     <circle cx="12" cy="7" r="4"></circle>
@@ -510,7 +484,7 @@
             </li>
 
             <li class="lms-nav-item">
-              <a href="admin-lms-media.html" class="lms-nav-link">
+              <a href="admin-lms-media.html" class="lms-nav-link active">
                 <span class="lms-nav-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
                     <rect x="3" y="3" width="18" height="18" rx="2"></rect>
@@ -596,7 +570,7 @@
               Screenings4u Learning Center
             </span>
             <span class="lms-page-context-title">
-              Student Management
+              Media Management
             </span>
           </div>
 
@@ -635,57 +609,57 @@
 
 
       <!-- ====================================================
-           STUDENT MANAGEMENT
+           MEDIA MANAGEMENT
            ==================================================== -->
 
       <section class="lms-page">
         <div class="lms-page-inner">
 
           <nav class="lms-breadcrumbs" aria-label="Breadcrumb">
-            <a href="admin-lms-enrollments.html">Enrollments</a>
+            <a href="admin-lms-courses.html">Courses</a>
             <span>/</span>
-            <span>Students</span>
+            <span>Media Management</span>
           </nav>
 
           <div class="page-heading">
-            <div class="page-heading-copy">
-              <div class="page-eyebrow">Learner Directory</div>
-              <h1>Student Management</h1>
+            <div>
+              <div class="page-eyebrow">Learning Assets</div>
+              <h1>Media Management</h1>
               <p>
-                View learners derived from LMS enrollment records and review
-                their course activity, completions, certificates, and latest
-                learning activity from one management page.
+                Organize learning media used across courses, lesson content,
+                and certificates. Review where files are connected and
+                identify media that may no longer be in use.
               </p>
             </div>
 
-            <a href="admin-lms-enrollments.html" class="lms-btn lms-btn-secondary">
-              Manage Enrollments
-            </a>
+            <button type="button" class="lms-btn lms-btn-primary" id="uploadMediaButton">
+              + Upload Media
+            </button>
           </div>
 
-          <section class="student-stats" aria-label="Student summary">
-            <article class="student-stat">
-              <div class="student-stat-label">Total Students</div>
-              <div class="student-stat-value" id="statTotalStudents">—</div>
-              <div class="student-stat-note">Unique learners with enrollments</div>
+          <section class="media-stats" aria-label="Media summary">
+            <article class="media-stat">
+              <div class="media-stat-label">Total Media</div>
+              <div class="media-stat-value" id="statTotalMedia">—</div>
+              <div class="media-stat-note">All LMS media records</div>
             </article>
 
-            <article class="student-stat">
-              <div class="student-stat-label">Active Students</div>
-              <div class="student-stat-value" id="statActiveStudents">—</div>
-              <div class="student-stat-note">Learners with active course access</div>
+            <article class="media-stat">
+              <div class="media-stat-label">Course Media</div>
+              <div class="media-stat-value" id="statCourseMedia">—</div>
+              <div class="media-stat-note">Used by course records</div>
             </article>
 
-            <article class="student-stat">
-              <div class="student-stat-label">Course Completions</div>
-              <div class="student-stat-value" id="statStudentCompletions">—</div>
-              <div class="student-stat-note">Completed enrollment records</div>
+            <article class="media-stat">
+              <div class="media-stat-label">Lesson Media</div>
+              <div class="media-stat-value" id="statLessonMedia">—</div>
+              <div class="media-stat-note">Connected to content blocks</div>
             </article>
 
-            <article class="student-stat">
-              <div class="student-stat-label">Certificates</div>
-              <div class="student-stat-value" id="statStudentCertificates">—</div>
-              <div class="student-stat-note">Certificates issued to learners</div>
+            <article class="media-stat">
+              <div class="media-stat-label">Unused Media</div>
+              <div class="media-stat-value" id="statUnusedMedia">—</div>
+              <div class="media-stat-note">Assets with no detected LMS use</div>
             </article>
           </section>
 
@@ -693,93 +667,91 @@
 
             <div class="lms-card-header">
               <div>
-                <h2 class="lms-card-title">All Students</h2>
+                <h2 class="lms-card-title">Media Library</h2>
                 <p class="lms-card-description">
-                  The student directory is generated from the actual learner
-                  relationship used by <strong>lms_enrollments</strong>. No
-                  separate LMS student table is created or assumed.
+                  Search uploaded LMS assets and review how they are used
+                  across courses, lesson content blocks, and certificates.
                 </p>
               </div>
 
-              <a href="admin-lms-progress.html" class="lms-btn lms-btn-secondary">
-                View Progress
+              <a href="admin-lms-courses.html" class="lms-btn lms-btn-secondary">
+                Manage Courses
               </a>
             </div>
 
-            <div class="student-filters">
+            <div class="media-filters">
 
               <div class="filter-field">
-                <label for="studentSearch">Search Student</label>
-                <input type="search" id="studentSearch"
-                  placeholder="Search name or email...">
+                <label for="mediaSearch">Search Media</label>
+                <input type="search" id="mediaSearch"
+                  placeholder="Search file name or media record...">
               </div>
 
               <div class="filter-field">
-                <label for="studentCourseFilter">Course</label>
-                <select id="studentCourseFilter">
-                  <option value="">All Courses</option>
+                <label for="mediaTypeFilter">Media Type</label>
+                <select id="mediaTypeFilter">
+                  <option value="">All Media Types</option>
+                  <option value="image">Images</option>
+                  <option value="video">Videos</option>
+                  <option value="document">Documents</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
 
               <div class="filter-field">
-                <label for="studentAccessFilter">Access Status</label>
-                <select id="studentAccessFilter">
-                  <option value="">All Students</option>
-                  <option value="active">Active Access</option>
-                  <option value="completed">Completed</option>
-                  <option value="inactive">No Active Access</option>
+                <label for="mediaUsageFilter">Used By</label>
+                <select id="mediaUsageFilter">
+                  <option value="">All Usage</option>
+                  <option value="course">Courses</option>
+                  <option value="content_block">Content Blocks</option>
+                  <option value="certificate">Certificates</option>
+                  <option value="unused">Unused</option>
                 </select>
               </div>
 
               <div class="filter-field">
-                <label for="studentActivityFilter">Activity</label>
-                <select id="studentActivityFilter">
-                  <option value="">All Activity</option>
-                  <option value="recent">Recent Activity</option>
-                  <option value="inactive">No Recent Activity</option>
+                <label for="mediaSortFilter">Sort</label>
+                <select id="mediaSortFilter">
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="name">File Name</option>
                 </select>
               </div>
 
               <div class="filter-action">
                 <button type="button" class="lms-btn lms-btn-secondary"
-                  id="clearStudentFilters">Clear</button>
+                  id="clearMediaFilters">Clear</button>
               </div>
 
             </div>
 
-            <div class="student-table-wrap">
-              <table class="student-table">
+            <div class="media-table-wrap">
+              <table class="media-table">
                 <thead>
                   <tr>
-                    <th>Student</th>
-                    <th>Total Enrollments</th>
-                    <th>Active Courses</th>
-                    <th>Completed Courses</th>
-                    <th>Certificates</th>
-                    <th>Latest Activity</th>
+                    <th>Media</th>
+                    <th>Type</th>
+                    <th>Uploaded</th>
+                    <th>Used By</th>
+                    <th>Usage</th>
+                    <th>Media ID</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
 
-                <tbody id="studentsTableBody">
-                  <!--
-                    Student records will be derived from lms_enrollments and
-                    joined to the actual user/customer identity table once
-                    the enrollment identity column is confirmed.
-
-                    Related records:
-                    lms_courses
-                    lms_certificates
-                    lms_lesson_progress
-                    lms_quiz_attempts
-                    lms_assessment_attempts
+                <tbody id="mediaTableBody">
+                  <!-- Dynamic data:
+                       lms_media
+                       lms_courses.thumbnail_media_id
+                       lms_content_blocks.media_id
+                       lms_certificates.certificate_media_id
                   -->
                   <tr>
                     <td colspan="7">
-                      <div class="empty-students">
-                        Student records will appear here when the LMS database
-                        relationship is connected. This page does not create or
-                        assume an <strong>lms_students</strong> table.
+                      <div class="empty-media">
+                        Media records will appear here when the LMS database
+                        is connected. Usage detection can compare media IDs
+                        against courses, content blocks, and certificates.
                       </div>
                     </td>
                   </tr>
@@ -789,13 +761,13 @@
 
           </section>
 
-          <div class="student-source-note">
-            <strong>LMS data source:</strong>
-            We need the actual column structure for
-            <strong>lms_enrollments</strong>, specifically the column that
-            identifies the learner and the user/customer table it references.
-            Once that relationship is confirmed, this page can safely load the
-            student name and email without inventing a new student system.
+          <div class="media-data-note">
+            <strong>Media relationships:</strong>
+            <strong>lms_courses</strong> can use
+            <strong>thumbnail_media_id</strong>,
+            <strong>lms_content_blocks</strong> can use
+            <strong>media_id</strong>, and
+            <strong>lms_content_blocks</strong> uses <strong>media_id</strong>. Cloudflare videos are represented in <strong>lms_media</strong> through <strong>provider</strong> and <strong>provider_video_id</strong>.
           </div>
 
         </div>
@@ -809,45 +781,16 @@
        SHARED LMS JAVASCRIPT
        ========================================================== -->
 
-  
-  <!-- Phase 1: shared admin authentication foundation -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/js/supabase-config.js"></script>
-  <script src="assets/js/config.js"></script>
-  <script src="assets/js/auth.js"></script>
-  <script src="assets/js/permissions.js"></script>
-  <script src="assets/js/lms.js"></script>
-  <script src="assets/js/lms-phase6.js"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/lms.js"></script>
 
 
-  <!-- ==========================================================
-       STUDENT MANAGEMENT UI
-       Student identity wiring waits for the actual lms_enrollments schema.
-       ========================================================== -->
-  <script>
-    (function () {
-      "use strict";
-
-      document.addEventListener("DOMContentLoaded", function () {
-        var clearButton = document.getElementById("clearStudentFilters");
-        var ids = [
-          "studentSearch",
-          "studentCourseFilter",
-          "studentAccessFilter",
-          "studentActivityFilter"
-        ];
-
-        if (clearButton) {
-          clearButton.addEventListener("click", function () {
-            ids.forEach(function (id) {
-              var element = document.getElementById(id);
-              if (element) element.value = "";
-            });
-          });
-        }
-      });
-    })();
-  </script>
+  <script src="assets/js/lms-phase3.js"></script>
 
 </body>
 </html>

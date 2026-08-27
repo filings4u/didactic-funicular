@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Course Player | screenings4u Learning Center</title>
+<link rel="icon" type="image/png" href="images/fav.png">
+<style>
+:root{--s4u-blue:#325aa3;--s4u-blue-dark:#24467f;--s4u-orange:#ff6b00;--s4u-bg:#f5f7fa;--s4u-surface:#fff;--s4u-border:#dfe5ec;--s4u-text:#172033;--s4u-muted:#687386;--s4u-soft:#f0f3f7;--sidebar:300px;--topbar:64px}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--s4u-bg);color:var(--s4u-text)}
+button{font-family:inherit}.player{min-height:100vh;padding-left:var(--sidebar)}
+.course-nav{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar);background:#fff;border-right:1px solid var(--s4u-border);display:flex;flex-direction:column;z-index:20}
+.course-brand{height:var(--topbar);padding:0 18px;display:flex;align-items:center;border-bottom:1px solid var(--s4u-border);gap:12px}.course-brand img{max-width:145px;max-height:38px}.back{margin-left:auto;border:0;background:var(--s4u-soft);color:var(--s4u-blue);width:30px;height:30px;border-radius:6px;cursor:pointer;font-weight:bold}
+.course-title{padding:18px;border-bottom:1px solid var(--s4u-border)}.eyebrow{font-size:9px;color:var(--s4u-orange);font-weight:800;letter-spacing:1px}.course-title h1{font-size:14px;line-height:1.4;color:var(--s4u-blue);margin:7px 0}.progress-label{display:flex;justify-content:space-between;font-size:10px;color:var(--s4u-muted);margin-top:12px}.progress-track{height:6px;background:var(--s4u-soft);border-radius:10px;margin-top:7px;overflow:hidden}.progress-fill{height:100%;width:42%;background:var(--s4u-orange);transition:.3s}
+.curriculum{padding:12px 10px;overflow:auto;flex:1}.section{margin-bottom:7px}.section-head{width:100%;border:0;background:#f8fafc;padding:12px;text-align:left;color:var(--s4u-blue);font-size:11px;font-weight:800;border-radius:6px;cursor:pointer;display:flex;justify-content:space-between}.section-head small{color:var(--s4u-muted)}.section-lessons{padding:4px 0}.lesson{width:100%;border:0;background:transparent;text-align:left;padding:11px 12px;display:flex;gap:9px;align-items:center;color:var(--s4u-muted);font-size:11px;cursor:pointer;border-radius:6px}.lesson:hover{background:#f5f8fc}.lesson.active{background:#edf2fb;color:var(--s4u-blue);font-weight:bold}.lesson.done .status{background:var(--s4u-blue);color:#fff;border-color:var(--s4u-blue)}.status{width:17px;height:17px;border:1px solid var(--s4u-border);border-radius:50%;display:grid;place-items:center;font-size:9px;flex:none}.lesson-type{margin-left:auto;font-size:9px;color:var(--s4u-muted)}
+.main{min-height:100vh}.topbar{height:var(--topbar);background:#fff;border-bottom:1px solid var(--s4u-border);padding:0 28px;display:flex;align-items:center;justify-content:space-between}.crumb{font-size:11px;color:var(--s4u-muted)}.crumb b{color:var(--s4u-blue)}.top-actions{display:flex;gap:9px}.icon-btn{border:1px solid var(--s4u-border);background:#fff;border-radius:6px;padding:8px 10px;color:var(--s4u-blue);font-size:10px;font-weight:bold;cursor:pointer}
+.content{max-width:1000px;margin:auto;padding:30px}.lesson-card{background:#fff;border:1px solid var(--s4u-border);border-radius:10px;overflow:hidden}.lesson-header{padding:28px 32px 18px;border-bottom:1px solid var(--s4u-border)}.lesson-header .eyebrow{margin-bottom:7px}.lesson-header h2{color:var(--s4u-blue);font-size:25px;margin:0}.lesson-header p{font-size:12px;color:var(--s4u-muted);line-height:1.7;margin:10px 0 0}
+.content-area{padding:30px 32px}.media{height:290px;border-radius:8px;background:linear-gradient(135deg,#e7eef8,#cbd9ed);display:grid;place-items:center;margin-bottom:26px;position:relative}.play{width:62px;height:62px;border-radius:50%;border:0;background:var(--s4u-orange);color:#fff;font-size:20px;cursor:pointer}.media span{position:absolute;bottom:14px;left:16px;font-size:10px;color:var(--s4u-blue);font-weight:bold}
+.block{margin:22px 0}.block h3{color:var(--s4u-blue);font-size:16px;margin-bottom:10px}.block p,.block li{font-size:13px;color:var(--s4u-muted);line-height:1.75}.callout{background:#fff8f2;border-left:4px solid var(--s4u-orange);padding:15px 17px;font-size:12px;color:#6d513d;line-height:1.65;border-radius:0 6px 6px 0}
+.knowledge{border:1px solid var(--s4u-border);background:#fafcff;padding:20px;border-radius:8px}.knowledge h3{margin-top:0}.option{display:block;border:1px solid var(--s4u-border);background:#fff;border-radius:6px;padding:11px;margin:8px 0;font-size:12px;color:var(--s4u-text);cursor:pointer}.option input{margin-right:8px;accent-color:var(--s4u-blue)}.quiz-result{display:none;margin-top:10px;padding:10px;border-radius:6px;font-size:11px}
+.complete-row{border-top:1px solid var(--s4u-border);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px}.complete-note{font-size:11px;color:var(--s4u-muted);line-height:1.5}.btn{border:1px solid var(--s4u-border);background:#fff;color:var(--s4u-blue);padding:11px 15px;border-radius:7px;font-size:11px;font-weight:bold;cursor:pointer}.btn.primary{background:var(--s4u-orange);border-color:var(--s4u-orange);color:#fff}
+.lesson-footer{display:flex;justify-content:space-between;margin-top:20px}.toast{position:fixed;right:20px;bottom:20px;background:var(--s4u-blue);color:#fff;padding:13px 16px;border-radius:7px;font-size:11px;display:none;z-index:50}
+.mobile-toggle{display:none}
+@media(max-width:850px){.player{padding-left:0}.course-nav{transform:translateX(-100%);transition:.2s}.course-nav.open{transform:none}.mobile-toggle{display:inline-block}.content{padding:18px}.content-area,.lesson-header{padding:22px}.complete-row{padding:18px 22px}.media{height:220px}}@media(max-width:560px){.topbar{padding:0 14px}.top-actions{display:none}.lesson-header h2{font-size:20px}.complete-row{display:block}.complete-row .btn{margin-top:12px;width:100%}.lesson-footer{gap:10px}.lesson-footer .btn{flex:1}.content{padding:10px}}
+</style>
+</head>
+<body>
+<div class="player">
+<aside class="course-nav" id="courseNav">
+ <div class="course-brand"><img src="images/logo.png" alt="Screenings4u"><button class="back" title="Back to courses" onclick="location.href='lms-my-courses.html'">←</button></div>
+ <div class="course-title"><div class="eyebrow">CURRENT COURSE</div><h1>DOT Drug &amp; Alcohol Training</h1><div class="progress-label"><span>Course Progress</span><b id="progressText">42%</b></div><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div></div>
+ <div class="curriculum">
+  <div class="section"><button class="section-head">Section 1: Course Introduction <small>3/3 ✓</small></button><div class="section-lessons">
+   <button class="lesson done" data-title="Welcome to the Course" data-desc="Begin your training journey with an overview of the course." data-type="LESSON"><span class="status">✓</span><span>Welcome to the Course</span><span class="lesson-type">Lesson</span></button>
+   <button class="lesson done" data-title="Learning Objectives" data-desc="Review the objectives and structure of this training program." data-type="LESSON"><span class="status">✓</span><span>Learning Objectives</span><span class="lesson-type">Lesson</span></button>
+   <button class="lesson done" data-title="Introduction Knowledge Check" data-desc="Confirm your understanding of the introductory material." data-type="QUIZ"><span class="status">✓</span><span>Knowledge Check</span><span class="lesson-type">Quiz</span></button>
+  </div></div>
+  <div class="section"><button class="section-head">Section 2: Core Training Concepts <small>2/3</small></button><div class="section-lessons">
+   <button class="lesson done" data-title="Training Fundamentals" data-desc="Explore foundational concepts used throughout the course." data-type="LESSON"><span class="status">✓</span><span>Training Fundamentals</span><span class="lesson-type">Lesson</span></button>
+   <button class="lesson active" data-title="Workplace Responsibilities" data-desc="Understand important responsibilities covered by this training module." data-type="LESSON"><span class="status"></span><span>Workplace Responsibilities</span><span class="lesson-type">Lesson</span></button>
+   <button class="lesson" data-title="Section Knowledge Check" data-desc="Complete a short knowledge check before continuing." data-type="QUIZ"><span class="status"></span><span>Knowledge Check</span><span class="lesson-type">Quiz</span></button>
+  </div></div>
+  <div class="section"><button class="section-head">Section 3: Compliance Awareness <small>0/3</small></button><div class="section-lessons">
+   <button class="lesson" data-title="Compliance Framework" data-desc="Review the compliance concepts presented in this section." data-type="LESSON"><span class="status"></span><span>Compliance Framework</span><span class="lesson-type">Lesson</span></button>
+   <button class="lesson" data-title="Program Responsibilities" data-desc="Learn about roles and responsibilities within a training program." data-type="LESSON"><span class="status"></span><span>Program Responsibilities</span><span class="lesson-type">Lesson</span></button>
+   <button class="lesson" data-title="Course Review" data-desc="Review important concepts before the final section." data-type="LESSON"><span class="status"></span><span>Course Review</span><span class="lesson-type">Lesson</span></button>
+  </div></div>
+  <div class="section"><button class="section-head">Section 4: Completion <small>0/3</small></button><div class="section-lessons">
+   <button class="lesson" data-title="Final Review" data-desc="Prepare for final course completion." data-type="LESSON"><span class="status"></span><span>Final Review</span><span class="lesson-type">Lesson</span></button>
+   <button class="lesson" data-title="Final Assessment" data-desc="Complete the course assessment." data-type="ASSESSMENT"><span class="status"></span><span>Final Assessment</span><span class="lesson-type">Assessment</span></button>
+   <button class="lesson" data-title="Course Completion" data-desc="Complete the final requirements and receive your completion record when eligible." data-type="COMPLETION"><span class="status"></span><span>Course Completion</span><span class="lesson-type">Complete</span></button>
+  </div></div>
+ </div>
+</aside>
+
+<main class="main">
+<header class="topbar"><div><button class="icon-btn mobile-toggle" id="navToggle">☰ Course</button><span class="crumb"><b>Screenings4u Learning Center</b> &nbsp; / &nbsp; DOT Drug &amp; Alcohol Training</span></div><div class="top-actions"><button class="icon-btn" onclick="location.href='lms-my-courses.html'">My Courses</button><button class="icon-btn" onclick="location.href='lms-progress.html'">My Progress</button></div></header>
+<div class="content"><article class="lesson-card">
+ <div class="lesson-header"><div class="eyebrow" id="lessonType">SECTION 2 · LESSON</div><h2 id="lessonTitle">Workplace Responsibilities</h2><p id="lessonDesc">Understand important responsibilities covered by this training module.</p></div>
+ <div class="content-area">
+  <div class="media"><button class="play" id="playBtn">▶</button><span id="mediaStatus">Course media placeholder — connect to lms_media</span></div>
+  <div class="block"><h3>Understanding the Material</h3><p>This course player is the learner environment where real content blocks will be rendered. Depending on the lesson configuration, content may include text, media, downloadable material, interactive content, quizzes, or assessments.</p><p>Each completed lesson should update the learner's course progress through the LMS progress tables.</p></div>
+  <div class="callout"><b>Remember:</b> Completion requirements should be determined by the actual course and lesson configuration. The learner interface should display progress but the backend should remain the source of truth.</div>
+  <div class="block knowledge" id="knowledgeBlock"><h3>Quick Knowledge Check</h3><p>Which statement best describes the purpose of this learning step?</p>
+   <label class="option"><input type="radio" name="q" value="a"> To automatically complete every remaining lesson.</label>
+   <label class="option"><input type="radio" name="q" value="b"> To review and reinforce the material before progressing.</label>
+   <label class="option"><input type="radio" name="q" value="c"> To replace the course completion requirements.</label>
+   <button class="btn" id="checkAnswer">Check Answer</button><div class="quiz-result" id="quizResult"></div>
+  </div>
+ </div>
+ <div class="complete-row"><div class="complete-note"><b id="completeState">Lesson in progress</b><br>When connected, completion will update the learner's lesson and block progress records.</div><button class="btn primary" id="completeBtn">Mark Lesson Complete</button></div>
+</article>
+<div class="lesson-footer"><button class="btn" id="prevBtn">← Previous Lesson</button><button class="btn" id="nextBtn">Next Lesson →</button></div>
+</div></main>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const nav=document.getElementById('courseNav'), lessons=[...document.querySelectorAll('.lesson')], title=document.getElementById('lessonTitle'), desc=document.getElementById('lessonDesc'), type=document.getElementById('lessonType'), toast=document.getElementById('toast');
+let current=lessons.findIndex(x=>x.classList.contains('active'));
+function showToast(t){toast.textContent=t;toast.style.display='block';setTimeout(()=>toast.style.display='none',2600)}
+document.getElementById('navToggle').onclick=()=>nav.classList.toggle('open');
+document.querySelectorAll('.section-head').forEach(x=>x.onclick=()=>x.parentElement.classList.toggle('collapsed'));
+function loadLesson(i){if(i<0||i>=lessons.length)return;lessons.forEach(x=>x.classList.remove('active'));current=i;let l=lessons[i];l.classList.add('active');title.textContent=l.dataset.title;desc.textContent=l.dataset.desc;type.textContent='COURSE · '+l.dataset.type;document.getElementById('completeState').textContent=l.classList.contains('done')?'Lesson completed':'Lesson in progress';document.getElementById('completeBtn').textContent=l.classList.contains('done')?'Completed ✓':'Mark Lesson Complete';if(innerWidth<850)nav.classList.remove('open')}
+lessons.forEach((l,i)=>l.onclick=()=>loadLesson(i));
+document.getElementById('completeBtn').onclick=()=>{let l=lessons[current];if(l.classList.contains('done')){showToast('This lesson is already complete.');return}l.classList.add('done');l.querySelector('.status').textContent='✓';document.getElementById('completeState').textContent='Lesson completed';document.getElementById('completeBtn').textContent='Completed ✓';let done=lessons.filter(x=>x.classList.contains('done')).length,p=Math.round(done/lessons.length*100);document.getElementById('progressText').textContent=p+'%';document.getElementById('progressFill').style.width=p+'%';showToast('Lesson marked complete. Progress saved when connected to Supabase.')}
+document.getElementById('prevBtn').onclick=()=>loadLesson(current-1);document.getElementById('nextBtn').onclick=()=>loadLesson(current+1);
+document.getElementById('playBtn').onclick=()=>{document.getElementById('mediaStatus').textContent='Media playback placeholder — actual media will load from lms_media';showToast('Media player ready for LMS integration.')}
+document.getElementById('checkAnswer').onclick=()=>{let v=document.querySelector('input[name=q]:checked')?.value,r=document.getElementById('quizResult');r.style.display='block';if(!v){r.textContent='Please select an answer.';r.style.background='#fff8f2';r.style.color='#8a5a2b'}else if(v==='b'){r.textContent='Correct. This learning step helps reinforce the material.';r.style.background='#edf2fb';r.style.color='#325aa3'}else{r.textContent='Not quite. Review the lesson material and try again.';r.style.background='#fff8f2';r.style.color='#8a5a2b'}};
+</script>
+</body></html>

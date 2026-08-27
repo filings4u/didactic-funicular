@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Course Builder | Screenings4u Learning Center</title>
+  <link rel="icon" type="image/png" href="images/fav.png">
+
+  <link
+    rel="stylesheet"
+    href="assets/css/lms.css"
+  >
+
+  <style>
+    /* ============================================================
+       COURSE BUILDER
+       ============================================================ */
+
+    .lms-brand.lms-brand-logo-only {
+      min-height: 88px;
+      justify-content: center;
+      padding: 14px 20px;
+    }
+
+    .lms-brand.lms-brand-logo-only .lms-brand-logo-wrap {
+      width: 148px;
+      height: 54px;
+      flex: 0 0 148px;
+      background: transparent;
+      border-radius: 0;
+    }
+
+    .lms-brand.lms-brand-logo-only .lms-brand-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .builder-page {
+      padding-bottom: 38px;
+    }
+
+    .lms-breadcrumbs {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+      color: var(--s4u-muted);
+      font-size: .82rem;
+      font-weight: 650;
+    }
+
+    .lms-breadcrumbs a {
+      color: var(--s4u-blue);
+      text-decoration: none;
+    }
+
+    .lms-breadcrumbs a:hover { color: var(--s4u-orange); }
+
+    .builder-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 22px;
+      margin-bottom: 20px;
+    }
+
+    .page-eyebrow {
+      margin-bottom: 8px;
+      color: var(--s4u-orange);
+      font-size: .72rem;
+      font-weight: 850;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .builder-heading h1 {
+      margin: 0;
+      color: var(--s4u-blue);
+      font-size: clamp(1.7rem, 3vw, 2.3rem);
+      font-weight: 850;
+      letter-spacing: -.04em;
+    }
+
+    .builder-heading p {
+      max-width: 760px;
+      margin: 9px 0 0;
+      color: var(--s4u-text);
+      font-size: .91rem;
+      line-height: 1.6;
+    }
+
+    .builder-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .builder-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 285px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .builder-main {
+      display: grid;
+      gap: 20px;
+    }
+
+    .builder-card {
+      overflow: hidden;
+    }
+
+    .builder-card-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--s4u-border);
+      background: var(--s4u-surface);
+    }
+
+    .builder-card-header h2 {
+      margin: 0;
+      color: var(--s4u-blue);
+      font-size: 1rem;
+      font-weight: 850;
+    }
+
+    .builder-card-header p {
+      margin: 5px 0 0;
+      color: var(--s4u-muted);
+      font-size: .78rem;
+      line-height: 1.5;
+    }
+
+    .builder-card-body {
+      padding: 20px;
+      background: var(--s4u-surface);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .form-grid.full {
+      grid-template-columns: 1fr;
+    }
+
+    .field-group {
+      min-width: 0;
+    }
+
+    .field-group.span-2 {
+      grid-column: 1 / -1;
+    }
+
+    .field-group label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--s4u-blue);
+      font-size: .74rem;
+      font-weight: 800;
+    }
+
+    .field-group input,
+    .field-group textarea,
+    .field-group select {
+      width: 100%;
+      min-height: 43px;
+      padding: 10px 12px;
+      color: var(--s4u-text);
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 7px;
+      outline: none;
+      font: inherit;
+      font-size: .84rem;
+      box-sizing: border-box;
+    }
+
+    .field-group textarea {
+      min-height: 120px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    .field-group input:focus,
+    .field-group textarea:focus,
+    .field-group select:focus {
+      border-color: var(--s4u-blue);
+      box-shadow: 0 0 0 3px rgba(50, 90, 163, .10);
+    }
+
+    .field-help {
+      margin-top: 6px;
+      color: var(--s4u-muted);
+      font-size: .7rem;
+      line-height: 1.45;
+    }
+
+    .thumbnail-zone {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr);
+      gap: 16px;
+      align-items: center;
+      padding: 15px;
+      background: var(--s4u-soft);
+      border: 1px dashed #c9d3df;
+      border-radius: 8px;
+    }
+
+    .thumbnail-preview {
+      height: 98px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--s4u-muted);
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 7px;
+      font-size: .74rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .thumbnail-actions strong {
+      display: block;
+      color: var(--s4u-blue);
+      font-size: .82rem;
+    }
+
+    .thumbnail-actions span {
+      display: block;
+      margin: 5px 0 10px;
+      color: var(--s4u-muted);
+      font-size: .72rem;
+      line-height: 1.45;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .setting-tile {
+      padding: 15px;
+      background: var(--s4u-soft);
+      border: 1px solid var(--s4u-border);
+      border-radius: 8px;
+    }
+
+    .setting-tile label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .setting-tile input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-top: 2px;
+      accent-color: var(--s4u-blue);
+      flex: 0 0 auto;
+    }
+
+    .setting-tile strong {
+      display: block;
+      color: var(--s4u-blue);
+      font-size: .78rem;
+    }
+
+    .setting-tile span {
+      display: block;
+      margin-top: 4px;
+      color: var(--s4u-muted);
+      font-size: .69rem;
+      line-height: 1.45;
+    }
+
+    .outline-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 20px;
+      background: #fbfcfe;
+      border-bottom: 1px solid var(--s4u-border);
+    }
+
+    .outline-toolbar-copy strong {
+      color: var(--s4u-blue);
+      font-size: .82rem;
+    }
+
+    .outline-toolbar-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--s4u-muted);
+      font-size: .71rem;
+    }
+
+    .section-list {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+      background: var(--s4u-surface);
+    }
+
+    .course-section {
+      border: 1px solid var(--s4u-border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--s4u-surface);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 15px;
+      background: var(--s4u-soft);
+    }
+
+    .drag-handle {
+      color: var(--s4u-muted);
+      font-size: 1.1rem;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .section-order {
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--s4u-blue);
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 50%;
+      font-size: .72rem;
+      font-weight: 850;
+      flex: 0 0 auto;
+    }
+
+    .section-title-wrap {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .section-title {
+      color: var(--s4u-blue);
+      font-size: .86rem;
+      font-weight: 850;
+    }
+
+    .section-subtitle {
+      margin-top: 3px;
+      color: var(--s4u-muted);
+      font-size: .69rem;
+    }
+
+    .section-actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .icon-action {
+      min-height: 31px;
+      padding: 0 9px;
+      color: var(--s4u-blue);
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 6px;
+      font: inherit;
+      font-size: .71rem;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .icon-action:hover {
+      color: var(--s4u-orange);
+      border-color: var(--s4u-orange);
+    }
+
+    .lesson-list {
+      padding: 10px 14px 14px 58px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .lesson-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-height: 52px;
+      padding: 0 12px;
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 7px;
+    }
+
+    .lesson-order {
+      color: var(--s4u-muted);
+      font-size: .73rem;
+      font-weight: 800;
+    }
+
+    .lesson-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .lesson-name {
+      color: var(--s4u-text);
+      font-size: .78rem;
+      font-weight: 800;
+    }
+
+    .lesson-type {
+      margin-top: 3px;
+      color: var(--s4u-muted);
+      font-size: .67rem;
+    }
+
+    .lesson-status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 8px;
+      color: #267044;
+      background: #eaf6ee;
+      border-radius: 20px;
+      font-size: .66rem;
+      font-weight: 800;
+    }
+
+    .lesson-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .lesson-link {
+      color: var(--s4u-blue);
+      font-size: .72rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .lesson-link:hover { color: var(--s4u-orange); }
+
+    .section-footer {
+      padding: 0 14px 14px 58px;
+    }
+
+    .section-footer .icon-action {
+      width: 100%;
+      min-height: 38px;
+      border-style: dashed;
+    }
+
+    .publish-panel {
+      position: sticky;
+      top: 84px;
+      padding: 20px;
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: var(--s4u-radius);
+      box-shadow: var(--s4u-shadow);
+    }
+
+    .publish-panel h2 {
+      margin: 0;
+      color: var(--s4u-blue);
+      font-size: 1rem;
+      font-weight: 850;
+    }
+
+    .publish-status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      margin-top: 12px;
+      padding: 0 10px;
+      color: #9a5b00;
+      background: #fff4df;
+      border-radius: 20px;
+      font-size: .7rem;
+      font-weight: 850;
+    }
+
+    .publish-checklist {
+      margin: 18px 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .publish-checklist li {
+      display: flex;
+      gap: 9px;
+      color: var(--s4u-text);
+      font-size: .74rem;
+      line-height: 1.45;
+    }
+
+    .check-mark {
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--s4u-blue);
+      background: #eef3fb;
+      border-radius: 50%;
+      font-size: .67rem;
+      font-weight: 850;
+      flex: 0 0 auto;
+    }
+
+    .check-pending {
+      color: #9a5b00;
+      background: #fff4df;
+    }
+
+    .publish-divider {
+      height: 1px;
+      margin: 18px 0;
+      background: var(--s4u-border);
+    }
+
+    .publish-field {
+      margin-bottom: 13px;
+    }
+
+    .publish-field label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--s4u-muted);
+      font-size: .68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .publish-field select {
+      width: 100%;
+      min-height: 40px;
+      padding: 0 10px;
+      color: var(--s4u-text);
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 7px;
+      font: inherit;
+      font-size: .78rem;
+    }
+
+    .publish-panel .lms-btn {
+      width: 100%;
+      justify-content: center;
+      margin-top: 9px;
+    }
+
+    .builder-note {
+      padding: 15px 18px;
+      color: var(--s4u-muted);
+      background: var(--s4u-soft);
+      border: 1px solid var(--s4u-border);
+      border-radius: var(--s4u-radius);
+      font-size: .76rem;
+      line-height: 1.6;
+    }
+
+    .builder-note strong { color: var(--s4u-blue); }
+
+    @media (max-width: 1180px) {
+      .builder-layout { grid-template-columns: 1fr; }
+      .publish-panel { position: static; }
+    }
+
+    @media (max-width: 900px) {
+      .settings-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .builder-heading { flex-direction: column; }
+      .builder-actions { width: 100%; }
+      .builder-actions .lms-btn { flex: 1; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field-group.span-2 { grid-column: auto; }
+      .thumbnail-zone { grid-template-columns: 1fr; }
+      .outline-toolbar { flex-direction: column; align-items: stretch; }
+      .outline-toolbar .lms-btn { width: 100%; }
+      .section-header { align-items: flex-start; flex-wrap: wrap; }
+      .section-actions { width: 100%; justify-content: flex-start; padding-left: 38px; }
+      .lesson-list { padding-left: 14px; }
+      .section-footer { padding-left: 14px; }
+      .lesson-row { flex-wrap: wrap; padding: 11px 12px; }
+      .lesson-actions { width: 100%; }
+    }
+  </style>
+</head>
+
+<body data-s4u-portal="admin">
+
+  <div class="lms-app">
+
+    <div
+      class="lms-sidebar-overlay"
+      data-lms-sidebar-overlay
+    ></div>
+
+
+    <!-- ======================================================
+         LMS SIDEBAR
+         ====================================================== -->
+
+    <aside class="lms-sidebar">
+
+      <a
+        href="admin-lms-courses.html"
+        class="lms-brand lms-brand-logo-only"
+        aria-label="Screenings4u Learning Center"
+      >
+        <div class="lms-brand-logo-wrap">
+          <img
+            src="images/logo.png"
+            alt="Screenings4u"
+            class="lms-brand-logo"
+          >
+        </div>
+      </a>
+
+
+      <div class="lms-sidebar-scroll">
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">HOME</div>
+
+          <ul class="lms-nav-list">
+            <li class="lms-nav-item">
+              <a
+                href="admin-lms-courses.html"
+                class="lms-nav-link"
+              >
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M3 12l9-9 9 9"></path>
+                    <path d="M5 10v10h14V10"></path>
+                  </svg>
+                </span>
+                Courses
+              </a>
+            </li>
+          </ul>
+
+        </div>
+
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">MANAGE</div>
+
+          <ul class="lms-nav-list">
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-enrollments.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </span>
+                Enrollments
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-students.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <circle cx="12" cy="7" r="4"></circle>
+                    <path d="M5.5 21a6.5 6.5 0 0 1 13 0"></path>
+                  </svg>
+                </span>
+                Students
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-progress.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M3 3v18h18"></path>
+                    <path d="M7 16l4-5 3 3 5-7"></path>
+                  </svg>
+                </span>
+                Progress
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">CONTENT</div>
+
+          <ul class="lms-nav-list">
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-lessons.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+                </span>
+                Lessons
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-quizzes.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M9.5 9a2.5 2.5 0 1 1 4.3 1.7c-.8.8-1.8 1.3-1.8 2.8"></path>
+                    <path d="M12 17h.01"></path>
+                  </svg>
+                </span>
+                Quizzes
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-assessments.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                  </svg>
+                </span>
+                Assessments
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-media.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <path d="M21 15l-5-5L5 21"></path>
+                  </svg>
+                </span>
+                Media
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">RECORDS</div>
+
+          <ul class="lms-nav-list">
+            <li class="lms-nav-item">
+              <a href="admin-lms-certificates.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <circle cx="12" cy="8" r="5"></circle>
+                    <path d="M8.5 12.5L7 22l5-3 5 3-1.5-9.5"></path>
+                  </svg>
+                </span>
+                Certificates
+              </a>
+            </li>
+          </ul>
+
+        </div>
+
+      </div>
+
+
+      <div class="lms-sidebar-footer">
+        <a
+          href="admin-dashboard.html"
+          class="lms-back-admin"
+        >
+          <span class="lms-nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M19 12H5"></path>
+              <path d="M12 19l-7-7 7-7"></path>
+            </svg>
+          </span>
+          Back to Main Administration
+        </a>
+      </div>
+
+    </aside>
+
+
+    <!-- ======================================================
+         MAIN APPLICATION
+         ====================================================== -->
+
+    <main class="lms-main">
+
+      <header class="lms-topbar">
+
+        <div class="lms-topbar-left">
+
+          <button
+            type="button"
+            class="lms-icon-button lms-mobile-menu-button"
+            data-lms-menu-toggle
+            aria-label="Open navigation"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M4 6h16"></path>
+              <path d="M4 12h16"></path>
+              <path d="M4 18h16"></path>
+            </svg>
+          </button>
+
+          <div class="lms-page-context">
+            <span class="lms-page-context-label">
+              Screenings4u Learning Center
+            </span>
+            <span class="lms-page-context-title">
+              Media Management
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="lms-topbar-right">
+
+          <button
+            type="button"
+            class="lms-icon-button"
+            aria-label="Notifications"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            class="lms-user-button"
+            data-lms-user-button
+          >
+            <span class="lms-user-avatar">AD</span>
+
+            <span class="lms-user-copy">
+              <span class="lms-user-name">Administrator</span>
+              <span class="lms-user-role">LMS Administration</span>
+            </span>
+          </button>
+
+        </div>
+
+      </header>
+
+
+      <!-- ====================================================
+           COURSE BUILDER
+           ==================================================== -->
+
+      <section class="lms-page builder-page">
+        <div class="lms-page-inner">
+
+          <nav class="lms-breadcrumbs" aria-label="Breadcrumb">
+            <a href="admin-lms-courses.html">Course Management</a>
+            <span>/</span>
+            <span>Course Builder</span>
+          </nav>
+
+          <div class="builder-heading">
+            <div>
+              <div class="page-eyebrow">Course Creation</div>
+              <h1>Course Builder</h1>
+              <p>
+                Create the course foundation, organize sections and lessons,
+                and prepare the learning experience for publishing in the
+                Screenings4u Learning Center.
+              </p>
+            </div>
+
+            <div class="builder-actions">
+              <a href="admin-lms-courses.html" class="lms-btn lms-btn-secondary">
+                Cancel
+              </a>
+              <button type="button" class="lms-btn lms-btn-secondary" id="saveDraftButton">
+                Save Draft
+              </button>
+            </div>
+          </div>
+
+          <div class="builder-layout">
+
+            <div class="builder-main">
+
+              <!-- COURSE INFORMATION -->
+              <section class="lms-card builder-card">
+                <div class="builder-card-header">
+                  <h2>Course Information</h2>
+                  <p>Start with the core information learners will see.</p>
+                </div>
+
+                <div class="builder-card-body">
+                  <div class="form-grid">
+
+                    <div class="field-group span-2">
+                      <label for="courseTitle">Course Title</label>
+                      <input id="courseTitle" type="text"
+                        placeholder="Enter course title">
+                    </div>
+
+                    <div class="field-group span-2">
+                      <label for="courseDescription">Course Description</label>
+                      <textarea id="courseDescription"
+                        placeholder="Describe what learners will gain from this course"></textarea>
+                    </div>
+
+                    <div class="field-group">
+                      <label for="courseCategory">Course Category</label>
+                      <select id="courseCategory">
+                        <option value="">Select a category</option>
+                        <option>Drug Testing</option>
+                        <option>Alcohol Testing</option>
+                        <option>DOT Compliance</option>
+                        <option>Workplace Training</option>
+                        <option>Safety Training</option>
+                      </select>
+                    </div>
+
+                    <div class="field-group">
+                      <label for="courseLevel">Learning Level</label>
+                      <select id="courseLevel">
+                        <option value="">Select level</option>
+                        <option>Beginner</option>
+                        <option>Intermediate</option>
+                        <option>Advanced</option>
+                      </select>
+                    </div>
+
+                    <div class="field-group span-2">
+                      <label>Course Thumbnail</label>
+                      <div class="thumbnail-zone">
+                        <div class="thumbnail-preview" id="thumbnailPreview">
+                          No thumbnail selected
+                        </div>
+                        <div class="thumbnail-actions">
+                          <strong>Course thumbnail</strong>
+                          <span>
+                            Select an existing LMS media record or upload media
+                            when the media library is connected.
+                          </span>
+                          <button type="button" class="lms-btn lms-btn-secondary"
+                            id="selectThumbnailButton">
+                            Select Media
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </section>
+
+              <!-- COURSE SETTINGS -->
+              <section class="lms-card builder-card">
+                <div class="builder-card-header">
+                  <h2>Course Settings</h2>
+                  <p>Configure how learners access and complete the course.</p>
+                </div>
+
+                <div class="builder-card-body">
+
+                  <div class="form-grid">
+                    <div class="field-group">
+                      <label for="accessType">Access Type</label>
+                      <select id="accessType">
+                        <option value="purchase">Purchase Required</option>
+                        <option value="assigned">Admin Assigned</option>
+                        <option value="both">Purchase + Admin Assignment</option>
+                      </select>
+                      <div class="field-help">
+                        Final purchase rules should follow the main website
+                        checkout and enrollment system.
+                      </div>
+                    </div>
+
+                    <div class="field-group">
+                      <label for="completionRule">Completion Rule</label>
+                      <select id="completionRule">
+                        <option value="all-lessons">Complete All Lessons</option>
+                        <option value="lessons-and-quizzes">Lessons + Quizzes</option>
+                        <option value="full-course">Full Course Requirements</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style="height:16px"></div>
+
+                  <div class="settings-grid">
+                    <div class="setting-tile">
+                      <label>
+                        <input type="checkbox" id="enableCertificate" checked>
+                        <span>
+                          <strong>Enable Certificate</strong>
+                          <span>Issue a certificate when completion requirements are met.</span>
+                        </span>
+                      </label>
+                    </div>
+
+                    <div class="setting-tile">
+                      <label>
+                        <input type="checkbox" id="allowRetakes" checked>
+                        <span>
+                          <strong>Allow Quiz Retakes</strong>
+                          <span>Allow learners to retake eligible course quizzes.</span>
+                        </span>
+                      </label>
+                    </div>
+
+                    <div class="setting-tile">
+                      <label>
+                        <input type="checkbox" id="showProgress" checked>
+                        <span>
+                          <strong>Show Progress</strong>
+                          <span>Display course completion progress to the learner.</span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+
+                </div>
+              </section>
+
+              <!-- COURSE OUTLINE -->
+              <section class="lms-card builder-card">
+                <div class="builder-card-header">
+                  <h2>Course Outline</h2>
+                  <p>
+                    Organize sections and lessons. Lessons can later be opened
+                    in the dedicated Lesson Builder.
+                  </p>
+                </div>
+
+                <div class="outline-toolbar">
+                  <div class="outline-toolbar-copy">
+                    <strong>Sections & Lessons</strong>
+                    <span>Drag-and-drop ordering can be connected to lms_sections and lms_lessons.</span>
+                  </div>
+
+                  <button type="button" class="lms-btn lms-btn-primary" id="addSectionButton">
+                    + Add Section
+                  </button>
+                </div>
+
+                <div class="section-list" id="sectionList">
+
+                  <!-- Example builder state until Supabase is wired -->
+                  <article class="course-section">
+                    <div class="section-header">
+                      <span class="drag-handle">⋮⋮</span>
+                      <span class="section-order">1</span>
+
+                      <div class="section-title-wrap">
+                        <div class="section-title">Section 1: Course Introduction</div>
+                        <div class="section-subtitle">2 lessons</div>
+                      </div>
+
+                      <div class="section-actions">
+                        <button type="button" class="icon-action">Edit Section</button>
+                        <button type="button" class="icon-action">Delete</button>
+                      </div>
+                    </div>
+
+                    <div class="lesson-list">
+                      <div class="lesson-row">
+                        <span class="drag-handle">⋮⋮</span>
+                        <span class="lesson-order">1.1</span>
+
+                        <div class="lesson-info">
+                          <div class="lesson-name">Welcome to the Course</div>
+                          <div class="lesson-type">Lesson content</div>
+                        </div>
+
+                        <span class="lesson-status">Draft</span>
+
+                        <div class="lesson-actions">
+                          <a href="admin-lms-lesson-builder.html" class="lesson-link">Open Editor</a>
+                        </div>
+                      </div>
+
+                      <div class="lesson-row">
+                        <span class="drag-handle">⋮⋮</span>
+                        <span class="lesson-order">1.2</span>
+
+                        <div class="lesson-info">
+                          <div class="lesson-name">Learning Objectives</div>
+                          <div class="lesson-type">Lesson content</div>
+                        </div>
+
+                        <span class="lesson-status">Draft</span>
+
+                        <div class="lesson-actions">
+                          <a href="admin-lms-lesson-builder.html" class="lesson-link">Open Editor</a>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="section-footer">
+                      <button type="button" class="icon-action addLessonButton">
+                        + Add Lesson
+                      </button>
+                    </div>
+                  </article>
+
+                  <article class="course-section">
+                    <div class="section-header">
+                      <span class="drag-handle">⋮⋮</span>
+                      <span class="section-order">2</span>
+
+                      <div class="section-title-wrap">
+                        <div class="section-title">Section 2: Core Training</div>
+                        <div class="section-subtitle">No lessons yet</div>
+                      </div>
+
+                      <div class="section-actions">
+                        <button type="button" class="icon-action">Edit Section</button>
+                        <button type="button" class="icon-action">Delete</button>
+                      </div>
+                    </div>
+
+                    <div class="lesson-list"></div>
+
+                    <div class="section-footer">
+                      <button type="button" class="icon-action addLessonButton">
+                        + Add Lesson
+                      </button>
+                    </div>
+                  </article>
+
+                </div>
+              </section>
+
+              <div class="builder-note">
+                <strong>Database structure:</strong>
+                The course record belongs in <strong>lms_courses</strong>.
+                Sections are stored in <strong>lms_sections</strong>, lessons
+                in <strong>lms_lessons</strong>, lesson content in
+                <strong>lms_content_blocks</strong>, and related quizzes and
+                assessments remain connected to their respective lesson IDs.
+              </div>
+
+            </div>
+
+            <!-- PUBLISH PANEL -->
+            <aside class="publish-panel">
+              <h2>Publishing</h2>
+
+              <div class="publish-status" id="coursePublishStatus">
+                Draft Course
+              </div>
+
+              <ul class="publish-checklist">
+                <li>
+                  <span class="check-mark">✓</span>
+                  <span>Course information</span>
+                </li>
+                <li>
+                  <span class="check-mark">✓</span>
+                  <span>Course settings</span>
+                </li>
+                <li>
+                  <span class="check-mark check-pending">!</span>
+                  <span>Add course sections and lessons</span>
+                </li>
+                <li>
+                  <span class="check-mark check-pending">!</span>
+                  <span>Review completion requirements</span>
+                </li>
+              </ul>
+
+              <div class="publish-divider"></div>
+
+              <div class="publish-field">
+                <label for="courseVisibility">Visibility</label>
+                <select id="courseVisibility">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="private">Private</option>
+                </select>
+              </div>
+
+              <button type="button" class="lms-btn lms-btn-primary" id="publishCourseButton">
+                Publish Course
+              </button>
+
+              <a href="admin-lms-course-preview.html"
+                class="lms-btn lms-btn-secondary">
+                Preview Course
+              </a>
+            </aside>
+
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+
+  <!-- ==========================================================
+       SHARED LMS JAVASCRIPT
+       ========================================================== -->
+
+  
+  <!-- Phase 1: shared admin authentication foundation -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/permissions.js"></script>
+  <script src="assets/js/lms.js"></script>
+  <script src="assets/js/lms-phase2.js"></script>
+
+
+  <!-- ==========================================================
+       COURSE BUILDER UI
+       ========================================================== -->
+  <script>
+    (function () {
+      "use strict";
+
+      document.addEventListener("DOMContentLoaded", function () {
+
+        var sectionList = document.getElementById("sectionList");
+        var addSectionButton = document.getElementById("addSectionButton");
+        var saveDraftButton = document.getElementById("saveDraftButton");
+        var publishCourseButton = document.getElementById("publishCourseButton");
+        var visibility = document.getElementById("courseVisibility");
+        var status = document.getElementById("coursePublishStatus");
+
+        function addLessonButtonBehavior(button) {
+          button.addEventListener("click", function () {
+            var section = button.closest(".course-section");
+            if (!section) return;
+
+            var list = section.querySelector(".lesson-list");
+            var lessonCount = list.querySelectorAll(".lesson-row").length + 1;
+            var sectionNumber = section.querySelector(".section-order").textContent.trim();
+
+            var row = document.createElement("div");
+            row.className = "lesson-row";
+            row.innerHTML =
+              '<span class="drag-handle">⋮⋮</span>' +
+              '<span class="lesson-order">' + sectionNumber + '.' + lessonCount + '</span>' +
+              '<div class="lesson-info">' +
+                '<div class="lesson-name">New Lesson</div>' +
+                '<div class="lesson-type">Lesson content</div>' +
+              '</div>' +
+              '<span class="lesson-status">Draft</span>' +
+              '<div class="lesson-actions">' +
+                '<a href="admin-lms-lesson-builder.html" class="lesson-link">Open Editor</a>' +
+              '</div>';
+
+            list.appendChild(row);
+
+            var subtitle = section.querySelector(".section-subtitle");
+            if (subtitle) subtitle.textContent = lessonCount + " lesson" + (lessonCount === 1 ? "" : "s");
+          });
+        }
+
+        document.querySelectorAll(".addLessonButton").forEach(addLessonButtonBehavior);
+
+        if (addSectionButton) {
+          addSectionButton.addEventListener("click", function () {
+            var count = sectionList.querySelectorAll(".course-section").length + 1;
+
+            var section = document.createElement("article");
+            section.className = "course-section";
+            section.innerHTML =
+              '<div class="section-header">' +
+                '<span class="drag-handle">⋮⋮</span>' +
+                '<span class="section-order">' + count + '</span>' +
+                '<div class="section-title-wrap">' +
+                  '<div class="section-title">New Section</div>' +
+                  '<div class="section-subtitle">No lessons yet</div>' +
+                '</div>' +
+                '<div class="section-actions">' +
+                  '<button type="button" class="icon-action">Edit Section</button>' +
+                  '<button type="button" class="icon-action">Delete</button>' +
+                '</div>' +
+              '</div>' +
+              '<div class="lesson-list"></div>' +
+              '<div class="section-footer">' +
+                '<button type="button" class="icon-action addLessonButton">+ Add Lesson</button>' +
+              '</div>';
+
+            sectionList.appendChild(section);
+            addLessonButtonBehavior(section.querySelector(".addLessonButton"));
+          });
+        }
+
+        if (saveDraftButton) {
+          saveDraftButton.addEventListener("click", function () {
+            if (status) status.textContent = "Draft Saved";
+          });
+        }
+
+        if (publishCourseButton) {
+          publishCourseButton.addEventListener("click", function () {
+            if (visibility) visibility.value = "published";
+            if (status) status.textContent = "Ready to Publish";
+          });
+        }
+
+      });
+    })();
+  </script>
+
+</body>
+</html>

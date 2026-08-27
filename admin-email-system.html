@@ -74,10 +74,10 @@
         </div>
 
         <div class="comms-actions">
-          <a class="comms-btn" href="admin-email-system.html">
+          <button class="comms-btn" id="refreshEmailBtn" type="button">
             <span class="comms-btn-icon">↻</span>
-            Refresh
-          </a>
+            <span id="refreshEmailLabel">Refresh</span>
+          </button>
 
           <a class="comms-btn primary" href="admin-email-compose.html">
             <span class="comms-btn-icon">+</span>
@@ -87,10 +87,10 @@
       </header>
 
       <section class="comms-kpis" aria-label="Communications management metrics">
-        <article class="comms-kpi"><div class="comms-kpi-top"><span class="comms-kpi-label">EMAIL ACTIVITY</span><span class="comms-kpi-mark">▤</span></div><strong>—</strong><small>Enterprise email communications</small></article>
-<article class="comms-kpi"><div class="comms-kpi-top"><span class="comms-kpi-label">SENT</span><span class="comms-kpi-mark">✓</span></div><strong>—</strong><small>Completed email communications</small></article>
-<article class="comms-kpi"><div class="comms-kpi-top"><span class="comms-kpi-label">DRAFTS</span><span class="comms-kpi-mark">!</span></div><strong>—</strong><small>Emails currently in preparation</small></article>
-<article class="comms-kpi"><div class="comms-kpi-top"><span class="comms-kpi-label">REQUIRES REVIEW</span><span class="comms-kpi-mark">□</span></div><strong>—</strong><small>Email records requiring attention</small></article>
+        <article class="comms-kpi"><div class="comms-kpi-top"><span class="comms-kpi-label">EMAIL ACTIVITY</span><span class="comms-kpi-mark">▤</span></div><strong id="emailActivityCount">—</strong><small>Enterprise email communications</small></article>
+<article class="comms-kpi"><div class="comms-kpi-top"><span class="comms-kpi-label">SENT</span><span class="comms-kpi-mark">✓</span></div><strong id="emailSentCount">—</strong><small>Completed email communications</small></article>
+<article class="comms-kpi"><div class="comms-kpi-top"><span class="comms-kpi-label">DRAFTS</span><span class="comms-kpi-mark">!</span></div><strong id="emailDraftCount">—</strong><small>Emails currently in preparation</small></article>
+<article class="comms-kpi"><div class="comms-kpi-top"><span class="comms-kpi-label">REQUIRES REVIEW</span><span class="comms-kpi-mark">□</span></div><strong id="emailReviewCount">—</strong><small>Email records requiring attention</small></article>
       </section>
 
       <section class="comms-grid">
@@ -159,26 +159,210 @@
 
 <script>
 /* ============================================================
-   screenings4u — COMMUNICATIONS MANAGEMENT
-   No pop-ups or modal workflows are used on this page.
+   screenings4u — EMAIL MANAGEMENT
+   Wired to public.email_messages
    ============================================================ */
+
 (function () {
   "use strict";
 
-  document.addEventListener("DOMContentLoaded", async function () {
+  document.addEventListener("DOMContentLoaded", initializeEmailManagement);
+
+  async function initializeEmailManagement() {
     try {
       if (
         window.S4UAuth &&
         typeof window.S4UAuth.requireSession === "function"
       ) {
         const session = await window.S4UAuth.requireSession("admin-login.html");
-
         if (!session) return;
       }
+
+      const refreshButton = document.getElementById("refreshEmailBtn");
+
+      if (refreshButton) {
+        refreshButton.addEventListener("click", loadEmailMetrics);
+      }
+
+      await loadEmailMetrics();
+
     } catch (error) {
       console.error("admin-email-system.html initialization failed:", error);
+      setMetricErrorState();
     }
-  });
+  }
+
+  async function loadEmailMetrics() {
+    setLoadingState(true);
+
+    try {
+      const client = await waitForSupabaseClient();
+
+      if (!client || typeof client.from !== "function") {
+        throw new Error("Supabase client is unavailable.");
+      }
+
+      /*
+       * Actual email_messages table columns:
+       * id
+       * organization_id
+       * user_id
+       * direction
+       * recipient_email
+       * sender_email
+       * subject
+       * body
+       * status
+       * sent_at
+       * created_at
+       */
+      const { data, error } = await client
+        .from("email_messages")
+        .select(`
+          id,
+          organization_id,
+          user_id,
+          direction,
+          recipient_email,
+          sender_email,
+          subject,
+          body,
+          status,
+          sent_at,
+          created_at
+        `);
+
+      if (error) {
+        throw error;
+      }
+
+      const emails = Array.isArray(data) ? data : [];
+
+      const total = emails.length;
+
+      const sent = emails.filter(function (email) {
+        return ["sent", "delivered"].includes(normalizeStatus(email.status));
+      }).length;
+
+      const drafts = emails.filter(function (email) {
+        return normalizeStatus(email.status) === "draft";
+      }).length;
+
+      const requiresReview = emails.filter(function (email) {
+        return ["queued", "failed"].includes(normalizeStatus(email.status));
+      }).length;
+
+      setMetric("emailActivityCount", total);
+      setMetric("emailSentCount", sent);
+      setMetric("emailDraftCount", drafts);
+      setMetric("emailReviewCount", requiresReview);
+
+    } catch (error) {
+      console.error("Email Management load failed:", error);
+      setMetricErrorState();
+    } finally {
+      setLoadingState(false);
+    }
+  }
+
+  function getSupabaseClient() {
+    if (
+      window.S4UAuth &&
+      typeof window.S4UAuth.getClient === "function"
+    ) {
+      const client = window.S4UAuth.getClient();
+
+      if (client && typeof client.from === "function") {
+        return client;
+      }
+    }
+
+    if (
+      window.supabaseClient &&
+      typeof window.supabaseClient.from === "function"
+    ) {
+      return window.supabaseClient;
+    }
+
+    if (
+      window.screenings4uSupabase &&
+      typeof window.screenings4uSupabase.from === "function"
+    ) {
+      return window.screenings4uSupabase;
+    }
+
+    if (
+      window.S4USupabase &&
+      typeof window.S4USupabase.from === "function"
+    ) {
+      return window.S4USupabase;
+    }
+
+    return null;
+  }
+
+  async function waitForSupabaseClient() {
+    const startedAt = Date.now();
+
+    while (Date.now() - startedAt < 3000) {
+      const client = getSupabaseClient();
+
+      if (client) {
+        return client;
+      }
+
+      await new Promise(function (resolve) {
+        window.setTimeout(resolve, 100);
+      });
+    }
+
+    return getSupabaseClient();
+  }
+
+  function normalizeStatus(value) {
+    return String(value || "")
+      .trim()
+      .toLowerCase();
+  }
+
+  function setMetric(id, value) {
+    const element = document.getElementById(id);
+
+    if (!element) return;
+
+    element.textContent =
+      Number(value || 0).toLocaleString();
+  }
+
+  function setLoadingState(isLoading) {
+    const button = document.getElementById("refreshEmailBtn");
+    const label = document.getElementById("refreshEmailLabel");
+
+    if (button) {
+      button.disabled = Boolean(isLoading);
+      button.setAttribute("aria-busy", String(Boolean(isLoading)));
+    }
+
+    if (label) {
+      label.textContent = isLoading ? "Loading..." : "Refresh";
+    }
+  }
+
+  function setMetricErrorState() {
+    [
+      "emailActivityCount",
+      "emailSentCount",
+      "emailDraftCount",
+      "emailReviewCount"
+    ].forEach(function (id) {
+      const element = document.getElementById(id);
+
+      if (element) {
+        element.textContent = "—";
+      }
+    });
+  }
+
 })();
 </script>
 </body>

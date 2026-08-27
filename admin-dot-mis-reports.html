@@ -139,10 +139,10 @@
         </div>
 
         <div class="dot-actions">
-          <a class="dot-btn" href="admin-mis-reports.html">
+          <button class="dot-btn" id="refreshMisBtn" type="button">
             <span class="dot-btn-icon">↻</span>
-            Refresh
-          </a>
+            <span id="refreshMisLabel">Refresh</span>
+          </button>
 
           <a class="dot-btn primary" href="admin-mis-report-create.html">
             <span class="dot-btn-icon">+</span>
@@ -154,19 +154,19 @@
       <section class="dot-kpis" aria-label="DOT compliance metrics">
         <article class="dot-kpi">
   <div class="dot-kpi-top"><span class="dot-kpi-label">TOTAL REPORTS</span><span class="dot-kpi-mark">▤</span></div>
-  <strong>—</strong><small>All managed MIS report records</small>
+  <strong id="misTotal">—</strong><small>All managed MIS report records</small>
 </article>
 <article class="dot-kpi">
   <div class="dot-kpi-top"><span class="dot-kpi-label">IN PREPARATION</span><span class="dot-kpi-mark">✓</span></div>
-  <strong>—</strong><small>Reports currently being prepared</small>
+  <strong id="misPreparation">—</strong><small>Reports currently being prepared</small>
 </article>
 <article class="dot-kpi">
   <div class="dot-kpi-top"><span class="dot-kpi-label">READY FOR REVIEW</span><span class="dot-kpi-mark">!</span></div>
-  <strong>—</strong><small>Reports requiring administrative review</small>
+  <strong id="misReview">—</strong><small>Reports requiring administrative review</small>
 </article>
 <article class="dot-kpi">
   <div class="dot-kpi-top"><span class="dot-kpi-label">COMPLETED</span><span class="dot-kpi-mark">□</span></div>
-  <strong>—</strong><small>Completed reporting records</small>
+  <strong id="misCompleted">—</strong><small>Completed reporting records</small>
 </article>
       </section>
 
@@ -272,29 +272,103 @@
 <script src="assets/js/admin-navigation.js"></script>
 
 <script>
-/* ============================================================
-   screenings4u — DOT COMPLIANCE MANAGEMENT
-   No pop-ups or modal workflows are used on this page.
-   ============================================================ */
 (function () {
   "use strict";
 
-  document.addEventListener("DOMContentLoaded", async function () {
-    try {
-      if (
-        window.S4UAuth &&
-        typeof window.S4UAuth.requireSession === "function"
-      ) {
-        const session = await window.S4UAuth.requireSession("admin-login.html");
+  document.addEventListener("DOMContentLoaded", initializeMisReports);
 
-        if (!session) {
-          return;
-        }
-      }
+  async function initializeMisReports() {
+    const refreshButton = document.getElementById("refreshMisBtn");
+    if (refreshButton) refreshButton.addEventListener("click", loadMisReports);
+    await loadMisReports();
+  }
+
+  async function loadMisReports() {
+    setLoadingState(true);
+    try {
+      const client = await waitForSupabaseClient();
+      if (!client) throw new Error("Supabase client is unavailable.");
+
+      const { data, error } = await client
+        .from("dot_mis_reports")
+        .select("id, employer_id, report_year, report_status, requested_by_fmcsa, submitted_at");
+
+      if (error) throw error;
+
+      const reports = Array.isArray(data) ? data : [];
+
+      const total = reports.length;
+      const preparation = reports.filter(r =>
+        ["draft", "preparation", "in_preparation"].includes(normalize(r.report_status))
+      ).length;
+      const review = reports.filter(r =>
+        ["review", "ready_for_review", "pending_review"].includes(normalize(r.report_status))
+      ).length;
+      const completed = reports.filter(r =>
+        ["completed", "submitted", "filed"].includes(normalize(r.report_status)) ||
+        Boolean(r.submitted_at)
+      ).length;
+
+      setMetric("misTotal", total);
+      setMetric("misPreparation", preparation);
+      setMetric("misReview", review);
+      setMetric("misCompleted", completed);
+
     } catch (error) {
-      console.error("admin-mis-reports.html initialization failed:", error);
+      console.error("MIS Report Management load failed:", error);
+      setErrorState();
+    } finally {
+      setLoadingState(false);
     }
-  });
+  }
+
+  function getSupabaseClient() {
+    if (window.S4UAuth && typeof window.S4UAuth.getClient === "function") {
+      const client = window.S4UAuth.getClient();
+      if (client && typeof client.from === "function") return client;
+    }
+    if (window.screenings4uSupabase && typeof window.screenings4uSupabase.from === "function") return window.screenings4uSupabase;
+    if (window.supabaseClient && typeof window.supabaseClient.from === "function") return window.supabaseClient;
+    if (window.S4USupabase && typeof window.S4USupabase.from === "function") return window.S4USupabase;
+    return null;
+  }
+
+  async function waitForSupabaseClient() {
+    const started = Date.now();
+    while (Date.now() - started < 3000) {
+      const client = getSupabaseClient();
+      if (client) return client;
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    return getSupabaseClient();
+  }
+
+  function normalize(value) {
+    return String(value || "").trim().toLowerCase().replace(/[\s-]+/g, "_");
+  }
+
+  function setMetric(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = Number(value || 0).toLocaleString();
+  }
+
+  function setLoadingState(isLoading) {
+    const button = document.getElementById("refreshMisBtn");
+    const label = document.getElementById("refreshMisLabel");
+    if (button) {
+      button.disabled = Boolean(isLoading);
+      button.style.opacity = isLoading ? ".7" : "";
+      button.style.pointerEvents = isLoading ? "none" : "";
+    }
+    if (label) label.textContent = isLoading ? "Loading..." : "Refresh";
+  }
+
+  function setErrorState() {
+    ["misTotal", "misPreparation", "misReview", "misCompleted"].forEach(id => {
+      const element = document.getElementById(id);
+      if (element) element.textContent = "—";
+    });
+  }
 })();
 </script>
 

@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Assessment Builder | Screenings4u Learning Center</title>
+
+  <link
+    rel="stylesheet"
+    href="assets/css/lms.css"
+  >
+
+  <style>
+    /* ============================================================
+       ASSESSMENT BUILDER
+       ============================================================ */
+
+    .assessment-page { padding-bottom: 38px; }
+
+    .lms-breadcrumbs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 18px;
+      color: var(--s4u-muted);
+      font-size: .82rem;
+      font-weight: 650;
+    }
+
+    .lms-breadcrumbs a {
+      color: var(--s4u-blue);
+      text-decoration: none;
+    }
+
+    .lms-breadcrumbs a:hover { color: var(--s4u-orange); }
+
+    .builder-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 22px;
+      margin-bottom: 20px;
+    }
+
+    .page-eyebrow {
+      margin-bottom: 8px;
+      color: var(--s4u-orange);
+      font-size: .72rem;
+      font-weight: 850;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .builder-heading h1 {
+      margin: 0;
+      color: var(--s4u-blue);
+      font-size: clamp(1.7rem, 3vw, 2.3rem);
+      font-weight: 850;
+      letter-spacing: -.04em;
+    }
+
+    .builder-heading p {
+      max-width: 760px;
+      margin: 9px 0 0;
+      color: var(--s4u-text);
+      font-size: .91rem;
+      line-height: 1.6;
+    }
+
+    .builder-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .assessment-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .assessment-main {
+      display: grid;
+      gap: 20px;
+    }
+
+    .builder-card { overflow: hidden; }
+
+    .builder-card-header {
+      padding: 18px 20px;
+      background: var(--s4u-surface);
+      border-bottom: 1px solid var(--s4u-border);
+    }
+
+    .builder-card-header h2 {
+      margin: 0;
+      color: var(--s4u-blue);
+      font-size: 1rem;
+      font-weight: 850;
+    }
+
+    .builder-card-header p {
+      margin: 5px 0 0;
+      color: var(--s4u-muted);
+      font-size: .78rem;
+      line-height: 1.5;
+    }
+
+    .builder-card-body {
+      padding: 20px;
+      background: var(--s4u-surface);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field-group { min-width: 0; }
+    .field-group.span-2 { grid-column: 1 / -1; }
+
+    .field-group label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--s4u-blue);
+      font-size: .74rem;
+      font-weight: 800;
+    }
+
+    .field-group input,
+    .field-group textarea,
+    .field-group select {
+      width: 100%;
+      min-height: 43px;
+      padding: 10px 12px;
+      color: var(--s4u-text);
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 7px;
+      outline: none;
+      box-sizing: border-box;
+      font: inherit;
+      font-size: .84rem;
+    }
+
+    .field-group textarea {
+      min-height: 105px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    .field-group input:focus,
+    .field-group textarea:focus,
+    .field-group select:focus {
+      border-color: var(--s4u-blue);
+      box-shadow: 0 0 0 3px rgba(50, 90, 163, .10);
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .setting-tile {
+      padding: 14px;
+      background: var(--s4u-soft);
+      border: 1px solid var(--s4u-border);
+      border-radius: 8px;
+    }
+
+    .setting-tile label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--s4u-blue);
+      font-size: .7rem;
+      font-weight: 850;
+    }
+
+    .setting-tile input,
+    .setting-tile select {
+      width: 100%;
+      min-height: 38px;
+      padding: 8px 9px;
+      color: var(--s4u-text);
+      background: #fff;
+      border: 1px solid var(--s4u-border);
+      border-radius: 6px;
+      box-sizing: border-box;
+      font: inherit;
+      font-size: .75rem;
+    }
+
+    .questions-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 15px 20px;
+      background: #fbfcfe;
+      border-bottom: 1px solid var(--s4u-border);
+    }
+
+    .questions-toolbar strong {
+      color: var(--s4u-blue);
+      font-size: .83rem;
+    }
+
+    .questions-toolbar span {
+      display: block;
+      margin-top: 3px;
+      color: var(--s4u-muted);
+      font-size: .7rem;
+    }
+
+    .question-list {
+      padding: 14px;
+      display: grid;
+      gap: 14px;
+      background: var(--s4u-surface);
+    }
+
+    .question-card {
+      border: 1px solid var(--s4u-border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--s4u-surface);
+    }
+
+    .question-head {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 13px 15px;
+      background: var(--s4u-soft);
+      border-bottom: 1px solid var(--s4u-border);
+    }
+
+    .drag-handle {
+      color: var(--s4u-muted);
+      font-size: 1.1rem;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .question-number {
+      width: 27px;
+      height: 27px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--s4u-blue);
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 50%;
+      font-size: .71rem;
+      font-weight: 850;
+      flex: 0 0 auto;
+    }
+
+    .question-title {
+      flex: 1;
+      min-width: 0;
+      color: var(--s4u-blue);
+      font-size: .8rem;
+      font-weight: 850;
+    }
+
+    .question-meta {
+      margin-top: 3px;
+      color: var(--s4u-muted);
+      font-size: .67rem;
+      font-weight: 650;
+    }
+
+    .question-actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .icon-action {
+      min-height: 31px;
+      padding: 0 9px;
+      color: var(--s4u-blue);
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 6px;
+      font: inherit;
+      font-size: .71rem;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .icon-action:hover {
+      color: var(--s4u-orange);
+      border-color: var(--s4u-orange);
+    }
+
+    .question-body { padding: 16px; }
+
+    .question-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 180px;
+      gap: 14px;
+      margin-bottom: 15px;
+    }
+
+    .question-field label,
+    .options-title {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--s4u-blue);
+      font-size: .72rem;
+      font-weight: 800;
+    }
+
+    .question-field textarea,
+    .question-field select,
+    .question-field input {
+      width: 100%;
+      min-height: 40px;
+      padding: 9px 10px;
+      color: var(--s4u-text);
+      border: 1px solid var(--s4u-border);
+      border-radius: 6px;
+      box-sizing: border-box;
+      font: inherit;
+      font-size: .78rem;
+    }
+
+    .question-field textarea {
+      min-height: 82px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    .answer-options {
+      display: grid;
+      gap: 8px;
+    }
+
+    .answer-option {
+      display: grid;
+      grid-template-columns: 26px minmax(0, 1fr) auto;
+      gap: 9px;
+      align-items: center;
+    }
+
+    .correct-toggle {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--s4u-blue);
+      justify-self: center;
+    }
+
+    .answer-option input[type="text"] {
+      width: 100%;
+      min-height: 38px;
+      padding: 8px 10px;
+      color: var(--s4u-text);
+      border: 1px solid var(--s4u-border);
+      border-radius: 6px;
+      box-sizing: border-box;
+      font: inherit;
+      font-size: .76rem;
+    }
+
+    .remove-option {
+      color: var(--s4u-muted);
+      background: transparent;
+      border: 0;
+      font: inherit;
+      font-size: .7rem;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .remove-option:hover { color: var(--s4u-orange); }
+
+    .question-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+      padding-top: 13px;
+      border-top: 1px solid var(--s4u-border);
+    }
+
+    .question-footer small {
+      color: var(--s4u-muted);
+      font-size: .68rem;
+      line-height: 1.45;
+    }
+
+    .add-question-area {
+      padding: 0 14px 14px;
+    }
+
+    .add-question-area .icon-action {
+      width: 100%;
+      min-height: 41px;
+      border-style: dashed;
+    }
+
+    .assessment-sidebar {
+      position: sticky;
+      top: 84px;
+      padding: 20px;
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: var(--s4u-radius);
+      box-shadow: var(--s4u-shadow);
+    }
+
+    .assessment-sidebar h2 {
+      margin: 0;
+      color: var(--s4u-blue);
+      font-size: 1rem;
+      font-weight: 850;
+    }
+
+    .summary-stat {
+      margin-top: 13px;
+      padding: 13px;
+      background: var(--s4u-soft);
+      border-radius: 7px;
+    }
+
+    .summary-stat-label {
+      color: var(--s4u-muted);
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .summary-stat-value {
+      margin-top: 5px;
+      color: var(--s4u-blue);
+      font-size: .82rem;
+      font-weight: 850;
+      line-height: 1.45;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      margin: 18px 0;
+      background: var(--s4u-border);
+    }
+
+    .builder-checklist {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .builder-checklist li {
+      display: flex;
+      gap: 9px;
+      color: var(--s4u-text);
+      font-size: .73rem;
+      line-height: 1.45;
+    }
+
+    .check-mark {
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--s4u-blue);
+      background: #eef3fb;
+      border-radius: 50%;
+      font-size: .67rem;
+      font-weight: 850;
+      flex: 0 0 auto;
+    }
+
+    .check-pending {
+      color: #9a5b00;
+      background: #fff4df;
+    }
+
+    .assessment-sidebar .lms-btn {
+      width: 100%;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .schema-note {
+      padding: 15px 18px;
+      color: var(--s4u-muted);
+      background: var(--s4u-soft);
+      border: 1px solid var(--s4u-border);
+      border-radius: var(--s4u-radius);
+      font-size: .76rem;
+      line-height: 1.6;
+    }
+
+    .schema-note strong { color: var(--s4u-blue); }
+
+    @media (max-width: 1180px) {
+      .assessment-layout { grid-template-columns: 1fr; }
+      .assessment-sidebar { position: static; }
+    }
+
+    @media (max-width: 760px) {
+      .builder-heading { flex-direction: column; }
+      .builder-actions { width: 100%; }
+      .builder-actions .lms-btn { flex: 1; }
+      .form-grid,
+      .settings-grid,
+      .question-grid { grid-template-columns: 1fr; }
+      .field-group.span-2 { grid-column: auto; }
+      .questions-toolbar { flex-direction: column; align-items: stretch; }
+      .questions-toolbar .lms-btn { width: 100%; }
+      .question-head { align-items: flex-start; flex-wrap: wrap; }
+      .question-actions { width: 100%; padding-left: 37px; }
+      .answer-option { grid-template-columns: 26px minmax(0, 1fr); }
+      .remove-option { grid-column: 2; justify-self: start; }
+      .question-footer { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="lms-app">
+
+    <div
+      class="lms-sidebar-overlay"
+      data-lms-sidebar-overlay
+    ></div>
+
+
+    <!-- ======================================================
+         LMS SIDEBAR
+         ====================================================== -->
+
+    <aside class="lms-sidebar">
+
+      <a
+        href="admin-lms-courses.html"
+        class="lms-brand lms-brand-logo-only"
+        aria-label="Screenings4u Learning Center"
+      >
+        <div class="lms-brand-logo-wrap">
+          <img
+            src="images/logo.png"
+            alt="Screenings4u"
+            class="lms-brand-logo"
+          >
+        </div>
+      </a>
+
+
+      <div class="lms-sidebar-scroll">
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">HOME</div>
+
+          <ul class="lms-nav-list">
+            <li class="lms-nav-item">
+              <a
+                href="admin-lms-courses.html"
+                class="lms-nav-link"
+              >
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M3 12l9-9 9 9"></path>
+                    <path d="M5 10v10h14V10"></path>
+                  </svg>
+                </span>
+                Courses
+              </a>
+            </li>
+          </ul>
+
+        </div>
+
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">MANAGE</div>
+
+          <ul class="lms-nav-list">
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-enrollments.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </span>
+                Enrollments
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-students.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <circle cx="12" cy="7" r="4"></circle>
+                    <path d="M5.5 21a6.5 6.5 0 0 1 13 0"></path>
+                  </svg>
+                </span>
+                Students
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-progress.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M3 3v18h18"></path>
+                    <path d="M7 16l4-5 3 3 5-7"></path>
+                  </svg>
+                </span>
+                Progress
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">CONTENT</div>
+
+          <ul class="lms-nav-list">
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-lessons.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+                </span>
+                Lessons
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-quizzes.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M9.5 9a2.5 2.5 0 1 1 4.3 1.7c-.8.8-1.8 1.3-1.8 2.8"></path>
+                    <path d="M12 17h.01"></path>
+                  </svg>
+                </span>
+                Quizzes
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-assessments.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                  </svg>
+                </span>
+                Assessments
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-media.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <path d="M21 15l-5-5L5 21"></path>
+                  </svg>
+                </span>
+                Media
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">RECORDS</div>
+
+          <ul class="lms-nav-list">
+            <li class="lms-nav-item">
+              <a href="admin-lms-certificates.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <circle cx="12" cy="8" r="5"></circle>
+                    <path d="M8.5 12.5L7 22l5-3 5 3-1.5-9.5"></path>
+                  </svg>
+                </span>
+                Certificates
+              </a>
+            </li>
+          </ul>
+
+        </div>
+
+      </div>
+
+
+      <div class="lms-sidebar-footer">
+        <a
+          href="admin-dashboard.html"
+          class="lms-back-admin"
+        >
+          <span class="lms-nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M19 12H5"></path>
+              <path d="M12 19l-7-7 7-7"></path>
+            </svg>
+          </span>
+          Back to Main Administration
+        </a>
+      </div>
+
+    </aside>
+
+
+    <!-- ======================================================
+         MAIN APPLICATION
+         ====================================================== -->
+
+    <main class="lms-main">
+
+      <header class="lms-topbar">
+
+        <div class="lms-topbar-left">
+
+          <button
+            type="button"
+            class="lms-icon-button lms-mobile-menu-button"
+            data-lms-menu-toggle
+            aria-label="Open navigation"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M4 6h16"></path>
+              <path d="M4 12h16"></path>
+              <path d="M4 18h16"></path>
+            </svg>
+          </button>
+
+          <div class="lms-page-context">
+            <span class="lms-page-context-label">
+              Screenings4u Learning Center
+            </span>
+            <span class="lms-page-context-title">
+              Media Management
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="lms-topbar-right">
+
+          <button
+            type="button"
+            class="lms-icon-button"
+            aria-label="Notifications"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            class="lms-user-button"
+            data-lms-user-button
+          >
+            <span class="lms-user-avatar">AD</span>
+
+            <span class="lms-user-copy">
+              <span class="lms-user-name">Administrator</span>
+              <span class="lms-user-role">LMS Administration</span>
+            </span>
+          </button>
+
+        </div>
+
+      </header>
+
+
+      <!-- ====================================================
+           ASSESSMENT BUILDER
+           ==================================================== -->
+
+      <section class="lms-page assessment-page">
+        <div class="lms-page-inner">
+
+          <nav class="lms-breadcrumbs" aria-label="Breadcrumb">
+            <a href="admin-lms-assessments.html">Assessment Management</a>
+            <span>/</span>
+            <span>Assessment Builder</span>
+          </nav>
+
+          <div class="builder-heading">
+            <div>
+              <div class="page-eyebrow">Assessment Creation</div>
+              <h1>Assessment Builder</h1>
+              <p>
+                Create scored assessments, build questions and answer options,
+                and define the pass/fail requirements for learners.
+              </p>
+            </div>
+
+            <div class="builder-actions">
+              <a href="admin-lms-assessments.html" class="lms-btn lms-btn-secondary">
+                Back to Assessments
+              </a>
+              <button type="button" class="lms-btn lms-btn-primary" id="saveAssessmentButton">
+                Save Assessment
+              </button>
+            </div>
+          </div>
+
+          <div class="assessment-layout">
+
+            <div class="assessment-main">
+
+              <!-- ASSESSMENT INFORMATION -->
+              <section class="lms-card builder-card">
+                <div class="builder-card-header">
+                  <h2>Assessment Information</h2>
+                  <p>Set the assessment details and connect it to the appropriate lesson.</p>
+                </div>
+
+                <div class="builder-card-body">
+                  <div class="form-grid">
+
+                    <div class="field-group span-2">
+                      <label for="assessmentTitle">Assessment Title</label>
+                      <input type="text" id="assessmentTitle"
+                        placeholder="Enter assessment title">
+                    </div>
+
+                    <div class="field-group">
+                      <label for="assessmentCourse">Course</label>
+                      <select id="assessmentCourse">
+                        <option value="">Select course</option>
+                        <option>Example LMS Course</option>
+                      </select>
+                    </div>
+
+                    <div class="field-group">
+                      <label for="assessmentLesson">Lesson</label>
+                      <select id="assessmentLesson">
+                        <option value="">Select lesson</option>
+                      </select>
+                    </div>
+
+                    <div class="field-group span-2">
+                      <label for="assessmentDescription">Instructions</label>
+                      <textarea id="assessmentDescription"
+                        placeholder="Enter instructions learners will see before starting the assessment"></textarea>
+                    </div>
+
+                  </div>
+                </div>
+              </section>
+
+              <!-- ASSESSMENT SETTINGS -->
+              <section class="lms-card builder-card">
+                <div class="builder-card-header">
+                  <h2>Assessment Settings</h2>
+                  <p>Define scoring, attempts, and the learner completion requirements.</p>
+                </div>
+
+                <div class="builder-card-body">
+                  <div class="settings-grid">
+
+                    <div class="setting-tile">
+                      <label for="passingScore">Passing Score</label>
+                      <input id="passingScore" type="number" min="0" max="100" value="80">
+                    </div>
+
+                    <div class="setting-tile">
+                      <label for="attemptLimit">Attempt Limit</label>
+                      <select id="attemptLimit">
+                        <option value="unlimited">Unlimited</option>
+                        <option value="1">1 attempt</option>
+                        <option value="2">2 attempts</option>
+                        <option value="3">3 attempts</option>
+                      </select>
+                    </div>
+
+                    <div class="setting-tile">
+                      <label for="assessmentStatus">Status</label>
+                      <select id="assessmentStatus">
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                      </select>
+                    </div>
+
+                  </div>
+                </div>
+              </section>
+
+              <!-- QUESTIONS -->
+              <section class="lms-card builder-card">
+                <div class="builder-card-header">
+                  <h2>Assessment Questions</h2>
+                  <p>Build the questions and answer options used to score learner performance.</p>
+                </div>
+
+                <div class="questions-toolbar">
+                  <div>
+                    <strong>Questions</strong>
+                    <span>Drag-and-drop ordering can later be connected to the question ordering column.</span>
+                  </div>
+
+                  <button type="button" class="lms-btn lms-btn-primary" id="addQuestionButton">
+                    + Add Question
+                  </button>
+                </div>
+
+                <div class="question-list" id="questionList">
+
+                  <article class="question-card">
+                    <div class="question-head">
+                      <span class="drag-handle">⋮⋮</span>
+                      <span class="question-number">1</span>
+
+                      <div class="question-title">
+                        Assessment Question
+                        <div class="question-meta">Multiple choice</div>
+                      </div>
+
+                      <div class="question-actions">
+                        <button type="button" class="icon-action">Duplicate</button>
+                        <button type="button" class="icon-action">Delete</button>
+                      </div>
+                    </div>
+
+                    <div class="question-body">
+
+                      <div class="question-grid">
+                        <div class="question-field">
+                          <label>Question</label>
+                          <textarea placeholder="Enter your assessment question"></textarea>
+                        </div>
+
+                        <div class="question-field">
+                          <label>Question Type</label>
+                          <select>
+                            <option>Multiple Choice</option>
+                            <option>True / False</option>
+                            <option>Single Choice</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="options-title">Answer Options</div>
+
+                      <div class="answer-options">
+                        <div class="answer-option">
+                          <input class="correct-toggle" type="radio" name="question1" aria-label="Correct answer">
+                          <input type="text" placeholder="Answer option">
+                          <button type="button" class="remove-option">Remove</button>
+                        </div>
+
+                        <div class="answer-option">
+                          <input class="correct-toggle" type="radio" name="question1" aria-label="Correct answer">
+                          <input type="text" placeholder="Answer option">
+                          <button type="button" class="remove-option">Remove</button>
+                        </div>
+
+                        <div class="answer-option">
+                          <input class="correct-toggle" type="radio" name="question1" aria-label="Correct answer">
+                          <input type="text" placeholder="Answer option">
+                          <button type="button" class="remove-option">Remove</button>
+                        </div>
+                      </div>
+
+                      <div class="question-footer">
+                        <small>Select the correct answer used when calculating the learner's score.</small>
+                        <button type="button" class="icon-action add-option-button">+ Add Option</button>
+                      </div>
+
+                    </div>
+                  </article>
+
+                </div>
+
+                <div class="add-question-area">
+                  <button type="button" class="icon-action" id="addQuestionFooterButton">
+                    + Add Another Question
+                  </button>
+                </div>
+              </section>
+
+              <div class="schema-note">
+                <strong>Assessment structure:</strong>
+                <strong>lms_assessments</strong> connects to the lesson through
+                <strong>lesson_id</strong>. Questions are stored in
+                <strong>lms_assessment_questions</strong>, answer options in
+                <strong>lms_assessment_options</strong>, and learner activity
+                flows into the existing assessment attempt and answer tables.
+              </div>
+
+            </div>
+
+            <!-- SIDEBAR -->
+            <aside class="assessment-sidebar">
+              <h2>Assessment Summary</h2>
+
+              <div class="summary-stat">
+                <div class="summary-stat-label">Questions</div>
+                <div class="summary-stat-value" id="questionCount">1 Question</div>
+              </div>
+
+              <div class="summary-stat">
+                <div class="summary-stat-label">Passing Score</div>
+                <div class="summary-stat-value">80%</div>
+              </div>
+
+              <div class="summary-stat">
+                <div class="summary-stat-label">Status</div>
+                <div class="summary-stat-value">Draft</div>
+              </div>
+
+              <div class="sidebar-divider"></div>
+
+              <ul class="builder-checklist">
+                <li>
+                  <span class="check-mark check-pending">!</span>
+                  <span>Add assessment details</span>
+                </li>
+                <li>
+                  <span class="check-mark check-pending">!</span>
+                  <span>Create assessment questions</span>
+                </li>
+                <li>
+                  <span class="check-mark check-pending">!</span>
+                  <span>Mark correct answers</span>
+                </li>
+                <li>
+                  <span class="check-mark check-pending">!</span>
+                  <span>Review scoring requirements</span>
+                </li>
+              </ul>
+
+              <div class="sidebar-divider"></div>
+
+              <a href="admin-lms-assessments.html" class="lms-btn lms-btn-secondary">
+                View Assessments
+              </a>
+
+              <button type="button" class="lms-btn lms-btn-primary" id="publishAssessmentButton">
+                Save & Publish
+              </button>
+            </aside>
+
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+
+  <!-- ==========================================================
+       SHARED LMS JAVASCRIPT
+       ========================================================== -->
+
+  <script src="assets/js/lms.js"></script>
+
+
+  <!-- ==========================================================
+       ASSESSMENT BUILDER UI
+       ========================================================== -->
+  <script>
+    (function () {
+      "use strict";
+
+      document.addEventListener("DOMContentLoaded", function () {
+        var questionList = document.getElementById("questionList");
+        var questionCount = document.getElementById("questionCount");
+
+        function updateQuestionNumbers() {
+          var cards = questionList.querySelectorAll(".question-card");
+
+          cards.forEach(function (card, index) {
+            var number = card.querySelector(".question-number");
+            if (number) number.textContent = index + 1;
+          });
+
+          if (questionCount) {
+            questionCount.textContent = cards.length + (cards.length === 1 ? " Question" : " Questions");
+          }
+        }
+
+        function createQuestion() {
+          var total = questionList.querySelectorAll(".question-card").length + 1;
+          var card = document.createElement("article");
+          card.className = "question-card";
+
+          card.innerHTML =
+            '<div class="question-head">' +
+              '<span class="drag-handle">⋮⋮</span>' +
+              '<span class="question-number">' + total + '</span>' +
+              '<div class="question-title">Assessment Question<div class="question-meta">Multiple choice</div></div>' +
+              '<div class="question-actions">' +
+                '<button type="button" class="icon-action">Duplicate</button>' +
+                '<button type="button" class="icon-action">Delete</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="question-body">' +
+              '<div class="question-grid">' +
+                '<div class="question-field">' +
+                  '<label>Question</label>' +
+                  '<textarea placeholder="Enter your assessment question"></textarea>' +
+                '</div>' +
+                '<div class="question-field">' +
+                  '<label>Question Type</label>' +
+                  '<select><option>Multiple Choice</option><option>True / False</option><option>Single Choice</option></select>' +
+                '</div>' +
+              '</div>' +
+              '<div class="options-title">Answer Options</div>' +
+              '<div class="answer-options">' +
+                '<div class="answer-option"><input class="correct-toggle" type="radio" name="question' + total + '"><input type="text" placeholder="Answer option"><button type="button" class="remove-option">Remove</button></div>' +
+                '<div class="answer-option"><input class="correct-toggle" type="radio" name="question' + total + '"><input type="text" placeholder="Answer option"><button type="button" class="remove-option">Remove</button></div>' +
+              '</div>' +
+              '<div class="question-footer">' +
+                '<small>Select the correct answer used when calculating the learner\'s score.</small>' +
+                '<button type="button" class="icon-action add-option-button">+ Add Option</button>' +
+              '</div>' +
+            '</div>';
+
+          questionList.appendChild(card);
+          updateQuestionNumbers();
+        }
+
+        function addOption(button) {
+          var card = button.closest(".question-card");
+          if (!card) return;
+
+          var options = card.querySelector(".answer-options");
+          var radio = card.querySelector(".correct-toggle");
+          var name = radio ? radio.name : "assessmentOption";
+
+          var row = document.createElement("div");
+          row.className = "answer-option";
+          row.innerHTML =
+            '<input class="correct-toggle" type="radio" name="' + name + '">' +
+            '<input type="text" placeholder="Answer option">' +
+            '<button type="button" class="remove-option">Remove</button>';
+
+          options.appendChild(row);
+        }
+
+        var addTop = document.getElementById("addQuestionButton");
+        var addBottom = document.getElementById("addQuestionFooterButton");
+
+        if (addTop) addTop.addEventListener("click", createQuestion);
+        if (addBottom) addBottom.addEventListener("click", createQuestion);
+
+        questionList.addEventListener("click", function (event) {
+          if (event.target.classList.contains("add-option-button")) {
+            addOption(event.target);
+          }
+
+          if (event.target.classList.contains("remove-option")) {
+            var row = event.target.closest(".answer-option");
+            if (row) row.remove();
+          }
+
+          if (event.target.textContent === "Delete") {
+            var card = event.target.closest(".question-card");
+            if (card) {
+              card.remove();
+              updateQuestionNumbers();
+            }
+          }
+
+          if (event.target.textContent === "Duplicate") {
+            var source = event.target.closest(".question-card");
+            if (source) {
+              var copy = source.cloneNode(true);
+              questionList.appendChild(copy);
+              updateQuestionNumbers();
+            }
+          }
+        });
+
+        var saveButton = document.getElementById("saveAssessmentButton");
+        if (saveButton) {
+          saveButton.addEventListener("click", function () {
+            saveButton.textContent = "Assessment Saved";
+          });
+        }
+
+        var publishButton = document.getElementById("publishAssessmentButton");
+        if (publishButton) {
+          publishButton.addEventListener("click", function () {
+            publishButton.textContent = "Published";
+          });
+        }
+      });
+    })();
+  </script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/lms-phase5.js"></script>
+</body>
+</html>

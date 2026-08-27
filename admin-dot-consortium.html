@@ -3,905 +3,1664 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>DOT Consortium | screenings4u Admin</title>
+
   <link rel="icon" type="image/png" href="images/fav.png">
 
   <link rel="stylesheet" href="assets/css/admin-core.css">
-  <style>
-/* ============================================================
-   screenings4u — DOT CONSORTIUM
-   Built to match the existing screenings4u admin dashboard shell.
-   ============================================================ */
-
-.dot-page {
-  padding: 22px 24px 34px;
-  max-width: none;
-}
-
-.dot-page-header {
-  min-height: 116px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding-bottom: 22px;
-  border-bottom: 1px solid #e3e8ef;
-}
-
-.dot-page-heading {
-  min-width: 0;
-}
-
-.dot-page-heading .s4u-page-kicker {
-  margin-bottom: 5px;
-  color: #f05a00;
-  font-size: 11px;
-  line-height: 1;
-  font-weight: 900;
-  letter-spacing: .045em;
-}
-
-.dot-page-heading h1 {
-  margin: 0;
-  color: #173d78;
-  font-size: clamp(36px, 3vw, 44px);
-  line-height: .98;
-  font-weight: 800;
-  letter-spacing: -.045em;
-}
-
-.dot-page-heading p {
-  max-width: 720px;
-  margin: 9px 0 0;
-  color: #52627a;
-  font-size: 13px;
-  line-height: 1.45;
-}
-
-.dot-page-actions {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-}
-
-.dot-page-actions .s4u-button {
-  min-width: 105px;
-  height: 43px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border-color: #cbd7e5;
-  border-radius: 9px;
-  font-size: 11px;
-  font-weight: 900;
-}
-
-.dot-button-icon {
-  width: 17px;
-  height: 17px;
-  display: inline-flex;
-}
-
-.dot-button-icon svg {
-  width: 17px;
-  height: 17px;
-  stroke: currentColor;
-  stroke-width: 1.9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* ============================================================
-   KPI cards
-   ============================================================ */
-
-.dot-kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 13px;
-  margin-top: 22px;
-}
-
-.dot-kpi-card {
-  min-width: 0;
-  min-height: 153px;
-  padding: 17px 20px;
-  background: #fff;
-  border: 1px solid #dfe5ed;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(20, 48, 82, .055);
-}
-
-.dot-kpi-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.dot-kpi-label {
-  color: #5f6d83;
-  font-size: 10px;
-  line-height: 1;
-  font-weight: 900;
-  letter-spacing: .075em;
-}
-
-.dot-kpi-icon {
-  width: 38px;
-  height: 38px;
-  flex: 0 0 38px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9px;
-  background: #edf4fc;
-  color: #17519b;
-}
-
-.dot-kpi-icon svg {
-  width: 20px;
-  height: 20px;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.dot-kpi-card strong {
-  display: block;
-  margin-top: 20px;
-  color: #183f7c;
-  font-size: 30px;
-  line-height: 1;
-  font-weight: 800;
-  letter-spacing: -.04em;
-}
-
-.dot-kpi-card > span:last-child {
-  display: block;
-  margin-top: 12px;
-  color: #647189;
-  font-size: 10px;
-  line-height: 1.3;
-}
-
-.dot-status-icon {
-  color: #16804d;
-  background: #eaf7f0;
-}
-
-#dotStatusValue {
-  font-size: 22px;
-  color: #16804d;
-}
-
-#dotStatusNote {
-  color: #647189;
-}
-
-/* ============================================================
-   Main grid
-   ============================================================ */
-
-.dot-main-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.34fr) minmax(360px, 1fr);
-  gap: 16px 22px;
-  margin-top: 16px;
-}
-
-.dot-main-grid .s4u-section {
-  min-width: 0;
-  margin-top: 0;
-  overflow: hidden;
-  background: #fff;
-  border: 1px solid #dfe5ed;
-  border-radius: 10px;
-  box-shadow: 0 3px 11px rgba(20, 48, 82, .055);
-}
-
-.dot-overview-card {
-  min-height: 480px;
-}
-
-.dot-main-grid .s4u-section-header {
-  min-height: 82px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 17px 23px;
-  border-bottom: 1px solid #e3e8ef;
-}
-
-.dot-main-grid .s4u-section-header h2 {
-  margin: 0;
-  color: #173d78;
-  font-size: 19px;
-  line-height: 1.15;
-  font-weight: 800;
-  letter-spacing: -.025em;
-}
-
-.dot-main-grid .s4u-section-header p {
-  margin: 6px 0 0;
-  color: #607089;
-  font-size: 11px;
-  line-height: 1.3;
-}
-
-/* ============================================================
-   Operations
-   ============================================================ */
-
-.dot-operation-list {
-  padding: 9px 12px;
-}
-
-.dot-operation-row {
-  min-height: 67px;
-  display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  padding: 7px 10px;
-  border-radius: 8px;
-  color: inherit;
-  text-decoration: none;
-  transition: background .16s ease;
-}
-
-.dot-operation-row:hover {
-  background: #f7f9fc;
-}
-
-.dot-operation-icon {
-  width: 40px;
-  height: 40px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9px;
-  background: #edf4fc;
-  color: #17519b;
-}
-
-.dot-operation-icon svg {
-  width: 20px;
-  height: 20px;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.dot-operation-row strong {
-  display: block;
-  color: #173b73;
-  font-size: 13px;
-  line-height: 1.2;
-  font-weight: 800;
-}
-
-.dot-operation-row small {
-  display: block;
-  margin-top: 5px;
-  color: #617088;
-  font-size: 10px;
-  line-height: 1.25;
-}
-
-.dot-operation-arrow {
-  padding-right: 7px;
-  color: #667a98;
-  font-size: 22px;
-  line-height: 1;
-}
-
-/* ============================================================
-   Right column
-   ============================================================ */
-
-.dot-side-column {
-  min-width: 0;
-  display: grid;
-  grid-template-rows: auto auto;
-  gap: 16px;
-}
-
-.dot-action-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  padding: 13px;
-}
-
-.dot-action {
-  min-height: 93px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 12px 15px;
-  border: 1px solid #dfe5ed;
-  border-radius: 8px;
-  background: #fff;
-  color: inherit;
-  text-decoration: none;
-  transition: border-color .16s ease, background .16s ease, transform .16s ease;
-}
-
-.dot-action:hover {
-  border-color: #bfcfe2;
-  background: #f9fbfe;
-  transform: translateY(-1px);
-}
-
-.dot-action-plus {
-  display: block;
-  color: #f05a00;
-  font-size: 24px;
-  line-height: .7;
-  font-weight: 400;
-}
-
-.dot-action strong {
-  display: block;
-  margin-top: 10px;
-  color: #173b73;
-  font-size: 12px;
-  line-height: 1.15;
-  font-weight: 800;
-}
-
-.dot-action small {
-  display: block;
-  margin-top: 5px;
-  color: #647189;
-  font-size: 10px;
-  line-height: 1.2;
-}
-
-.dot-resource-list {
-  padding: 7px 13px 12px;
-}
-
-.dot-resource-list a {
-  min-height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  padding: 0 10px;
-  border-bottom: 1px solid #edf0f4;
-  color: #173b73;
-  text-decoration: none;
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.dot-resource-list a:last-child {
-  border-bottom: 0;
-}
-
-.dot-resource-list a:hover {
-  background: #f7f9fc;
-}
-
-.dot-resource-list a span:last-child {
-  color: #667a98;
-  font-size: 17px;
-}
-
-/* ============================================================
-   Responsive
-   ============================================================ */
-
-@media (max-width: 1250px) {
-  .dot-kpi-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .dot-main-grid {
-    grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
-  }
-}
-
-@media (max-width: 1050px) {
-  .dot-page-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .dot-page-actions {
-    width: 100%;
-  }
-
-  .dot-page-actions .s4u-button {
-    width: 100%;
-  }
-
-  .dot-main-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dot-side-column {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-  }
-}
-
-@media (max-width: 700px) {
-  .dot-page {
-    padding: 18px 14px 22px;
-  }
-
-  .dot-page-header {
-    min-height: 0;
-    padding-bottom: 18px;
-  }
-
-  .dot-page-heading h1 {
-    font-size: 36px;
-  }
-
-  .dot-page-heading p {
-    font-size: 12px;
-  }
-
-  .dot-kpi-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 9px;
-  }
-
-  .dot-kpi-card {
-    min-height: 128px;
-    padding: 14px;
-  }
-
-  .dot-kpi-icon {
-    width: 32px;
-    height: 32px;
-    flex-basis: 32px;
-  }
-
-  .dot-kpi-card strong {
-    margin-top: 14px;
-    font-size: 25px;
-  }
-
-  .dot-side-column {
-    grid-template-columns: 1fr;
-  }
-
-  .dot-action-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dot-main-grid .s4u-section-header {
-    padding-left: 17px;
-    padding-right: 17px;
-  }
-}
-
-@media (max-width: 430px) {
-  .dot-kpi-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dot-operation-row {
-    grid-template-columns: 38px minmax(0, 1fr) auto;
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-
-  .dot-operation-icon {
-    width: 38px;
-    height: 38px;
-  }
-}
-
-  </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/supabase-config.js"></script>
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
+
+    <!-- Admin dashboard session-security configuration. -->
+  <script>
+    window.S4U_DASHBOARD_SECURITY_CONFIG = {
+      timeoutMinutes: 15,
+      warningSeconds: 60,
+      loginPage: "admin-login.html"
+    };
+  </script>
+
+  <!-- Fixed path: dashboard-security.js belongs in assets/js/. -->
+  <script src="assets/js/dashboard-security.js"></script>
   <script src="assets/js/permissions.js"></script>
   <script src="assets/js/ui.js"></script>
+
+  <style>
+
+    /* ============================================================
+       screenings4u — DOT CONSORTIUM
+       ============================================================ */
+
+    .dot-page {
+      padding: 22px 24px 34px;
+      max-width: none;
+    }
+
+    .dot-page-header {
+      min-height: 116px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid #e3e8ef;
+    }
+
+    .dot-page-heading {
+      min-width: 0;
+    }
+
+    .dot-page-heading .s4u-page-kicker {
+      margin-bottom: 5px;
+      color: #f05a00;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: .045em;
+    }
+
+    .dot-page-heading h1 {
+      margin: 0;
+      color: #173d78;
+      font-size: clamp(36px, 3vw, 44px);
+      line-height: .98;
+      font-weight: 800;
+      letter-spacing: -.045em;
+    }
+
+    .dot-page-heading p {
+      max-width: 720px;
+      margin: 9px 0 0;
+      color: #52627a;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .dot-page-actions {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .dot-page-actions .s4u-button {
+      min-width: 105px;
+      height: 43px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-color: #cbd7e5;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .dot-page-actions .s4u-button:disabled {
+      opacity: .65;
+      cursor: wait;
+    }
+
+    .dot-button-icon {
+      width: 17px;
+      height: 17px;
+      display: inline-flex;
+    }
+
+    .dot-button-icon svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+
+    /* ============================================================
+       KPI CARDS
+       ============================================================ */
+
+    .dot-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 13px;
+      margin-top: 22px;
+    }
+
+    .dot-kpi-card {
+      min-width: 0;
+      min-height: 153px;
+      padding: 17px 20px;
+      background: #fff;
+      border: 1px solid #dfe5ed;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(20, 48, 82, .055);
+    }
+
+    .dot-kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .dot-kpi-label {
+      color: #5f6d83;
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: .075em;
+    }
+
+    .dot-kpi-icon {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9px;
+      background: #edf4fc;
+      color: #17519b;
+    }
+
+    .dot-kpi-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .dot-kpi-card strong {
+      display: block;
+      margin-top: 20px;
+      color: #183f7c;
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -.04em;
+    }
+
+    .dot-kpi-card > span:last-child {
+      display: block;
+      margin-top: 12px;
+      color: #647189;
+      font-size: 10px;
+      line-height: 1.3;
+    }
+
+    .dot-status-icon {
+      color: #16804d;
+      background: #eaf7f0;
+    }
+
+    #dotStatusValue {
+      font-size: 22px;
+      color: #16804d;
+    }
+
+    #dotStatusNote {
+      color: #647189;
+    }
+
+
+    /* ============================================================
+       MAIN GRID
+       ============================================================ */
+
+    .dot-main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.34fr) minmax(360px, 1fr);
+      gap: 16px 22px;
+      margin-top: 16px;
+    }
+
+    .dot-main-grid .s4u-section {
+      min-width: 0;
+      margin-top: 0;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #dfe5ed;
+      border-radius: 10px;
+      box-shadow: 0 3px 11px rgba(20, 48, 82, .055);
+    }
+
+    .dot-overview-card {
+      min-height: 480px;
+    }
+
+    .dot-main-grid .s4u-section-header {
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 17px 23px;
+      border-bottom: 1px solid #e3e8ef;
+    }
+
+    .dot-main-grid .s4u-section-header h2 {
+      margin: 0;
+      color: #173d78;
+      font-size: 19px;
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: -.025em;
+    }
+
+    .dot-main-grid .s4u-section-header p {
+      margin: 6px 0 0;
+      color: #607089;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+
+    /* ============================================================
+       OPERATIONS
+       ============================================================ */
+
+    .dot-operation-list {
+      padding: 9px 12px;
+    }
+
+    .dot-operation-row {
+      min-height: 67px;
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      color: inherit;
+      text-decoration: none;
+      transition: background .16s ease;
+    }
+
+    .dot-operation-row:hover {
+      background: #f7f9fc;
+    }
+
+    .dot-operation-icon {
+      width: 40px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9px;
+      background: #edf4fc;
+      color: #17519b;
+    }
+
+    .dot-operation-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .dot-operation-row strong {
+      display: block;
+      color: #173b73;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .dot-operation-row small {
+      display: block;
+      margin-top: 5px;
+      color: #617088;
+      font-size: 10px;
+      line-height: 1.25;
+    }
+
+    .dot-operation-arrow {
+      padding-right: 7px;
+      color: #667a98;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+
+    /* ============================================================
+       RIGHT COLUMN
+       ============================================================ */
+
+    .dot-side-column {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 16px;
+    }
+
+    .dot-action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 13px;
+    }
+
+    .dot-action {
+      min-height: 93px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 12px 15px;
+      border: 1px solid #dfe5ed;
+      border-radius: 8px;
+      background: #fff;
+      color: inherit;
+      text-decoration: none;
+      transition:
+        border-color .16s ease,
+        background .16s ease,
+        transform .16s ease;
+    }
+
+    .dot-action:hover {
+      border-color: #bfcfe2;
+      background: #f9fbfe;
+      transform: translateY(-1px);
+    }
+
+    .dot-action-plus {
+      display: block;
+      color: #f05a00;
+      font-size: 24px;
+      line-height: .7;
+      font-weight: 400;
+    }
+
+    .dot-action strong {
+      display: block;
+      margin-top: 10px;
+      color: #173b73;
+      font-size: 12px;
+      line-height: 1.15;
+      font-weight: 800;
+    }
+
+    .dot-action small {
+      display: block;
+      margin-top: 5px;
+      color: #647189;
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    .dot-resource-list {
+      padding: 7px 13px 12px;
+    }
+
+    .dot-resource-list a {
+      min-height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 0 10px;
+      border-bottom: 1px solid #edf0f4;
+      color: #173b73;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .dot-resource-list a:last-child {
+      border-bottom: 0;
+    }
+
+    .dot-resource-list a:hover {
+      background: #f7f9fc;
+    }
+
+    .dot-resource-list a span:last-child {
+      color: #667a98;
+      font-size: 17px;
+    }
+
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+
+    @media (max-width: 1250px) {
+
+      .dot-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .dot-main-grid {
+        grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+      }
+
+    }
+
+    @media (max-width: 1050px) {
+
+      .dot-page-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .dot-page-actions {
+        width: 100%;
+      }
+
+      .dot-page-actions .s4u-button {
+        width: 100%;
+      }
+
+      .dot-main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dot-side-column {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+      }
+
+    }
+
+    @media (max-width: 700px) {
+
+      .dot-page {
+        padding: 18px 14px 22px;
+      }
+
+      .dot-page-header {
+        min-height: 0;
+        padding-bottom: 18px;
+      }
+
+      .dot-page-heading h1 {
+        font-size: 36px;
+      }
+
+      .dot-page-heading p {
+        font-size: 12px;
+      }
+
+      .dot-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+      }
+
+      .dot-kpi-card {
+        min-height: 128px;
+        padding: 14px;
+      }
+
+      .dot-kpi-icon {
+        width: 32px;
+        height: 32px;
+        flex-basis: 32px;
+      }
+
+      .dot-kpi-card strong {
+        margin-top: 14px;
+        font-size: 25px;
+      }
+
+      .dot-side-column {
+        grid-template-columns: 1fr;
+      }
+
+      .dot-action-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dot-main-grid .s4u-section-header {
+        padding-left: 17px;
+        padding-right: 17px;
+      }
+
+    }
+
+    @media (max-width: 430px) {
+
+      .dot-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dot-operation-row {
+        grid-template-columns: 38px minmax(0, 1fr) auto;
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+
+      .dot-operation-icon {
+        width: 38px;
+        height: 38px;
+      }
+
+    }
+
+  </style>
+
 </head>
 
 <body>
+
   <div class="s4u-app">
-    <nav class="s4u-nav" id="adminNavigation" aria-label="Admin navigation"></nav>
+
+    <nav
+      class="s4u-nav"
+      id="adminNavigation"
+      aria-label="Admin navigation">
+    </nav>
+
 
     <main class="s4u-main">
+
       <div class="dot-page">
 
+
+        <!-- ====================================================
+             PAGE HEADER
+             ==================================================== -->
+
         <header class="dot-page-header">
+
           <div class="dot-page-heading">
-            <div class="s4u-page-kicker">DOT COMPLIANCE</div>
+
+            <div class="s4u-page-kicker">
+              DOT COMPLIANCE
+            </div>
+
             <h1>Consortium</h1>
-            <p>Manage DOT consortium programs, employers, drivers, random testing, and compliance workflows.</p>
+
+            <p>
+              Manage DOT consortium programs, employers,
+              drivers, random testing, and compliance workflows.
+            </p>
+
           </div>
 
+
           <div class="dot-page-actions">
-            <button class="s4u-button" id="refreshDotBtn" type="button">
-              <span class="dot-button-icon" aria-hidden="true">
+
+            <button
+              class="s4u-button"
+              id="refreshDotBtn"
+              type="button">
+
+              <span
+                class="dot-button-icon"
+                aria-hidden="true">
+
                 <svg viewBox="0 0 24 24" fill="none">
                   <path d="M20 11a8 8 0 0 0-14.9-4M4 13a8 8 0 0 0 14.9 4"/>
                   <path d="M5 3v4h4M19 21v-4h-4"/>
                 </svg>
+
               </span>
-              Refresh
+
+              <span id="refreshDotLabel">
+                Refresh
+              </span>
+
             </button>
+
           </div>
+
         </header>
 
-        <section class="dot-kpi-grid" aria-label="DOT consortium metrics">
+
+        <!-- ====================================================
+             KPI METRICS
+             ==================================================== -->
+
+        <section
+          class="dot-kpi-grid"
+          aria-label="DOT consortium metrics">
+
+
           <article class="dot-kpi-card">
+
             <div class="dot-kpi-top">
-              <span class="dot-kpi-label">CONSORTIUMS</span>
+
+              <span class="dot-kpi-label">
+                CONSORTIUMS
+              </span>
+
               <span class="dot-kpi-icon">
+
                 <svg viewBox="0 0 24 24" fill="none">
                   <path d="M4 20h16M6 20V8l6-4 6 4v12M9 20v-5h6v5M9 9h.01M12 9h.01M15 9h.01"/>
                 </svg>
+
               </span>
+
             </div>
+
             <strong id="programCount">—</strong>
-            <span>Active consortium programs</span>
+
+            <span>
+              Active consortium programs
+            </span>
+
           </article>
 
+
           <article class="dot-kpi-card">
+
             <div class="dot-kpi-top">
-              <span class="dot-kpi-label">EMPLOYERS</span>
+
+              <span class="dot-kpi-label">
+                EMPLOYERS
+              </span>
+
               <span class="dot-kpi-icon">
+
                 <svg viewBox="0 0 24 24" fill="none">
                   <path d="M4 20V7h16v13M8 7V4h8v3M8 11h2M14 11h2M8 15h2M14 15h2"/>
                 </svg>
+
               </span>
+
             </div>
+
             <strong id="employerCount">—</strong>
-            <span>Employer records under management</span>
+
+            <span>
+              Employer records under management
+            </span>
+
           </article>
 
+
           <article class="dot-kpi-card">
+
             <div class="dot-kpi-top">
-              <span class="dot-kpi-label">DRIVERS</span>
+
+              <span class="dot-kpi-label">
+                DRIVERS
+              </span>
+
               <span class="dot-kpi-icon">
+
                 <svg viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="7" r="3"/>
                   <path d="M5 20c.7-4 2.8-6 7-6s6.3 2 7 6"/>
                 </svg>
+
               </span>
+
             </div>
+
             <strong id="driverCount">—</strong>
-            <span>Safety-sensitive drivers</span>
+
+            <span>
+              Safety-sensitive drivers
+            </span>
+
           </article>
 
+
           <article class="dot-kpi-card">
+
             <div class="dot-kpi-top">
-              <span class="dot-kpi-label">SYSTEM STATUS</span>
+
+              <span class="dot-kpi-label">
+                SYSTEM STATUS
+              </span>
+
               <span class="dot-kpi-icon dot-status-icon">
+
                 <svg viewBox="0 0 24 24" fill="none">
                   <path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/>
                   <circle cx="12" cy="12" r="3"/>
                 </svg>
+
               </span>
+
             </div>
-            <strong id="dotStatusValue">READY</strong>
-            <span id="dotStatusNote">DOT data services available</span>
+
+            <strong id="dotStatusValue">
+              READY
+            </strong>
+
+            <span id="dotStatusNote">
+              DOT data services available
+            </span>
+
           </article>
+
         </section>
+
+
+        <!-- ====================================================
+             MAIN CONTENT
+             ==================================================== -->
 
         <section class="dot-main-grid">
 
+
+          <!-- ==================================================
+               OPERATIONS
+               ================================================== -->
+
           <article class="s4u-section dot-overview-card">
+
             <header class="s4u-section-header">
+
               <div>
-                <h2>Compliance Operations</h2>
-                <p>Manage the major DOT workflows from one place.</p>
+
+                <h2>
+                  Compliance Operations
+                </h2>
+
+                <p>
+                  Manage the major DOT workflows from one place.
+                </p>
+
               </div>
+
             </header>
 
+
             <div class="dot-operation-list">
-              <a class="dot-operation-row" href="admin-dot-employers.html">
+
+
+              <a
+                class="dot-operation-row"
+                href="admin-dot-employers.html">
+
                 <span class="dot-operation-icon">
+
                   <svg viewBox="0 0 24 24" fill="none">
                     <path d="M4 20V7h16v13M8 7V4h8v3M8 11h2M14 11h2M8 15h2M14 15h2"/>
                   </svg>
+
                 </span>
+
                 <span>
-                  <strong>Employers</strong>
-                  <small>Manage consortium employer records and enrollment.</small>
+
+                  <strong>
+                    Employers
+                  </strong>
+
+                  <small>
+                    Manage consortium employer records and enrollment.
+                  </small>
+
                 </span>
-                <span class="dot-operation-arrow">→</span>
+
+                <span class="dot-operation-arrow">
+                  →
+                </span>
+
               </a>
 
-              <a class="dot-operation-row" href="admin-dot-drivers.html">
+
+              <a
+                class="dot-operation-row"
+                href="admin-dot-drivers.html">
+
                 <span class="dot-operation-icon">
+
                   <svg viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="7" r="3"/>
                     <path d="M5 20c.7-4 2.8-6 7-6s6.3 2 7 6"/>
                   </svg>
+
                 </span>
+
                 <span>
-                  <strong>Drivers</strong>
-                  <small>Review safety-sensitive drivers assigned to employers.</small>
+
+                  <strong>
+                    Drivers
+                  </strong>
+
+                  <small>
+                    Review safety-sensitive drivers assigned to employers.
+                  </small>
+
                 </span>
-                <span class="dot-operation-arrow">→</span>
+
+                <span class="dot-operation-arrow">
+                  →
+                </span>
+
               </a>
 
-              <a class="dot-operation-row" href="admin-dot-random-selection.html">
+
+              <a
+                class="dot-operation-row"
+                href="admin-dot-random-selections.html">
+
                 <span class="dot-operation-icon">
+
                   <svg viewBox="0 0 24 24" fill="none">
                     <path d="M5 5h4v4H5zM15 15h4v4h-4zM15 5h4M5 19h4M17 9v6M7 9v6"/>
                   </svg>
+
                 </span>
+
                 <span>
-                  <strong>Random Selection</strong>
-                  <small>Manage annual pools and documented selections.</small>
+
+                  <strong>
+                    Random Selection
+                  </strong>
+
+                  <small>
+                    Manage annual pools and documented selections.
+                  </small>
+
                 </span>
-                <span class="dot-operation-arrow">→</span>
+
+                <span class="dot-operation-arrow">
+                  →
+                </span>
+
               </a>
 
-              <a class="dot-operation-row" href="admin-dot-testing.html">
+
+              <a
+                class="dot-operation-row"
+                href="admin-dot-testing.html">
+
                 <span class="dot-operation-icon">
+
                   <svg viewBox="0 0 24 24" fill="none">
                     <path d="M8 3h8M9 3v5l-4 9a3 3 0 0 0 2.8 4h8.4A3 3 0 0 0 19 17l-4-9V3M8 15h8"/>
                   </svg>
+
                 </span>
+
                 <span>
-                  <strong>DOT Testing</strong>
-                  <small>Track testing workflows and test completion.</small>
+
+                  <strong>
+                    DOT Testing
+                  </strong>
+
+                  <small>
+                    Track testing workflows and test completion.
+                  </small>
+
                 </span>
-                <span class="dot-operation-arrow">→</span>
+
+                <span class="dot-operation-arrow">
+                  →
+                </span>
+
               </a>
 
-              <a class="dot-operation-row" href="admin-dot-mis-reports.html">
+
+              <a
+                class="dot-operation-row"
+                href="admin-dot-mis-reports.html">
+
                 <span class="dot-operation-icon">
+
                   <svg viewBox="0 0 24 24" fill="none">
                     <path d="M5 20V10M12 20V4M19 20v-7"/>
                   </svg>
+
                 </span>
+
                 <span>
-                  <strong>MIS Reports</strong>
-                  <small>Review annual DOT MIS reporting workflows.</small>
+
+                  <strong>
+                    MIS Reports
+                  </strong>
+
+                  <small>
+                    Review annual DOT MIS reporting workflows.
+                  </small>
+
                 </span>
-                <span class="dot-operation-arrow">→</span>
+
+                <span class="dot-operation-arrow">
+                  →
+                </span>
+
               </a>
 
-              <a class="dot-operation-row" href="admin-dot-certificates.html">
+
+              <a
+                class="dot-operation-row"
+                href="admin-dot-certificates.html">
+
                 <span class="dot-operation-icon">
+
                   <svg viewBox="0 0 24 24" fill="none">
                     <path d="M7 3h10v18H7zM10 7h4M10 11h4M10 15h3"/>
                   </svg>
+
                 </span>
+
                 <span>
-                  <strong>Certificates</strong>
-                  <small>Manage consortium enrollment certificates.</small>
+
+                  <strong>
+                    Certificates
+                  </strong>
+
+                  <small>
+                    Manage consortium enrollment certificates.
+                  </small>
+
                 </span>
-                <span class="dot-operation-arrow">→</span>
+
+                <span class="dot-operation-arrow">
+                  →
+                </span>
+
               </a>
+
+
             </div>
+
           </article>
+
+
+          <!-- ==================================================
+               SIDE COLUMN
+               ================================================== -->
 
           <aside class="dot-side-column">
 
+
+            <!-- QUICK ACTIONS -->
+
             <article class="s4u-section dot-action-card">
+
               <header class="s4u-section-header">
+
                 <div>
-                  <h2>Quick Actions</h2>
-                  <p>Common DOT administrative tasks.</p>
+
+                  <h2>
+                    Quick Actions
+                  </h2>
+
+                  <p>
+                    Common DOT administrative tasks.
+                  </p>
+
                 </div>
+
               </header>
+
 
               <div class="dot-action-grid">
-                <a class="dot-action" href="admin-dot-consortium.html">
-                  <span class="dot-action-plus">+</span>
-                  <strong>Consortium Program</strong>
-                  <small>Open consortium management</small>
+
+
+                <a
+                  class="dot-action"
+                  href="admin-dot-consortium.html">
+
+                  <span class="dot-action-plus">
+                    +
+                  </span>
+
+                  <strong>
+                    Consortium Program
+                  </strong>
+
+                  <small>
+                    Open consortium management
+                  </small>
+
                 </a>
 
-                <a class="dot-action" href="admin-dot-employers.html">
-                  <span class="dot-action-plus">+</span>
-                  <strong>Employer</strong>
-                  <small>Manage employer records</small>
+
+                <a
+                  class="dot-action"
+                  href="admin-dot-employers.html">
+
+                  <span class="dot-action-plus">
+                    +
+                  </span>
+
+                  <strong>
+                    Employer
+                  </strong>
+
+                  <small>
+                    Manage employer records
+                  </small>
+
                 </a>
 
-                <a class="dot-action" href="admin-dot-random-selection.html">
-                  <span class="dot-action-plus">+</span>
-                  <strong>Random Selection</strong>
-                  <small>Open selection workflow</small>
+
+                <a
+                  class="dot-action"
+                  href="admin-dot-random-selections.html">
+
+                  <span class="dot-action-plus">
+                    +
+                  </span>
+
+                  <strong>
+                    Random Selection
+                  </strong>
+
+                  <small>
+                    Open selection workflow
+                  </small>
+
                 </a>
 
-                <a class="dot-action" href="admin-dot-testing.html">
-                  <span class="dot-action-plus">+</span>
-                  <strong>DOT Testing</strong>
-                  <small>Open testing workflow</small>
+
+                <a
+                  class="dot-action"
+                  href="admin-dot-testing.html">
+
+                  <span class="dot-action-plus">
+                    +
+                  </span>
+
+                  <strong>
+                    DOT Testing
+                  </strong>
+
+                  <small>
+                    Open testing workflow
+                  </small>
+
                 </a>
+
+
               </div>
+
             </article>
+
+
+            <!-- COMPLIANCE RESOURCES -->
 
             <article class="s4u-section dot-compliance-card">
+
               <header class="s4u-section-header">
+
                 <div>
-                  <h2>Compliance Resources</h2>
-                  <p>Supporting DOT program workflows.</p>
+
+                  <h2>
+                    Compliance Resources
+                  </h2>
+
+                  <p>
+                    Supporting DOT program workflows.
+                  </p>
+
                 </div>
+
               </header>
 
+
               <div class="dot-resource-list">
+
                 <a href="admin-dot-consortium.html">
-                  <span>Consortium Management</span>
-                  <span>→</span>
+
+                  <span>
+                    Consortium Management
+                  </span>
+
+                  <span>
+                    →
+                  </span>
+
                 </a>
+
+
                 <a href="admin-dot-mis-reports.html">
-                  <span>MIS Reporting</span>
-                  <span>→</span>
+
+                  <span>
+                    MIS Reporting
+                  </span>
+
+                  <span>
+                    →
+                  </span>
+
                 </a>
+
+
                 <a href="admin-dot-certificates.html">
-                  <span>Certificates</span>
-                  <span>→</span>
+
+                  <span>
+                    Certificates
+                  </span>
+
+                  <span>
+                    →
+                  </span>
+
                 </a>
+
               </div>
+
             </article>
 
+
           </aside>
+
         </section>
 
       </div>
+
     </main>
+
   </div>
 
+
+  <!-- ==========================================================
+       ADMIN NAVIGATION
+       ========================================================== -->
+
   <script src="assets/js/admin-navigation.js"></script>
+
+
+  <!-- ==========================================================
+       PAGE CONTROLLER
+       ========================================================== -->
+
   <script>
-/* ============================================================
-   screenings4u — DOT CONSORTIUM
-   Page controller
-   ============================================================ */
 
-(function () {
-  "use strict";
+  /* ============================================================
+     screenings4u — DOT CONSORTIUM
+     ============================================================ */
 
-  document.addEventListener("DOMContentLoaded", initializeDotConsortium);
+  (function () {
 
-  async function initializeDotConsortium() {
-    const refreshButton = document.getElementById("refreshDotBtn");
+    "use strict";
 
-    if (refreshButton) {
-      refreshButton.addEventListener("click", loadDotConsortium);
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      initializeDotConsortium
+    );
+
+
+    /* ==========================================================
+       INITIALIZE
+       ========================================================== */
+
+    async function initializeDotConsortium() {
+
+      const refreshButton =
+        document.getElementById(
+          "refreshDotBtn"
+        );
+
+
+      if (refreshButton) {
+
+        refreshButton.addEventListener(
+          "click",
+          function () {
+
+            loadDotConsortium();
+
+          }
+        );
+
+      }
+
+
+      try {
+
+        /* ------------------------------------------------------
+           AUTHENTICATION
+           ------------------------------------------------------ */
+
+        if (
+          window.S4UAuth &&
+          typeof window.S4UAuth.requireSession === "function"
+        ) {
+
+          const session =
+            await window.S4UAuth.requireSession(
+              "admin-login.html"
+            );
+
+
+          if (!session) {
+            return;
+          }
+
+        }
+
+
+        await loadDotConsortium();
+
+
+      } catch (error) {
+
+        console.error(
+          "DOT Consortium initialization failed:",
+          error
+        );
+
+        setErrorState(error);
+
+      }
+
     }
 
-    await loadDotConsortium();
-  }
 
-  async function loadDotConsortium() {
-    setLoadingState(true);
+    /* ==========================================================
+       LOAD DOT CONSORTIUM DATA
+       ========================================================== */
 
-    try {
-      if (
-        !window.S4UAuth ||
-        typeof window.S4UAuth.requireSession !== "function"
-      ) {
-        throw new Error("Authentication system is unavailable.");
+    async function loadDotConsortium() {
+
+      setLoadingState(true);
+
+
+      try {
+
+        const client =
+          getSupabaseClient();
+
+
+        if (!client) {
+
+          throw new Error(
+            "Supabase client is unavailable."
+          );
+
+        }
+
+
+        const results =
+          await Promise.all([
+
+            getCount(
+              client,
+              "dot_consortiums"
+            ),
+
+            getCount(
+              client,
+              "dot_consortium_employers"
+            ),
+
+            getCount(
+              client,
+              "dot_consortium_drivers"
+            )
+
+          ]);
+
+
+        const consortiumCount =
+          results[0];
+
+
+        const employerCount =
+          results[1];
+
+
+        const driverCount =
+          results[2];
+
+
+        /* ------------------------------------------------------
+           UPDATE METRICS
+           ------------------------------------------------------ */
+
+        setText(
+          "programCount",
+          formatNumber(consortiumCount)
+        );
+
+
+        setText(
+          "employerCount",
+          formatNumber(employerCount)
+        );
+
+
+        setText(
+          "driverCount",
+          formatNumber(driverCount)
+        );
+
+
+        setText(
+          "dotStatusValue",
+          "READY"
+        );
+
+
+        setText(
+          "dotStatusNote",
+          "DOT data services available"
+        );
+
+
+        console.log(
+          "DOT Consortium data loaded:",
+          {
+            consortiums:
+              consortiumCount,
+
+            employers:
+              employerCount,
+
+            drivers:
+              driverCount
+          }
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "DOT Consortium load failed:",
+          error
+        );
+
+        setErrorState(error);
+
+
+      } finally {
+
+        setLoadingState(false);
+
       }
 
-      const session = await window.S4UAuth.requireSession("../admin-login.html");
+    }
 
-      if (!session) {
+
+    /* ==========================================================
+       GET SUPABASE CLIENT
+       ========================================================== */
+
+    function getSupabaseClient() {
+
+
+      if (
+        window.S4UAuth &&
+        typeof window.S4UAuth.getClient === "function"
+      ) {
+
+        const client =
+          window.S4UAuth.getClient();
+
+
+        if (client) {
+          return client;
+        }
+
+      }
+
+
+      if (
+        window.getScreenings4uSupabase &&
+        typeof window.getScreenings4uSupabase === "function"
+      ) {
+
+        const client =
+          window.getScreenings4uSupabase();
+
+
+        if (client) {
+          return client;
+        }
+
+      }
+
+
+      if (
+        window.screenings4uSupabase &&
+        typeof window.screenings4uSupabase.from === "function"
+      ) {
+
+        return window.screenings4uSupabase;
+
+      }
+
+
+      if (
+        window.supabaseClient &&
+        typeof window.supabaseClient.from === "function"
+      ) {
+
+        return window.supabaseClient;
+
+      }
+
+
+      return null;
+
+    }
+
+
+    /* ==========================================================
+       GET TABLE COUNT
+       ========================================================== */
+
+    async function getCount(
+      client,
+      tableName
+    ) {
+
+      const {
+        count,
+        error
+      } = await client
+        .from(tableName)
+        .select(
+          "id",
+          {
+            count: "exact",
+            head: true
+          }
+        );
+
+
+      if (error) {
+
+        throw error;
+
+      }
+
+
+      return count ?? 0;
+
+    }
+
+
+    /* ==========================================================
+       UPDATE TEXT
+       ========================================================== */
+
+    function setText(
+      id,
+      value
+    ) {
+
+      const element =
+        document.getElementById(id);
+
+
+      if (!element) {
         return;
       }
 
-      if (
-        !window.S4UPermissions ||
-        typeof window.S4UPermissions.requirePermission !== "function"
-      ) {
-        throw new Error("Permission system is unavailable.");
+
+      element.textContent =
+        String(value);
+
+    }
+
+
+    /* ==========================================================
+       FORMAT NUMBER
+       ========================================================== */
+
+    function formatNumber(value) {
+
+      return Number(
+        value || 0
+      ).toLocaleString();
+
+    }
+
+
+    /* ==========================================================
+       LOADING STATE
+       ========================================================== */
+
+    function setLoadingState(
+      isLoading
+    ) {
+
+      const button =
+        document.getElementById(
+          "refreshDotBtn"
+        );
+
+
+      const label =
+        document.getElementById(
+          "refreshDotLabel"
+        );
+
+
+      if (button) {
+
+        button.disabled =
+          Boolean(isLoading);
+
+
+        button.setAttribute(
+          "aria-busy",
+          String(Boolean(isLoading))
+        );
+
       }
 
-      const allowed = await window.S4UPermissions.requirePermission(
-        "dot.view",
-        "../admin-dashboard.html"
+
+      if (label) {
+
+        label.textContent =
+          isLoading
+            ? "Loading..."
+            : "Refresh";
+
+      }
+
+
+      if (isLoading) {
+
+        setText(
+          "programCount",
+          "…"
+        );
+
+
+        setText(
+          "employerCount",
+          "…"
+        );
+
+
+        setText(
+          "driverCount",
+          "…"
+        );
+
+      }
+
+    }
+
+
+    /* ==========================================================
+       ERROR STATE
+       ========================================================== */
+
+    function setErrorState(
+      error
+    ) {
+
+      setText(
+        "programCount",
+        "—"
       );
 
-      if (!allowed) {
-        return;
-      }
 
-      const client = window.S4UAuth.getClient();
+      setText(
+        "employerCount",
+        "—"
+      );
 
-      if (!client) {
-        throw new Error("Supabase client is unavailable.");
-      }
 
-      const [programs, employers, drivers] = await Promise.all([
-        getCount(client, "dot_consortiums"),
-        getCount(client, "dot_consortium_employers"),
-        getCount(client, "dot_consortium_drivers")
-      ]);
+      setText(
+        "driverCount",
+        "—"
+      );
 
-      setText("programCount", programs);
-      setText("employerCount", employers);
-      setText("driverCount", drivers);
 
-      setText("dotStatusValue", "READY");
-      setText("dotStatusNote", "DOT data services available");
-    } catch (error) {
-      console.error("DOT Consortium load failed:", error);
+      setText(
+        "dotStatusValue",
+        "ERROR"
+      );
 
-      setText("programCount", "—");
-      setText("employerCount", "—");
-      setText("driverCount", "—");
 
-      setText("dotStatusValue", "ERROR");
-      setText("dotStatusNote", "Unable to load DOT data");
+      setText(
+        "dotStatusNote",
+        "Unable to load DOT data"
+      );
+
 
       showToast(
-        error && error.message
+        error &&
+        error.message
           ? error.message
           : "Unable to load DOT consortium data.",
         "error"
       );
-    } finally {
-      setLoadingState(false);
-    }
-  }
 
-  async function getCount(client, tableName) {
-    const result = await client
-      .from(tableName)
-      .select("id", { count: "exact", head: true });
-
-    if (result.error) {
-      throw result.error;
     }
 
-    return result.count ?? 0;
-  }
 
-  function setText(id, value) {
-    const element = document.getElementById(id);
+    /* ==========================================================
+       TOAST
+       ========================================================== */
 
-    if (element) {
-      element.textContent = String(value);
-    }
-  }
-
-  function setLoadingState(isLoading) {
-    const button = document.getElementById("refreshDotBtn");
-
-    if (!button) {
-      return;
-    }
-
-    button.disabled = isLoading;
-    button.setAttribute("aria-busy", String(isLoading));
-
-    const label = isLoading ? "Loading..." : "Refresh";
-    const textNodes = Array.from(button.childNodes).filter(
-      (node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
-    );
-
-    if (textNodes.length) {
-      textNodes[textNodes.length - 1].textContent = ` ${label}`;
-    }
-  }
-
-  function showToast(message, type) {
-    if (
-      window.S4UUI &&
-      typeof window.S4UUI.toast === "function"
+    function showToast(
+      message,
+      type
     ) {
-      window.S4UUI.toast(message, type || "error");
-      return;
+
+      if (
+        window.S4UUI &&
+        typeof window.S4UUI.toast === "function"
+      ) {
+
+        window.S4UUI.toast(
+          message,
+          type || "error"
+        );
+
+        return;
+
+      }
+
+
+      console.error(
+        message
+      );
+
     }
 
-    console.error(message);
-  }
-})();
+
+  })();
 
   </script>
+
 </body>
 </html>

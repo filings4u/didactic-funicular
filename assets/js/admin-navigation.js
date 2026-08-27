@@ -269,6 +269,10 @@ function getAdminNavigationMarkup() {
             Assessments
           </a>
 
+          <a href="${prefix}admin-lms-quizzes.html" data-nav-page="admin-lms-quizzes.html">Quizzes</a>
+          <a href="${prefix}admin-lms-media.html" data-nav-page="admin-lms-media.html">Media</a>
+          <a href="${prefix}admin-lms-course-settings.html" data-nav-page="admin-lms-course-settings.html">Course Settings</a>
+
           <a
             href="${prefix}admin-lms-students.html"
             data-nav-page="admin-lms-students.html"

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Settings | Screenings4u Learning Center</title>
+<link rel="icon" type="image/png" href="images/fav.png">
+<link rel="stylesheet" href="assets/css/lms.css">
+  <link rel="stylesheet" href="assets/css/lms-ui-modals.css">
+
+<style>
+.lms-brand.lms-brand-logo-only{min-height:88px;justify-content:center;padding:14px 20px}
+.lms-brand.lms-brand-logo-only .lms-brand-logo-wrap{width:148px;height:54px;flex:0 0 148px;background:transparent;border-radius:0}
+.lms-brand.lms-brand-logo-only .lms-brand-logo{width:100%;height:100%;object-fit:contain}
+.lms-page-context-label{color:var(--s4u-blue);font-weight:800;letter-spacing:.01em}
+.lms-page-context-title{color:var(--s4u-orange);font-weight:800}
+.lms-page-context{line-height:1.2}
+
+/* Course Settings page additions */
+.settings-layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:22px;align-items:start}
+.settings-nav{position:sticky;top:92px;padding:10px}
+.settings-nav-title{padding:8px 10px 12px;color:var(--s4u-text-light);font-size:.68rem;font-weight:800;letter-spacing:.08em}
+.settings-nav a{display:block;padding:11px 12px;margin:2px 0;border-radius:7px;color:var(--lms-text,#172033);font-size:.78rem;font-weight:700}
+.settings-nav a:hover{background:var(--lms-soft,#f0f3f7);color:var(--s4u-blue)}
+.settings-nav a.active{background:#edf2fb;color:var(--s4u-blue)}
+.settings-section{margin-bottom:20px;scroll-margin-top:90px}
+.settings-section .lms-card-header{border-bottom:1px solid var(--lms-border,#dfe5ec)}
+.settings-section-title{margin:0;color:var(--s4u-blue);font-size:1rem;font-weight:850}
+.settings-section-copy{margin:6px 0 0;color:var(--lms-text-soft,#687386);font-size:.74rem;line-height:1.6}
+.settings-body{padding:22px}
+.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.settings-field.full{grid-column:1/-1}
+.settings-field label{display:block;margin-bottom:7px;color:var(--s4u-blue);font-size:.72rem;font-weight:800}
+.settings-field small{display:block;margin-top:6px;color:var(--lms-text-soft,#687386);font-size:.65rem;line-height:1.45}
+.settings-field input,.settings-field select,.settings-field textarea{
+ width:100%;padding:11px 12px;border:1px solid var(--lms-border,#dfe5ec);border-radius:7px;background:#fff;color:var(--lms-text,#172033);outline:none;font-size:.76rem
+}
+.settings-field textarea{min-height:115px;resize:vertical}
+.settings-field input:focus,.settings-field select:focus,.settings-field textarea:focus{border-color:var(--s4u-blue);box-shadow:0 0 0 3px rgba(50,90,163,.08)}
+.settings-toggle-row{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:16px 0;border-bottom:1px solid var(--lms-border,#dfe5ec)}
+.settings-toggle-row:last-child{border-bottom:0}
+.settings-toggle-copy strong{display:block;color:var(--s4u-blue);font-size:.77rem}
+.settings-toggle-copy span{display:block;margin-top:4px;color:var(--lms-text-soft,#687386);font-size:.67rem;line-height:1.45}
+.switch{position:relative;width:42px;height:23px;flex:0 0 42px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:#cfd6df;border-radius:999px;cursor:pointer;transition:.2s}
+.slider:before{content:"";position:absolute;width:17px;height:17px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked + .slider{background:var(--s4u-orange)}
+.switch input:checked + .slider:before{transform:translateX(19px)}
+.thumbnail-box{display:grid;grid-template-columns:150px 1fr;gap:18px;align-items:center;padding:18px;border:1px dashed var(--lms-border,#dfe5ec);border-radius:8px;background:#fafbfd}
+.thumbnail-preview{height:90px;display:flex;align-items:center;justify-content:center;border-radius:7px;background:linear-gradient(135deg,var(--s4u-blue),var(--s4u-blue-dark));color:#fff;font-size:.68rem;font-weight:850;text-align:center}
+.settings-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.danger-card{border-color:rgba(255,107,0,.35)}
+.danger-card .settings-section-title{color:var(--s4u-orange)}
+.danger-actions{display:flex;flex-wrap:wrap;gap:10px}
+.lms-btn-danger{background:#fff;color:var(--s4u-orange);border:1px solid var(--s4u-orange)}
+.lms-btn-danger:hover{background:#fff4ed}
+.status-chip{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:#fff2e9;color:var(--s4u-orange);font-size:.67rem;font-weight:800}
+@media(max-width:980px){.settings-layout{grid-template-columns:1fr}.settings-nav{position:static;display:flex;gap:6px;overflow:auto}.settings-nav-title{display:none}.settings-nav a{white-space:nowrap}}
+@media(max-width:680px){.settings-grid{grid-template-columns:1fr}.thumbnail-box{grid-template-columns:1fr}.settings-actions{justify-content:stretch;flex-direction:column}.settings-actions .lms-btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="lms-app">
+<div class="lms-sidebar-overlay" data-lms-sidebar-overlay></div>
+
+<aside class="lms-sidebar">
+<a href="admin-lms-courses.html" class="lms-brand lms-brand-logo-only" aria-label="Screenings4u Learning Center">
+<div class="lms-brand-logo-wrap"><img src="images/logo.png" alt="Screenings4u" class="lms-brand-logo"></div>
+</a>
+
+<div class="lms-sidebar-scroll">
+<div class="lms-nav-group"><div class="lms-nav-label">HOME</div><ul class="lms-nav-list">
+<li class="lms-nav-item"><a href="admin-lms-courses.html" class="lms-nav-link"><span class="lms-nav-icon">⌂</span>Courses</a></li>
+</ul></div>
+
+<div class="lms-nav-group"><div class="lms-nav-label">MANAGE</div><ul class="lms-nav-list">
+<li class="lms-nav-item"><a href="admin-lms-enrollments.html" class="lms-nav-link"><span class="lms-nav-icon">◉</span>Enrollments</a></li>
+<li class="lms-nav-item"><a href="admin-lms-students.html" class="lms-nav-link"><span class="lms-nav-icon">●</span>Students</a></li>
+<li class="lms-nav-item"><a href="admin-lms-progress.html" class="lms-nav-link"><span class="lms-nav-icon">↗</span>Progress</a></li>
+</ul></div>
+
+<div class="lms-nav-group"><div class="lms-nav-label">CONTENT</div><ul class="lms-nav-list">
+<li class="lms-nav-item"><a href="admin-lms-lessons.html" class="lms-nav-link"><span class="lms-nav-icon">▤</span>Lessons</a></li>
+<li class="lms-nav-item"><a href="admin-lms-quizzes.html" class="lms-nav-link"><span class="lms-nav-icon">?</span>Quizzes</a></li>
+<li class="lms-nav-item"><a href="admin-lms-assessments.html" class="lms-nav-link"><span class="lms-nav-icon">✓</span>Assessments</a></li>
+<li class="lms-nav-item"><a href="admin-lms-media.html" class="lms-nav-link"><span class="lms-nav-icon">▣</span>Media</a></li>
+</ul></div>
+
+<div class="lms-nav-group"><div class="lms-nav-label">RECORDS</div><ul class="lms-nav-list">
+<li class="lms-nav-item"><a href="admin-lms-certificates.html" class="lms-nav-link"><span class="lms-nav-icon">★</span>Certificates</a></li>
+</ul></div>
+</div>
+
+<div class="lms-sidebar-footer"><a href="admin-dashboard.html" class="lms-back-admin"><span class="lms-nav-icon">←</span>Back to Main Administration</a></div>
+</aside>
+
+<main class="lms-main">
+<header class="lms-topbar">
+<div class="lms-topbar-left">
+<button type="button" class="lms-icon-button lms-mobile-menu-button" data-lms-menu-toggle aria-label="Open navigation">☰</button>
+<div class="lms-page-context">
+<span class="lms-page-context-label">Screenings4u Learning Center</span>
+<span class="lms-page-context-title">Course Settings</span>
+</div>
+</div>
+<div class="lms-topbar-right">
+<button type="button" class="lms-icon-button" aria-label="Notifications">●</button>
+<button type="button" class="lms-user-button" data-lms-user-button>
+<span class="lms-user-avatar">AD</span>
+<span class="lms-user-copy"><span class="lms-user-name">Administrator</span><span class="lms-user-role">LMS Administration</span></span>
+</button>
+</div>
+</header>
+
+<section class="lms-page">
+<div class="lms-page-inner">
+
+<div class="lms-page-heading">
+<div>
+<div class="status-chip">Course Configuration</div>
+<h1 class="lms-page-title">Course Settings</h1>
+<p class="lms-page-description">Configure how this course is presented, accessed, completed, and managed within the Screenings4u Learning Center.</p>
+</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<a href="admin-lms-course-manager.html" class="lms-btn lms-btn-secondary">← Course Manager</a>
+<button type="button" class="lms-btn lms-btn-primary" id="saveCourseSettings">Save Changes</button>
+</div>
+</div>
+
+<div class="settings-layout">
+<nav class="lms-card settings-nav" aria-label="Course settings">
+<div class="settings-nav-title">COURSE SETTINGS</div>
+<a href="#general" class="active">General</a>
+<a href="#visibility">Publishing & Visibility</a>
+<a href="#access">Enrollment & Access</a>
+<a href="#completion">Completion Requirements</a>
+<a href="#certificate">Certificate Settings</a>
+<a href="#danger">Danger Zone</a>
+</nav>
+
+<div>
+
+<section id="general" class="lms-card settings-section">
+<div class="lms-card-header">
+<h2 class="settings-section-title">General Information</h2>
+<p class="settings-section-copy">The core information used to identify and present this course throughout the Learning Center.</p>
+</div>
+<div class="settings-body">
+<div class="settings-grid">
+<div class="settings-field full"><label for="courseTitle">Course Title</label><input id="courseTitle" type="text" placeholder="Enter course title"><small>Displayed in course listings, learner records, and enrollments.</small></div>
+<div class="settings-field full"><label for="courseShortDescription">Short Description</label><textarea id="courseShortDescription" placeholder="Enter a concise course summary"></textarea></div>
+<div class="settings-field full"><label for="courseDescription">Full Course Description</label><textarea id="courseDescription" placeholder="Enter the full course description"></textarea></div>
+<div class="settings-field"><label for="courseCategory">Course Category</label><input id="courseCategory" type="text" placeholder="Example: DOT Compliance"></div>
+<div class="settings-field"><label for="courseLanguage">Course Language</label><select id="courseLanguage"><option value="">Select language</option><option>English</option><option>Spanish</option></select></div>
+<div class="settings-field full">
+<label>Course Thumbnail</label>
+<div class="thumbnail-box"><div class="thumbnail-preview">COURSE<br>THUMBNAIL</div><div><button type="button" class="lms-btn lms-btn-secondary">Select from Media</button><small>Connect this setting to <code>lms_courses.thumbnail_media_id</code> and <code>lms_media</code> when the course settings data layer is wired.</small></div></div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="visibility" class="lms-card settings-section">
+<div class="lms-card-header"><h2 class="settings-section-title">Publishing & Visibility</h2><p class="settings-section-copy">Control whether learners can find and access this course.</p></div>
+<div class="settings-body">
+<div class="settings-toggle-row"><div class="settings-toggle-copy"><strong>Publish Course</strong><span>Make the course available according to its enrollment and access rules.</span></div><label class="switch"><input id="coursePublished" type="checkbox"><span class="slider"></span></label></div>
+<div class="settings-toggle-row"><div class="settings-toggle-copy"><strong>Show in Course Catalog</strong><span>Allow eligible learners to discover this course while browsing available training.</span></div><label class="switch"><input id="courseCatalogVisible" type="checkbox" checked><span class="slider"></span></label></div>
+<div class="settings-toggle-row"><div class="settings-toggle-copy"><strong>Archive Course</strong><span>Remove the course from normal active management without immediately deleting its records.</span></div><label class="switch"><input id="courseArchived" type="checkbox"><span class="slider"></span></label></div>
+</div>
+</section>
+
+<section id="access" class="lms-card settings-section">
+<div class="lms-card-header"><h2 class="settings-section-title">Enrollment & Access</h2><p class="settings-section-copy">Define how learners receive access to this course.</p></div>
+<div class="settings-body">
+<div class="settings-grid">
+<div class="settings-field"><label for="enrollmentMode">Enrollment Availability</label><select id="enrollmentMode"><option value="">Select availability</option><option value="purchase">Available for Purchase</option><option value="admin">Admin Enrollment Only</option><option value="assigned">Assigned Access</option></select><small>Use the option that matches your existing enrollment and order workflow.</small></div>
+<div class="settings-field"><label for="accessDuration">Access Duration</label><select id="accessDuration"><option value="lifetime">No Expiration</option><option value="30">30 Days</option><option value="60">60 Days</option><option value="90">90 Days</option><option value="365">1 Year</option></select></div>
+</div>
+<div class="settings-toggle-row"><div class="settings-toggle-copy"><strong>Allow Re-enrollment</strong><span>Permit a learner to receive another enrollment if your enrollment rules support it.</span></div><label class="switch"><input id="allowReenrollment" type="checkbox"><span class="slider"></span></label></div>
+<div class="settings-toggle-row"><div class="settings-toggle-copy"><strong>Require Active Enrollment</strong><span>Restrict learner course access to an active enrollment record.</span></div><label class="switch"><input id="requireActiveEnrollment" type="checkbox" checked><span class="slider"></span></label></div>
+</div>
+</section>
+
+<section id="completion" class="lms-card settings-section">
+<div class="lms-card-header"><h2 class="settings-section-title">Completion Requirements</h2><p class="settings-section-copy">Define what a learner must complete before the course can be considered complete.</p></div>
+<div class="settings-body">
+<div class="settings-toggle-row"><div class="settings-toggle-copy"><strong>Require All Required Lessons</strong><span>Course completion should depend on the learner completing required lesson content.</span></div><label class="switch"><input id="requireLessons" type="checkbox" checked><span class="slider"></span></label></div>
+<div class="settings-toggle-row"><div class="settings-toggle-copy"><strong>Require Quiz Completion</strong><span>Require attached quizzes when the course structure includes mandatory quiz activities.</span></div><label class="switch"><input id="requireQuizzes" type="checkbox"><span class="slider"></span></label></div>
+<div class="settings-toggle-row"><div class="settings-toggle-copy"><strong>Require Assessment Completion</strong><span>Require mandatory assessments and evaluate pass/fail results from assessment attempts.</span></div><label class="switch"><input id="requireAssessments" type="checkbox"><span class="slider"></span></label></div>
+<div class="settings-grid" style="margin-top:18px">
+<div class="settings-field"><label for="passingScore">Default Passing Score</label><input id="passingScore" type="number" min="0" max="100" placeholder="Example: 80"><small>Only applies where the underlying quiz or assessment rules support a passing score.</small></div>
+<div class="settings-field"><label for="completionRule">Completion Rule</label><select id="completionRule"><option value="requirements">Complete All Required Items</option><option value="manual">Manual Administrator Completion</option></select></div>
+</div>
+</div>
+</section>
+
+<section id="certificate" class="lms-card settings-section">
+<div class="lms-card-header"><h2 class="settings-section-title">Certificate Settings</h2><p class="settings-section-copy">Configure certificate behavior for learners who complete this course.</p></div>
+<div class="settings-body">
+<div class="settings-toggle-row"><div class="settings-toggle-copy"><strong>Enable Course Certificate</strong><span>Allow a certificate to be issued when completion requirements are satisfied.</span></div><label class="switch"><input id="certificateEnabled" type="checkbox"><span class="slider"></span></label></div>
+<div class="settings-grid" style="margin-top:18px">
+<div class="settings-field"><label for="certificateTemplate">Certificate Media / Template</label><select id="certificateTemplate"><option value="">Select certificate media</option></select><small>This will connect to certificate media through <code>lms_certificates.certificate_media_id</code> where supported by your implementation.</small></div>
+<div class="settings-field"><label for="certificateIssueRule">Issue Rule</label><select id="certificateIssueRule"><option value="automatic">Automatically on Completion</option><option value="manual">Administrator Review Required</option></select></div>
+</div>
+</div>
+</section>
+
+<section id="danger" class="lms-card settings-section danger-card">
+<div class="lms-card-header"><h2 class="settings-section-title">Danger Zone</h2><p class="settings-section-copy">These actions can affect course availability and existing learner records.</p></div>
+<div class="settings-body">
+<div class="danger-actions">
+<button type="button" class="lms-btn lms-btn-secondary" id="archiveCourse">Archive Course</button>
+<button type="button" class="lms-btn lms-btn-danger" id="deleteCourse">Delete Course</button>
+</div>
+<p style="margin:14px 0 0;color:var(--lms-text-soft,#687386);font-size:.67rem;line-height:1.55">Delete should only be enabled after the Supabase data rules confirm how related sections, lessons, enrollments, progress, attempts, and certificates are handled.</p>
+</div>
+</section>
+
+<div class="settings-actions">
+<a href="admin-lms-course-manager.html" class="lms-btn lms-btn-secondary">Cancel</a>
+<button type="button" class="lms-btn lms-btn-primary" id="saveCourseSettingsBottom">Save Course Settings</button>
+</div>
+
+</div>
+</div>
+
+</div>
+</section>
+</main>
+</div>
+
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/lms.js"></script>
+<script>
+(function(){
+"use strict";
+function saveSettings(){
+  // UI shell only. Wire to lms_courses after confirming actual column names.
+  const buttons=document.querySelectorAll("#saveCourseSettings,#saveCourseSettingsBottom");
+  buttons.forEach(btn=>{btn.textContent="Saved"; setTimeout(()=>btn.textContent=btn.id==="saveCourseSettings"?"Save Changes":"Save Course Settings",1200);});
+}
+document.getElementById("saveCourseSettings").addEventListener("click",saveSettings);
+document.getElementById("saveCourseSettingsBottom").addEventListener("click",saveSettings);
+
+document.querySelectorAll(".settings-nav a").forEach(a=>{
+  a.addEventListener("click",function(){
+    document.querySelectorAll(".settings-nav a").forEach(x=>x.classList.remove("active"));
+    this.classList.add("active");
+  });
+});
+document.getElementById("deleteCourse").addEventListener("click",function(){
+  window.S4UUI?.modal({title:"Delete Not Available",message:"Delete is intentionally not wired until the related LMS database constraints and deletion rules are confirmed.",type:"info",confirmText:"Close"});
+});
+document.getElementById("archiveCourse").addEventListener("click",function(){
+  window.S4UUI?.modal({title:"Archive Not Available",message:"Archive action is ready for Supabase wiring once the lms_courses archive/status column is confirmed.",type:"info",confirmText:"Close"});
+});
+})();
+</script>
+</body>
+</html>

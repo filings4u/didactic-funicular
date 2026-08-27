@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Management | Screenings4u Learning Center</title>
+  <link rel="icon" type="image/png" href="images/fav.png">
+  <link rel="stylesheet" href="assets/css/lms.css">
+  <link rel="stylesheet" href="assets/css/lms-ui-modals.css">
+
+  <style>
+    /* ============================================================
+       QUIZ MANAGEMENT
+       ============================================================ */
+
+    .quiz-page { padding-bottom: 38px; }
+
+    .quiz-page-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 22px;
+      margin-bottom: 22px;
+    }
+
+    .page-eyebrow {
+      margin-bottom: 8px;
+      color: var(--s4u-orange);
+      font-size: .72rem;
+      font-weight: 850;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .quiz-page-heading h1 {
+      margin: 0;
+      color: var(--s4u-blue);
+      font-size: clamp(1.7rem, 3vw, 2.3rem);
+      font-weight: 850;
+      letter-spacing: -.04em;
+    }
+
+    .quiz-page-heading p {
+      max-width: 760px;
+      margin: 9px 0 0;
+      color: var(--s4u-text);
+      font-size: .91rem;
+      line-height: 1.65;
+    }
+
+    .quiz-heading-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    /* SUMMARY */
+
+    .quiz-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .quiz-summary-card {
+      padding: 18px;
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: var(--s4u-radius);
+      box-shadow: var(--s4u-shadow);
+    }
+
+    .quiz-summary-label {
+      color: var(--s4u-muted);
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .quiz-summary-value {
+      margin-top: 7px;
+      color: var(--s4u-blue);
+      font-size: 1.55rem;
+      font-weight: 850;
+      letter-spacing: -.03em;
+    }
+
+    .quiz-summary-note {
+      margin-top: 5px;
+      color: var(--s4u-muted);
+      font-size: .72rem;
+      line-height: 1.45;
+    }
+
+    /* FILTERS */
+
+    .quiz-toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) 190px 190px auto;
+      gap: 11px;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: var(--s4u-radius);
+      box-shadow: var(--s4u-shadow);
+    }
+
+    .quiz-search {
+      position: relative;
+    }
+
+    .quiz-search svg {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      width: 17px;
+      height: 17px;
+      color: var(--s4u-muted);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .quiz-search input,
+    .quiz-filter {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 12px;
+      color: var(--s4u-text);
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 7px;
+      outline: none;
+      box-sizing: border-box;
+      font: inherit;
+      font-size: .8rem;
+    }
+
+    .quiz-search input { padding-left: 39px; }
+
+    .quiz-search input:focus,
+    .quiz-filter:focus {
+      border-color: var(--s4u-blue);
+      box-shadow: 0 0 0 3px rgba(50, 90, 163, .10);
+    }
+
+    /* TABLE */
+
+    .quiz-list-card {
+      overflow: hidden;
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: var(--s4u-radius);
+      box-shadow: var(--s4u-shadow);
+    }
+
+    .quiz-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--s4u-border);
+    }
+
+    .quiz-list-header h2 {
+      margin: 0;
+      color: var(--s4u-blue);
+      font-size: 1rem;
+      font-weight: 850;
+    }
+
+    .quiz-list-header p {
+      margin: 4px 0 0;
+      color: var(--s4u-muted);
+      font-size: .74rem;
+      line-height: 1.45;
+    }
+
+    .quiz-count {
+      color: var(--s4u-muted);
+      font-size: .74rem;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .quiz-table-wrap { overflow-x: auto; }
+
+    .quiz-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 920px;
+    }
+
+    .quiz-table th {
+      padding: 12px 18px;
+      color: var(--s4u-muted);
+      background: var(--s4u-soft);
+      border-bottom: 1px solid var(--s4u-border);
+      text-align: left;
+      font-size: .66rem;
+      font-weight: 850;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .quiz-table td {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--s4u-border);
+      vertical-align: middle;
+    }
+
+    .quiz-table tbody tr:last-child td { border-bottom: 0; }
+    .quiz-table tbody tr:hover { background: #fbfcfe; }
+
+    .quiz-name {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 220px;
+    }
+
+    .quiz-icon {
+      width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--s4u-blue);
+      background: #eef3fb;
+      border-radius: 8px;
+      flex: 0 0 auto;
+    }
+
+    .quiz-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .quiz-title {
+      color: var(--s4u-blue);
+      font-size: .82rem;
+      font-weight: 850;
+      line-height: 1.35;
+    }
+
+    .quiz-subtitle {
+      margin-top: 3px;
+      color: var(--s4u-muted);
+      font-size: .68rem;
+      line-height: 1.35;
+    }
+
+    .quiz-course {
+      color: var(--s4u-text);
+      font-size: .75rem;
+      font-weight: 700;
+    }
+
+    .quiz-lesson {
+      margin-top: 4px;
+      color: var(--s4u-muted);
+      font-size: .68rem;
+    }
+
+    .quiz-number {
+      color: var(--s4u-blue);
+      font-size: .82rem;
+      font-weight: 850;
+    }
+
+    .quiz-muted {
+      margin-top: 3px;
+      color: var(--s4u-muted);
+      font-size: .66rem;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 25px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: .66rem;
+      font-weight: 850;
+    }
+
+    .status-published {
+      color: #237348;
+      background: #eaf7ef;
+    }
+
+    .status-draft {
+      color: #9a6500;
+      background: #fff4df;
+    }
+
+    .status-archived {
+      color: var(--s4u-muted);
+      background: var(--s4u-soft);
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 7px;
+      justify-content: flex-end;
+    }
+
+    .row-action {
+      min-height: 31px;
+      padding: 0 9px;
+      color: var(--s4u-blue);
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 6px;
+      font: inherit;
+      font-size: .68rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .row-action:hover {
+      color: var(--s4u-orange);
+      border-color: var(--s4u-orange);
+    }
+
+    .quiz-empty {
+      padding: 42px 24px;
+      color: var(--s4u-muted);
+      text-align: center;
+      font-size: .82rem;
+    }
+
+    .quiz-empty strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--s4u-blue);
+      font-size: .9rem;
+    }
+
+    /* ACTIVITY */
+
+    .quiz-bottom-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .panel-card {
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: var(--s4u-radius);
+      box-shadow: var(--s4u-shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--s4u-border);
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      color: var(--s4u-blue);
+      font-size: .95rem;
+      font-weight: 850;
+    }
+
+    .panel-link {
+      color: var(--s4u-blue);
+      text-decoration: none;
+      font-size: .72rem;
+      font-weight: 800;
+    }
+
+    .attempt-list {
+      padding: 5px 20px;
+    }
+
+    .attempt-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 18px;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--s4u-border);
+    }
+
+    .attempt-item:last-child { border-bottom: 0; }
+
+    .attempt-name {
+      color: var(--s4u-text);
+      font-size: .76rem;
+      font-weight: 800;
+    }
+
+    .attempt-meta {
+      margin-top: 4px;
+      color: var(--s4u-muted);
+      font-size: .67rem;
+    }
+
+    .attempt-score {
+      color: var(--s4u-blue);
+      font-size: .83rem;
+      font-weight: 850;
+    }
+
+    .attempt-result {
+      min-width: 54px;
+      text-align: right;
+      font-size: .69rem;
+      font-weight: 850;
+    }
+
+    .result-pass { color: #237348; }
+    .result-fail { color: #b14a32; }
+
+    .quick-actions {
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .quick-action {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px;
+      color: var(--s4u-text);
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 7px;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .quick-action:hover {
+      color: var(--s4u-blue);
+      background: #fbfcfe;
+      border-color: var(--s4u-blue);
+    }
+
+    .quick-action-icon {
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--s4u-blue);
+      background: #eef3fb;
+      border-radius: 7px;
+      font-size: .9rem;
+      flex: 0 0 auto;
+    }
+
+    .quick-action strong {
+      display: block;
+      font-size: .74rem;
+    }
+
+    .quick-action span:last-child {
+      display: block;
+      margin-top: 3px;
+      color: var(--s4u-muted);
+      font-size: .66rem;
+      line-height: 1.4;
+    }
+
+    /* MODAL */
+
+    .quiz-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(23, 32, 51, .42);
+      z-index: 1000;
+    }
+
+    .quiz-modal-backdrop.is-open { display: flex; }
+
+    .quiz-modal {
+      width: min(560px, 100%);
+      max-height: calc(100vh - 40px);
+      overflow: auto;
+      background: var(--s4u-surface);
+      border-radius: 10px;
+      box-shadow: 0 22px 70px rgba(23, 32, 51, .25);
+    }
+
+    .quiz-modal-header,
+    .quiz-modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 18px 20px;
+    }
+
+    .quiz-modal-header {
+      border-bottom: 1px solid var(--s4u-border);
+    }
+
+    .quiz-modal-header h2 {
+      margin: 0;
+      color: var(--s4u-blue);
+      font-size: 1rem;
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      color: var(--s4u-muted);
+      background: var(--s4u-soft);
+      border: 0;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .quiz-modal-body { padding: 20px; }
+
+    .modal-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .modal-field.span-2 { grid-column: 1 / -1; }
+
+    .modal-field label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--s4u-blue);
+      font-size: .72rem;
+      font-weight: 800;
+    }
+
+    .modal-field input,
+    .modal-field select,
+    .modal-field textarea {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 11px;
+      color: var(--s4u-text);
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 7px;
+      box-sizing: border-box;
+      font: inherit;
+      font-size: .8rem;
+    }
+
+    .modal-field textarea {
+      min-height: 85px;
+      resize: vertical;
+    }
+
+    .quiz-modal-footer {
+      justify-content: flex-end;
+      border-top: 1px solid var(--s4u-border);
+    }
+
+    @media (max-width: 1100px) {
+      .quiz-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .quiz-toolbar { grid-template-columns: minmax(220px, 1fr) 180px 180px; }
+      .quiz-toolbar .lms-btn { grid-column: 1 / -1; justify-self: start; }
+      .quiz-bottom-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .quiz-page-heading { flex-direction: column; }
+      .quiz-heading-actions { width: 100%; }
+      .quiz-heading-actions .lms-btn { flex: 1; justify-content: center; }
+      .quiz-summary-grid { grid-template-columns: 1fr; }
+      .quiz-toolbar { grid-template-columns: 1fr; }
+      .quiz-toolbar .lms-btn { width: 100%; }
+      .quiz-list-header { align-items: flex-start; flex-direction: column; }
+      .attempt-item { grid-template-columns: 1fr auto; }
+      .attempt-result { grid-column: 2; }
+      .modal-form-grid { grid-template-columns: 1fr; }
+      .modal-field.span-2 { grid-column: auto; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="lms-app">
+
+    <div class="lms-sidebar-overlay" data-lms-sidebar-overlay></div>
+
+    <!-- ======================================================
+         LMS SIDEBAR
+         ====================================================== -->
+
+    <aside class="lms-sidebar">
+
+      <a href="admin-lms-courses.html"
+         class="lms-brand lms-brand-logo-only"
+         aria-label="Screenings4u Learning Center">
+        <div class="lms-brand-logo-wrap">
+          <img src="images/logo.png" alt="Screenings4u" class="lms-brand-logo">
+        </div>
+      </a>
+
+      <div class="lms-sidebar-scroll">
+
+        <div class="lms-nav-group">
+          <div class="lms-nav-label">HOME</div>
+          <ul class="lms-nav-list">
+            <li class="lms-nav-item">
+              <a href="admin-lms-courses.html" class="lms-nav-link">
+                <span class="lms-nav-icon">⌂</span>
+                Courses
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="lms-nav-group">
+          <div class="lms-nav-label">MANAGE</div>
+          <ul class="lms-nav-list">
+            <li class="lms-nav-item">
+              <a href="admin-lms-enrollments.html" class="lms-nav-link">
+                <span class="lms-nav-icon">◎</span>
+                Enrollments
+              </a>
+            </li>
+            <li class="lms-nav-item">
+              <a href="admin-lms-students.html" class="lms-nav-link">
+                <span class="lms-nav-icon">◉</span>
+                Students
+              </a>
+            </li>
+            <li class="lms-nav-item">
+              <a href="admin-lms-progress.html" class="lms-nav-link">
+                <span class="lms-nav-icon">↗</span>
+                Progress
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="lms-nav-group">
+          <div class="lms-nav-label">CONTENT</div>
+          <ul class="lms-nav-list">
+            <li class="lms-nav-item">
+              <a href="admin-lms-lessons.html" class="lms-nav-link">
+                <span class="lms-nav-icon">▤</span>
+                Lessons
+              </a>
+            </li>
+            <li class="lms-nav-item">
+              <a href="admin-lms-quizzes.html" class="lms-nav-link active">
+                <span class="lms-nav-icon">?</span>
+                Quizzes
+              </a>
+            </li>
+            <li class="lms-nav-item">
+              <a href="admin-lms-assessments.html" class="lms-nav-link">
+                <span class="lms-nav-icon">✓</span>
+                Assessments
+              </a>
+            </li>
+            <li class="lms-nav-item">
+              <a href="admin-lms-media.html" class="lms-nav-link">
+                <span class="lms-nav-icon">▧</span>
+                Media
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="lms-nav-group">
+          <div class="lms-nav-label">RECORDS</div>
+          <ul class="lms-nav-list">
+            <li class="lms-nav-item">
+              <a href="admin-lms-certificates.html" class="lms-nav-link">
+                <span class="lms-nav-icon">◇</span>
+                Certificates
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="lms-sidebar-footer">
+        <a href="admin-dashboard.html" class="lms-back-admin">
+          <span class="lms-nav-icon">←</span>
+          Back to Main Administration
+        </a>
+      </div>
+
+    </aside>
+
+    <!-- ======================================================
+         MAIN APPLICATION
+         ====================================================== -->
+
+    <main class="lms-main">
+
+      <header class="lms-topbar">
+
+        <div class="lms-topbar-left">
+
+          <button type="button"
+                  class="lms-icon-button lms-mobile-menu-button"
+                  data-lms-menu-toggle
+                  aria-label="Open navigation">
+            ☰
+          </button>
+
+          <div class="lms-page-context">
+            <span class="lms-page-context-label">Screenings4u Learning Center</span>
+            <span class="lms-page-context-title">Quiz Management</span>
+          </div>
+
+        </div>
+
+        <div class="lms-topbar-right">
+
+          <button type="button" class="lms-icon-button" aria-label="Notifications">
+            ◌
+          </button>
+
+          <button type="button" class="lms-user-button">
+            <span class="lms-user-avatar">AD</span>
+            <span class="lms-user-copy">
+              <span class="lms-user-name">Administrator</span>
+              <span class="lms-user-role">LMS Administration</span>
+            </span>
+          </button>
+
+        </div>
+
+      </header>
+
+      <!-- ====================================================
+           QUIZ MANAGEMENT
+           ==================================================== -->
+
+      <section class="lms-page quiz-page">
+        <div class="lms-page-inner">
+
+          <div class="quiz-page-heading">
+
+            <div>
+              <div class="page-eyebrow">Content Management</div>
+              <h1>Quiz Management</h1>
+              <p>
+                Create and manage quizzes connected to course lessons. Review
+                questions, answer options, learner attempts, scores, and
+                pass/fail activity from one management workspace.
+              </p>
+            </div>
+
+            <div class="quiz-heading-actions">
+              <a href="admin-lms-lessons.html" class="lms-btn lms-btn-secondary">
+                View Lessons
+              </a>
+              <button type="button" class="lms-btn lms-btn-primary" id="createQuizButton">
+                + Create Quiz
+              </button>
+            </div>
+
+          </div>
+
+          <!-- SUMMARY -->
+
+          <section class="quiz-summary-grid">
+
+            <article class="quiz-summary-card">
+              <div class="quiz-summary-label">Total Quizzes</div>
+              <div class="quiz-summary-value" id="totalQuizStat">6</div>
+              <div class="quiz-summary-note">All quiz records in the LMS.</div>
+            </article>
+
+            <article class="quiz-summary-card">
+              <div class="quiz-summary-label">Published</div>
+              <div class="quiz-summary-value">4</div>
+              <div class="quiz-summary-note">Available to enrolled learners.</div>
+            </article>
+
+            <article class="quiz-summary-card">
+              <div class="quiz-summary-label">Drafts</div>
+              <div class="quiz-summary-value">2</div>
+              <div class="quiz-summary-note">Require review before publishing.</div>
+            </article>
+
+            <article class="quiz-summary-card">
+              <div class="quiz-summary-label">Learner Attempts</div>
+              <div class="quiz-summary-value">128</div>
+              <div class="quiz-summary-note">Review activity and results below.</div>
+            </article>
+
+          </section>
+
+          <!-- FILTERS -->
+
+          <section class="quiz-toolbar">
+
+            <div class="quiz-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-3.5-3.5"></path>
+              </svg>
+              <input type="search"
+                     id="quizSearch"
+                     placeholder="Search quizzes, courses, or lessons">
+            </div>
+
+            <select class="quiz-filter" id="courseFilter">
+              <option value="">All Courses</option>
+              <option value="dot">DOT Drug & Alcohol Training</option>
+              <option value="workplace">Workplace Safety Fundamentals</option>
+              <option value="compliance">Compliance Awareness</option>
+            </select>
+
+            <select class="quiz-filter" id="statusFilter">
+              <option value="">All Statuses</option>
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+              <option value="archived">Archived</option>
+            </select>
+
+            <button type="button" class="lms-btn lms-btn-secondary" id="clearFiltersButton">
+              Clear Filters
+            </button>
+
+          </section>
+
+          <!-- QUIZ LIST -->
+
+          <section class="quiz-list-card">
+
+            <div class="quiz-list-header">
+              <div>
+                <h2>All Quizzes</h2>
+                <p>Manage quiz records and open the appropriate builder or learner activity.</p>
+              </div>
+
+              <div class="quiz-count" id="quizCountLabel">6 quizzes</div>
+            </div>
+
+            <div class="quiz-table-wrap">
+
+              <table class="quiz-table">
+                <thead>
+                  <tr>
+                    <th>Quiz</th>
+                    <th>Course / Lesson</th>
+                    <th>Questions</th>
+                    <th>Attempts</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+
+                <tbody id="quizTableBody">
+
+                  <tr data-course="dot" data-status="published">
+                    <td>
+                      <div class="quiz-name">
+                        <span class="quiz-icon">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M9.5 9a2.5 2.5 0 1 1 4.3 1.7c-.8.8-1.8 1.3-1.8 2.8"></path>
+                            <path d="M12 17h.01"></path>
+                          </svg>
+                        </span>
+                        <div>
+                          <div class="quiz-title">Section 1 Knowledge Check</div>
+                          <div class="quiz-subtitle">Passing score: 80%</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="quiz-course">DOT Drug & Alcohol Training</div>
+                      <div class="quiz-lesson">Lesson: Course Introduction</div>
+                    </td>
+                    <td><div class="quiz-number">10</div></td>
+                    <td>
+                      <div class="quiz-number">42</div>
+                      <div class="quiz-muted">Latest activity today</div>
+                    </td>
+                    <td><span class="status-badge status-published">Published</span></td>
+                    <td>
+                      <div class="row-actions">
+                        <button class="row-action" data-action="attempts">Attempts</button>
+                        <button class="row-action" data-action="edit">Edit</button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-course="dot" data-status="published">
+                    <td>
+                      <div class="quiz-name">
+                        <span class="quiz-icon">?</span>
+                        <div>
+                          <div class="quiz-title">Workplace Responsibilities Quiz</div>
+                          <div class="quiz-subtitle">Passing score: 80%</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="quiz-course">DOT Drug & Alcohol Training</div>
+                      <div class="quiz-lesson">Lesson: Workplace Responsibilities</div>
+                    </td>
+                    <td><div class="quiz-number">15</div></td>
+                    <td>
+                      <div class="quiz-number">31</div>
+                      <div class="quiz-muted">Latest activity yesterday</div>
+                    </td>
+                    <td><span class="status-badge status-published">Published</span></td>
+                    <td>
+                      <div class="row-actions">
+                        <button class="row-action" data-action="attempts">Attempts</button>
+                        <button class="row-action" data-action="edit">Edit</button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-course="workplace" data-status="draft">
+                    <td>
+                      <div class="quiz-name">
+                        <span class="quiz-icon">?</span>
+                        <div>
+                          <div class="quiz-title">Safety Fundamentals Check</div>
+                          <div class="quiz-subtitle">Passing score: 75%</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="quiz-course">Workplace Safety Fundamentals</div>
+                      <div class="quiz-lesson">Lesson: Safety Fundamentals</div>
+                    </td>
+                    <td><div class="quiz-number">8</div></td>
+                    <td>
+                      <div class="quiz-number">0</div>
+                      <div class="quiz-muted">Not yet available</div>
+                    </td>
+                    <td><span class="status-badge status-draft">Draft</span></td>
+                    <td>
+                      <div class="row-actions">
+                        <button class="row-action" data-action="edit">Edit</button>
+                        <button class="row-action" data-action="publish">Publish</button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-course="compliance" data-status="published">
+                    <td>
+                      <div class="quiz-name">
+                        <span class="quiz-icon">?</span>
+                        <div>
+                          <div class="quiz-title">Compliance Awareness Check</div>
+                          <div class="quiz-subtitle">Passing score: 85%</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="quiz-course">Compliance Awareness</div>
+                      <div class="quiz-lesson">Lesson: Compliance Framework</div>
+                    </td>
+                    <td><div class="quiz-number">12</div></td>
+                    <td>
+                      <div class="quiz-number">55</div>
+                      <div class="quiz-muted">Latest activity Aug 26</div>
+                    </td>
+                    <td><span class="status-badge status-published">Published</span></td>
+                    <td>
+                      <div class="row-actions">
+                        <button class="row-action" data-action="attempts">Attempts</button>
+                        <button class="row-action" data-action="edit">Edit</button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-course="workplace" data-status="draft">
+                    <td>
+                      <div class="quiz-name">
+                        <span class="quiz-icon">?</span>
+                        <div>
+                          <div class="quiz-title">Incident Response Review</div>
+                          <div class="quiz-subtitle">Passing score: 80%</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="quiz-course">Workplace Safety Fundamentals</div>
+                      <div class="quiz-lesson">Lesson: Incident Response</div>
+                    </td>
+                    <td><div class="quiz-number">6</div></td>
+                    <td>
+                      <div class="quiz-number">0</div>
+                      <div class="quiz-muted">Not yet available</div>
+                    </td>
+                    <td><span class="status-badge status-draft">Draft</span></td>
+                    <td>
+                      <div class="row-actions">
+                        <button class="row-action" data-action="edit">Edit</button>
+                        <button class="row-action" data-action="publish">Publish</button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-course="dot" data-status="archived">
+                    <td>
+                      <div class="quiz-name">
+                        <span class="quiz-icon">?</span>
+                        <div>
+                          <div class="quiz-title">Legacy Program Knowledge Check</div>
+                          <div class="quiz-subtitle">Retained for historical records</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="quiz-course">DOT Drug & Alcohol Training</div>
+                      <div class="quiz-lesson">Legacy lesson assignment</div>
+                    </td>
+                    <td><div class="quiz-number">10</div></td>
+                    <td>
+                      <div class="quiz-number">0</div>
+                      <div class="quiz-muted">Historical record</div>
+                    </td>
+                    <td><span class="status-badge status-archived">Archived</span></td>
+                    <td>
+                      <div class="row-actions">
+                        <button class="row-action" data-action="edit">View</button>
+                      </div>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+
+            </div>
+
+            <div class="quiz-empty" id="quizEmptyState" hidden>
+              <strong>No quizzes found.</strong>
+              Adjust your filters or create a new quiz.
+            </div>
+
+          </section>
+
+          <!-- LOWER MANAGEMENT PANELS -->
+
+          <section class="quiz-bottom-grid">
+
+            <article class="panel-card">
+
+              <div class="panel-header">
+                <h2>Recent Quiz Attempts</h2>
+                <a href="admin-lms-progress.html" class="panel-link">View Learning Progress →</a>
+              </div>
+
+              <div class="attempt-list">
+
+                <div class="attempt-item">
+                  <div>
+                    <div class="attempt-name">Learner attempt recorded</div>
+                    <div class="attempt-meta">Section 1 Knowledge Check · Today</div>
+                  </div>
+                  <div class="attempt-score">90%</div>
+                  <div class="attempt-result result-pass">PASSED</div>
+                </div>
+
+                <div class="attempt-item">
+                  <div>
+                    <div class="attempt-name">Learner attempt recorded</div>
+                    <div class="attempt-meta">Compliance Awareness Check · Today</div>
+                  </div>
+                  <div class="attempt-score">92%</div>
+                  <div class="attempt-result result-pass">PASSED</div>
+                </div>
+
+                <div class="attempt-item">
+                  <div>
+                    <div class="attempt-name">Learner attempt recorded</div>
+                    <div class="attempt-meta">Workplace Responsibilities Quiz · Yesterday</div>
+                  </div>
+                  <div class="attempt-score">70%</div>
+                  <div class="attempt-result result-fail">NOT PASSED</div>
+                </div>
+
+                <div class="attempt-item">
+                  <div>
+                    <div class="attempt-name">Learner attempt recorded</div>
+                    <div class="attempt-meta">Section 1 Knowledge Check · Aug 25</div>
+                  </div>
+                  <div class="attempt-score">100%</div>
+                  <div class="attempt-result result-pass">PASSED</div>
+                </div>
+
+              </div>
+
+            </article>
+
+            <aside class="panel-card">
+
+              <div class="panel-header">
+                <h2>Quiz Tools</h2>
+              </div>
+
+              <div class="quick-actions">
+
+                <button type="button" class="quick-action" id="quickCreateQuiz">
+                  <span class="quick-action-icon">+</span>
+                  <span>
+                    <strong>Create Quiz</strong>
+                    <span>Start a new quiz and assign it to a lesson.</span>
+                  </span>
+                </button>
+
+                <a href="admin-lms-lessons.html" class="quick-action">
+                  <span class="quick-action-icon">▤</span>
+                  <span>
+                    <strong>Manage Lessons</strong>
+                    <span>Review the lessons quizzes can be connected to.</span>
+                  </span>
+                </a>
+
+                <button type="button" class="quick-action" id="reviewAttemptsButton">
+                  <span class="quick-action-icon">↗</span>
+                  <span>
+                    <strong>Review Attempts</strong>
+                    <span>Inspect quiz scores and learner activity.</span>
+                  </span>
+                </button>
+
+              </div>
+
+            </aside>
+
+          </section>
+
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- ==========================================================
+       CREATE QUIZ MODAL
+       ========================================================== -->
+
+  <div class="quiz-modal-backdrop" id="quizModalBackdrop" aria-hidden="true">
+
+    <div class="quiz-modal" role="dialog" aria-modal="true" aria-labelledby="quizModalTitle">
+
+      <div class="quiz-modal-header">
+        <h2 id="quizModalTitle">Create Quiz</h2>
+        <button type="button" class="modal-close" id="closeQuizModal" aria-label="Close">×</button>
+      </div>
+
+      <div class="quiz-modal-body">
+
+        <div class="modal-form-grid">
+
+          <div class="modal-field span-2">
+            <label for="newQuizTitle">Quiz Title</label>
+            <input id="newQuizTitle" type="text" placeholder="Enter quiz title">
+          </div>
+
+          <div class="modal-field">
+            <label for="newQuizCourse">Course</label>
+            <select id="newQuizCourse">
+              <option value="">Select course</option>
+              <option>DOT Drug & Alcohol Training</option>
+              <option>Workplace Safety Fundamentals</option>
+              <option>Compliance Awareness</option>
+            </select>
+          </div>
+
+          <div class="modal-field">
+            <label for="newQuizLesson">Lesson</label>
+            <select id="newQuizLesson">
+              <option value="">Select lesson</option>
+              <option>Course Introduction</option>
+              <option>Workplace Responsibilities</option>
+              <option>Safety Fundamentals</option>
+              <option>Compliance Framework</option>
+            </select>
+          </div>
+
+          <div class="modal-field">
+            <label for="newQuizPassingScore">Passing Score</label>
+            <input id="newQuizPassingScore" type="number" min="0" max="100" value="80">
+          </div>
+
+          <div class="modal-field">
+            <label for="newQuizStatus">Initial Status</label>
+            <select id="newQuizStatus">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+
+          <div class="modal-field span-2">
+            <label for="newQuizInstructions">Learner Instructions</label>
+            <textarea id="newQuizInstructions"
+                      placeholder="Optional instructions shown before the learner starts the quiz"></textarea>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="quiz-modal-footer">
+        <button type="button" class="lms-btn lms-btn-secondary" id="cancelQuizButton">
+          Cancel
+        </button>
+        <button type="button" class="lms-btn lms-btn-primary" id="saveNewQuizButton">
+          Create Quiz
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Shared LMS JavaScript -->
+  <script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/lms.js"></script>
+<script src="assets/js/lms-phase4.js"></script>
+</body></html>

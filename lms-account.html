@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Account | screenings4u Learning Center</title>
+<link rel="icon" type="image/png" href="images/fav.png">
+<style>
+:root{
+ --s4u-blue:#325aa3;--s4u-blue-dark:#24467f;--s4u-orange:#ff6b00;
+ --s4u-bg:#f5f7fa;--s4u-surface:#fff;--s4u-border:#dfe5ec;
+ --s4u-text:#172033;--s4u-muted:#687386;--s4u-soft:#f0f3f7;
+ --s4u-sidebar:252px;--s4u-sidebar-collapsed:72px;--s4u-topbar:70px;
+ --s4u-radius:8px;--s4u-shadow:0 4px 18px rgba(24,36,60,.06)
+}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--s4u-bg);color:var(--s4u-text)}
+a{text-decoration:none;color:inherit}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--s4u-sidebar);background:#fff;border-right:1px solid var(--s4u-border);display:flex;flex-direction:column;z-index:20}
+.brand{height:var(--s4u-topbar);display:grid;place-items:center;border-bottom:1px solid var(--s4u-border)}
+.brand img{max-width:180px;max-height:44px}
+.nav{padding:18px 14px;flex:1}.label{font-size:10px;letter-spacing:1px;color:var(--s4u-muted);font-weight:800;margin:12px 10px 8px}
+.link{display:flex;align-items:center;gap:12px;padding:12px 11px;margin:3px 0;border-radius:7px;color:var(--s4u-text);font-size:13px;font-weight:bold}
+.link:hover,.link.active{background:#edf2fb;color:var(--s4u-blue)}.ico{width:20px;text-align:center}
+.profile{margin:14px;padding:12px;background:var(--s4u-soft);border-radius:8px;color:var(--s4u-blue);font-size:12px;font-weight:bold}
+.main{margin-left:var(--s4u-sidebar);min-height:100vh}.topbar{height:var(--s4u-topbar);background:#fff;border-bottom:1px solid var(--s4u-border);display:flex;align-items:center;padding:0 28px;justify-content:space-between}
+.top-left{display:flex;align-items:center}.menu{width:38px;height:38px;border:1px solid var(--s4u-border);border-radius:7px;background:#fff;color:var(--s4u-blue);margin-right:13px;cursor:pointer}
+.topbar h1{margin:0;color:var(--s4u-blue);font-size:16px}.topbar p{margin:4px 0 0;color:var(--s4u-muted);font-size:11px}
+.content{max-width:1320px;margin:auto;padding:28px}
+.hero{background:linear-gradient(135deg,var(--s4u-blue),var(--s4u-blue-dark));border-radius:10px;padding:28px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:25px}
+.hero-main{display:flex;align-items:center;gap:18px}.avatar{width:68px;height:68px;border-radius:50%;background:#fff;color:var(--s4u-blue);display:grid;place-items:center;font-size:22px;font-weight:800;border:3px solid rgba(255,255,255,.35)}
+.eyebrow{font-size:10px;letter-spacing:1px;font-weight:800;color:#ffd7ba}.hero h2{margin:7px 0;font-size:25px}.hero p{margin:0;color:#e7effc;font-size:12px}.hero-status{padding:10px 13px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:8px;font-size:11px}
+.layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:20px;margin-top:22px}
+.tabs{background:#fff;border:1px solid var(--s4u-border);border-radius:8px;padding:10px;box-shadow:var(--s4u-shadow);height:max-content}
+.tab{width:100%;text-align:left;border:0;background:transparent;color:var(--s4u-muted);padding:12px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer}
+.tab:hover,.tab.active{background:#edf2fb;color:var(--s4u-blue)}
+.panel{display:none}.panel.active{display:block}.card{background:#fff;border:1px solid var(--s4u-border);border-radius:8px;box-shadow:var(--s4u-shadow);padding:23px;margin-bottom:18px}
+.card h3{margin:0 0 5px;color:var(--s4u-blue);font-size:16px}.sub{margin:0 0 20px;color:var(--s4u-muted);font-size:11px;line-height:1.6}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.field.full{grid-column:1/-1}.field label{display:block;font-size:10px;font-weight:800;color:var(--s4u-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px}
+.field input,.field select{width:100%;border:1px solid var(--s4u-border);border-radius:7px;padding:11px 12px;font-size:12px;color:var(--s4u-text);background:#fff}
+.field input:focus,.field select:focus{outline:2px solid rgba(50,90,163,.14);border-color:var(--s4u-blue)}
+.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.btn{border:1px solid var(--s4u-border);background:#fff;color:var(--s4u-blue);border-radius:7px;padding:10px 15px;font-size:11px;font-weight:bold;cursor:pointer}
+.btn.primary{background:var(--s4u-orange);border-color:var(--s4u-orange);color:#fff}.btn.danger{color:#b43b3b;border-color:#efcaca}
+.account-row{display:flex;justify-content:space-between;gap:15px;padding:14px 0;border-bottom:1px solid var(--s4u-border);align-items:center}.account-row:last-child{border-bottom:0}
+.account-row h4{margin:0 0 4px;font-size:12px;color:var(--s4u-text)}.account-row p{margin:0;font-size:11px;color:var(--s4u-muted);line-height:1.5}
+.badge{padding:5px 8px;border-radius:99px;background:#edf2fb;color:var(--s4u-blue);font-size:9px;font-weight:800;white-space:nowrap}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px}.stat{border:1px solid var(--s4u-border);border-radius:8px;padding:16px;background:#fff}
+.stat b{display:block;color:var(--s4u-blue);font-size:23px}.stat span{font-size:10px;color:var(--s4u-muted)}
+.activity{padding:13px 0;border-bottom:1px solid var(--s4u-border);display:flex;justify-content:space-between;gap:15px}.activity:last-child{border-bottom:0}.activity b{font-size:11px;color:var(--s4u-text)}.activity span{font-size:10px;color:var(--s4u-muted);white-space:nowrap}
+.notice{padding:14px 16px;background:#fff8f2;border-left:4px solid var(--s4u-orange);font-size:11px;line-height:1.6;color:#6d513d}
+.toast{position:fixed;right:22px;bottom:22px;background:var(--s4u-blue);color:#fff;padding:13px 16px;border-radius:8px;font-size:11px;box-shadow:var(--s4u-shadow);display:none;z-index:100}
+.collapsed .sidebar{width:var(--s4u-sidebar-collapsed)}.collapsed .main{margin-left:var(--s4u-sidebar-collapsed)}.collapsed .link span,.collapsed .label,.collapsed .profile{display:none}.collapsed .link{justify-content:center}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.tabs{display:flex;overflow:auto}.tab{min-width:150px}.stat-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:700px){.sidebar{transform:translateX(-100%);transition:.2s}.mobile .sidebar{transform:none}.main,.collapsed .main{margin-left:0}.content{padding:16px}.topbar{padding:0 16px}.hero{display:block}.hero-status{display:inline-block;margin-top:15px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div id="shell">
+<aside class="sidebar">
+ <div class="brand"><img src="images/logo.png" alt="Screenings4u"></div>
+ <nav class="nav">
+  <div class="label">LEARNING</div>
+  <a class="link" href="lms-dashboard.html"><b class="ico">D</b><span>Dashboard</span></a>
+  <a class="link" href="lms-my-courses.html"><b class="ico">M</b><span>My Courses</span></a>
+  <a class="link" href="lms-courses.html"><b class="ico">B</b><span>Browse Courses</span></a>
+  <div class="label">MY RECORDS</div>
+  <a class="link" href="lms-progress.html"><b class="ico">P</b><span>Learning Progress</span></a>
+  <a class="link" href="lms-certificates.html"><b class="ico">C</b><span>Certificates</span></a>
+  <div class="label">ACCOUNT</div>
+  <a class="link active" href="lms-account.html"><b class="ico">A</b><span>My Account</span></a>
+ </nav>
+ <div class="profile">JL &nbsp; Learner Account</div>
+</aside>
+<main class="main">
+<header class="topbar"><div class="top-left"><button class="menu" id="menu">☰</button><div><h1>My Account</h1><p>Screenings4u Learning Center</p></div></div></header>
+<div class="content">
+<section class="hero"><div class="hero-main"><div class="avatar" id="avatar">JL</div><div><div class="eyebrow">LEARNER PROFILE</div><h2 id="displayName">Jordan Learner</h2><p id="displayEmail">learner@example.com</p></div></div><div class="hero-status">Learning Center Account Active</div></section>
+
+<div class="layout">
+<aside class="tabs">
+ <button class="tab active" data-panel="profilePanel">Profile Information</button>
+ <button class="tab" data-panel="learningPanel">Learning Summary</button>
+ <button class="tab" data-panel="preferencesPanel">Preferences</button>
+ <button class="tab" data-panel="securityPanel">Account Security</button>
+</aside>
+<div>
+<section class="panel active" id="profilePanel">
+ <div class="card"><h3>Profile Information</h3><p class="sub">Manage the information displayed in your Screenings4u Learning Center profile.</p>
+ <div class="form-grid">
+  <div class="field"><label>First Name</label><input id="firstName" value="Jordan"></div>
+  <div class="field"><label>Last Name</label><input id="lastName" value="Learner"></div>
+  <div class="field full"><label>Email Address</label><input id="email" type="email" value="learner@example.com"></div>
+  <div class="field"><label>Organization</label><input value="Your Organization"></div>
+  <div class="field"><label>Account Type</label><input value="Learner" disabled></div>
+ </div>
+ <div class="actions"><button class="btn" type="button" id="resetProfile">Reset</button><button class="btn primary" type="button" id="saveProfile">Save Changes</button></div></div>
+ <div class="notice"><b>Account data:</b> When the LMS is wired to Supabase, profile information should come from the actual user/customer record associated with the learner's enrollment records. This page should not create a separate LMS student table unless the schema requires one.</div>
+</section>
+
+<section class="panel" id="learningPanel">
+ <div class="stat-grid"><div class="stat"><b>4</b><span>Total Enrollments</span></div><div class="stat"><b>2</b><span>Active Courses</span></div><div class="stat"><b>2</b><span>Completed Courses</span></div><div class="stat"><b>2</b><span>Certificates</span></div></div>
+ <div class="card"><h3>Recent Learning Activity</h3><p class="sub">A summary of recent activity across your enrolled courses.</p>
+  <div class="activity"><div><b>Completed Workplace Safety Fundamentals</b><br><span style="font-size:10px;color:#687386">Course completion recorded</span></div><span>Aug 12, 2026</span></div>
+  <div class="activity"><div><b>Continued DOT Drug & Alcohol Training</b><br><span style="font-size:10px;color:#687386">Lesson progress updated</span></div><span>Aug 20, 2026</span></div>
+  <div class="activity"><div><b>Certificate issued</b><br><span style="font-size:10px;color:#687386">DOT Compliance Awareness</span></div><span>Jul 28, 2026</span></div>
+ </div>
+</section>
+
+<section class="panel" id="preferencesPanel">
+ <div class="card"><h3>Learning Preferences</h3><p class="sub">Choose how you want the Learning Center to support your training experience.</p>
+  <div class="account-row"><div><h4>Course Reminder Emails</h4><p>Receive reminders about unfinished or upcoming training.</p></div><label><input type="checkbox" checked> <span class="badge">Enabled</span></label></div>
+  <div class="account-row"><div><h4>Certificate Notifications</h4><p>Receive a notification when a certificate becomes available.</p></div><label><input type="checkbox" checked> <span class="badge">Enabled</span></label></div>
+  <div class="account-row"><div><h4>New Course Updates</h4><p>Receive updates when new training becomes available.</p></div><label><input type="checkbox"> <span class="badge">Optional</span></label></div>
+  <div class="actions"><button class="btn primary" id="savePrefs">Save Preferences</button></div>
+ </div>
+</section>
+
+<section class="panel" id="securityPanel">
+ <div class="card"><h3>Account Security</h3><p class="sub">Security settings should remain connected to the main Screenings4u authentication system.</p>
+  <div class="account-row"><div><h4>Password</h4><p>Update your account password through the secure authentication system.</p></div><button class="btn" id="passwordBtn">Change Password</button></div>
+  <div class="account-row"><div><h4>Active Learning Access</h4><p>Your LMS access is controlled by your account and enrollment status.</p></div><span class="badge">Active</span></div>
+  <div class="account-row"><div><h4>Sign Out</h4><p>End your current Learning Center session.</p></div><button class="btn danger" id="signoutBtn">Sign Out</button></div>
+ </div>
+</section>
+</div></div>
+</div>
+</main></div>
+<div class="toast" id="toast"></div>
+<script>
+const shell=document.getElementById('shell'),toast=document.getElementById('toast');
+document.getElementById('menu').onclick=()=>{if(innerWidth<700)shell.classList.toggle('mobile');else shell.classList.toggle('collapsed')};
+document.querySelectorAll('.tab').forEach(tab=>tab.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));tab.classList.add('active');document.getElementById(tab.dataset.panel).classList.add('active')});
+function show(msg){toast.textContent=msg;toast.style.display='block';setTimeout(()=>toast.style.display='none',2800)}
+document.getElementById('saveProfile').onclick=()=>{let f=firstName.value.trim(),l=lastName.value.trim(),e=email.value.trim();displayName.textContent=(f+' '+l).trim()||'Learner';displayEmail.textContent=e||'No email provided';avatar.textContent=((f[0]||'L')+(l[0]||'A')).toUpperCase();show('Profile changes saved.')};
+document.getElementById('resetProfile').onclick=()=>{firstName.value='Jordan';lastName.value='Learner';email.value='learner@example.com';show('Profile form reset.')};
+document.getElementById('savePrefs').onclick=()=>show('Learning preferences saved.');
+document.getElementById('passwordBtn').onclick=()=>show('Password management will connect to the main authentication system.');
+document.getElementById('signoutBtn').onclick=()=>show('Sign out will connect to the LMS authentication flow.');
+</script>
+</body></html>

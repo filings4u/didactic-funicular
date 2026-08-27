@@ -55,12 +55,12 @@
 <div class="enterprise-page">
 <header class="enterprise-header">
 <div class="enterprise-heading"><div class="enterprise-kicker">ORGANIZATION / MANAGEMENT</div><h1>Employer Management</h1><p>Manage employer organizations, workforce programs, and enterprise service relationships.</p></div>
-<div class="enterprise-actions"><a class="enterprise-btn" href="admin-employers.html"><span class="enterprise-icon">↻</span> Refresh</a><a class="enterprise-btn primary" href="admin-employer-create.html"><span class="enterprise-icon">+</span> Create Employer</a></div>
+<div class="enterprise-actions"><button class="enterprise-btn" id="refreshEmployersBtn" type="button"><span class="enterprise-icon">↻</span> <span id="refreshEmployersLabel">Refresh</span></button><a class="enterprise-btn primary" href="admin-employer-create.html"><span class="enterprise-icon">+</span> Create Employer</a></div>
 </header>
-<section class="enterprise-kpis"><article class="enterprise-kpi"><div class="enterprise-kpi-top"><span class="enterprise-kpi-label">TOTAL EMPLOYERS</span><span class="enterprise-kpi-mark">•</span></div><strong>—</strong><small>All employer organizations</small></article>
-<article class="enterprise-kpi"><div class="enterprise-kpi-top"><span class="enterprise-kpi-label">ACTIVE</span><span class="enterprise-kpi-mark">•</span></div><strong>—</strong><small>Active employer programs</small></article>
-<article class="enterprise-kpi"><div class="enterprise-kpi-top"><span class="enterprise-kpi-label">PENDING</span><span class="enterprise-kpi-mark">•</span></div><strong>—</strong><small>Organizations pending review</small></article>
-<article class="enterprise-kpi"><div class="enterprise-kpi-top"><span class="enterprise-kpi-label">PROGRAMS</span><span class="enterprise-kpi-mark">•</span></div><strong>—</strong><small>Managed workforce programs</small></article></section>
+<section class="enterprise-kpis"><article class="enterprise-kpi"><div class="enterprise-kpi-top"><span class="enterprise-kpi-label">TOTAL EMPLOYERS</span><span class="enterprise-kpi-mark">•</span></div><strong id="totalEmployers">—</strong><small>All employer organizations</small></article>
+<article class="enterprise-kpi"><div class="enterprise-kpi-top"><span class="enterprise-kpi-label">ACTIVE</span><span class="enterprise-kpi-mark">•</span></div><strong id="activeEmployers">—</strong><small>Active employer programs</small></article>
+<article class="enterprise-kpi"><div class="enterprise-kpi-top"><span class="enterprise-kpi-label">PENDING</span><span class="enterprise-kpi-mark">•</span></div><strong id="pendingEmployers">—</strong><small>Organizations pending review</small></article>
+<article class="enterprise-kpi"><div class="enterprise-kpi-top"><span class="enterprise-kpi-label">PROGRAMS</span><span class="enterprise-kpi-mark">•</span></div><strong id="programCount">—</strong><small>Managed workforce programs</small></article></section>
 <section class="enterprise-grid">
 <article class="enterprise-card"><header class="enterprise-card-header"><div><h2>Employer Management</h2><p>Open a dedicated page for each enterprise management workflow.</p></div><a class="enterprise-header-link" href="admin-employer-directory.html">Open Directory <span>→</span></a></header><div class="enterprise-list"><a class="enterprise-row" href="admin-employer-directory.html"><span class="enterprise-row-icon">1</span><span><strong>Employer Directory</strong><small>Review all employer organizations.</small></span><span class="enterprise-arrow">→</span></a>
 <a class="enterprise-row" href="admin-employers-active.html"><span class="enterprise-row-icon">2</span><span><strong>Active Employers</strong><small>Manage active employer relationships.</small></span><span class="enterprise-arrow">→</span></a>
@@ -82,15 +82,167 @@
 </div>
 <script src="assets/js/admin-navigation.js"></script>
 <script>
-(function(){"use strict";
-document.addEventListener("DOMContentLoaded", async function(){
-  try {
-    if (window.S4UAuth && typeof window.S4UAuth.requireSession === "function") {
-      const session = await window.S4UAuth.requireSession("admin-login.html");
-      if (!session) return;
+(function () {
+  "use strict";
+
+  document.addEventListener("DOMContentLoaded", initializeEmployerManagement);
+
+  async function initializeEmployerManagement() {
+    const refreshButton = document.getElementById("refreshEmployersBtn");
+
+    if (refreshButton) {
+      refreshButton.addEventListener("click", loadEmployerManagement);
     }
-  } catch (error) { console.error("admin-employers.html initialization failed:", error); }
-});
+
+    await loadEmployerManagement();
+  }
+
+  async function loadEmployerManagement() {
+    setLoading(true);
+
+    try {
+      const client = getClient();
+
+      if (!client) {
+        throw new Error("Supabase client is unavailable.");
+      }
+
+      const employersResult = await client
+        .from("employer_profiles")
+        .select("id, employer_name, legal_name, status");
+
+      if (employersResult.error) {
+        throw employersResult.error;
+      }
+
+      const employers = employersResult.data || [];
+      const employerIds = employers.map(function (employer) {
+        return employer.id;
+      });
+
+      const total = employers.length;
+
+      const active = employers.filter(function (employer) {
+        return normalize(employer.status) === "active";
+      }).length;
+
+      const pending = employers.filter(function (employer) {
+        return [
+          "pending",
+          "review",
+          "needs_review",
+          "incomplete"
+        ].includes(normalize(employer.status));
+      }).length;
+
+      let programs = 0;
+
+      if (employerIds.length) {
+        const programsResult = await client
+          .from("dot_random_program_employers")
+          .select("employer_id, status")
+          .in("employer_id", employerIds);
+
+        if (programsResult.error) {
+          throw programsResult.error;
+        }
+
+        programs = (programsResult.data || []).filter(function (program) {
+          return normalize(program.status) === "active";
+        }).length;
+      }
+
+      setMetric("totalEmployers", total);
+      setMetric("activeEmployers", active);
+      setMetric("pendingEmployers", pending);
+      setMetric("programCount", programs);
+
+    } catch (error) {
+      console.error("Employer Management load failed:", error);
+      setErrorState();
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function getClient() {
+    if (
+      window.S4UAuth &&
+      typeof window.S4UAuth.getClient === "function"
+    ) {
+      const client = window.S4UAuth.getClient();
+      if (client && typeof client.from === "function") {
+        return client;
+      }
+    }
+
+    if (
+      typeof window.getScreenings4uSupabase === "function"
+    ) {
+      const client = window.getScreenings4uSupabase();
+      if (client && typeof client.from === "function") {
+        return client;
+      }
+    }
+
+    if (
+      window.screenings4uSupabase &&
+      typeof window.screenings4uSupabase.from === "function"
+    ) {
+      return window.screenings4uSupabase;
+    }
+
+    if (
+      window.supabaseClient &&
+      typeof window.supabaseClient.from === "function"
+    ) {
+      return window.supabaseClient;
+    }
+
+    return null;
+  }
+
+  function normalize(value) {
+    return String(value || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[\s-]+/g, "_");
+  }
+
+  function setMetric(id, value) {
+    const element = document.getElementById(id);
+    if (element) {
+      element.textContent = Number(value || 0).toLocaleString();
+    }
+  }
+
+  function setLoading(isLoading) {
+    const button = document.getElementById("refreshEmployersBtn");
+    const label = document.getElementById("refreshEmployersLabel");
+
+    if (button) {
+      button.disabled = Boolean(isLoading);
+      button.setAttribute("aria-busy", String(Boolean(isLoading)));
+    }
+
+    if (label) {
+      label.textContent = isLoading ? "Loading..." : "Refresh";
+    }
+  }
+
+  function setErrorState() {
+    [
+      "totalEmployers",
+      "activeEmployers",
+      "pendingEmployers",
+      "programCount"
+    ].forEach(function (id) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.textContent = "—";
+      }
+    });
+  }
 })();
 </script>
 </body>

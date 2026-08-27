@@ -101,17 +101,17 @@
               <h2>Assessment Management</h2>
               <p>Each training and LMS workflow opens on its own management page.</p>
             </div>
-            <a class="lms-header-link" href="admin-lms-assessments-all.html">
+            <a class="lms-header-link" href="admin-lms-assessments.html">
               Open Directory <span>→</span>
             </a>
           </header>
 
           <div class="lms-list">
-            <a class="lms-row" href="admin-lms-assessments-all.html"><span class="lms-row-icon">01</span><span><strong>Assessment Directory</strong><small>Review the complete assessment registry.</small></span><span class="lms-arrow">→</span></a>
+            <a class="lms-row" href="admin-lms-assessments.html"><span class="lms-row-icon">01</span><span><strong>Assessment Directory</strong><small>Review the complete assessment registry.</small></span><span class="lms-arrow">→</span></a>
 <a class="lms-row" href="admin-lms-assessment-builder.html"><span class="lms-row-icon">02</span><span><strong>Assessment Builder</strong><small>Open the assessment creation workspace.</small></span><span class="lms-arrow">→</span></a>
-<a class="lms-row" href="admin-lms-assessments-active.html"><span class="lms-row-icon">03</span><span><strong>Active Assessments</strong><small>Manage assessments currently available.</small></span><span class="lms-arrow">→</span></a>
-<a class="lms-row" href="admin-lms-assessments-drafts.html"><span class="lms-row-icon">04</span><span><strong>Draft Assessments</strong><small>Continue assessments currently being prepared.</small></span><span class="lms-arrow">→</span></a>
-<a class="lms-row" href="admin-lms-assessment-results.html"><span class="lms-row-icon">05</span><span><strong>Assessment Results</strong><small>Review learner assessment results.</small></span><span class="lms-arrow">→</span></a>
+<a class="lms-row" href="admin-lms-assessments.html?status=published"><span class="lms-row-icon">03</span><span><strong>Active Assessments</strong><small>Manage assessments currently available.</small></span><span class="lms-arrow">→</span></a>
+<a class="lms-row" href="admin-lms-assessments.html?status=draft"><span class="lms-row-icon">04</span><span><strong>Draft Assessments</strong><small>Continue assessments currently being prepared.</small></span><span class="lms-arrow">→</span></a>
+<a class="lms-row" href="admin-lms-progress.html"><span class="lms-row-icon">05</span><span><strong>Assessment Results</strong><small>Review learner assessment results.</small></span><span class="lms-arrow">→</span></a>
           </div>
         </article>
 
@@ -127,9 +127,9 @@
 
             <div class="lms-action-grid">
               <a class="lms-action" href="admin-lms-assessment-builder.html"><span class="lms-action-mark">+</span><strong>Create Assessment</strong><small>Open assessment builder</small></a>
-<a class="lms-action" href="admin-lms-assessments-all.html"><span class="lms-action-mark">→</span><strong>Assessment Directory</strong><small>Open all assessment records</small></a>
-<a class="lms-action" href="admin-lms-assessments-drafts.html"><span class="lms-action-mark">!</span><strong>Draft Assessments</strong><small>Open draft management</small></a>
-<a class="lms-action" href="admin-lms-assessment-results.html"><span class="lms-action-mark">✓</span><strong>Assessment Results</strong><small>Open learner results</small></a>
+<a class="lms-action" href="admin-lms-assessments.html"><span class="lms-action-mark">→</span><strong>Assessment Directory</strong><small>Open all assessment records</small></a>
+<a class="lms-action" href="admin-lms-assessments.html?status=draft"><span class="lms-action-mark">!</span><strong>Draft Assessments</strong><small>Open draft management</small></a>
+<a class="lms-action" href="admin-lms-progress.html"><span class="lms-action-mark">✓</span><strong>Assessment Results</strong><small>Open learner results</small></a>
             </div>
           </article>
 
@@ -183,5 +183,6 @@
   });
 })();
 </script>
+<script src="assets/js/lms-phase5.js"></script>
 </body>
 </html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Assessment | screenings4u Learning Center</title>
+<link rel="icon" type="image/png" href="images/fav.png">
+<style>
+:root{--s4u-blue:#325aa3;--s4u-blue-dark:#24467f;--s4u-orange:#ff6b00;--s4u-bg:#f5f7fa;--s4u-surface:#fff;--s4u-border:#dfe5ec;--s4u-text:#172033;--s4u-muted:#687386;--s4u-soft:#f0f3f7;--s4u-sidebar:252px;--s4u-topbar:70px;--s4u-radius:8px;--s4u-shadow:0 4px 18px rgba(24,36,60,.06)}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--s4u-bg);color:var(--s4u-text)}a{text-decoration:none}
+.shell{min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:var(--s4u-sidebar);background:var(--s4u-surface);border-right:1px solid var(--s4u-border);display:flex;flex-direction:column;z-index:30}.brand{height:var(--s4u-topbar);border-bottom:1px solid var(--s4u-border);display:flex;align-items:center;justify-content:center;padding:10px}.brand img{max-width:180px;max-height:44px;object-fit:contain}.nav{padding:18px 14px;flex:1}.nav-label{font-size:10px;letter-spacing:1px;color:var(--s4u-muted);font-weight:800;margin:10px}.nav-link{display:flex;align-items:center;gap:12px;padding:12px 11px;margin:3px 0;border-radius:7px;color:var(--s4u-text);font-size:13px;font-weight:700}.nav-link:hover,.nav-link.active{background:#edf2fb;color:var(--s4u-blue)}.nav-icon{width:20px;text-align:center;font-style:normal}.profile{margin:14px;padding:12px;background:var(--s4u-soft);border-radius:8px;color:var(--s4u-blue);font-size:12px;font-weight:800}
+.main{margin-left:var(--s4u-sidebar);min-height:100vh}.topbar{height:var(--s4u-topbar);background:rgba(255,255,255,.97);border-bottom:1px solid var(--s4u-border);display:flex;align-items:center;justify-content:space-between;padding:0 28px}.top-left{display:flex;align-items:center}.menu-btn{width:38px;height:38px;border:1px solid var(--s4u-border);background:#fff;color:var(--s4u-blue);border-radius:7px;margin-right:13px;cursor:pointer}.topbar h1{margin:0;color:var(--s4u-blue);font-size:16px}.topbar p{margin:4px 0 0;font-size:11px;color:var(--s4u-muted)}.top-course{font-size:11px;color:var(--s4u-muted);font-weight:700}
+.content{max-width:1120px;margin:auto;padding:28px}.crumbs{font-size:11px;color:var(--s4u-muted);margin-bottom:16px}.crumbs a{color:var(--s4u-blue);font-weight:800}.assessment-header{background:linear-gradient(135deg,var(--s4u-blue),var(--s4u-blue-dark));border-radius:10px;padding:26px 28px;color:#fff}.assessment-header .eyebrow{font-size:10px;letter-spacing:1px;font-weight:800;color:#ffd3b3}.assessment-header h2{margin:8px 0;font-size:24px}.assessment-header p{margin:0;max-width:720px;color:#e7effc;font-size:12px;line-height:1.65}.assessment-stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.stat{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);border-radius:99px;padding:7px 11px;font-size:11px;font-weight:700}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 265px;gap:20px;margin-top:20px}.card{background:#fff;border:1px solid var(--s4u-border);border-radius:8px;box-shadow:var(--s4u-shadow)}.question-card{padding:28px}.q-number{font-size:10px;letter-spacing:1px;font-weight:800;color:var(--s4u-orange)}.question{margin:9px 0 22px;color:var(--s4u-blue);font-size:19px;line-height:1.45}.option{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--s4u-border);border-radius:7px;padding:14px 15px;margin:9px 0;cursor:pointer;font-size:13px;color:var(--s4u-text)}.option:hover,.option.selected{border-color:var(--s4u-blue);background:#f6f8fd}.option input{margin-top:2px;accent-color:var(--s4u-blue)}.written-answer{width:100%;min-height:145px;border:1px solid var(--s4u-border);border-radius:7px;padding:13px;font-family:inherit;font-size:13px;resize:vertical}.written-answer:focus{outline:2px solid rgba(50,90,163,.15);border-color:var(--s4u-blue)}.helper{font-size:11px;color:var(--s4u-muted);line-height:1.6;margin-top:9px}.actions{border-top:1px solid var(--s4u-border);padding:18px 28px;display:flex;justify-content:space-between;gap:10px}.btn{padding:11px 16px;border:1px solid var(--s4u-border);border-radius:7px;background:#fff;color:var(--s4u-blue);font-size:12px;font-weight:800;cursor:pointer}.btn.primary{background:var(--s4u-orange);border-color:var(--s4u-orange);color:#fff}.side-card{padding:19px;margin-bottom:15px}.side-card h3{color:var(--s4u-blue);font-size:14px;margin:0 0 13px}.progress-line{height:7px;background:var(--s4u-soft);border-radius:99px;overflow:hidden}.progress-fill{height:100%;width:25%;background:var(--s4u-orange)}.progress-text{display:flex;justify-content:space-between;margin-bottom:8px;color:var(--s4u-muted);font-size:11px}.question-list{margin-top:13px}.q-nav{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--s4u-border);font-size:11px;color:var(--s4u-muted)}.q-nav:last-child{border-bottom:0}.q-dot{width:19px;height:19px;border-radius:50%;display:grid;place-items:center;background:var(--s4u-soft);color:var(--s4u-muted);font-size:9px;font-weight:800}.q-nav.active{color:var(--s4u-blue);font-weight:800}.q-nav.active .q-dot{background:var(--s4u-blue);color:#fff}.notice{margin-top:15px;padding:13px;background:#fff8f2;border-left:4px solid var(--s4u-orange);border-radius:4px;font-size:11px;line-height:1.6;color:#6d513d}.result{display:none;padding:45px 25px;text-align:center}.result .result-icon{width:62px;height:62px;border-radius:50%;background:#edf2fb;color:var(--s4u-blue);display:grid;place-items:center;margin:auto;font-size:28px}.result h2{color:var(--s4u-blue);margin:16px 0 8px}.result p{font-size:13px;color:var(--s4u-muted);line-height:1.65}.result-status{margin:18px auto;padding:13px;border:1px solid var(--s4u-border);border-radius:8px;max-width:400px;font-size:13px}.collapsed .sidebar{width:72px}.collapsed .main{margin-left:72px}.collapsed .nav-label,.collapsed .nav-link span,.collapsed .profile{display:none}.collapsed .nav-link{justify-content:center}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.sidebar{transform:translateX(-100%);transition:.2s}.mobile .sidebar{transform:translateX(0)}.main,.collapsed .main{margin-left:0}.content{padding:16px}.topbar{padding:0 16px}.top-course{display:none}.assessment-header{padding:23px}.question-card{padding:22px}.actions{padding:16px 22px}}
+</style></head>
+<body>
+<div class="shell" id="shell">
+<aside class="sidebar">
+<div class="brand"><img src="images/logo.png" alt="Screenings4u"></div>
+<nav class="nav">
+<div class="nav-label">LEARNING</div>
+<a class="nav-link" href="lms-dashboard.html"><i class="nav-icon">D</i><span>Dashboard</span></a>
+<a class="nav-link active" href="lms-my-courses.html"><i class="nav-icon">M</i><span>My Courses</span></a>
+<a class="nav-link" href="lms-courses.html"><i class="nav-icon">B</i><span>Browse Courses</span></a>
+<div class="nav-label">MY RECORDS</div>
+<a class="nav-link" href="lms-progress.html"><i class="nav-icon">P</i><span>Learning Progress</span></a>
+<a class="nav-link" href="lms-certificates.html"><i class="nav-icon">C</i><span>Certificates</span></a>
+</nav>
+<div class="profile">JL &nbsp; Learner Account</div>
+</aside>
+<main class="main">
+<header class="topbar"><div class="top-left"><button class="menu-btn" id="menuBtn">☰</button><div><h1>Course Assessment</h1><p>Screenings4u Learning Center</p></div></div><div class="top-course">DOT Drug & Alcohol Training</div></header>
+<div class="content">
+<div class="crumbs"><a href="lms-my-courses.html">My Courses</a> › <a href="lms-course.html">DOT Drug & Alcohol Training</a> › Assessment</div>
+<section class="assessment-header"><div class="eyebrow">FINAL COURSE ASSESSMENT</div><h2>DOT Drug & Alcohol Training Assessment</h2><p>Complete each assessment question before submitting your final attempt. Your assessment attempt and answers should be saved to your learner enrollment record.</p><div class="assessment-stats"><span class="stat">4 Questions</span><span class="stat">Final Assessment</span><span class="stat">Results Recorded</span></div></section>
+<div class="layout">
+<div>
+<section class="card" id="assessmentCard"><div class="question-card" id="questionArea"></div><div class="actions"><button class="btn" id="previousBtn">← Previous</button><button class="btn primary" id="nextBtn">Next Question →</button></div></section>
+<section class="card result" id="resultCard"><div class="result-icon">✓</div><h2>Assessment Submitted</h2><p>Your assessment attempt has been completed. When the Supabase data layer is connected, the system should evaluate and store the attempt according to the assessment configuration.</p><div class="result-status" id="resultStatus">Assessment attempt recorded</div><button class="btn primary" onclick="location.href='lms-course.html'">Return to Course →</button></section>
+</div>
+<aside>
+<section class="card side-card"><h3>Assessment Progress</h3><div class="progress-text"><span id="progressLabel">Question 1 of 4</span><span id="progressPercent">25%</span></div><div class="progress-line"><div class="progress-fill" id="progressFill"></div></div><div class="question-list" id="questionList"></div></section>
+<section class="notice"><b>Assessment Notice:</b> Unlike a regular knowledge check, this assessment can be configured by administrators for scoring, passing requirements, completion rules, and certificate eligibility.</section>
+</aside>
+</div>
+</div></main></div>
+<script>
+const questions=[
+{type:"choice",question:"Which action best supports successful completion of required workplace training?",options:["Review and complete all assigned course content","Skip course requirements","Only complete the first lesson","Wait for the course to expire"]},
+{type:"choice",question:"What should an LMS record when a learner completes an assessment?",options:["Only the learner's name","The assessment attempt and applicable answers","A new course record","Nothing after submission"]},
+{type:"text",question:"Briefly explain why completing required training accurately is important.",placeholder:"Enter your response here..."},
+{type:"choice",question:"What may be awarded when an enrollment meets all applicable completion requirements?",options:["A certificate","A new employee record","A duplicate course","A refund automatically"]}
+];
+let current=0,answers=new Array(questions.length);
+const area=document.getElementById("questionArea"),fill=document.getElementById("progressFill"),label=document.getElementById("progressLabel"),pct=document.getElementById("progressPercent"),list=document.getElementById("questionList"),next=document.getElementById("nextBtn"),prev=document.getElementById("previousBtn");
+function render(){
+const q=questions[current];
+let html=`<div class="q-number">QUESTION ${current+1}</div><div class="question">${q.question}</div>`;
+if(q.type==="choice")html+=q.options.map((o,i)=>`<label class="option ${answers[current]===i?"selected":""}"><input type="radio" name="answer" value="${i}" ${answers[current]===i?"checked":""}><span>${o}</span></label>`).join("");
+else html+=`<textarea class="written-answer" id="textAnswer" placeholder="${q.placeholder}">${answers[current]||""}</textarea><div class="helper">Provide a clear response based on the course content.</div>`;
+area.innerHTML=html;
+document.querySelectorAll('input[name="answer"]').forEach(el=>el.addEventListener("change",e=>{answers[current]=Number(e.target.value);renderNav();document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));e.target.closest(".option").classList.add("selected")}));
+const ta=document.getElementById("textAnswer");if(ta)ta.addEventListener("input",e=>{answers[current]=e.target.value;renderNav()});
+let percent=Math.round(((current+1)/questions.length)*100);fill.style.width=percent+"%";label.textContent=`Question ${current+1} of ${questions.length}`;pct.textContent=percent+"%";
+prev.style.visibility=current===0?"hidden":"visible";next.textContent=current===questions.length-1?"Submit Assessment":"Next Question →";renderNav();
+}
+function renderNav(){list.innerHTML=questions.map((q,i)=>`<div class="q-nav ${i===current?"active":""}"><span class="q-dot">${answers[i]!==undefined&&answers[i]!==""?"✓":i+1}</span><span>Question ${i+1}</span></div>`).join("")}
+next.onclick=()=>{if(answers[current]===undefined||answers[current]===""){alert("Please provide an answer before continuing.");return}if(current<questions.length-1){current++;render()}else{document.getElementById("assessmentCard").style.display="none";document.getElementById("resultCard").style.display="block";let completed=answers.filter(a=>a!==undefined&&a!=="").length;document.getElementById("resultStatus").textContent=`${completed} of ${questions.length} assessment answers submitted`}};
+prev.onclick=()=>{if(current>0){current--;render()}};
+document.getElementById("menuBtn").onclick=()=>{if(innerWidth<820)shell.classList.toggle("mobile");else shell.classList.toggle("collapsed")};
+render();
+</script>
+</body></html>

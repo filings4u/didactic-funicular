@@ -1,187 +1,834 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Course Management | screenings4u Admin</title>
-<link rel="icon" type="image/png" href="images/fav.png">
+  <meta charset="UTF-8">
 
-<link rel="stylesheet" href="assets/css/admin-core.css">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/js/supabase-config.js"></script>
-<script src="assets/js/config.js"></script>
-<script src="assets/js/auth.js"></script>
-<script src="assets/js/permissions.js"></script>
-<script src="assets/js/ui.js"></script>
+  <title>
+    Courses | screenings4u Learning Center
+  </title>
 
+    <link rel="icon" type="image/png" href="images/fav.png">
 
-<style>
-/* ============================================================
-   screenings4u — TRAINING / LMS MANAGEMENT
-   Complete single-file page styles
-   ============================================================ */
-.lms-page{padding:22px 24px 34px;max-width:none}
-.lms-header{min-height:116px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid #e3e8ef}
-.lms-heading{min-width:0}.lms-kicker{margin-bottom:5px;color:#f05a00;font-size:11px;line-height:1;font-weight:900;letter-spacing:.045em}
-.lms-heading h1{margin:0;color:#173d78;font-size:clamp(36px,3vw,44px);line-height:.98;font-weight:800;letter-spacing:-.045em}
-.lms-heading p{max-width:760px;margin:9px 0 0;color:#52627a;font-size:13px;line-height:1.45}
-.lms-actions{flex:0 0 auto;display:flex;align-items:center;gap:10px}
-.lms-actions .lms-btn,.lms-actions a.lms-btn{min-width:126px;height:43px;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;padding:0 18px!important;border:1px solid #cbd7e5!important;border-radius:9px!important;background:#fff!important;color:#173d78!important;font-size:11px!important;font-weight:900!important;line-height:1!important;text-decoration:none!important;box-sizing:border-box;cursor:pointer}
-.lms-actions .lms-btn:hover{background:#f4f7fb!important;border-color:#aebfd3!important}
-.lms-actions .lms-btn.primary{min-width:158px;border-color:#f05a00!important;background:#f05a00!important;color:#fff!important}
-.lms-actions .lms-btn.primary:hover{background:#d94f00!important;border-color:#d94f00!important}
-.lms-btn-icon{font-size:17px;line-height:1}
-.lms-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:22px}
-.lms-kpi{min-width:0;min-height:153px;padding:17px 20px;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 10px rgba(20,48,82,.055)}
-.lms-kpi-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.lms-kpi-label{color:#5f6d83;font-size:10px;line-height:1;font-weight:900;letter-spacing:.075em}
-.lms-kpi-mark{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-size:16px;font-weight:900}
-.lms-kpi:nth-child(2) .lms-kpi-mark{background:#eaf7f0;color:#16804d}.lms-kpi:nth-child(3) .lms-kpi-mark{background:#fff3e5;color:#c96a00}.lms-kpi:nth-child(4) .lms-kpi-mark{background:#fceeee;color:#b64141}
-.lms-kpi strong{display:block;margin-top:20px;color:#183f7c;font-size:30px;line-height:1;font-weight:800;letter-spacing:-.04em}.lms-kpi small{display:block;margin-top:12px;color:#647189;font-size:10px;line-height:1.3}
-.lms-grid{display:grid;grid-template-columns:minmax(0,1.34fr) minmax(360px,1fr);gap:16px 22px;margin-top:16px}
-.lms-card{min-width:0;overflow:hidden;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 11px rgba(20,48,82,.055)}
-.lms-card-header{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 23px;border-bottom:1px solid #e3e8ef}
-.lms-card-header h2{margin:0;color:#173d78;font-size:19px;line-height:1.15;font-weight:800;letter-spacing:-.025em}.lms-card-header p{margin:6px 0 0;color:#607089;font-size:11px;line-height:1.3}
-.lms-header-link{color:#17519b;text-decoration:none;font-size:10px;font-weight:900}.lms-header-link span{padding-left:5px;font-size:16px}
-.lms-list{padding:9px 12px}.lms-row{min-height:76px;display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;color:inherit;text-decoration:none}.lms-row:hover{background:#f7f9fc}
-.lms-row-icon{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-size:12px;font-weight:900}
-.lms-row:nth-child(2) .lms-row-icon{background:#eaf7f0;color:#16804d}.lms-row:nth-child(3) .lms-row-icon{background:#fff3e5;color:#c96a00}.lms-row:nth-child(4) .lms-row-icon{background:#fceeee;color:#b64141}.lms-row:nth-child(5) .lms-row-icon{background:#f0eefb;color:#6045a8}
-.lms-row strong{display:block;color:#173b73;font-size:13px;line-height:1.2;font-weight:800}.lms-row small{display:block;margin-top:5px;color:#617088;font-size:10px;line-height:1.25}.lms-arrow{padding-right:7px;color:#667a98;font-size:22px}
-.lms-side{display:grid;grid-template-rows:auto auto;gap:16px}.lms-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:13px}
-.lms-action{min-height:93px;display:flex;flex-direction:column;justify-content:center;padding:12px 15px;border:1px solid #dfe5ed;border-radius:8px;background:#fff;color:inherit;text-decoration:none}.lms-action:hover{border-color:#bfcfe2;background:#f9fbfe;transform:translateY(-1px)}
-.lms-action-mark{display:block;color:#f05a00;font-size:21px;line-height:.8;font-weight:700}.lms-action strong{display:block;margin-top:10px;color:#173b73;font-size:12px;line-height:1.15;font-weight:800}.lms-action small{display:block;margin-top:5px;color:#647189;font-size:10px;line-height:1.2}
-.lms-resources{padding:7px 13px 12px}.lms-resources a{min-height:45px;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:0 10px;border-bottom:1px solid #edf0f4;color:#173b73;text-decoration:none;font-size:11px;font-weight:800}.lms-resources a:last-child{border-bottom:0}.lms-resources a:hover{background:#f7f9fc}.lms-resources span:last-child{color:#667a98;font-size:17px}
-@media(max-width:1250px){.lms-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.lms-grid{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr)}}
-@media(max-width:1050px){.lms-header{align-items:flex-start;flex-direction:column}.lms-actions{width:100%}.lms-actions .lms-btn{flex:1 1 0}.lms-grid{grid-template-columns:1fr}.lms-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}}
-@media(max-width:700px){.lms-page{padding:18px 14px 22px}.lms-header{min-height:0;padding-bottom:18px}.lms-kpis{gap:9px}.lms-kpi{min-height:128px;padding:14px}.lms-kpi strong{margin-top:14px;font-size:25px}.lms-side{grid-template-columns:1fr}.lms-card-header{padding-left:17px;padding-right:17px}}
-@media(max-width:500px){.lms-actions{flex-direction:column}.lms-actions .lms-btn{width:100%;flex:none}}
-@media(max-width:430px){.lms-kpis{grid-template-columns:1fr}.lms-row{grid-template-columns:38px minmax(0,1fr) auto;padding-left:5px;padding-right:5px}}
-</style>
+    
+  <!-- LMS Shared Styles -->
+  <link
+    rel="stylesheet"
+    href="assets/css/lms.css"
+  >
+
+  <!-- LMS Brand Layout -->
+  <style>
+    /* Sidebar: centered Screenings4u logo only */
+    .lms-brand.lms-brand-logo-only {
+      min-height: 88px;
+      justify-content: center;
+      padding: 14px 20px;
+    }
+
+    .lms-brand.lms-brand-logo-only .lms-brand-logo-wrap {
+      width: 148px;
+      height: 54px;
+      flex: 0 0 148px;
+      background: transparent;
+      border-radius: 0;
+    }
+
+    .lms-brand.lms-brand-logo-only .lms-brand-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Top application identity */
+    .lms-page-context-label {
+      color: var(--s4u-blue);
+      font-weight: 800;
+      letter-spacing: .01em;
+    }
+
+    .lms-page-context-title {
+      color: var(--s4u-orange);
+      font-weight: 800;
+    }
+
+    .lms-page-context {
+      line-height: 1.2;
+    }
+  </style>
 
 </head>
-<body>
-<div class="s4u-app">
-  <nav class="s4u-nav" id="adminNavigation" aria-label="Admin navigation"></nav>
 
-  <main class="s4u-main">
-    <div class="lms-page">
+<body data-s4u-portal="admin">
 
-      <header class="lms-header">
-        <div class="lms-heading">
-          <div class="lms-kicker">TRAINING / LMS / COURSES</div>
-          <h1>Course Management</h1>
-          <p>Manage the enterprise learning catalog, course records, training availability, and course administration.</p>
+  <div class="lms-app">
+
+    <!-- ======================================================
+         MOBILE OVERLAY
+         ====================================================== -->
+
+    <div
+      class="lms-sidebar-overlay"
+      data-lms-sidebar-overlay
+    ></div>
+
+
+    <!-- ======================================================
+         LMS SIDEBAR
+         ====================================================== -->
+
+    <aside class="lms-sidebar">
+
+      <!-- BRAND -->
+
+      <a
+        href="admin-lms-courses.html"
+        class="lms-brand lms-brand-logo-only"
+        aria-label="Screenings4u Learning Center"
+      >
+
+        <div class="lms-brand-logo-wrap">
+
+          <img
+            src="images/logo.png"
+            alt="Screenings4u"
+            class="lms-brand-logo"
+          >
+
         </div>
 
-        <div class="lms-actions">
-          <a class="lms-btn" href="admin-lms-courses.html">
-            <span class="lms-btn-icon">↻</span>
-            Refresh
-          </a>
+      </a>
 
-          <a class="lms-btn primary" href="admin-lms-course-manager.html">
-            <span class="lms-btn-icon">+</span>
-            Course Manager
-          </a>
+
+      <!-- NAVIGATION -->
+
+      <div class="lms-sidebar-scroll">
+
+
+        <!-- HOME -->
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">
+            HOME
+          </div>
+
+          <ul class="lms-nav-list">
+
+            <li class="lms-nav-item">
+
+              <a
+                href="admin-lms-courses.html"
+                class="lms-nav-link"
+              >
+
+                <span class="lms-nav-icon">
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                  >
+                    <path d="M3 12l9-9 9 9"></path>
+                    <path d="M5 10v10h14V10"></path>
+                  </svg>
+
+                </span>
+
+                Courses
+
+              </a>
+
+            </li>
+
+          </ul>
+
         </div>
+
+
+        <!-- MANAGE -->
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">
+            MANAGE
+          </div>
+
+          <ul class="lms-nav-list">
+
+
+            <li class="lms-nav-item">
+
+              <a
+                href="admin-lms-enrollments.html"
+                class="lms-nav-link"
+              >
+
+                <span class="lms-nav-icon">
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+
+                </span>
+
+                Enrollments
+
+              </a>
+
+            </li>
+
+
+            <li class="lms-nav-item">
+
+              <a
+                href="admin-lms-students.html"
+                class="lms-nav-link"
+              >
+
+                <span class="lms-nav-icon">
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                  >
+                    <circle cx="12" cy="7" r="4"></circle>
+                    <path d="M5.5 21a6.5 6.5 0 0 1 13 0"></path>
+                  </svg>
+
+                </span>
+
+                Students
+
+              </a>
+
+            </li>
+
+
+            <li class="lms-nav-item">
+
+              <a
+                href="admin-lms-progress.html"
+                class="lms-nav-link"
+              >
+
+                <span class="lms-nav-icon">
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                  >
+                    <path d="M3 3v18h18"></path>
+                    <path d="M7 16l4-5 3 3 5-7"></path>
+                  </svg>
+
+                </span>
+
+                Progress
+
+              </a>
+
+            </li>
+
+
+          </ul>
+
+        </div>
+
+
+        <!-- CREATE -->
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">
+            CONTENT
+          </div>
+
+          <ul class="lms-nav-list">
+
+
+            <li class="lms-nav-item">
+
+              <a
+                href="admin-lms-lessons.html"
+                class="lms-nav-link"
+              >
+
+                <span class="lms-nav-icon">
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                  >
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+
+                </span>
+
+                Lessons
+
+              </a>
+
+            </li>
+
+
+            <li class="lms-nav-item">
+
+              <a
+                href="admin-lms-quizzes.html"
+                class="lms-nav-link"
+              >
+
+                <span class="lms-nav-icon">
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                  >
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M9.5 9a2.5 2.5 0 1 1 4.3 1.7c-.8.8-1.8 1.3-1.8 2.8"></path>
+                    <path d="M12 17h.01"></path>
+                  </svg>
+
+                </span>
+
+                Quizzes
+
+              </a>
+
+            </li>
+
+
+            <li class="lms-nav-item">
+
+              <a
+                href="admin-lms-assessments.html"
+                class="lms-nav-link"
+              >
+
+                <span class="lms-nav-icon">
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                  >
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                  </svg>
+
+                </span>
+
+                Assessments
+
+              </a>
+
+            </li>
+
+
+            <li class="lms-nav-item">
+
+              <a
+                href="admin-lms-media.html"
+                class="lms-nav-link"
+              >
+
+                <span class="lms-nav-icon">
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                  >
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <path d="M21 15l-5-5L5 21"></path>
+                  </svg>
+
+                </span>
+
+                Media
+
+              </a>
+
+            </li>
+
+
+          </ul>
+
+        </div>
+
+
+        <!-- RECORDS -->
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">
+            RECORDS
+          </div>
+
+          <ul class="lms-nav-list">
+
+            <li class="lms-nav-item">
+
+              <a
+                href="admin-lms-certificates.html"
+                class="lms-nav-link"
+              >
+
+                <span class="lms-nav-icon">
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                  >
+                    <circle cx="12" cy="8" r="5"></circle>
+                    <path d="M8.5 12.5L7 22l5-3 5 3-1.5-9.5"></path>
+                  </svg>
+
+                </span>
+
+                Certificates
+
+              </a>
+
+            </li>
+
+          </ul>
+
+        </div>
+
+
+      </div>
+
+
+      <!-- SIDEBAR FOOTER -->
+
+      <div class="lms-sidebar-footer">
+
+        <a
+          href="admin-dashboard.html"
+          class="lms-back-admin"
+        >
+
+          <span class="lms-nav-icon">
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="2"
+            >
+              <path d="M19 12H5"></path>
+              <path d="M12 19l-7-7 7-7"></path>
+            </svg>
+
+          </span>
+
+          Back to Main Administration
+
+        </a>
+
+      </div>
+
+    </aside>
+
+
+    <!-- ======================================================
+         MAIN APPLICATION
+         ====================================================== -->
+
+    <main class="lms-main">
+
+
+      <!-- TOP BAR -->
+
+      <header class="lms-topbar">
+
+        <div class="lms-topbar-left">
+
+          <button
+            type="button"
+            class="lms-icon-button lms-mobile-menu-button"
+            data-lms-menu-toggle
+            aria-label="Open navigation"
+          >
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="2"
+            >
+              <path d="M4 6h16"></path>
+              <path d="M4 12h16"></path>
+              <path d="M4 18h16"></path>
+            </svg>
+
+          </button>
+
+
+          <div class="lms-page-context">
+
+            <span class="lms-page-context-label">
+              Screenings4u Learning Center
+            </span>
+
+            <span class="lms-page-context-title">
+              Course Management
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="lms-topbar-right">
+
+
+          <button
+            type="button"
+            class="lms-icon-button"
+            aria-label="Notifications"
+          >
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="2"
+            >
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+
+          </button>
+
+
+          <button
+            type="button"
+            class="lms-user-button"
+            data-lms-user-button
+          >
+
+            <span class="lms-user-avatar">
+              AD
+            </span>
+
+            <span class="lms-user-copy">
+
+              <span class="lms-user-name">
+                Administrator
+              </span>
+
+              <span class="lms-user-role">
+                LMS Administration
+              </span>
+
+            </span>
+
+          </button>
+
+
+        </div>
+
       </header>
 
-      <section class="lms-kpis" aria-label="Training management metrics">
-        <article class="lms-kpi"><div class="lms-kpi-top"><span class="lms-kpi-label">TOTAL COURSES</span><span class="lms-kpi-mark">▤</span></div><strong>—</strong><small>All managed course records</small></article>
-<article class="lms-kpi"><div class="lms-kpi-top"><span class="lms-kpi-label">ACTIVE</span><span class="lms-kpi-mark">✓</span></div><strong>—</strong><small>Courses currently available</small></article>
-<article class="lms-kpi"><div class="lms-kpi-top"><span class="lms-kpi-label">DRAFT</span><span class="lms-kpi-mark">!</span></div><strong>—</strong><small>Courses still in preparation</small></article>
-<article class="lms-kpi"><div class="lms-kpi-top"><span class="lms-kpi-label">REVIEW QUEUE</span><span class="lms-kpi-mark">□</span></div><strong>—</strong><small>Courses requiring review</small></article>
-      </section>
 
-      <section class="lms-grid">
+      <!-- ====================================================
+           PAGE CONTENT
+           ==================================================== -->
 
-        <article class="lms-card">
-          <header class="lms-card-header">
+      <section class="lms-page">
+
+        <div class="lms-page-inner">
+
+
+          <!-- PAGE HEADING -->
+
+          <div class="lms-page-heading">
+
             <div>
-              <h2>Course Management</h2>
-              <p>Each training and LMS workflow opens on its own management page.</p>
-            </div>
-            <a class="lms-header-link" href="admin-lms-courses-all.html">
-              Open Directory <span>→</span>
-            </a>
-          </header>
 
-          <div class="lms-list">
-            <a class="lms-row" href="admin-lms-courses-all.html"><span class="lms-row-icon">01</span><span><strong>Course Catalog</strong><small>Review and manage the complete course catalog.</small></span><span class="lms-arrow">→</span></a>
-<a class="lms-row" href="admin-lms-course-manager.html"><span class="lms-row-icon">02</span><span><strong>Course Manager</strong><small>Open the dedicated course management workspace.</small></span><span class="lms-arrow">→</span></a>
-<a class="lms-row" href="admin-lms-courses-active.html"><span class="lms-row-icon">03</span><span><strong>Active Courses</strong><small>Manage courses currently available to students.</small></span><span class="lms-arrow">→</span></a>
-<a class="lms-row" href="admin-lms-courses-drafts.html"><span class="lms-row-icon">04</span><span><strong>Draft Courses</strong><small>Continue courses currently being prepared.</small></span><span class="lms-arrow">→</span></a>
-<a class="lms-row" href="admin-lms-courses-review.html"><span class="lms-row-icon">05</span><span><strong>Course Review</strong><small>Open courses requiring administrative review.</small></span><span class="lms-arrow">→</span></a>
+              <h1 class="lms-page-title">
+                Course Management
+              </h1>
+
+              <p class="lms-page-description">
+
+                Create, organize, publish, and manage
+                your Screenings4u Learning Center
+                training programs.
+
+              </p>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="lms-btn lms-btn-primary"
+            >
+
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2"
+              >
+                <path d="M12 5v14"></path>
+                <path d="M5 12h14"></path>
+              </svg>
+
+              Create Course
+
+            </button>
+
           </div>
-        </article>
 
-        <aside class="lms-side">
 
-          <article class="lms-card">
-            <header class="lms-card-header">
-              <div>
-                <h2>Management Actions</h2>
-                <p>Each action opens its own management page.</p>
+          <!-- METRICS -->
+
+          <div class="lms-metrics-grid">
+
+
+            <div class="lms-metric-card">
+
+              <div class="lms-metric-label">
+                Total Courses
               </div>
-            </header>
 
-            <div class="lms-action-grid">
-              <a class="lms-action" href="admin-lms-course-builder.html"><span class="lms-action-mark">+</span><strong>Create Course</strong><small>Open course creation</small></a>
-<a class="lms-action" href="admin-lms-course-manager.html"><span class="lms-action-mark">→</span><strong>Course Manager</strong><small>Open course workspace</small></a>
-<a class="lms-action" href="admin-lms-courses-drafts.html"><span class="lms-action-mark">!</span><strong>Draft Courses</strong><small>Open draft management</small></a>
-<a class="lms-action" href="admin-lms-courses-review.html"><span class="lms-action-mark">✓</span><strong>Course Review</strong><small>Open review queue</small></a>
-            </div>
-          </article>
-
-          <article class="lms-card">
-            <header class="lms-card-header">
-              <div>
-                <h2>Related Training</h2>
-                <p>Connected learning management areas.</p>
+              <div
+                class="lms-metric-value"
+                id="lmsTotalCourses"
+              >
+                —
               </div>
-            </header>
 
-            <div class="lms-resources">
-              <a href="admin-lms-lessons.html"><span>Lessons</span><span>→</span></a>
-<a href="admin-lms-assessments.html"><span>Assessments</span><span>→</span></a>
-<a href="admin-lms-enrollments.html"><span>Enrollments</span><span>→</span></a>
+              <div class="lms-metric-meta">
+                All courses in your catalog
+              </div>
+
             </div>
-          </article>
 
-        </aside>
+
+            <div class="lms-metric-card">
+
+              <div class="lms-metric-label">
+                Published Courses
+              </div>
+
+              <div
+                class="lms-metric-value"
+                id="lmsPublishedCourses"
+              >
+                —
+              </div>
+
+              <div class="lms-metric-meta">
+                Currently available to learners
+              </div>
+
+            </div>
+
+
+            <div class="lms-metric-card">
+
+              <div class="lms-metric-label">
+                Active Enrollments
+              </div>
+
+              <div
+                class="lms-metric-value"
+                id="lmsActiveEnrollments"
+              >
+                —
+              </div>
+
+              <div class="lms-metric-meta">
+                Learners currently in training
+              </div>
+
+            </div>
+
+
+            <div class="lms-metric-card">
+
+              <div class="lms-metric-label">
+                Certificates Issued
+              </div>
+
+              <div
+                class="lms-metric-value"
+                id="lmsCertificatesIssued"
+              >
+                —
+              </div>
+
+              <div class="lms-metric-meta">
+                Learning completion records
+              </div>
+
+            </div>
+
+
+          </div>
+
+
+          <!-- COURSE MANAGEMENT CARD -->
+
+          <div class="lms-card">
+
+
+            <!-- CARD HEADER -->
+
+            <div class="lms-card-header">
+
+              <h2 class="lms-card-title">
+                Your Courses
+              </h2>
+
+              <p class="lms-card-description">
+
+                Manage course content, publication status,
+                enrollments, and learning activity.
+
+              </p>
+
+            </div>
+
+
+            <!-- TOOLBAR -->
+
+            <div class="lms-toolbar">
+
+              <div class="lms-toolbar-left">
+
+                <input
+                  type="search"
+                  class="lms-search"
+                  id="courseSearch"
+                  placeholder="Search courses..."
+                >
+
+              </div>
+
+
+              <div class="lms-toolbar-right">
+
+                <button
+                  type="button"
+                  class="lms-btn lms-btn-secondary"
+                >
+                  Filter
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <!-- TABLE -->
+
+            <div class="lms-table-wrap">
+
+              <table class="lms-table">
+
+                <thead>
+
+                  <tr>
+
+                    <th>
+                      Course
+                    </th>
+
+                    <th>
+                      Status
+                    </th>
+
+                    <th>
+                      Sections
+                    </th>
+
+                    <th>
+                      Enrollments
+                    </th>
+
+                    <th>
+                      Updated
+                    </th>
+
+                    <th>
+                      Actions
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+
+                <tbody id="lmsCoursesTableBody">
+
+                  <!--
+                    Supabase course records
+                    will be rendered here.
+                  -->
+
+                  <tr>
+
+                    <td colspan="6">
+
+                      Your courses will appear here
+                      when the LMS database is connected.
+
+                    </td>
+
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+
       </section>
 
-    </div>
-  </main>
-</div>
 
-<script src="assets/js/admin-navigation.js"></script>
+    </main>
 
-<script>
-/* ============================================================
-   screenings4u — TRAINING / LMS MANAGEMENT
-   No pop-ups or modal workflows are used on this page.
-   ============================================================ */
-(function () {
-  "use strict";
+  </div>
 
-  document.addEventListener("DOMContentLoaded", async function () {
-    try {
-      if (
-        window.S4UAuth &&
-        typeof window.S4UAuth.requireSession === "function"
-      ) {
-        const session = await window.S4UAuth.requireSession("admin-login.html");
 
-        if (!session) {
-          return;
-        }
-      }
-    } catch (error) {
-      console.error("admin-lms-courses.html initialization failed:", error);
-    }
-  });
-})();
-</script>
+  <!-- LMS Shared JavaScript -->
+
+  
+  <!-- Phase 1: shared admin authentication foundation -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/permissions.js"></script>
+  <script src="assets/js/lms.js"></script>
+  <script src="assets/js/lms-phase2.js"></script>
+
 </body>
 </html>

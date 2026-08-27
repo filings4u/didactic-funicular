@@ -1,187 +1,1510 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Course Manager | screenings4u Admin</title>
-<link rel="icon" type="image/png" href="images/fav.png">
+  <meta charset="UTF-8">
 
-<link rel="stylesheet" href="assets/css/admin-core.css">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/js/supabase-config.js"></script>
-<script src="assets/js/config.js"></script>
-<script src="assets/js/auth.js"></script>
-<script src="assets/js/permissions.js"></script>
-<script src="assets/js/ui.js"></script>
+  <title>Course Manager | Screenings4u Learning Center</title>
+  <link rel="icon" type="image/png" href="images/fav.png">
 
+  <link
+    rel="stylesheet"
+    href="assets/css/lms.css"
+  >
 
-<style>
-/* ============================================================
-   screenings4u — TRAINING / LMS MANAGEMENT
-   Complete single-file page styles
-   ============================================================ */
-.lms-page{padding:22px 24px 34px;max-width:none}
-.lms-header{min-height:116px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid #e3e8ef}
-.lms-heading{min-width:0}.lms-kicker{margin-bottom:5px;color:#f05a00;font-size:11px;line-height:1;font-weight:900;letter-spacing:.045em}
-.lms-heading h1{margin:0;color:#173d78;font-size:clamp(36px,3vw,44px);line-height:.98;font-weight:800;letter-spacing:-.045em}
-.lms-heading p{max-width:760px;margin:9px 0 0;color:#52627a;font-size:13px;line-height:1.45}
-.lms-actions{flex:0 0 auto;display:flex;align-items:center;gap:10px}
-.lms-actions .lms-btn,.lms-actions a.lms-btn{min-width:126px;height:43px;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;padding:0 18px!important;border:1px solid #cbd7e5!important;border-radius:9px!important;background:#fff!important;color:#173d78!important;font-size:11px!important;font-weight:900!important;line-height:1!important;text-decoration:none!important;box-sizing:border-box;cursor:pointer}
-.lms-actions .lms-btn:hover{background:#f4f7fb!important;border-color:#aebfd3!important}
-.lms-actions .lms-btn.primary{min-width:158px;border-color:#f05a00!important;background:#f05a00!important;color:#fff!important}
-.lms-actions .lms-btn.primary:hover{background:#d94f00!important;border-color:#d94f00!important}
-.lms-btn-icon{font-size:17px;line-height:1}
-.lms-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:22px}
-.lms-kpi{min-width:0;min-height:153px;padding:17px 20px;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 10px rgba(20,48,82,.055)}
-.lms-kpi-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.lms-kpi-label{color:#5f6d83;font-size:10px;line-height:1;font-weight:900;letter-spacing:.075em}
-.lms-kpi-mark{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-size:16px;font-weight:900}
-.lms-kpi:nth-child(2) .lms-kpi-mark{background:#eaf7f0;color:#16804d}.lms-kpi:nth-child(3) .lms-kpi-mark{background:#fff3e5;color:#c96a00}.lms-kpi:nth-child(4) .lms-kpi-mark{background:#fceeee;color:#b64141}
-.lms-kpi strong{display:block;margin-top:20px;color:#183f7c;font-size:30px;line-height:1;font-weight:800;letter-spacing:-.04em}.lms-kpi small{display:block;margin-top:12px;color:#647189;font-size:10px;line-height:1.3}
-.lms-grid{display:grid;grid-template-columns:minmax(0,1.34fr) minmax(360px,1fr);gap:16px 22px;margin-top:16px}
-.lms-card{min-width:0;overflow:hidden;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 11px rgba(20,48,82,.055)}
-.lms-card-header{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 23px;border-bottom:1px solid #e3e8ef}
-.lms-card-header h2{margin:0;color:#173d78;font-size:19px;line-height:1.15;font-weight:800;letter-spacing:-.025em}.lms-card-header p{margin:6px 0 0;color:#607089;font-size:11px;line-height:1.3}
-.lms-header-link{color:#17519b;text-decoration:none;font-size:10px;font-weight:900}.lms-header-link span{padding-left:5px;font-size:16px}
-.lms-list{padding:9px 12px}.lms-row{min-height:76px;display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;color:inherit;text-decoration:none}.lms-row:hover{background:#f7f9fc}
-.lms-row-icon{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-size:12px;font-weight:900}
-.lms-row:nth-child(2) .lms-row-icon{background:#eaf7f0;color:#16804d}.lms-row:nth-child(3) .lms-row-icon{background:#fff3e5;color:#c96a00}.lms-row:nth-child(4) .lms-row-icon{background:#fceeee;color:#b64141}.lms-row:nth-child(5) .lms-row-icon{background:#f0eefb;color:#6045a8}
-.lms-row strong{display:block;color:#173b73;font-size:13px;line-height:1.2;font-weight:800}.lms-row small{display:block;margin-top:5px;color:#617088;font-size:10px;line-height:1.25}.lms-arrow{padding-right:7px;color:#667a98;font-size:22px}
-.lms-side{display:grid;grid-template-rows:auto auto;gap:16px}.lms-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:13px}
-.lms-action{min-height:93px;display:flex;flex-direction:column;justify-content:center;padding:12px 15px;border:1px solid #dfe5ed;border-radius:8px;background:#fff;color:inherit;text-decoration:none}.lms-action:hover{border-color:#bfcfe2;background:#f9fbfe;transform:translateY(-1px)}
-.lms-action-mark{display:block;color:#f05a00;font-size:21px;line-height:.8;font-weight:700}.lms-action strong{display:block;margin-top:10px;color:#173b73;font-size:12px;line-height:1.15;font-weight:800}.lms-action small{display:block;margin-top:5px;color:#647189;font-size:10px;line-height:1.2}
-.lms-resources{padding:7px 13px 12px}.lms-resources a{min-height:45px;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:0 10px;border-bottom:1px solid #edf0f4;color:#173b73;text-decoration:none;font-size:11px;font-weight:800}.lms-resources a:last-child{border-bottom:0}.lms-resources a:hover{background:#f7f9fc}.lms-resources span:last-child{color:#667a98;font-size:17px}
-@media(max-width:1250px){.lms-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.lms-grid{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr)}}
-@media(max-width:1050px){.lms-header{align-items:flex-start;flex-direction:column}.lms-actions{width:100%}.lms-actions .lms-btn{flex:1 1 0}.lms-grid{grid-template-columns:1fr}.lms-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}}
-@media(max-width:700px){.lms-page{padding:18px 14px 22px}.lms-header{min-height:0;padding-bottom:18px}.lms-kpis{gap:9px}.lms-kpi{min-height:128px;padding:14px}.lms-kpi strong{margin-top:14px;font-size:25px}.lms-side{grid-template-columns:1fr}.lms-card-header{padding-left:17px;padding-right:17px}}
-@media(max-width:500px){.lms-actions{flex-direction:column}.lms-actions .lms-btn{width:100%;flex:none}}
-@media(max-width:430px){.lms-kpis{grid-template-columns:1fr}.lms-row{grid-template-columns:38px minmax(0,1fr) auto;padding-left:5px;padding-right:5px}}
-</style>
+  <style>
+    /* ============================================================
+       COURSE MANAGER PAGE
+       Page-specific styles. Shared shell remains in lms.css.
+       ============================================================ */
 
+    .lms-brand.lms-brand-logo-only {
+      min-height: 88px;
+      justify-content: center;
+      padding: 14px 20px;
+    }
+
+    .lms-brand.lms-brand-logo-only .lms-brand-logo-wrap {
+      width: 148px;
+      height: 54px;
+      flex: 0 0 148px;
+      background: transparent;
+      border-radius: 0;
+    }
+
+    .lms-brand.lms-brand-logo-only .lms-brand-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .lms-page-context-label {
+      color: var(--s4u-blue);
+      font-weight: 800;
+      letter-spacing: .01em;
+    }
+
+    .lms-page-context-title {
+      color: var(--s4u-orange);
+      font-weight: 800;
+    }
+
+    .lms-breadcrumbs {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+      color: var(--s4u-muted);
+      font-size: .82rem;
+      font-weight: 650;
+    }
+
+    .lms-breadcrumbs a {
+      color: var(--s4u-blue);
+    }
+
+    .lms-breadcrumb-separator {
+      color: var(--s4u-text-light);
+    }
+
+    .course-hero {
+      padding: 26px;
+      margin-bottom: 20px;
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: var(--s4u-radius-lg);
+      box-shadow: var(--s4u-shadow-sm);
+    }
+
+    .course-hero-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .course-hero-copy {
+      min-width: 0;
+    }
+
+    .course-eyebrow {
+      margin-bottom: 9px;
+      color: var(--s4u-orange);
+      font-size: .72rem;
+      font-weight: 850;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .course-title {
+      margin: 0;
+      color: var(--s4u-blue);
+      font-size: clamp(1.7rem, 3vw, 2.35rem);
+      font-weight: 850;
+      letter-spacing: -.04em;
+    }
+
+    .course-subtitle {
+      max-width: 760px;
+      margin: 9px 0 0;
+      color: var(--s4u-text);
+      font-size: .94rem;
+      line-height: 1.65;
+    }
+
+    .course-hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .course-status-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px solid var(--s4u-border);
+    }
+
+    .course-status-label {
+      color: var(--s4u-muted);
+      font-size: .76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .lms-btn-small {
+      min-height: 36px;
+      padding: 0 12px;
+      font-size: .78rem;
+    }
+
+    .course-workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 310px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .course-manager-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 20px;
+      padding: 5px;
+      overflow-x: auto;
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: var(--s4u-radius);
+      box-shadow: var(--s4u-shadow-sm);
+    }
+
+    /* Keep button tabs and anchor tabs visually identical. */
+    .course-manager-tab {
+      min-height: 40px;
+      padding: 0 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      box-sizing: border-box;
+      white-space: nowrap;
+      color: var(--s4u-muted);
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 750;
+      line-height: 1;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background .18s ease, color .18s ease;
+    }
+
+    .course-manager-tab:visited {
+      color: var(--s4u-muted);
+    }
+
+    .course-manager-tab:hover,
+    .course-manager-tab:focus-visible {
+      color: var(--s4u-blue);
+      background: var(--s4u-blue-soft);
+      text-decoration: none;
+    }
+
+    .course-manager-tab.active,
+    .course-manager-tab.active:visited {
+      color: var(--s4u-blue);
+      background: var(--s4u-blue-soft);
+    }
+
+    .manager-card {
+      overflow: hidden;
+    }
+
+    .manager-card .lms-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .outline-toolbar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .course-outline {
+      padding: 16px;
+    }
+
+    .course-section {
+      margin-bottom: 14px;
+      overflow: hidden;
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: var(--s4u-radius);
+    }
+
+    .course-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .course-section-header {
+      min-height: 62px;
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fbfcfe;
+      border-bottom: 1px solid var(--s4u-border);
+    }
+
+    .drag-handle {
+      width: 24px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--s4u-text-light);
+      cursor: grab;
+      flex: 0 0 24px;
+    }
+
+    .drag-dots {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 7px currentColor, 0 14px currentColor;
+    }
+
+    .section-number {
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 30px;
+      color: var(--s4u-blue);
+      background: var(--s4u-blue-soft);
+      border-radius: 50%;
+      font-size: .72rem;
+      font-weight: 850;
+    }
+
+    .section-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .section-title {
+      margin: 0;
+      color: var(--s4u-blue);
+      font-size: .92rem;
+      font-weight: 800;
+    }
+
+    .section-meta {
+      margin-top: 3px;
+      color: var(--s4u-muted);
+      font-size: .74rem;
+    }
+
+    .section-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-icon-button {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--s4u-muted);
+      background: var(--s4u-surface);
+      border: 1px solid var(--s4u-border);
+      border-radius: 6px;
+    }
+
+    .section-icon-button:hover {
+      color: var(--s4u-blue);
+      background: var(--s4u-blue-soft);
+      border-color: var(--s4u-blue);
+    }
+
+    .section-lessons {
+      padding: 7px 14px 10px 50px;
+    }
+
+    .lesson-row {
+      min-height: 54px;
+      padding: 9px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--s4u-border);
+    }
+
+    .lesson-row:last-child {
+      border-bottom: 0;
+    }
+
+    .lesson-type-icon {
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 30px;
+      color: var(--s4u-blue);
+      background: var(--s4u-blue-soft);
+      border-radius: 6px;
+    }
+
+    .lesson-type-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+    }
+
+    .lesson-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .lesson-title {
+      color: var(--s4u-text);
+      font-size: .84rem;
+      font-weight: 750;
+    }
+
+    .lesson-meta {
+      margin-top: 3px;
+      color: var(--s4u-muted);
+      font-size: .72rem;
+    }
+
+    .lesson-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lesson-link {
+      color: var(--s4u-blue);
+      font-size: .76rem;
+      font-weight: 800;
+    }
+
+    .lesson-link:hover {
+      color: var(--s4u-orange);
+    }
+
+    .add-lesson-row {
+      padding: 11px 0 3px;
+    }
+
+    .add-lesson-button {
+      padding: 0;
+      color: var(--s4u-orange);
+      background: transparent;
+      border: 0;
+      font-size: .78rem;
+      font-weight: 800;
+    }
+
+    .add-lesson-button:hover {
+      color: var(--s4u-blue);
+    }
+
+    .add-section-wrap {
+      padding-top: 16px;
+    }
+
+    .add-section-button {
+      width: 100%;
+      min-height: 52px;
+      color: var(--s4u-blue);
+      background: var(--s4u-blue-soft);
+      border: 1px dashed rgba(50, 90, 163, .45);
+      border-radius: var(--s4u-radius);
+      font-weight: 800;
+    }
+
+    .add-section-button:hover {
+      color: #ffffff;
+      background: var(--s4u-blue);
+    }
+
+    .side-stack {
+      display: grid;
+      gap: 20px;
+    }
+
+    .quick-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .quick-list li {
+      border-bottom: 1px solid var(--s4u-border);
+    }
+
+    .quick-list li:last-child {
+      border-bottom: 0;
+    }
+
+    .quick-link {
+      padding: 14px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .quick-link:visited {
+      color: inherit;
+    }
+
+    .quick-link:hover,
+    .quick-link:focus-visible {
+      text-decoration: none;
+    }
+
+    .quick-link-copy {
+      min-width: 0;
+    }
+
+    .quick-link-title {
+      color: var(--s4u-blue);
+      font-size: .82rem;
+      font-weight: 800;
+    }
+
+    .quick-link-description {
+      margin-top: 4px;
+      color: var(--s4u-muted);
+      font-size: .73rem;
+      line-height: 1.45;
+    }
+
+    .quick-link-arrow {
+      color: var(--s4u-orange);
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .course-summary-list {
+      display: grid;
+      gap: 0;
+    }
+
+    .course-summary-item {
+      padding: 13px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      border-bottom: 1px solid var(--s4u-border);
+    }
+
+    .course-summary-item:last-child {
+      border-bottom: 0;
+    }
+
+    .course-summary-label {
+      color: var(--s4u-muted);
+      font-size: .77rem;
+      font-weight: 700;
+    }
+
+    .course-summary-value {
+      color: var(--s4u-blue);
+      font-size: .82rem;
+      font-weight: 850;
+      text-align: right;
+    }
+
+    .course-summary-value.pending {
+      color: var(--s4u-muted);
+    }
+
+    .empty-state {
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--s4u-muted);
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+
+    .course-manager-note {
+      margin-top: 20px;
+      padding: 15px 17px;
+      color: var(--s4u-muted);
+      background: var(--s4u-soft);
+      border: 1px solid var(--s4u-border);
+      border-radius: var(--s4u-radius);
+      font-size: .77rem;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 1180px) {
+      .course-workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .side-stack {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .course-hero {
+        padding: 20px;
+      }
+
+      .course-hero-top {
+        flex-direction: column;
+      }
+
+      .course-hero-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .course-hero-actions .lms-btn {
+        flex: 1;
+      }
+
+      .manager-card .lms-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .outline-toolbar {
+        width: 100%;
+      }
+
+      .outline-toolbar .lms-btn {
+        flex: 1;
+      }
+
+      .section-lessons {
+        padding-left: 14px;
+      }
+
+      .side-stack {
+        grid-template-columns: 1fr;
+      }
+
+      .lesson-row {
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .lesson-copy {
+        min-width: calc(100% - 44px);
+      }
+
+      .lesson-actions {
+        width: 100%;
+        margin-left: 42px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .course-status-row {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .course-hero-actions .lms-btn {
+        width: 100%;
+        flex: auto;
+      }
+
+      .course-section-header {
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .section-copy {
+        min-width: calc(100% - 78px);
+      }
+
+      .section-actions {
+        width: 100%;
+        padding-left: 36px;
+      }
+    }
+  </style>
 </head>
-<body>
-<div class="s4u-app">
-  <nav class="s4u-nav" id="adminNavigation" aria-label="Admin navigation"></nav>
 
-  <main class="s4u-main">
-    <div class="lms-page">
+<body data-s4u-portal="admin">
 
-      <header class="lms-header">
-        <div class="lms-heading">
-          <div class="lms-kicker">TRAINING / LMS / COURSE MANAGER</div>
-          <h1>Course Manager</h1>
-          <p>Manage course structure, course content, lessons, assessments, and course-level learning operations.</p>
+  <div class="lms-app">
+
+    <div
+      class="lms-sidebar-overlay"
+      data-lms-sidebar-overlay
+    ></div>
+
+
+    <!-- ======================================================
+         LMS SIDEBAR
+         ====================================================== -->
+
+    <aside class="lms-sidebar">
+
+      <a
+        href="admin-lms-courses.html"
+        class="lms-brand lms-brand-logo-only"
+        aria-label="Screenings4u Learning Center"
+      >
+        <div class="lms-brand-logo-wrap">
+          <img
+            src="images/logo.png"
+            alt="Screenings4u"
+            class="lms-brand-logo"
+          >
+        </div>
+      </a>
+
+
+      <div class="lms-sidebar-scroll">
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">HOME</div>
+
+          <ul class="lms-nav-list">
+            <li class="lms-nav-item">
+              <a
+                href="admin-lms-courses.html"
+                class="lms-nav-link active"
+              >
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M3 12l9-9 9 9"></path>
+                    <path d="M5 10v10h14V10"></path>
+                  </svg>
+                </span>
+                Courses
+              </a>
+            </li>
+          </ul>
+
         </div>
 
-        <div class="lms-actions">
-          <a class="lms-btn" href="admin-lms-course-manager.html">
-            <span class="lms-btn-icon">↻</span>
-            Refresh
-          </a>
 
-          <a class="lms-btn primary" href="admin-lms-course-builder.html">
-            <span class="lms-btn-icon">+</span>
-            Create Course
-          </a>
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">MANAGE</div>
+
+          <ul class="lms-nav-list">
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-enrollments.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </span>
+                Enrollments
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-students.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <circle cx="12" cy="7" r="4"></circle>
+                    <path d="M5.5 21a6.5 6.5 0 0 1 13 0"></path>
+                  </svg>
+                </span>
+                Students
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-progress.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M3 3v18h18"></path>
+                    <path d="M7 16l4-5 3 3 5-7"></path>
+                  </svg>
+                </span>
+                Progress
+              </a>
+            </li>
+
+          </ul>
+
         </div>
+
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">CONTENT</div>
+
+          <ul class="lms-nav-list">
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-lessons.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+                </span>
+                Lessons
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-quizzes.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M9.5 9a2.5 2.5 0 1 1 4.3 1.7c-.8.8-1.8 1.3-1.8 2.8"></path>
+                    <path d="M12 17h.01"></path>
+                  </svg>
+                </span>
+                Quizzes
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-assessments.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                  </svg>
+                </span>
+                Assessments
+              </a>
+            </li>
+
+            <li class="lms-nav-item">
+              <a href="admin-lms-media.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <path d="M21 15l-5-5L5 21"></path>
+                  </svg>
+                </span>
+                Media
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <div class="lms-nav-group">
+
+          <div class="lms-nav-label">RECORDS</div>
+
+          <ul class="lms-nav-list">
+            <li class="lms-nav-item">
+              <a href="admin-lms-certificates.html" class="lms-nav-link">
+                <span class="lms-nav-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <circle cx="12" cy="8" r="5"></circle>
+                    <path d="M8.5 12.5L7 22l5-3 5 3-1.5-9.5"></path>
+                  </svg>
+                </span>
+                Certificates
+              </a>
+            </li>
+          </ul>
+
+        </div>
+
+      </div>
+
+
+      <div class="lms-sidebar-footer">
+        <a
+          href="admin-dashboard.html"
+          class="lms-back-admin"
+        >
+          <span class="lms-nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M19 12H5"></path>
+              <path d="M12 19l-7-7 7-7"></path>
+            </svg>
+          </span>
+          Back to Main Administration
+        </a>
+      </div>
+
+    </aside>
+
+
+    <!-- ======================================================
+         MAIN APPLICATION
+         ====================================================== -->
+
+    <main class="lms-main">
+
+      <header class="lms-topbar">
+
+        <div class="lms-topbar-left">
+
+          <button
+            type="button"
+            class="lms-icon-button lms-mobile-menu-button"
+            data-lms-menu-toggle
+            aria-label="Open navigation"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M4 6h16"></path>
+              <path d="M4 12h16"></path>
+              <path d="M4 18h16"></path>
+            </svg>
+          </button>
+
+          <div class="lms-page-context">
+            <span class="lms-page-context-label">
+              Screenings4u Learning Center
+            </span>
+            <span class="lms-page-context-title">
+              Course Manager
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="lms-topbar-right">
+
+          <button
+            type="button"
+            class="lms-icon-button"
+            aria-label="Notifications"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            class="lms-user-button"
+            data-lms-user-button
+          >
+            <span class="lms-user-avatar">AD</span>
+
+            <span class="lms-user-copy">
+              <span class="lms-user-name">Administrator</span>
+              <span class="lms-user-role">LMS Administration</span>
+            </span>
+          </button>
+
+        </div>
+
       </header>
 
-      <section class="lms-kpis" aria-label="Training management metrics">
-        <article class="lms-kpi"><div class="lms-kpi-top"><span class="lms-kpi-label">MANAGED COURSES</span><span class="lms-kpi-mark">▤</span></div><strong>—</strong><small>Courses available for management</small></article>
-<article class="lms-kpi"><div class="lms-kpi-top"><span class="lms-kpi-label">LESSONS</span><span class="lms-kpi-mark">✓</span></div><strong>—</strong><small>Learning lessons across courses</small></article>
-<article class="lms-kpi"><div class="lms-kpi-top"><span class="lms-kpi-label">ASSESSMENTS</span><span class="lms-kpi-mark">!</span></div><strong>—</strong><small>Course evaluation records</small></article>
-<article class="lms-kpi"><div class="lms-kpi-top"><span class="lms-kpi-label">COURSE STATUS</span><span class="lms-kpi-mark">□</span></div><strong>—</strong><small>Course lifecycle being managed</small></article>
-      </section>
 
-      <section class="lms-grid">
+      <!-- ====================================================
+           COURSE MANAGER CONTENT
+           ==================================================== -->
 
-        <article class="lms-card">
-          <header class="lms-card-header">
-            <div>
-              <h2>Course Manager</h2>
-              <p>Each training and LMS workflow opens on its own management page.</p>
+      <section class="lms-page">
+
+        <div class="lms-page-inner">
+
+          <nav class="lms-breadcrumbs" aria-label="Breadcrumb">
+            <a href="admin-lms-courses.html">Courses</a>
+            <span class="lms-breadcrumb-separator">/</span>
+            <span>Course Manager</span>
+          </nav>
+
+
+          <!-- COURSE IDENTITY -->
+
+          <section class="course-hero">
+
+            <div class="course-hero-top">
+
+              <div class="course-hero-copy">
+
+                <div class="course-eyebrow">
+                  Individual Course Workspace
+                </div>
+
+                <h1
+                  class="course-title"
+                  id="courseManagerTitle"
+                >
+                  Select a Course to Manage
+                </h1>
+
+                <p class="course-subtitle">
+                  Build the course structure, organize sections and lessons,
+                  manage learning activities, and review enrollment and
+                  completion information from one workspace.
+                </p>
+
+              </div>
+
+
+              <div class="course-hero-actions">
+
+                <a
+                  href="admin-lms-courses.html"
+                  class="lms-btn lms-btn-secondary"
+                >
+                  All Courses
+                </a>
+
+                <button
+                  type="button"
+                  class="lms-btn lms-btn-primary"
+                  id="editCourseButton"
+                >
+                  Edit Course
+                </button>
+
+              </div>
+
             </div>
-            <a class="lms-header-link" href="admin-lms-courses.html">
-              Open Directory <span>→</span>
+
+
+            <div class="course-status-row">
+
+              <span class="course-status-label">
+                Course Status
+              </span>
+
+              <span
+                class="lms-badge lms-badge-neutral"
+                id="courseManagerStatus"
+              >
+                No Course Selected
+              </span>
+
+              <button
+                type="button"
+                class="lms-btn lms-btn-secondary lms-btn-small"
+                id="publishCourseButton"
+              >
+                Publish / Unpublish
+              </button>
+
+            </div>
+
+          </section>
+
+
+          <!-- WORKSPACE NAVIGATION -->
+
+          <div
+            class="course-manager-tabs"
+            role="tablist"
+            aria-label="Course manager sections"
+          >
+            <button
+              type="button"
+              class="course-manager-tab active"
+              data-course-manager-tab="content"
+            >
+              Course Content
+            </button>
+
+            <a
+              href="admin-lms-enrollments.html"
+              class="course-manager-tab"
+            >
+              Enrollments
             </a>
-          </header>
 
-          <div class="lms-list">
-            <a class="lms-row" href="admin-lms-courses.html"><span class="lms-row-icon">01</span><span><strong>Course Directory</strong><small>Open the complete course management directory.</small></span><span class="lms-arrow">→</span></a>
-<a class="lms-row" href="admin-lms-course-builder.html"><span class="lms-row-icon">02</span><span><strong>Course Builder</strong><small>Open the dedicated course creation workspace.</small></span><span class="lms-arrow">→</span></a>
-<a class="lms-row" href="admin-lms-course-content.html"><span class="lms-row-icon">03</span><span><strong>Course Content</strong><small>Manage course-level learning content.</small></span><span class="lms-arrow">→</span></a>
-<a class="lms-row" href="admin-lms-lessons.html"><span class="lms-row-icon">04</span><span><strong>Course Lessons</strong><small>Manage lessons assigned to courses.</small></span><span class="lms-arrow">→</span></a>
-<a class="lms-row" href="admin-lms-assessments.html"><span class="lms-row-icon">05</span><span><strong>Course Assessments</strong><small>Manage assessments assigned to courses.</small></span><span class="lms-arrow">→</span></a>
+            <a
+              href="admin-lms-progress.html"
+              class="course-manager-tab"
+            >
+              Progress
+            </a>
+
+            <a
+              href="admin-lms-certificates.html"
+              class="course-manager-tab"
+            >
+              Certificates
+            </a>
+
+            <button
+              type="button"
+              class="course-manager-tab"
+              data-course-manager-tab="settings"
+            >
+              Course Settings
+            </button>
           </div>
-        </article>
 
-        <aside class="lms-side">
 
-          <article class="lms-card">
-            <header class="lms-card-header">
-              <div>
-                <h2>Management Actions</h2>
-                <p>Each action opens its own management page.</p>
+          <div class="course-workspace">
+
+
+            <!-- ==================================================
+                 LEFT: COURSE STRUCTURE
+                 ================================================== -->
+
+            <div>
+
+              <section class="lms-card manager-card">
+
+                <div class="lms-card-header">
+
+                  <div>
+                    <h2 class="lms-card-title">
+                      Course Structure
+                    </h2>
+
+                    <p class="lms-card-description">
+                      Sections contain lessons. Lessons can contain content
+                      blocks and can have quizzes or assessments attached.
+                    </p>
+                  </div>
+
+
+                  <div class="outline-toolbar">
+
+                    <button
+                      type="button"
+                      class="lms-btn lms-btn-secondary lms-btn-small"
+                      id="reorderSectionsButton"
+                    >
+                      Reorder Sections
+                    </button>
+
+                    <button
+                      type="button"
+                      class="lms-btn lms-btn-primary lms-btn-small"
+                      id="addSectionButton"
+                    >
+                      Add Section
+                    </button>
+
+                  </div>
+
+                </div>
+
+
+                <div class="course-outline" id="courseOutline">
+
+                  <!--
+                    Dynamic lms_sections and lms_lessons records
+                    will render here when the database is wired.
+                  -->
+
+                  <div class="course-section">
+
+                    <div class="course-section-header">
+
+                      <span
+                        class="drag-handle"
+                        aria-label="Drag to reorder"
+                      >
+                        <span class="drag-dots"></span>
+                      </span>
+
+                      <span class="section-number">
+                        01
+                      </span>
+
+                      <div class="section-copy">
+
+                        <h3 class="section-title">
+                          Course Sections
+                        </h3>
+
+                        <div class="section-meta">
+                          Sections and lessons will load here.
+                        </div>
+
+                      </div>
+
+                      <div class="section-actions">
+
+                        <button
+                          type="button"
+                          class="section-icon-button"
+                          aria-label="Edit section"
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            width="17"
+                            height="17"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                          </svg>
+                        </button>
+
+                        <button
+                          type="button"
+                          class="section-icon-button"
+                          aria-label="Section options"
+                        >
+                          •••
+                        </button>
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="section-lessons">
+
+                      <div class="empty-state">
+                        Select a course from
+                        <a
+                          href="admin-lms-courses.html"
+                          style="color: var(--s4u-blue); font-weight: 800;"
+                        >
+                          Course Management
+                        </a>
+                        to load its sections and lessons.
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="add-section-wrap">
+
+                    <button
+                      type="button"
+                      class="add-section-button"
+                    >
+                      + Add New Section
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </section>
+
+
+              <div class="course-manager-note">
+                <strong style="color: var(--s4u-blue);">
+                  LMS hierarchy:
+                </strong>
+                Course → Sections → Lessons → Content Blocks, Quizzes,
+                and Assessments. This page will become the central workspace
+                for managing that structure.
               </div>
-            </header>
 
-            <div class="lms-action-grid">
-              <a class="lms-action" href="admin-lms-course-builder.html"><span class="lms-action-mark">+</span><strong>Create Course</strong><small>Open course builder</small></a>
-<a class="lms-action" href="admin-lms-lessons.html"><span class="lms-action-mark">→</span><strong>Manage Lessons</strong><small>Open lesson management</small></a>
-<a class="lms-action" href="admin-lms-assessments.html"><span class="lms-action-mark">→</span><strong>Assessments</strong><small>Open assessment management</small></a>
-<a class="lms-action" href="admin-lms-course-preview.html"><span class="lms-action-mark">✓</span><strong>Course Preview</strong><small>Open course preview</small></a>
             </div>
-          </article>
 
-          <article class="lms-card">
-            <header class="lms-card-header">
-              <div>
-                <h2>Related Training</h2>
-                <p>Connected learning management areas.</p>
-              </div>
-            </header>
 
-            <div class="lms-resources">
-              <a href="admin-lms-courses.html"><span>Courses</span><span>→</span></a>
-<a href="admin-lms-lessons.html"><span>Lessons</span><span>→</span></a>
-<a href="admin-lms-students.html"><span>Students</span><span>→</span></a>
-            </div>
-          </article>
+            <!-- ==================================================
+                 RIGHT: MANAGEMENT PANELS
+                 ================================================== -->
 
-        </aside>
+            <aside class="side-stack">
+
+
+              <!-- COURSE SUMMARY -->
+
+              <section class="lms-card">
+
+                <div class="lms-card-header">
+
+                  <h2 class="lms-card-title">
+                    Course Summary
+                  </h2>
+
+                  <p class="lms-card-description">
+                    Live course information.
+                  </p>
+
+                </div>
+
+
+                <div class="lms-card-body">
+
+                  <div class="course-summary-list">
+
+                    <div class="course-summary-item">
+                      <span class="course-summary-label">
+                        Sections
+                      </span>
+
+                      <span
+                        class="course-summary-value pending"
+                        id="courseSummarySections"
+                      >
+                        —
+                      </span>
+                    </div>
+
+                    <div class="course-summary-item">
+                      <span class="course-summary-label">
+                        Lessons
+                      </span>
+
+                      <span
+                        class="course-summary-value pending"
+                        id="courseSummaryLessons"
+                      >
+                        —
+                      </span>
+                    </div>
+
+                    <div class="course-summary-item">
+                      <span class="course-summary-label">
+                        Enrollments
+                      </span>
+
+                      <span
+                        class="course-summary-value pending"
+                        id="courseSummaryEnrollments"
+                      >
+                        —
+                      </span>
+                    </div>
+
+                    <div class="course-summary-item">
+                      <span class="course-summary-label">
+                        Completion
+                      </span>
+
+                      <span
+                        class="course-summary-value pending"
+                        id="courseSummaryCompletion"
+                      >
+                        —
+                      </span>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </section>
+
+
+              <!-- QUICK MANAGEMENT -->
+
+              <section class="lms-card">
+
+                <div class="lms-card-header">
+
+                  <h2 class="lms-card-title">
+                    Course Management
+                  </h2>
+
+                  <p class="lms-card-description">
+                    Open related management systems.
+                  </p>
+
+                </div>
+
+
+                <div class="lms-card-body">
+
+                  <ul class="quick-list">
+
+                    <li>
+                      <a
+                        href="admin-lms-lessons.html"
+                        class="quick-link"
+                      >
+                        <div class="quick-link-copy">
+                          <div class="quick-link-title">
+                            Lessons
+                          </div>
+
+                          <div class="quick-link-description">
+                            Manage lessons and content.
+                          </div>
+                        </div>
+
+                        <span class="quick-link-arrow">→</span>
+                      </a>
+                    </li>
+
+
+                    <li>
+                      <a
+                        href="admin-lms-enrollments.html"
+                        class="quick-link"
+                      >
+                        <div class="quick-link-copy">
+                          <div class="quick-link-title">
+                            Enrollments
+                          </div>
+
+                          <div class="quick-link-description">
+                            View learners and course access.
+                          </div>
+                        </div>
+
+                        <span class="quick-link-arrow">→</span>
+                      </a>
+                    </li>
+
+
+                    <li>
+                      <a
+                        href="admin-lms-progress.html"
+                        class="quick-link"
+                      >
+                        <div class="quick-link-copy">
+                          <div class="quick-link-title">
+                            Learning Progress
+                          </div>
+
+                          <div class="quick-link-description">
+                            Review lesson and course progress.
+                          </div>
+                        </div>
+
+                        <span class="quick-link-arrow">→</span>
+                      </a>
+                    </li>
+
+
+                    <li>
+                      <a
+                        href="admin-lms-certificates.html"
+                        class="quick-link"
+                      >
+                        <div class="quick-link-copy">
+                          <div class="quick-link-title">
+                            Certificates
+                          </div>
+
+                          <div class="quick-link-description">
+                            Review issued completion records.
+                          </div>
+                        </div>
+
+                        <span class="quick-link-arrow">→</span>
+                      </a>
+                    </li>
+
+                  </ul>
+
+                </div>
+
+              </section>
+
+
+              <!-- COURSE ACTIONS -->
+
+              <section class="lms-card">
+
+                <div class="lms-card-header">
+
+                  <h2 class="lms-card-title">
+                    Course Actions
+                  </h2>
+
+                </div>
+
+
+                <div
+                  class="lms-card-body"
+                  style="display: grid; gap: 10px;"
+                >
+
+                  <button
+                    type="button"
+                    class="lms-btn lms-btn-secondary"
+                    style="width: 100%;"
+                    id="duplicateCourseButton"
+                  >
+                    Duplicate Course
+                  </button>
+
+                  <button
+                    type="button"
+                    class="lms-btn lms-btn-secondary"
+                    style="width: 100%;"
+                    id="archiveCourseButton"
+                  >
+                    Archive Course
+                  </button>
+
+                </div>
+
+              </section>
+
+
+            </aside>
+
+          </div>
+
+        </div>
+
       </section>
 
-    </div>
-  </main>
-</div>
+    </main>
 
-<script src="assets/js/admin-navigation.js"></script>
+  </div>
 
-<script>
-/* ============================================================
-   screenings4u — TRAINING / LMS MANAGEMENT
-   No pop-ups or modal workflows are used on this page.
-   ============================================================ */
-(function () {
-  "use strict";
 
-  document.addEventListener("DOMContentLoaded", async function () {
-    try {
-      if (
-        window.S4UAuth &&
-        typeof window.S4UAuth.requireSession === "function"
-      ) {
-        const session = await window.S4UAuth.requireSession("admin-login.html");
+  <!-- ==========================================================
+       SHARED LMS JAVASCRIPT
+       ========================================================== -->
 
-        if (!session) {
-          return;
-        }
-      }
-    } catch (error) {
-      console.error("admin-lms-course-manager.html initialization failed:", error);
-    }
-  });
-})();
-</script>
+  
+  <!-- Phase 1: shared admin authentication foundation -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/permissions.js"></script>
+  <script src="assets/js/lms.js"></script>
+  <script src="assets/js/lms-phase2.js"></script>
+
+
+  <!-- ==========================================================
+       COURSE MANAGER UI
+       Database wiring will be added after the actual table
+       column structures and course route parameters are connected.
+       ========================================================== -->
+
+  <script>
+    (function () {
+      "use strict";
+
+      document.addEventListener("DOMContentLoaded", function () {
+
+        var tabs = document.querySelectorAll(
+          "[data-course-manager-tab]"
+        );
+
+        tabs.forEach(function (tab) {
+          tab.addEventListener("click", function () {
+
+            tabs.forEach(function (item) {
+              item.classList.remove("active");
+            });
+
+            tab.classList.add("active");
+
+          });
+        });
+
+      });
+
+    })();
+  </script>
+
 </body>
 </html>
