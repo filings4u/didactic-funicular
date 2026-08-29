@@ -614,3 +614,145 @@
         width: 100%;
     }
 }
+
+
+/* ============================================================
+   ADMIN LMS SHELL COMPATIBILITY FIX
+   Keeps shared header controls from breaking the Employees page
+   ============================================================ */
+
+.admin-lms-app {
+    min-width: 0;
+}
+
+.admin-lms-main {
+    min-width: 0;
+    overflow: visible;
+}
+
+/* The user menu must be anchored to its trigger, not the page. */
+.admin-lms-topbar-right {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.admin-lms-user-menu {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.admin-lms-user-trigger {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+/* Hide the dropdown until the shared JS explicitly opens it. */
+.admin-lms-user-dropdown {
+    position: absolute !important;
+    top: calc(100% + 10px) !important;
+    right: 0 !important;
+    left: auto !important;
+    z-index: 1000 !important;
+    display: none !important;
+    width: 180px !important;
+    min-width: 180px !important;
+    max-width: calc(100vw - 32px) !important;
+    margin: 0 !important;
+    padding: 6px !important;
+    overflow: hidden !important;
+    border: 1px solid var(--employees-line) !important;
+    border-radius: 10px !important;
+    background: #ffffff !important;
+    box-shadow: 0 14px 34px rgba(20, 48, 82, 0.16) !important;
+}
+
+.admin-lms-user-menu.is-open .admin-lms-user-dropdown,
+.admin-lms-user-menu.open .admin-lms-user-dropdown,
+.admin-lms-user-dropdown.is-open,
+.admin-lms-user-dropdown.open {
+    display: block !important;
+}
+
+.admin-lms-user-dropdown a,
+.admin-lms-user-dropdown button {
+    display: flex !important;
+    align-items: center;
+    width: 100% !important;
+    min-height: 38px;
+    padding: 0 10px !important;
+    border: 0 !important;
+    border-radius: 6px;
+    background: transparent !important;
+    color: var(--employees-text) !important;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.admin-lms-user-dropdown a:hover,
+.admin-lms-user-dropdown button:hover {
+    background: #f4f7fb !important;
+    color: var(--employees-blue) !important;
+}
+
+/* Prevent global SVG rules from turning the account chevron into
+   a giant triangle or stretching the topbar controls. */
+.admin-lms-topbar svg,
+.admin-lms-user-trigger svg,
+.admin-lms-notification-button svg {
+    display: block;
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    max-width: 20px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8;
+}
+
+.admin-lms-user-trigger svg {
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px !important;
+    max-width: 16px !important;
+}
+
+.admin-lms-sidebar-collapse svg {
+    width: 20px !important;
+    height: 20px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8;
+}
+
+/* Keep the Employees heading and action button inside the content area. */
+.admin-employees-page .employees-heading {
+    position: relative;
+    width: 100%;
+}
+
+.admin-employees-page .employees-primary-button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+/* Avoid horizontal expansion from the data table at desktop widths. */
+.employees-panel {
+    min-width: 0;
+}
+
+.employees-table-wrap {
+    min-width: 0;
+}

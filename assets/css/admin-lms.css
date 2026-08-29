@@ -3238,3 +3238,54 @@
     display: none !important;
     background: transparent !important;
 }
+
+/* ============================================================
+   DASHBOARD HEADING — TEXT / ACTION BUTTON WIDTH FIX
+   ============================================================ */
+
+/*
+ * Keep the dashboard description from stretching across the full
+ * header and pushing the action button toward the outside edge.
+ */
+.admin-page-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+    width: 100%;
+}
+
+.admin-page-heading > div:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 760px;
+}
+
+.admin-page-heading p {
+    width: 100%;
+    max-width: 760px;
+    white-space: normal;
+}
+
+.admin-page-heading > .admin-primary-btn,
+.admin-page-heading > a.admin-primary-btn,
+.admin-page-heading > button.admin-primary-btn {
+    flex: 0 0 auto;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+    .admin-page-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .admin-page-heading > div:first-child,
+    .admin-page-heading p {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+

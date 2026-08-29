@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Programs | screenings4u Management Portal</title>
+
+    <link rel="stylesheet" href="assets/css/admin-lms.css">
+
+    <style>
+        :root {
+            --random-blue: #173d78;
+            --random-blue-light: #325aa3;
+            --random-orange: #ff6b00;
+            --random-orange-hover: #e86000;
+            --random-bg: #f5f7fa;
+            --random-card: #ffffff;
+            --random-line: #e1e7ef;
+            --random-line-soft: #edf0f4;
+            --random-muted: #617087;
+            --random-text: #172033;
+            --random-success: #16804d;
+            --random-danger: #c53030;
+            --random-warning: #a85b00;
+        }
+
+        .admin-random-programs-page .admin-lms-main {
+            min-width: 0;
+            background: var(--random-bg);
+        }
+
+        .admin-random-programs-page .admin-random-programs-content {
+            width: 100%;
+            min-width: 0;
+            padding: 28px;
+            box-sizing: border-box;
+        }
+
+        .admin-random-programs-page .admin-random-programs-content *,
+        .admin-random-programs-page .admin-random-programs-content *::before,
+        .admin-random-programs-page .admin-random-programs-content *::after {
+            box-sizing: border-box;
+        }
+
+        .random-programs-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 22px;
+        }
+
+        .random-programs-heading-copy {
+            min-width: 0;
+        }
+
+        .random-programs-kicker,
+        .random-panel-kicker,
+        .random-modal-kicker {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--random-orange);
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .random-programs-heading h1 {
+            margin: 0;
+            color: var(--random-blue);
+            font-size: 38px;
+            line-height: 1.05;
+            font-weight: 900;
+            letter-spacing: -.04em;
+        }
+
+        .random-programs-heading p {
+            max-width: 790px;
+            margin: 9px 0 0;
+            color: var(--random-muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .random-primary-button,
+        .random-secondary-button,
+        .random-filter-button,
+        .random-icon-button,
+        .random-row-button,
+        .random-rate-preset {
+            appearance: none;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .random-primary-button,
+        .random-secondary-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 10px 17px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 900;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .random-primary-button {
+            border: 1px solid var(--random-orange);
+            background: var(--random-orange);
+            color: #fff;
+            box-shadow: 0 7px 16px rgba(255, 107, 0, .14);
+        }
+
+        .random-primary-button:hover {
+            background: var(--random-orange-hover);
+            border-color: var(--random-orange-hover);
+        }
+
+        .random-secondary-button {
+            border: 1px solid var(--random-line);
+            background: #fff;
+            color: var(--random-blue);
+        }
+
+        .random-secondary-button:hover {
+            background: #edf3fb;
+        }
+
+        .random-primary-button svg,
+        .random-secondary-button svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .random-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .random-metric {
+            min-width: 0;
+            padding: 18px 19px;
+            border: 1px solid var(--random-line);
+            border-radius: 10px;
+            background: var(--random-card);
+            box-shadow: 0 4px 14px rgba(20, 48, 82, .04);
+        }
+
+        .random-metric span {
+            display: block;
+            color: var(--random-muted);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .random-metric strong {
+            display: block;
+            margin-top: 8px;
+            color: var(--random-blue);
+            font-size: 30px;
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -.035em;
+        }
+
+        .random-metric small {
+            display: block;
+            margin-top: 8px;
+            color: var(--random-muted);
+            font-size: 10px;
+            line-height: 1.45;
+        }
+
+        .random-compliance {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) repeat(4, minmax(150px, .55fr));
+            gap: 0;
+            overflow: hidden;
+            margin-bottom: 18px;
+            border: 1px solid var(--random-line);
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 4px 14px rgba(20, 48, 82, .04);
+        }
+
+        .random-compliance-intro,
+        .random-compliance-stat {
+            min-width: 0;
+            padding: 16px 18px;
+        }
+
+        .random-compliance-intro {
+            background: #fbfcfe;
+        }
+
+        .random-compliance-intro h2 {
+            margin: 0;
+            color: var(--random-blue);
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .random-compliance-intro p {
+            margin: 5px 0 0;
+            color: var(--random-muted);
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .random-compliance-intro a {
+            display: inline-block;
+            margin-top: 7px;
+            color: var(--random-blue-light);
+            font-size: 10px;
+            font-weight: 900;
+            text-decoration: none;
+        }
+
+        .random-compliance-stat {
+            border-left: 1px solid var(--random-line-soft);
+        }
+
+        .random-compliance-stat span {
+            display: block;
+            color: var(--random-muted);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+
+        .random-compliance-stat strong {
+            display: block;
+            margin-top: 6px;
+            color: var(--random-blue);
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .random-compliance-stat small {
+            display: block;
+            margin-top: 4px;
+            color: var(--random-muted);
+            font-size: 9px;
+            line-height: 1.35;
+        }
+
+        .random-panel {
+            overflow: hidden;
+            border: 1px solid var(--random-line);
+            border-radius: 10px;
+            background: var(--random-card);
+            box-shadow: 0 4px 14px rgba(20, 48, 82, .04);
+        }
+
+        .random-panel-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--random-line);
+        }
+
+        .random-panel-header h2 {
+            margin: 0;
+            color: var(--random-blue);
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .random-panel-header p {
+            margin: 5px 0 0;
+            color: var(--random-muted);
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        .random-panel-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .random-toolbar {
+            display: grid;
+            grid-template-columns: minmax(260px, 1fr) repeat(3, minmax(145px, 185px)) auto;
+            gap: 10px;
+            align-items: center;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--random-line-soft);
+            background: #fbfcfe;
+        }
+
+        .random-search {
+            position: relative;
+            min-width: 0;
+        }
+
+        .random-search svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            width: 16px;
+            height: 16px;
+            transform: translateY(-50%);
+            fill: none;
+            stroke: var(--random-muted);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            pointer-events: none;
+        }
+
+        .random-search input,
+        .random-toolbar select,
+        .random-filter-button {
+            width: 100%;
+            min-height: 40px;
+            border: 1px solid var(--random-line);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--random-text);
+            font: inherit;
+            font-size: 11px;
+        }
+
+        .random-search input {
+            padding: 9px 12px 9px 38px;
+        }
+
+        .random-toolbar select {
+            padding: 9px 30px 9px 11px;
+        }
+
+        .random-filter-button {
+            width: auto;
+            padding: 9px 13px;
+            color: var(--random-blue);
+            font-weight: 900;
+        }
+
+        .random-search input:focus,
+        .random-toolbar select:focus,
+        .random-form-field input:focus,
+        .random-form-field select:focus,
+        .random-form-field textarea:focus {
+            outline: none;
+            border-color: #9eb6d6;
+            box-shadow: 0 0 0 3px rgba(50, 90, 163, .08);
+        }
+
+        .random-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .random-table {
+            width: 100%;
+            min-width: 1180px;
+            border-collapse: collapse;
+        }
+
+        .random-table th,
+        .random-table td {
+            padding: 13px 15px;
+            border-bottom: 1px solid var(--random-line-soft);
+            vertical-align: middle;
+            text-align: left;
+        }
+
+        .random-table th {
+            background: #fbfcfe;
+            color: var(--random-muted);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+        }
+
+        .random-table td {
+            color: var(--random-text);
+            font-size: 10px;
+        }
+
+        .random-table tbody tr:hover {
+            background: #fbfcfe;
+        }
+
+        .random-program-name {
+            min-width: 230px;
+        }
+
+        .random-program-name strong {
+            display: block;
+            color: var(--random-blue);
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .random-program-name small,
+        .random-cell-subtext {
+            display: block;
+            margin-top: 4px;
+            color: var(--random-muted);
+            font-size: 9px;
+            line-height: 1.4;
+        }
+
+        .random-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 24px;
+            padding: 5px 8px;
+            border-radius: 999px;
+            font-size: 9px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .random-badge--active {
+            background: #e8f7ef;
+            color: var(--random-success);
+        }
+
+        .random-badge--inactive {
+            background: #f1f3f6;
+            color: #697386;
+        }
+
+        .random-badge--dot {
+            background: #edf3fb;
+            color: var(--random-blue-light);
+        }
+
+        .random-badge--nondot {
+            background: #fff4e9;
+            color: #9b5700;
+        }
+
+        .random-badge--consortium {
+            background: #edf3fb;
+            color: var(--random-blue);
+        }
+
+        .random-badge--dedicated {
+            background: #f4f0ff;
+            color: #6146a0;
+        }
+
+        .random-rates {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .random-rate-chip {
+            display: inline-flex;
+            align-items: center;
+            min-height: 24px;
+            padding: 4px 7px;
+            border: 1px solid var(--random-line);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--random-blue);
+            font-size: 9px;
+            font-weight: 900;
+        }
+
+        .random-rate-chip.is-warning {
+            border-color: #f3c998;
+            background: #fff8ef;
+            color: var(--random-warning);
+        }
+
+        .random-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        .random-row-button {
+            min-height: 32px;
+            padding: 6px 9px;
+            border: 1px solid var(--random-line);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--random-blue);
+            font-size: 9px;
+            font-weight: 900;
+            text-decoration: none;
+        }
+
+        .random-row-button:hover {
+            background: #edf3fb;
+        }
+
+        .random-row-button.is-primary {
+            border-color: #cfdbea;
+            background: #edf3fb;
+        }
+
+        .random-empty,
+        .random-loading,
+        .random-error-row {
+            padding: 40px 20px !important;
+            text-align: center !important;
+            color: var(--random-muted) !important;
+            font-size: 11px !important;
+        }
+
+        .random-error-row {
+            color: var(--random-danger) !important;
+        }
+
+        .random-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 13px 16px;
+            border-top: 1px solid var(--random-line-soft);
+        }
+
+        .random-pagination-copy {
+            color: var(--random-muted);
+            font-size: 10px;
+        }
+
+        .random-pagination-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .random-pagination-buttons button {
+            min-width: 35px;
+            min-height: 33px;
+            border: 1px solid var(--random-line);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--random-blue);
+            font: inherit;
+            font-size: 10px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .random-pagination-buttons button:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        .random-pagination-buttons .is-current {
+            border-color: var(--random-blue);
+            background: var(--random-blue);
+            color: #fff;
+        }
+
+        /* MODAL */
+        .random-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(13, 29, 52, .56);
+        }
+
+        .random-modal-backdrop.is-open {
+            display: flex;
+        }
+
+        .random-modal {
+            width: min(850px, 100%);
+            max-height: calc(100vh - 40px);
+            overflow: hidden;
+            border: 1px solid #d8e0ea;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 24px 70px rgba(16, 38, 66, .28);
+        }
+
+        .random-modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 19px 22px;
+            border-bottom: 1px solid var(--random-line);
+        }
+
+        .random-modal-header h2 {
+            margin: 0;
+            color: var(--random-blue);
+            font-size: 19px;
+            font-weight: 900;
+        }
+
+        .random-modal-header p {
+            margin: 5px 0 0;
+            color: var(--random-muted);
+            font-size: 10px;
+            line-height: 1.45;
+        }
+
+        .random-modal-close {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            border: 1px solid var(--random-line);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--random-muted);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .random-modal-body {
+            max-height: calc(100vh - 205px);
+            overflow-y: auto;
+            padding: 20px 22px;
+        }
+
+        .random-form-message {
+            display: none;
+            margin-bottom: 15px;
+            padding: 11px 13px;
+            border: 1px solid #c6ead5;
+            border-radius: 7px;
+            background: #effaf4;
+            color: var(--random-success);
+            font-size: 10px;
+            font-weight: 800;
+            line-height: 1.45;
+        }
+
+        .random-form-message.is-visible {
+            display: block;
+        }
+
+        .random-form-message.is-error {
+            border-color: #fed7d7;
+            background: #fff5f5;
+            color: var(--random-danger);
+        }
+
+        .random-form-section + .random-form-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--random-line-soft);
+        }
+
+        .random-form-section-header {
+            margin-bottom: 12px;
+        }
+
+        .random-form-section-header h3 {
+            margin: 0;
+            color: var(--random-blue);
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .random-form-section-header p {
+            margin: 4px 0 0;
+            color: var(--random-muted);
+            font-size: 9px;
+            line-height: 1.45;
+        }
+
+        .random-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 13px;
+        }
+
+        .random-form-field {
+            min-width: 0;
+        }
+
+        .random-form-field--full {
+            grid-column: 1 / -1;
+        }
+
+        .random-form-field label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--random-blue);
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .random-form-field input,
+        .random-form-field select,
+        .random-form-field textarea {
+            width: 100%;
+            min-height: 42px;
+            padding: 10px 11px;
+            border: 1px solid var(--random-line);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--random-text);
+            font: inherit;
+            font-size: 11px;
+        }
+
+        .random-form-field textarea {
+            min-height: 90px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .random-form-field small {
+            display: block;
+            margin-top: 5px;
+            color: var(--random-muted);
+            font-size: 9px;
+            line-height: 1.45;
+        }
+
+        .random-choice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 9px;
+        }
+
+        .random-choice {
+            position: relative;
+            display: block;
+            cursor: pointer;
+        }
+
+        .random-choice input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .random-choice-copy {
+            display: block;
+            min-height: 72px;
+            padding: 13px;
+            border: 1px solid var(--random-line);
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .random-choice-copy strong {
+            display: block;
+            color: var(--random-blue);
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .random-choice-copy small {
+            display: block;
+            margin-top: 5px;
+            color: var(--random-muted);
+            font-size: 9px;
+            line-height: 1.4;
+        }
+
+        .random-choice input:checked + .random-choice-copy {
+            border-color: #9eb6d6;
+            background: #f5f9ff;
+            box-shadow: 0 0 0 2px rgba(50, 90, 163, .08);
+        }
+
+        .random-rate-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            align-items: end;
+        }
+
+        .random-rate-preset {
+            min-height: 42px;
+            padding: 9px 12px;
+            border: 1px solid #ffd3b3;
+            border-radius: 7px;
+            background: #fff7f0;
+            color: var(--random-orange-hover);
+            font-size: 9px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .random-rate-note {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border: 1px solid #dce7f3;
+            border-radius: 7px;
+            background: #f7faff;
+            color: var(--random-muted);
+            font-size: 9px;
+            line-height: 1.5;
+        }
+
+        .random-rate-note.is-warning {
+            border-color: #f3c998;
+            background: #fff8ef;
+            color: #8b540e;
+        }
+
+        .random-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+            padding: 16px 22px;
+            border-top: 1px solid var(--random-line);
+            background: #fbfcfe;
+        }
+
+        .admin-random-programs-page .admin-lms-topbar-right,
+        .admin-random-programs-page .admin-user-dropdown {
+            position: relative;
+            min-width: 0;
+        }
+
+        .admin-random-programs-page .admin-lms-topbar svg,
+        .admin-random-programs-page .admin-user-dropdown svg {
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        @media (max-width: 1180px) {
+            .random-metrics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .random-compliance {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .random-compliance-intro {
+                grid-column: 1 / -1;
+            }
+
+            .random-compliance-stat {
+                border-top: 1px solid var(--random-line-soft);
+            }
+
+            .random-toolbar {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .random-search {
+                grid-column: 1 / -1;
+            }
+
+            .random-filter-button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .admin-random-programs-page .admin-random-programs-content {
+                padding: 18px;
+            }
+
+            .random-programs-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .random-programs-heading h1 {
+                font-size: 32px;
+            }
+
+            .random-primary-button,
+            .random-secondary-button {
+                width: 100%;
+            }
+
+            .random-metrics,
+            .random-compliance,
+            .random-toolbar,
+            .random-form-grid,
+            .random-choice-grid,
+            .random-rate-row {
+                grid-template-columns: 1fr;
+            }
+
+            .random-compliance-intro,
+            .random-form-field--full,
+            .random-search {
+                grid-column: auto;
+            }
+
+            .random-panel-header,
+            .random-pagination {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .random-panel-actions {
+                width: 100%;
+            }
+
+            .random-modal-footer {
+                flex-direction: column-reverse;
+            }
+        }
+    </style>
+</head>
+
+<body class="admin-random-programs-page">
+    <div class="admin-lms-app">
+
+        <!-- Sidebar is rendered by admin-lms-sidebar.js -->
+        <div id="admin-lms-sidebar-target"></div>
+
+        <main class="admin-lms-main">
+
+            <!-- =====================================================
+                 TOPBAR
+            ====================================================== -->
+            <header class="admin-lms-topbar">
+                <div class="admin-lms-topbar-left">
+                    <button
+                        type="button"
+                        class="admin-lms-sidebar-collapse"
+                        data-admin-sidebar-collapse
+                        aria-label="Collapse sidebar"
+                        aria-expanded="true"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M15 18l-6-6 6-6"></path>
+                        </svg>
+                    </button>
+
+                    <div class="admin-lms-page-context">
+                        <small>screenings4u Management Portal</small>
+                        <strong>Administration</strong>
+                    </div>
+                </div>
+
+                <div class="admin-lms-topbar-right">
+                    <a
+                        href="admin-notifications.html"
+                        class="admin-lms-icon-button"
+                        aria-label="Notifications"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                            <path d="M10 21h4"></path>
+                        </svg>
+                    </a>
+
+                    <div class="admin-user-dropdown">
+                        <button
+                            type="button"
+                            class="admin-user-dropdown-toggle"
+                            data-admin-user-menu-toggle
+                            aria-expanded="false"
+                        >
+                            <span class="admin-lms-avatar">AD</span>
+
+                            <span class="admin-lms-user-copy">
+                                <span class="admin-lms-user-name">Administrator</span>
+                                <span class="admin-lms-user-role">System Administrator</span>
+                            </span>
+
+                            <span class="admin-user-dropdown-chevron">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="m6 9 6 6 6-6"></path>
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div class="admin-user-dropdown-menu" data-admin-user-menu>
+                            <div class="admin-user-dropdown-header">
+                                <strong>Administrator</strong>
+                                <span>System Administrator</span>
+                            </div>
+
+                            <a href="../index.html" class="admin-user-dropdown-item">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="9"></circle>
+                                    <path d="M3 12h18"></path>
+                                    <path d="M12 3a14 14 0 0 1 0 18"></path>
+                                    <path d="M12 3a14 14 0 0 0 0 18"></path>
+                                </svg>
+                                <span>Visit Main Website</span>
+                            </a>
+
+                            <a href="admin-account-access.html" class="admin-user-dropdown-item">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="8" r="4"></circle>
+                                    <path d="M4 21c1-4.5 3.7-7 8-7s7 2.5 8 7"></path>
+                                </svg>
+                                <span>Account Access</span>
+                            </a>
+
+                            <a href="admin-accounts.html" class="admin-user-dropdown-item">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M4 19V5h16v14z"></path>
+                                    <path d="M8 9h8M8 13h5"></path>
+                                </svg>
+                                <span>My Account</span>
+                            </a>
+
+                            <div class="admin-user-dropdown-divider"></div>
+
+                            <button
+                                type="button"
+                                class="admin-user-dropdown-item admin-user-logout"
+                                data-admin-logout
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M10 17l5-5-5-5"></path>
+                                    <path d="M15 12H3"></path>
+                                    <path d="M21 19V5"></path>
+                                </svg>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="admin-random-programs-content">
+
+                <header class="random-programs-heading">
+                    <div class="random-programs-heading-copy">
+                        <span class="random-programs-kicker">RANDOM TESTING</span>
+                        <h1>Random Programs</h1>
+                        <p>
+                            Create and manage DOT and NON-DOT random testing programs,
+                            consortium pools, dedicated employer pools, annual testing rates,
+                            and the employers participating in each program.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="random-primary-button"
+                        id="createRandomProgramButton"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 5v14"></path>
+                            <path d="M5 12h14"></path>
+                        </svg>
+                        Create Program
+                    </button>
+                </header>
+
+                <section class="random-metrics" aria-label="Random program metrics">
+                    <article class="random-metric">
+                        <span>Total Programs</span>
+                        <strong id="randomMetricTotal">—</strong>
+                        <small>Live records from dot_random_programs</small>
+                    </article>
+
+                    <article class="random-metric">
+                        <span>Active Programs</span>
+                        <strong id="randomMetricActive">—</strong>
+                        <small>Programs with status set to Active</small>
+                    </article>
+
+                    <article class="random-metric">
+                        <span>Enrolled Employers</span>
+                        <strong id="randomMetricEnrolledEmployers">—</strong>
+                        <small>Active employer enrollments across active programs</small>
+                    </article>
+
+                    <article class="random-metric">
+                        <span>Selection Periods</span>
+                        <strong id="randomMetricSelectionPeriods">—</strong>
+                        <small id="randomMetricSelectionPeriodsCopy">Completed for the current program year</small>
+                    </article>
+                </section>
+
+                <section class="random-compliance" aria-label="Current year random program statistics">
+                    <div class="random-compliance-intro">
+                        <span class="random-panel-kicker">LIVE PROGRAM-YEAR DATA</span>
+                        <h2 id="randomLiveStatsTitle">Current-year random testing activity</h2>
+                        <p>
+                            These values come directly from dot_random_program_year_stats.
+                            Programs without a year-stat record are not given made-up progress values.
+                        </p>
+                        <a
+                            href="admin-random-program-year-stats.html"
+                        >
+                            Open program year statistics →
+                        </a>
+                    </div>
+
+                    <div class="random-compliance-stat">
+                        <span>Eligible Employees</span>
+                        <strong id="randomLiveEligible">—</strong>
+                        <small>Stored current-year eligible pool total</small>
+                    </div>
+
+                    <div class="random-compliance-stat">
+                        <span>Drug Progress</span>
+                        <strong id="randomLiveDrugProgress">—</strong>
+                        <small>Selected / annual target</small>
+                    </div>
+
+                    <div class="random-compliance-stat">
+                        <span>Alcohol Progress</span>
+                        <strong id="randomLiveAlcoholProgress">—</strong>
+                        <small>Selected / annual target</small>
+                    </div>
+
+                    <div class="random-compliance-stat">
+                        <span>Periods Completed</span>
+                        <strong id="randomLivePeriods">—</strong>
+                        <small>Completed selection periods</small>
+                    </div>
+                </section>
+
+                <section class="random-panel">
+                    <header class="random-panel-header">
+                        <div>
+                            <span class="random-panel-kicker">PROGRAM MANAGEMENT</span>
+                            <h2>Random Testing Programs</h2>
+                            <p>
+                                Search programs, edit program settings, manage enrolled employers,
+                                or open random selections.
+                            </p>
+                        </div>
+
+                        <div class="random-panel-actions">
+                            <button
+                                type="button"
+                                class="random-secondary-button"
+                                id="refreshRandomProgramsButton"
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M20 11a8 8 0 0 0-14.9-4"></path>
+                                    <path d="M4 13a8 8 0 0 0 14.9 4"></path>
+                                    <path d="M5 3v4h4"></path>
+                                    <path d="M19 21v-4h-4"></path>
+                                </svg>
+                                Refresh
+                            </button>
+                        </div>
+                    </header>
+
+                    <div class="random-toolbar">
+                        <div class="random-search">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="m20 20-3.8-3.8"></path>
+                            </svg>
+                            <input
+                                type="search"
+                                id="randomProgramSearch"
+                                placeholder="Search program, agency, employer..."
+                                autocomplete="off"
+                            >
+                        </div>
+
+                        <select id="randomProgramTypeFilter" aria-label="Filter by program type">
+                            <option value="">All program types</option>
+                            <option value="DOT">DOT</option>
+                            <option value="NON_DOT">NON-DOT</option>
+                        </select>
+
+                        <select id="randomPoolTypeFilter" aria-label="Filter by pool type">
+                            <option value="">All pool structures</option>
+                            <option value="CONSORTIUM">Consortium</option>
+                            <option value="DEDICATED">Dedicated Employer</option>
+                        </select>
+
+                        <select id="randomStatusFilter" aria-label="Filter by status">
+                            <option value="">All statuses</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+
+                        <button
+                            type="button"
+                            class="random-filter-button"
+                            id="clearRandomProgramFilters"
+                        >
+                            Clear
+                        </button>
+                    </div>
+
+                    <div class="random-table-wrap">
+                        <table class="random-table">
+                            <thead>
+                                <tr>
+                                    <th>Program</th>
+                                    <th>Year</th>
+                                    <th>Type / Agency</th>
+                                    <th>Pool Structure</th>
+                                    <th>Stored Rates / Year Progress</th>
+                                    <th>Employers</th>
+                                    <th>Eligible Pool</th>
+                                    <th>Status</th>
+                                    <th style="text-align:right;">Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="randomProgramsTableBody">
+                                <tr>
+                                    <td colspan="9" class="random-loading">
+                                        Loading random programs...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="random-pagination">
+                        <span class="random-pagination-copy" id="randomProgramResultsCount">
+                            0 programs
+                        </span>
+
+                        <div class="random-pagination-buttons">
+                            <button type="button" id="randomProgramsPrevious">Previous</button>
+                            <button type="button" class="is-current" id="randomProgramsPage">1</button>
+                            <button type="button" id="randomProgramsNext">Next</button>
+                        </div>
+                    </div>
+                </section>
+
+            </section>
+        </main>
+    </div>
+
+    <!-- =========================================================
+         CREATE / EDIT PROGRAM MODAL
+    ========================================================== -->
+    <div
+        class="random-modal-backdrop"
+        id="randomProgramModalBackdrop"
+        aria-hidden="true"
+    >
+        <section
+            class="random-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="randomProgramModalTitle"
+        >
+            <form id="randomProgramForm">
+                <header class="random-modal-header">
+                    <div>
+                        <span class="random-modal-kicker" id="randomProgramModalKicker">
+                            CREATE PROGRAM
+                        </span>
+                        <h2 id="randomProgramModalTitle">Create Random Program</h2>
+                        <p id="randomProgramModalSubtitle">
+                            Configure the program. No annual rate values are fabricated or prefilled.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="random-modal-close"
+                        data-random-program-close
+                        aria-label="Close"
+                    >
+                        ×
+                    </button>
+                </header>
+
+                <div class="random-modal-body">
+                    <div class="random-form-message" id="randomProgramFormMessage"></div>
+
+                    <input type="hidden" id="randomProgramId">
+
+                    <section class="random-form-section">
+                        <header class="random-form-section-header">
+                            <h3>Program Identity</h3>
+                            <p>Name the program and choose the year and status.</p>
+                        </header>
+
+                        <div class="random-form-grid">
+                            <div class="random-form-field random-form-field--full">
+                                <label for="randomProgramName">Program Name *</label>
+                                <input
+                                    type="text"
+                                    id="randomProgramName"
+                                    maxlength="180"
+                                    required
+                                    placeholder="Example: 2026 FMCSA Consortium Pool"
+                                >
+                            </div>
+
+                            <div class="random-form-field">
+                                <label for="randomProgramYear">Program Year *</label>
+                                <input
+                                    type="number"
+                                    id="randomProgramYear"
+                                    min="2020"
+                                    max="2100"
+                                    required
+                                >
+                            </div>
+
+                            <div class="random-form-field">
+                                <label for="randomProgramStatus">Status *</label>
+                                <select id="randomProgramStatus" required>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="random-form-section">
+                        <header class="random-form-section-header">
+                            <h3>Regulatory Program</h3>
+                            <p>DOT and NON-DOT random testing must be administered as separate programs.</p>
+                        </header>
+
+                        <div class="random-choice-grid">
+                            <label class="random-choice">
+                                <input
+                                    type="radio"
+                                    name="randomProgramType"
+                                    value="DOT"
+                                    checked
+                                >
+                                <span class="random-choice-copy">
+                                    <strong>DOT Program</strong>
+                                    <small>
+                                        Safety-sensitive employees governed by a DOT agency.
+                                        DOT agency selection is required.
+                                    </small>
+                                </span>
+                            </label>
+
+                            <label class="random-choice">
+                                <input
+                                    type="radio"
+                                    name="randomProgramType"
+                                    value="NON_DOT"
+                                >
+                                <span class="random-choice-copy">
+                                    <strong>NON-DOT Program</strong>
+                                    <small>
+                                        Company-policy random testing kept separate from the DOT pool.
+                                    </small>
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="random-form-grid" style="margin-top:13px;">
+                            <div class="random-form-field random-form-field--full" id="randomAgencyField">
+                                <label for="randomDotAgency">DOT Agency *</label>
+                                <select id="randomDotAgency">
+                                    <option value="FMCSA">FMCSA — Federal Motor Carrier Safety Administration</option>
+                                    <option value="FRA">FRA — Federal Railroad Administration</option>
+                                    <option value="FTA">FTA — Federal Transit Administration</option>
+                                    <option value="FAA">FAA — Federal Aviation Administration</option>
+                                    <option value="USCG">USCG — U.S. Coast Guard</option>
+                                    <option value="PHMSA">PHMSA — Pipeline and Hazardous Materials Safety Administration</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="random-form-section">
+                        <header class="random-form-section-header">
+                            <h3>Pool Structure</h3>
+                            <p>
+                                Consortium pools can contain multiple employers. Dedicated pools belong to one employer.
+                            </p>
+                        </header>
+
+                        <div class="random-choice-grid">
+                            <label class="random-choice">
+                                <input
+                                    type="radio"
+                                    name="randomPoolType"
+                                    value="CONSORTIUM"
+                                    checked
+                                >
+                                <span class="random-choice-copy">
+                                    <strong>Consortium Pool</strong>
+                                    <small>
+                                        Multiple employers contribute eligible employees to one random selection pool.
+                                    </small>
+                                </span>
+                            </label>
+
+                            <label class="random-choice">
+                                <input
+                                    type="radio"
+                                    name="randomPoolType"
+                                    value="DEDICATED"
+                                >
+                                <span class="random-choice-copy">
+                                    <strong>Dedicated Employer Pool</strong>
+                                    <small>
+                                        One employer's eligible employees are maintained in their own pool.
+                                    </small>
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="random-form-grid" style="margin-top:13px;">
+                            <div
+                                class="random-form-field random-form-field--full"
+                                id="randomDedicatedEmployerField"
+                                hidden
+                            >
+                                <label for="randomDedicatedEmployer">Dedicated Employer *</label>
+                                <select id="randomDedicatedEmployer">
+                                    <option value="">Select employer</option>
+                                </select>
+                                <small>
+                                    Database rules require a dedicated employer for a DEDICATED program.
+                                </small>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="random-form-section">
+                        <header class="random-form-section-header">
+                            <h3>Annual Testing Rates</h3>
+                            <p>
+                                Store the annual drug and alcohol selection percentages used by this program.
+                            </p>
+                        </header>
+
+                        <div class="random-rate-row">
+                            <div class="random-form-field">
+                                <label for="randomDrugRate">Drug Rate (%) *</label>
+                                <input
+                                    type="number"
+                                    id="randomDrugRate"
+                                    min="0"
+                                    max="100"
+                                    step="0.01"
+                                    required
+                                    placeholder="Enter stored annual drug rate"
+                                >
+                            </div>
+
+                            <div class="random-form-field">
+                                <label for="randomAlcoholRate">Alcohol Rate (%) *</label>
+                                <input
+                                    type="number"
+                                    id="randomAlcoholRate"
+                                    min="0"
+                                    max="100"
+                                    step="0.01"
+                                    required
+                                    placeholder="Enter stored annual alcohol rate"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="random-rate-note" id="randomRateComplianceNote">
+                            Enter the annual drug and alcohol rates that apply to this program.
+                            Existing programs load the exact values already stored in Supabase.
+                        </div>
+                    </section>
+
+                    <section class="random-form-section">
+                        <header class="random-form-section-header">
+                            <h3>Program Notes</h3>
+                            <p>Optional internal administration notes.</p>
+                        </header>
+
+                        <div class="random-form-grid">
+                            <div class="random-form-field random-form-field--full">
+                                <label for="randomProgramNotes">Notes</label>
+                                <textarea
+                                    id="randomProgramNotes"
+                                    placeholder="Internal notes about this random program..."
+                                ></textarea>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <footer class="random-modal-footer">
+                    <button
+                        type="button"
+                        class="random-secondary-button"
+                        data-random-program-close
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="random-primary-button"
+                        id="saveRandomProgramButton"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 12l4 4L19 6"></path>
+                        </svg>
+                        Save Program
+                    </button>
+                </footer>
+            </form>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/core-auth.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/session-security.js"></script>
+    <script src="assets/js/portal-auth-guard.js"></script>
+    <script src="assets/js/admin-auth-guard.js"></script>
+    <script src="assets/js/admin-lms-sidebar.js"></script>
+    <script src="assets/js/admin-random-programs.js"></script>
+</body>
+</html>

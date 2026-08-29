@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results | screenings4u Management Portal</title>
+    <link rel="stylesheet" href="assets/css/admin-lms.css">
+
+    <style>
+        /* ============================================================
+           screenings4u — ADMIN TEST RESULTS
+           Page-only styling matched to the administration dashboard.
+           ============================================================ */
+
+        .admin-test-results-page {
+            --results-blue: var(--dashboard-blue, #173d78);
+            --results-blue-light: var(--dashboard-blue-light, #325aa3);
+            --results-orange: var(--dashboard-orange, #ff6b00);
+            --results-orange-hover: var(--dashboard-orange-hover, #e86000);
+            --results-bg: var(--dashboard-bg, #f5f7fa);
+            --results-card: var(--dashboard-card, #ffffff);
+            --results-line: var(--dashboard-line, #e1e7ef);
+            --results-line-soft: var(--dashboard-line-soft, #edf0f4);
+            --results-muted: var(--dashboard-muted, #617087);
+            --results-text: var(--dashboard-text, #172033);
+            --results-success: var(--dashboard-success, #16804d);
+            --results-danger: #c53030;
+            --results-warning: #b7791f;
+            --results-info: #2b6cb0;
+        }
+
+        .admin-test-results-page .admin-lms-main {
+            min-width: 0;
+            background: var(--results-bg);
+        }
+
+        .admin-test-results-page .s4u-results-page,
+        .admin-test-results-page .s4u-results-page *,
+        .admin-test-results-page .s4u-results-page *::before,
+        .admin-test-results-page .s4u-results-page *::after,
+        .admin-test-results-page .s4u-results-modal,
+        .admin-test-results-page .s4u-results-modal *,
+        .admin-test-results-page .s4u-results-modal *::before,
+        .admin-test-results-page .s4u-results-modal *::after {
+            box-sizing: border-box;
+        }
+
+        .admin-test-results-page .s4u-results-page {
+            width: 100%;
+            min-width: 0;
+            padding: 28px;
+        }
+
+        /* PAGE HEADING */
+        .admin-test-results-page .s4u-results-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .admin-test-results-page .s4u-results-heading-copy {
+            min-width: 0;
+        }
+
+        .admin-test-results-page .s4u-results-kicker {
+            margin: 0 0 8px;
+            color: var(--results-orange);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .admin-test-results-page .s4u-results-heading h1 {
+            margin: 0 0 8px;
+            color: var(--results-blue);
+            font-size: 38px;
+            line-height: 1.05;
+            font-weight: 900;
+            letter-spacing: -.04em;
+        }
+
+        .admin-test-results-page .s4u-results-heading p {
+            max-width: 780px;
+            margin: 0;
+            color: var(--results-muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .admin-test-results-page .s4u-results-heading-actions,
+        .admin-test-results-page .s4u-results-panel-actions {
+            display: flex;
+            gap: 8px;
+            flex: 0 0 auto;
+        }
+
+        /* BUTTONS */
+        .admin-test-results-page .s4u-results-primary-button,
+        .admin-test-results-page .s4u-results-secondary-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: transform .18s ease, background .18s ease, border-color .18s ease;
+        }
+
+        .admin-test-results-page .s4u-results-primary-button {
+            border: 1px solid var(--results-orange);
+            background: var(--results-orange);
+            color: #fff;
+            box-shadow: 0 7px 16px rgba(255, 107, 0, .14);
+        }
+
+        .admin-test-results-page .s4u-results-primary-button:hover {
+            transform: translateY(-1px);
+            background: var(--results-orange-hover);
+            border-color: var(--results-orange-hover);
+        }
+
+        .admin-test-results-page .s4u-results-secondary-button {
+            border: 1px solid var(--results-line);
+            background: #fff;
+            color: var(--results-blue);
+        }
+
+        .admin-test-results-page .s4u-results-secondary-button:hover {
+            border-color: #c8d3e0;
+            background: #f9fbfd;
+        }
+
+        .admin-test-results-page .s4u-results-primary-button svg,
+        .admin-test-results-page .s4u-results-secondary-button svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* METRICS */
+        .admin-test-results-page .s4u-results-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .admin-test-results-page .s4u-results-metric-card {
+            min-width: 0;
+            padding: 19px;
+            border: 1px solid var(--results-line);
+            border-radius: 10px;
+            background: var(--results-card);
+            box-shadow: 0 4px 14px rgba(20, 48, 82, .04);
+        }
+
+        .admin-test-results-page .s4u-results-metric-card > span {
+            display: block;
+            color: var(--results-muted);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .admin-test-results-page .s4u-results-metric-card > strong {
+            display: block;
+            margin-top: 8px;
+            color: var(--results-blue);
+            font-size: 31px;
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -.035em;
+        }
+
+        .admin-test-results-page .s4u-results-metric-card > small {
+            display: block;
+            margin-top: 9px;
+            color: var(--results-muted);
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        /* PANEL */
+        .admin-test-results-page .s4u-results-panel {
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid var(--results-line);
+            border-radius: 10px;
+            background: var(--results-card);
+            box-shadow: 0 4px 14px rgba(20, 48, 82, .04);
+        }
+
+        .admin-test-results-page .s4u-results-panel-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--results-line);
+        }
+
+        .admin-test-results-page .s4u-results-panel-kicker {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--results-orange);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .admin-test-results-page .s4u-results-panel-header h2 {
+            margin: 0;
+            color: var(--results-blue);
+            font-size: 16px;
+            line-height: 1.25;
+            font-weight: 900;
+        }
+
+        .admin-test-results-page .s4u-results-panel-header p {
+            margin: 5px 0 0;
+            color: var(--results-muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* TOOLBAR */
+        .admin-test-results-page .s4u-results-toolbar {
+            display: grid;
+            grid-template-columns: minmax(260px, 1fr) repeat(3, minmax(150px, 190px)) auto;
+            gap: 10px;
+            align-items: center;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--results-line-soft);
+            background: #fbfcfe;
+        }
+
+        .admin-test-results-page .s4u-results-search {
+            position: relative;
+            min-width: 0;
+        }
+
+        .admin-test-results-page .s4u-results-search svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            width: 16px;
+            height: 16px;
+            transform: translateY(-50%);
+            fill: none;
+            stroke: var(--results-muted);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            pointer-events: none;
+        }
+
+        .admin-test-results-page .s4u-results-search input,
+        .admin-test-results-page .s4u-results-toolbar select,
+        .admin-test-results-page .s4u-results-filter-button {
+            width: 100%;
+            min-height: 40px;
+            border: 1px solid var(--results-line);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--results-text);
+            font: inherit;
+            font-size: 12px;
+        }
+
+        .admin-test-results-page .s4u-results-search input {
+            padding: 9px 12px 9px 38px;
+        }
+
+        .admin-test-results-page .s4u-results-toolbar select {
+            padding: 9px 30px 9px 11px;
+        }
+
+        .admin-test-results-page .s4u-results-filter-button {
+            width: auto;
+            padding: 9px 13px;
+            color: var(--results-blue);
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .admin-test-results-page input:focus,
+        .admin-test-results-page select:focus,
+        .admin-test-results-page textarea:focus {
+            outline: none;
+            border-color: #9eb6d6;
+            box-shadow: 0 0 0 3px rgba(50, 90, 163, .08);
+        }
+
+        /* TABLE */
+        .admin-test-results-page .s4u-results-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .admin-test-results-page .s4u-results-table {
+            width: 100%;
+            min-width: 1050px;
+            border-collapse: collapse;
+        }
+
+        .admin-test-results-page .s4u-results-table th {
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--results-line);
+            background: #f8fafc;
+            color: #738096;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .055em;
+            text-align: left;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .admin-test-results-page .s4u-results-table td {
+            padding: 13px 14px;
+            border-bottom: 1px solid var(--results-line-soft);
+            color: var(--results-text);
+            font-size: 11px;
+            vertical-align: middle;
+        }
+
+        .admin-test-results-page .s4u-results-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .admin-test-results-page .s4u-results-table tbody tr:hover {
+            background: #fbfcfe;
+        }
+
+        .admin-test-results-page .s4u-results-person {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 190px;
+        }
+
+        .admin-test-results-page .s4u-results-avatar {
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 9px;
+            background: #edf3fb;
+            color: var(--results-blue);
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .admin-test-results-page .s4u-results-person-copy {
+            min-width: 0;
+        }
+
+        .admin-test-results-page .s4u-results-person-copy strong {
+            display: block;
+            color: var(--results-blue);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .admin-test-results-page .s4u-results-person-copy span {
+            display: block;
+            margin-top: 3px;
+            max-width: 210px;
+            overflow: hidden;
+            color: var(--results-muted);
+            font-size: 10px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .admin-test-results-page .s4u-result-badge,
+        .admin-test-results-page .s4u-mro-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 24px;
+            padding: 5px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 900;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .admin-test-results-page .s4u-result-badge--negative {
+            background: #e8f7ef;
+            color: var(--results-success);
+        }
+
+        .admin-test-results-page .s4u-result-badge--positive,
+        .admin-test-results-page .s4u-result-badge--refusal,
+        .admin-test-results-page .s4u-result-badge--invalid {
+            background: #fff0f0;
+            color: var(--results-danger);
+        }
+
+        .admin-test-results-page .s4u-result-badge--cancelled {
+            background: #f1f3f6;
+            color: #697386;
+        }
+
+        .admin-test-results-page .s4u-mro-badge {
+            background: #edf3fb;
+            color: var(--results-blue-light);
+        }
+
+        .admin-test-results-page .s4u-results-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .admin-test-results-page .s4u-results-icon-action {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--results-line);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--results-blue);
+            cursor: pointer;
+        }
+
+        .admin-test-results-page .s4u-results-icon-action:hover {
+            border-color: #c9d4e2;
+            background: #edf3fb;
+        }
+
+        .admin-test-results-page .s4u-results-icon-action svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.9;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .admin-test-results-page .s4u-results-empty {
+            display: none;
+            padding: 44px 20px;
+            text-align: center;
+        }
+
+        .admin-test-results-page .s4u-results-empty strong {
+            display: block;
+            color: var(--results-blue);
+            font-size: 14px;
+        }
+
+        .admin-test-results-page .s4u-results-empty span {
+            display: block;
+            margin-top: 6px;
+            color: var(--results-muted);
+            font-size: 11px;
+        }
+
+        /* PAGINATION */
+        .admin-test-results-page .s4u-results-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 13px 16px;
+            border-top: 1px solid var(--results-line-soft);
+        }
+
+        .admin-test-results-page .s4u-results-pagination-copy {
+            color: var(--results-muted);
+            font-size: 11px;
+        }
+
+        .admin-test-results-page .s4u-results-pagination-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .admin-test-results-page .s4u-results-page-button {
+            min-width: 34px;
+            min-height: 34px;
+            padding: 7px 10px;
+            border: 1px solid var(--results-line);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--results-blue);
+            font: inherit;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .admin-test-results-page .s4u-results-page-button[aria-current="page"] {
+            border-color: var(--results-blue);
+            background: var(--results-blue);
+            color: #fff;
+        }
+
+        .admin-test-results-page .s4u-results-page-button:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        /* MODAL */
+        .admin-test-results-page .s4u-results-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(13, 27, 45, .56);
+        }
+
+        .admin-test-results-page .s4u-results-modal-backdrop.is-open {
+            display: flex;
+        }
+
+        .admin-test-results-page .s4u-results-modal {
+            width: min(820px, 100%);
+            max-height: calc(100vh - 48px);
+            overflow: auto;
+            border: 1px solid var(--results-line);
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 28px 80px rgba(17, 36, 61, .24);
+        }
+
+        .admin-test-results-page .s4u-results-modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 20px 22px;
+            border-bottom: 1px solid var(--results-line);
+        }
+
+        .admin-test-results-page .s4u-results-modal-header h2 {
+            margin: 0;
+            color: var(--results-blue);
+            font-size: 19px;
+            font-weight: 900;
+        }
+
+        .admin-test-results-page .s4u-results-modal-header p {
+            margin: 5px 0 0;
+            color: var(--results-muted);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .admin-test-results-page .s4u-results-modal-close {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 34px;
+            border: 1px solid var(--results-line);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--results-blue);
+            cursor: pointer;
+        }
+
+        .admin-test-results-page .s4u-results-modal-close svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+
+        .admin-test-results-page .s4u-results-modal-body {
+            padding: 22px;
+        }
+
+        .admin-test-results-page .s4u-results-form-message {
+            display: none;
+            margin-bottom: 16px;
+            padding: 11px 13px;
+            border: 1px solid #c6ead5;
+            border-radius: 8px;
+            background: #effaf4;
+            color: var(--results-success);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .admin-test-results-page .s4u-results-form-message.is-visible {
+            display: block;
+        }
+
+        .admin-test-results-page .s4u-results-form-message.is-error {
+            border-color: #fed7d7;
+            background: #fff5f5;
+            color: var(--results-danger);
+        }
+
+        .admin-test-results-page .s4u-results-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .admin-test-results-page .s4u-results-field {
+            min-width: 0;
+        }
+
+        .admin-test-results-page .s4u-results-field--full {
+            grid-column: 1 / -1;
+        }
+
+        .admin-test-results-page .s4u-results-field label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--results-blue);
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .admin-test-results-page .s4u-results-field input,
+        .admin-test-results-page .s4u-results-field select,
+        .admin-test-results-page .s4u-results-field textarea {
+            width: 100%;
+            min-height: 42px;
+            padding: 10px 11px;
+            border: 1px solid var(--results-line);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--results-text);
+            font: inherit;
+            font-size: 12px;
+        }
+
+        .admin-test-results-page .s4u-results-field input[readonly] {
+            background: #f7f9fc;
+            color: var(--results-muted);
+        }
+
+        .admin-test-results-page .s4u-results-field textarea {
+            min-height: 92px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .admin-test-results-page .s4u-results-field small {
+            display: block;
+            margin-top: 5px;
+            color: var(--results-muted);
+            font-size: 9px;
+            line-height: 1.45;
+        }
+
+
+        /* PRIVATE RESULT DOCUMENTS */
+        .admin-test-results-page .s4u-result-documents {
+            overflow: hidden;
+            border: 1px solid var(--results-line);
+            border-radius: 10px;
+            background: #fbfcfe;
+        }
+
+        .admin-test-results-page .s4u-result-documents-header {
+            padding: 16px 17px;
+            border-bottom: 1px solid var(--results-line);
+            background: #ffffff;
+        }
+
+        .admin-test-results-page .s4u-result-documents-kicker {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--results-orange);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .08em;
+        }
+
+        .admin-test-results-page .s4u-result-documents-header h3 {
+            margin: 0;
+            color: var(--results-blue);
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .admin-test-results-page .s4u-result-documents-header p {
+            margin: 5px 0 0;
+            color: var(--results-muted);
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .admin-test-results-page .s4u-result-document-locked {
+            padding: 18px;
+            color: var(--results-muted);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .admin-test-results-page .s4u-result-document-manager {
+            padding: 16px;
+        }
+
+        .admin-test-results-page .s4u-result-document-manager[hidden] {
+            display: none !important;
+        }
+
+        .admin-test-results-page .s4u-result-document-upload-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .admin-test-results-page .s4u-result-document-upload-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+
+        .admin-test-results-page .s4u-result-document-message {
+            display: none;
+            margin-top: 12px;
+            padding: 10px 12px;
+            border: 1px solid #c6ead5;
+            border-radius: 7px;
+            background: #effaf4;
+            color: var(--results-success);
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .admin-test-results-page .s4u-result-document-message.is-visible { display: block; }
+
+        .admin-test-results-page .s4u-result-document-message.is-error {
+            border-color: #fed7d7;
+            background: #fff5f5;
+            color: var(--results-danger);
+        }
+
+        .admin-test-results-page .s4u-result-document-list {
+            display: grid;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .admin-test-results-page .s4u-result-document-empty {
+            padding: 15px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: var(--results-muted);
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .admin-test-results-page .s4u-result-document-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+            padding: 11px 12px;
+            border: 1px solid var(--results-line);
+            border-radius: 8px;
+            background: #ffffff;
+        }
+
+        .admin-test-results-page .s4u-result-document-copy { min-width: 0; }
+
+        .admin-test-results-page .s4u-result-document-copy strong {
+            display: block;
+            overflow: hidden;
+            color: var(--results-blue);
+            font-size: 11px;
+            font-weight: 800;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .admin-test-results-page .s4u-result-document-copy span {
+            display: block;
+            margin-top: 4px;
+            color: var(--results-muted);
+            font-size: 9px;
+            line-height: 1.4;
+        }
+
+        .admin-test-results-page .s4u-result-document-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .admin-test-results-page .s4u-result-document-button {
+            min-height: 31px;
+            padding: 6px 9px;
+            border: 1px solid var(--results-line);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--results-blue);
+            font: inherit;
+            font-size: 9px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .admin-test-results-page .s4u-result-document-button:hover { background: #edf3fb; }
+        .admin-test-results-page .s4u-result-document-button.is-danger { color: var(--results-danger); }
+
+        .admin-test-results-page .s4u-result-document-count {
+            display: inline-flex;
+            min-width: 27px;
+            min-height: 24px;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 7px;
+            border-radius: 999px;
+            background: #edf3fb;
+            color: var(--results-blue);
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+
+        /* HUMAN-FRIENDLY RESULT DETAILS */
+        .admin-test-results-page .s4u-result-detail-card {
+            grid-column: 1 / -1;
+            overflow: hidden;
+            border: 1px solid var(--results-line);
+            border-radius: 10px;
+            background: #fbfcfe;
+        }
+
+        .admin-test-results-page .s4u-result-detail-card[hidden] {
+            display: none !important;
+        }
+
+        .admin-test-results-page .s4u-result-detail-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--results-line);
+            background: #ffffff;
+        }
+
+        .admin-test-results-page .s4u-result-detail-header span {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--results-orange);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .admin-test-results-page .s4u-result-detail-header h3 {
+            margin: 0;
+            color: var(--results-blue);
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .admin-test-results-page .s4u-result-detail-header p {
+            margin: 5px 0 0;
+            color: var(--results-muted);
+            font-size: 10px;
+            line-height: 1.45;
+        }
+
+        .admin-test-results-page .s4u-result-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            padding: 15px;
+        }
+
+        .admin-test-results-page .s4u-result-document-manager.is-disabled {
+            opacity: .72;
+        }
+
+        .admin-test-results-page .s4u-result-document-manager.is-disabled input,
+        .admin-test-results-page .s4u-result-document-manager.is-disabled select,
+        .admin-test-results-page .s4u-result-document-manager.is-disabled button {
+            cursor: not-allowed;
+        }
+
+        .admin-test-results-page .s4u-results-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+            padding: 16px 22px;
+            border-top: 1px solid var(--results-line);
+            background: #fbfcfe;
+        }
+
+        /* TOPBAR SAFETY */
+        .admin-test-results-page .admin-lms-topbar-right,
+        .admin-test-results-page .admin-user-dropdown {
+            position: relative;
+            min-width: 0;
+        }
+
+        .admin-test-results-page .admin-lms-topbar svg,
+        .admin-test-results-page .admin-user-dropdown svg {
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        @media (max-width: 1180px) {
+            .admin-test-results-page .s4u-results-metrics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .admin-test-results-page .s4u-results-toolbar {
+                grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(150px, 1fr));
+            }
+        }
+
+        @media (max-width: 860px) {
+            .admin-test-results-page .s4u-results-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .admin-test-results-page .s4u-results-heading-actions {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .admin-test-results-page .s4u-results-heading-actions > * {
+                flex: 1 1 220px;
+            }
+
+            .admin-test-results-page .s4u-results-toolbar {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .admin-test-results-page .s4u-results-search {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .admin-test-results-page .s4u-results-page {
+                padding: 18px;
+            }
+
+            .admin-test-results-page .s4u-results-heading h1 {
+                font-size: 32px;
+            }
+
+            .admin-test-results-page .s4u-results-metrics,
+            .admin-test-results-page .s4u-results-toolbar,
+            .admin-test-results-page .s4u-results-form-grid,
+            .admin-test-results-page .s4u-result-detail-grid,
+            .admin-test-results-page .s4u-result-document-upload-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-test-results-page .s4u-results-field--full,
+            .admin-test-results-page .s4u-results-search {
+                grid-column: auto;
+            }
+
+            .admin-test-results-page .s4u-results-panel-header,
+            .admin-test-results-page .s4u-results-pagination {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .admin-test-results-page .s4u-results-panel-actions {
+                width: 100%;
+            }
+
+            .admin-test-results-page .s4u-results-panel-actions .s4u-results-secondary-button,
+            .admin-test-results-page .s4u-results-modal-footer button {
+                width: 100%;
+            }
+
+            .admin-test-results-page .s4u-results-modal-footer {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .admin-test-results-page .s4u-result-document-row {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-test-results-page .s4u-result-document-actions {
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+
+<body class="admin-test-results-page">
+    <div class="admin-lms-app">
+        <!-- Sidebar is rendered by admin-lms-sidebar.js -->
+        <div id="admin-lms-sidebar-target"></div>
+
+        <main class="admin-lms-main">
+            <!-- =====================================================
+                 TOPBAR
+            ====================================================== -->
+            <header class="admin-lms-topbar">
+                <div class="admin-lms-topbar-left">
+                    <button
+                        type="button"
+                        class="admin-lms-sidebar-collapse"
+                        data-admin-sidebar-collapse
+                        aria-label="Collapse sidebar"
+                        aria-expanded="true"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M15 18l-6-6 6-6"></path>
+                        </svg>
+                    </button>
+
+                    <div class="admin-lms-page-context">
+                        <small>screenings4u Management Portal</small>
+                        <strong>Administration</strong>
+                    </div>
+                </div>
+
+                <div class="admin-lms-topbar-right">
+                    <a href="admin-notifications.html" class="admin-lms-icon-button" aria-label="Notifications">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                            <path d="M10 21h4"></path>
+                        </svg>
+                    </a>
+
+                    <div class="admin-user-dropdown">
+                        <button
+                            type="button"
+                            class="admin-user-dropdown-toggle"
+                            data-admin-user-menu-toggle
+                            aria-expanded="false"
+                        >
+                            <span class="admin-lms-avatar">AD</span>
+                            <span class="admin-lms-user-copy">
+                                <span class="admin-lms-user-name">Administrator</span>
+                                <span class="admin-lms-user-role">System Administrator</span>
+                            </span>
+                            <span class="admin-user-dropdown-chevron">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="m6 9 6 6 6-6"></path>
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div class="admin-user-dropdown-menu" data-admin-user-menu>
+                            <div class="admin-user-dropdown-header">
+                                <strong>Administrator</strong>
+                                <span>System Administrator</span>
+                            </div>
+
+                            <a href="../index.html" class="admin-user-dropdown-item">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="9"></circle>
+                                    <path d="M3 12h18"></path>
+                                    <path d="M12 3a14 14 0 0 1 0 18"></path>
+                                    <path d="M12 3a14 14 0 0 0 0 18"></path>
+                                </svg>
+                                <span>Visit Main Website</span>
+                            </a>
+
+                            <a href="admin-account-access.html" class="admin-user-dropdown-item">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="8" r="4"></circle>
+                                    <path d="M4 21c1-4.5 3.7-7 8-7s7 2.5 8 7"></path>
+                                </svg>
+                                <span>Account Access</span>
+                            </a>
+
+                            <a href="admin-accounts.html" class="admin-user-dropdown-item">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M4 19V5h16v14z"></path>
+                                    <path d="M8 9h8M8 13h5"></path>
+                                </svg>
+                                <span>My Account</span>
+                            </a>
+
+                            <div class="admin-user-dropdown-divider"></div>
+
+                            <button type="button" class="admin-user-dropdown-item admin-user-logout" data-admin-logout>
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M10 17l5-5-5-5"></path>
+                                    <path d="M15 12H3"></path>
+                                    <path d="M21 19V5"></path>
+                                </svg>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- =====================================================
+                 TEST RESULTS MANAGEMENT
+            ====================================================== -->
+            <section class="s4u-results-page">
+                <div class="s4u-results-heading">
+                    <div class="s4u-results-heading-copy">
+                        <div class="s4u-results-kicker">DOT TESTING</div>
+                        <h1>Test Results</h1>
+                        <p>
+                            Review and manage completed DOT drug and alcohol test results, MRO status,
+                            verification details, result dates, and employer/employee testing history.
+                        </p>
+                    </div>
+
+                    <div class="s4u-results-heading-actions">
+                        <a class="s4u-results-secondary-button" href="admin-dot-tests.html">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M19 12H5"></path>
+                                <path d="m12 19-7-7 7-7"></path>
+                            </svg>
+                            DOT Tests
+                        </a>
+
+                        <button type="button" class="s4u-results-primary-button" data-test-result-open>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 5v14M5 12h14"></path>
+                            </svg>
+                            Add Test Result
+                        </button>
+                    </div>
+                </div>
+
+                <div class="s4u-results-metrics">
+                    <article class="s4u-results-metric-card">
+                        <span>Total Results</span>
+                        <strong id="resultMetricTotal">0</strong>
+                        <small>Saved DOT result records</small>
+                    </article>
+
+                    <article class="s4u-results-metric-card">
+                        <span>Negative</span>
+                        <strong id="resultMetricNegative">0</strong>
+                        <small>Negative test outcomes</small>
+                    </article>
+
+                    <article class="s4u-results-metric-card">
+                        <span>Positive / Refusal</span>
+                        <strong id="resultMetricReview">0</strong>
+                        <small>Results requiring attention</small>
+                    </article>
+
+                    <article class="s4u-results-metric-card">
+                        <span>Awaiting Results</span>
+                        <strong id="resultMetricAwaiting">0</strong>
+                        <small>DOT tests without a final result</small>
+                    </article>
+                </div>
+
+                <section class="s4u-results-panel">
+                    <div class="s4u-results-panel-header">
+                        <div>
+                            <span class="s4u-results-panel-kicker">RESULT MANAGEMENT</span>
+                            <h2>DOT Test Results</h2>
+                            <p>Search, filter, review, and update result records stored in Supabase.</p>
+                        </div>
+
+                        <div class="s4u-results-panel-actions">
+                            <button type="button" class="s4u-results-secondary-button" id="resultExportButton">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 3v12"></path>
+                                    <path d="m8 11 4 4 4-4"></path>
+                                    <path d="M5 21h14"></path>
+                                </svg>
+                                Export CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="s4u-results-toolbar">
+                        <div class="s4u-results-search">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="m20 20-3.5-3.5"></path>
+                            </svg>
+                            <input
+                                type="search"
+                                id="resultSearchInput"
+                                placeholder="Search employee, employer, CCF, MRO..."
+                                autocomplete="off"
+                            >
+                        </div>
+
+                        <select id="resultOutcomeFilter" aria-label="Filter by result">
+                            <option value="">All results</option>
+                            <option value="negative">Negative</option>
+                            <option value="positive">Positive</option>
+                            <option value="refusal">Refusal</option>
+                            <option value="invalid">Invalid</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+
+                        <select id="resultTypeFilter" aria-label="Filter by test type">
+                            <option value="">All test types</option>
+                            <option value="drug">Drug Test</option>
+                            <option value="alcohol">Alcohol Test</option>
+                            <option value="drug_and_alcohol">Drug + Alcohol</option>
+                        </select>
+
+                        <select id="resultMroFilter" aria-label="Filter by MRO status">
+                            <option value="">All MRO statuses</option>
+                            <option value="__blank__">No MRO Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="verified">Verified</option>
+                            <option value="review_required">Review Required</option>
+                            <option value="completed">Completed</option>
+                        </select>
+
+                        <button type="button" class="s4u-results-filter-button" id="resultClearFilters">Clear</button>
+                    </div>
+
+                    <div class="s4u-results-table-wrap">
+                        <table class="s4u-results-table">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Employer</th>
+                                    <th>Test</th>
+                                    <th>Reason</th>
+                                    <th>Result</th>
+                                    <th>Result Date</th>
+                                    <th>MRO Status</th>
+                                    <th>Documents</th>
+                                    <th style="text-align:right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="testResultsTableBody">
+                                <tr>
+                                    <td colspan="9" style="padding:36px;text-align:center;color:#617087;">
+                                        Loading test results...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="s4u-results-empty" id="testResultsEmpty">
+                            <strong id="testResultsEmptyTitle">No test results found</strong>
+                            <span id="testResultsEmptyMessage">Add the first result or change your filters.</span>
+                        </div>
+                    </div>
+
+                    <div class="s4u-results-pagination">
+                        <div class="s4u-results-pagination-copy" id="testResultsPaginationCopy">Showing 0 records</div>
+
+                        <div class="s4u-results-pagination-buttons">
+                            <button type="button" class="s4u-results-page-button" id="testResultsPrevPage" disabled>Previous</button>
+                            <button type="button" class="s4u-results-page-button" id="testResultsCurrentPage" aria-current="page">1</button>
+                            <button type="button" class="s4u-results-page-button" id="testResultsNextPage" disabled>Next</button>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <!-- =====================================================
+         ADD / EDIT TEST RESULT MODAL
+    ====================================================== -->
+    <div class="s4u-results-modal-backdrop" id="testResultModalBackdrop" aria-hidden="true">
+        <section
+            class="s4u-results-modal"
+            id="testResultModal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="testResultModalTitle"
+        >
+            <div class="s4u-results-modal-header">
+                <div>
+                    <h2 id="testResultModalTitle">Add Test Result</h2>
+                    <p>Create or update the result record attached to a DOT test.</p>
+                </div>
+
+                <button type="button" class="s4u-results-modal-close" data-test-result-close aria-label="Close modal">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6 6 18"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="testResultForm">
+                <div class="s4u-results-modal-body">
+                    <div class="s4u-results-form-message" id="testResultFormMessage"></div>
+
+                    <input type="hidden" id="testResultRecordId">
+
+                    <div class="s4u-results-form-grid">
+                        <div class="s4u-results-field s4u-results-field--full">
+                            <label for="testResultTestId">DOT Test</label>
+                            <select id="testResultTestId" name="test_id" required>
+                                <option value="">Select DOT test</option>
+                            </select>
+                            <small>Choose the DOT test that this result belongs to.</small>
+                        </div>
+
+                        <div class="s4u-results-field">
+                            <label for="testResultEmployee">Employee</label>
+                            <input type="text" id="testResultEmployee" readonly>
+                        </div>
+
+                        <div class="s4u-results-field">
+                            <label for="testResultEmployer">Employer</label>
+                            <input type="text" id="testResultEmployer" readonly>
+                        </div>
+
+                        <div class="s4u-results-field">
+                            <label for="testResultOutcome">Result</label>
+                            <select id="testResultOutcome" name="result" required>
+                                <option value="">Select result</option>
+                                <option value="negative">Negative</option>
+                                <option value="positive">Positive</option>
+                                <option value="refusal">Refusal</option>
+                                <option value="invalid">Invalid</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+
+                        <div class="s4u-results-field">
+                            <label for="testResultDate">Result Date</label>
+                            <input type="datetime-local" id="testResultDate" name="result_date">
+                        </div>
+
+                        <div class="s4u-results-field">
+                            <label for="testResultSource">Result Source</label>
+                            <select id="testResultSource" name="source">
+                                <option value="">Not specified</option>
+                                <option value="admin_portal">Admin Portal</option>
+                                <option value="lab">Laboratory</option>
+                                <option value="mro">Medical Review Officer (MRO)</option>
+                                <option value="collection_site">Collection Site</option>
+                                <option value="import">Imported Record</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="s4u-results-field">
+                            <label for="testResultMroStatus">MRO Status</label>
+                            <select id="testResultMroStatus" name="mro_status">
+                                <option value="">Not set</option>
+                                <option value="pending">Pending Review</option>
+                                <option value="verified">Verified</option>
+                                <option value="not_required">Not Required</option>
+                            </select>
+                        </div>
+
+                        <div class="s4u-results-field">
+                            <label for="testResultMroName">MRO Name</label>
+                            <input type="text" id="testResultMroName" name="mro_name" placeholder="Medical Review Officer">
+                        </div>
+
+                        <div class="s4u-results-field">
+                            <label for="testResultVerifiedAt">Verified At</label>
+                            <input type="datetime-local" id="testResultVerifiedAt" name="verified_at">
+                        </div>
+
+                        <section class="s4u-result-detail-card" id="testResultDrugDetails">
+                            <div class="s4u-result-detail-header">
+                                <span>Drug Testing</span>
+                                <h3>Drug Result Details</h3>
+                                <p>Use normal form fields here. The page will convert these values to the database JSON format automatically.</p>
+                            </div>
+
+                            <div class="s4u-result-detail-grid">
+                                <div class="s4u-results-field">
+                                    <label for="testResultDrugPanel">Drug Panel</label>
+                                    <input
+                                        type="text"
+                                        id="testResultDrugPanel"
+                                        placeholder="e.g. DOT 5-panel"
+                                    >
+                                </div>
+
+                                <div class="s4u-results-field">
+                                    <label for="testResultDrugOutcome">Drug Result</label>
+                                    <select id="testResultDrugOutcome">
+                                        <option value="">Not specified</option>
+                                        <option value="negative">Negative</option>
+                                        <option value="positive">Positive</option>
+                                        <option value="refusal">Refusal</option>
+                                        <option value="invalid">Invalid</option>
+                                        <option value="cancelled">Cancelled</option>
+                                        <option value="not_reported">Not Reported</option>
+                                    </select>
+                                </div>
+
+                                <div class="s4u-results-field">
+                                    <label for="testResultDrugSpecimen">Specimen Type</label>
+                                    <select id="testResultDrugSpecimen">
+                                        <option value="">Not specified</option>
+                                        <option value="urine">Urine</option>
+                                        <option value="oral_fluid">Oral Fluid</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="s4u-results-field">
+                                    <label for="testResultDrugLab">Laboratory / Detail</label>
+                                    <input
+                                        type="text"
+                                        id="testResultDrugLab"
+                                        placeholder="Laboratory name or drug-test detail"
+                                    >
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="s4u-result-detail-card" id="testResultAlcoholDetails">
+                            <div class="s4u-result-detail-header">
+                                <span>Alcohol Testing</span>
+                                <h3>Alcohol Result Details</h3>
+                                <p>Enter the result normally. The page stores the values in the existing alcohol_result JSON column for you.</p>
+                            </div>
+
+                            <div class="s4u-result-detail-grid">
+                                <div class="s4u-results-field">
+                                    <label for="testResultAlcoholOutcome">Alcohol Result</label>
+                                    <select id="testResultAlcoholOutcome">
+                                        <option value="">Not specified</option>
+                                        <option value="negative">Negative</option>
+                                        <option value="positive">Positive</option>
+                                        <option value="below_002">Below 0.02</option>
+                                        <option value="002_to_0039">0.02 – 0.039</option>
+                                        <option value="004_or_higher">0.04 or Higher</option>
+                                        <option value="refusal">Refusal</option>
+                                        <option value="invalid">Invalid</option>
+                                        <option value="cancelled">Cancelled</option>
+                                        <option value="not_reported">Not Reported</option>
+                                    </select>
+                                </div>
+
+                                <div class="s4u-results-field">
+                                    <label for="testResultAlcoholConcentration">Alcohol Concentration</label>
+                                    <input
+                                        type="number"
+                                        id="testResultAlcoholConcentration"
+                                        min="0"
+                                        max="1"
+                                        step="0.001"
+                                        placeholder="e.g. 0.000"
+                                    >
+                                </div>
+
+                                <div class="s4u-results-field">
+                                    <label for="testResultAlcoholDevice">Testing Device</label>
+                                    <input
+                                        type="text"
+                                        id="testResultAlcoholDevice"
+                                        placeholder="EBT/device name or serial"
+                                    >
+                                </div>
+
+                                <div class="s4u-results-field">
+                                    <label for="testResultAlcoholConfirmation">Confirmation Detail</label>
+                                    <input
+                                        type="text"
+                                        id="testResultAlcoholConfirmation"
+                                        placeholder="Confirmation test or notes"
+                                    >
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="s4u-results-field s4u-results-field--full">
+                            <label for="testResultNotes">Notes</label>
+                            <textarea id="testResultNotes" name="notes" placeholder="Add result notes, verification notes, or follow-up instructions..."></textarea>
+                        </div>
+
+                        <div class="s4u-results-field s4u-results-field--full">
+                            <section class="s4u-result-documents" id="testResultDocumentsSection">
+                                <div class="s4u-result-documents-header">
+                                    <div>
+                                        <span class="s4u-result-documents-kicker">PRIVATE DOCUMENTS</span>
+                                        <h3>Result Documents</h3>
+                                        <p>
+                                            Upload the lab report, CCF, MRO report, or supporting result document.
+                                            The storage bucket is private and access is controlled by the selected recipient.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="s4u-result-document-locked" id="testResultDocumentsLocked">
+                                    Document upload is available when editing a saved test result.
+                                </div>
+
+                                <div class="s4u-result-document-manager" id="testResultDocumentManager" hidden>
+                                    <div class="s4u-result-document-upload-grid">
+                                        <div class="s4u-results-field">
+                                            <label for="testResultDocumentType">Document Type</label>
+                                            <select id="testResultDocumentType">
+                                                <option value="lab_result">Lab Result</option>
+                                                <option value="ccf">CCF / Custody Form</option>
+                                                <option value="mro_report">MRO Report</option>
+                                                <option value="alcohol_result">Alcohol Result</option>
+                                                <option value="other">Other Document</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="s4u-results-field">
+                                            <label for="testResultDocumentVisibility">Who Can See It?</label>
+                                            <select id="testResultDocumentVisibility">
+                                                <option value="employee">Employee / Customer Only</option>
+                                                <option value="employer">Employer Only</option>
+                                                <option value="both">Employee / Customer + Employer</option>
+                                            </select>
+                                            <small id="testResultDocumentVisibilityHelp">
+                                                Employee / Customer Only means only the individual attached to this DOT test can access the file.
+                                            </small>
+                                        </div>
+
+                                        <div class="s4u-results-field s4u-results-field--full">
+                                            <label for="testResultDocumentFile">Choose Result Document</label>
+                                            <input
+                                                type="file"
+                                                id="testResultDocumentFile"
+                                                accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp"
+                                            >
+                                            <small>PDF, JPG, PNG, or WEBP. Maximum file size: 25 MB.</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="s4u-result-document-upload-actions">
+                                        <button
+                                            type="button"
+                                            class="s4u-results-primary-button"
+                                            id="testResultUploadDocument"
+                                        >
+                                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                <path d="M12 16V4"></path>
+                                                <path d="m7 9 5-5 5 5"></path>
+                                                <path d="M5 20h14"></path>
+                                            </svg>
+                                            Upload Document
+                                        </button>
+                                    </div>
+
+                                    <div class="s4u-result-document-message" id="testResultDocumentMessage"></div>
+
+                                    <div class="s4u-result-document-list" id="testResultDocumentList">
+                                        <div class="s4u-result-document-empty">No documents uploaded for this result.</div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="s4u-results-modal-footer">
+                    <button type="button" class="s4u-results-secondary-button" data-test-result-close>Cancel</button>
+                    <button type="submit" class="s4u-results-primary-button">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 12l4 4L19 6"></path>
+                        </svg>
+                        Save Test Result
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/core-auth.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/session-security.js"></script>
+    <script src="assets/js/portal-auth-guard.js"></script>
+    <script src="assets/js/admin-auth-guard.js"></script>
+    <script src="assets/js/admin-lms-sidebar.js"></script>
+    <script src="assets/js/admin-test-results.js"></script>
+</body>
+</html>

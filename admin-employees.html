@@ -1,23 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Employees | screenings4u Management Portal</title>
 
-    <link rel="stylesheet" href="assets/css/admin-lms.css">
-    <link rel="stylesheet" href="assets/css/admin-employees.css">
+    <link
+        rel="stylesheet"
+        href="assets/css/admin-lms.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="assets/css/admin-employees.css"
+    >
 </head>
 
 <body>
 
     <div class="admin-lms-app">
 
-        <!-- Shared sidebar rendered by admin-lms-sidebar.js -->
+        <!-- Sidebar rendered by admin-lms-sidebar.js -->
         <div id="admin-lms-sidebar-target"></div>
 
+
         <main class="admin-lms-main">
+
 
             <!-- =====================================================
                  TOPBAR
@@ -33,71 +47,252 @@
                         aria-label="Collapse sidebar"
                         aria-expanded="true"
                     >
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
                             <path d="M15 18l-6-6 6-6"></path>
                         </svg>
                     </button>
 
+
                     <div class="admin-lms-page-context">
-                        <small>Employer Management</small>
-                        <strong>Employees</strong>
+
+                        <small>
+                            screenings4u Management Portal
+                        </small>
+
+                        <strong>
+                            Employees
+                        </strong>
+
                     </div>
 
                 </div>
+
 
                 <div class="admin-lms-topbar-right">
 
                     <a
                         href="admin-notifications.html"
-                        class="admin-lms-notification-button"
+                        class="admin-lms-icon-button"
                         aria-label="Notifications"
                     >
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
-                            <path d="M10 21h4"></path>
+                        <svg viewBox="0 0 24 24">
+
+                            <path
+                                d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+                            ></path>
+
+                            <path
+                                d="M10 21h4"
+                            ></path>
+
                         </svg>
                     </a>
 
-                    <div
-                        class="admin-lms-user-menu"
-                        data-admin-user-menu
-                    >
+
+                    <!-- =================================================
+                         USER DROPDOWN
+                    ================================================== -->
+                    <div class="admin-user-dropdown">
+
                         <button
                             type="button"
-                            class="admin-lms-user-trigger"
-                            data-admin-user-trigger
+                            class="admin-user-dropdown-toggle"
+                            data-admin-user-menu-toggle
                             aria-expanded="false"
                         >
+
                             <span
-                                class="admin-lms-user-avatar"
+                                class="admin-lms-avatar"
                                 data-admin-user-initials
                             >
                                 AD
                             </span>
 
-                            <span class="admin-lms-user-details">
-                                <strong data-admin-user-name>Administrator</strong>
-                                <small data-admin-user-role>System Administrator</small>
+
+                            <span class="admin-lms-user-copy">
+
+                                <span
+                                    class="admin-lms-user-name"
+                                    data-admin-user-name
+                                >
+                                    Administrator
+                                </span>
+
+
+                                <span
+                                    class="admin-lms-user-role"
+                                    data-admin-user-role
+                                >
+                                    System Administrator
+                                </span>
+
                             </span>
 
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="m6 9 6 6 6-6"></path>
-                            </svg>
+
+                            <span class="admin-user-dropdown-chevron">
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="m6 9 6 6 6-6"
+                                    ></path>
+                                </svg>
+
+                            </span>
+
                         </button>
 
+
                         <div
-                            class="admin-lms-user-dropdown"
-                            data-admin-user-dropdown
+                            class="admin-user-dropdown-menu"
+                            data-admin-user-menu
                         >
-                            <a href="admin-account.html">My Account</a>
+
+                            <div class="admin-user-dropdown-header">
+
+                                <strong
+                                    data-admin-user-name
+                                >
+                                    Administrator
+                                </strong>
+
+                                <span
+                                    data-admin-user-role
+                                >
+                                    System Administrator
+                                </span>
+
+                            </div>
+
+
+                            <a
+                                href="../index.html"
+                                class="admin-user-dropdown-item"
+                            >
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <circle
+                                        cx="12"
+                                        cy="12"
+                                        r="9"
+                                    ></circle>
+
+                                    <path
+                                        d="M3 12h18"
+                                    ></path>
+
+                                    <path
+                                        d="M12 3a14 14 0 0 1 0 18"
+                                    ></path>
+
+                                    <path
+                                        d="M12 3a14 14 0 0 0 0 18"
+                                    ></path>
+                                </svg>
+
+                                <span>
+                                    Visit Main Website
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="admin-account-access.html"
+                                class="admin-user-dropdown-item"
+                            >
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <circle
+                                        cx="12"
+                                        cy="8"
+                                        r="4"
+                                    ></circle>
+
+                                    <path
+                                        d="M4 21c1-4.5 3.7-7 8-7s7 2.5 8 7"
+                                    ></path>
+                                </svg>
+
+                                <span>
+                                    Account Access
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="admin-accounts.html"
+                                class="admin-user-dropdown-item"
+                            >
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M4 19V5h16v14z"
+                                    ></path>
+
+                                    <path
+                                        d="M8 9h8M8 13h5"
+                                    ></path>
+                                </svg>
+
+                                <span>
+                                    My Account
+                                </span>
+
+                            </a>
+
+
+                            <div
+                                class="admin-user-dropdown-divider"
+                            ></div>
+
 
                             <button
                                 type="button"
+                                class="admin-user-dropdown-item admin-user-logout"
                                 data-admin-logout
                             >
-                                Sign Out
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M10 17l5-5-5-5"
+                                    ></path>
+
+                                    <path
+                                        d="M15 12H3"
+                                    ></path>
+
+                                    <path
+                                        d="M21 19V5"
+                                    ></path>
+                                </svg>
+
+                                <span>
+                                    Logout
+                                </span>
+
                             </button>
+
                         </div>
+
                     </div>
 
                 </div>
@@ -106,24 +301,30 @@
 
 
             <!-- =====================================================
-                 PAGE CONTENT
+                 EMPLOYEES PAGE
             ====================================================== -->
             <section class="admin-employees-page">
+
 
                 <div class="employees-heading">
 
                     <div>
+
                         <div class="employees-kicker">
                             EMPLOYER MANAGEMENT
                         </div>
 
-                        <h1>Employees</h1>
+                        <h1>
+                            Employees
+                        </h1>
 
                         <p>
                             Manage employer employee records, DOT status,
                             workforce details, and employment information.
                         </p>
+
                     </div>
+
 
                     <button
                         type="button"
@@ -142,23 +343,62 @@
                 <section class="employees-metrics">
 
                     <article class="employees-metric-card">
-                        <span>Total Employees</span>
-                        <strong data-employee-metric="total">—</strong>
+
+                        <span>
+                            Total Employees
+                        </span>
+
+                        <strong
+                            data-employee-metric="total"
+                        >
+                            —
+                        </strong>
+
                     </article>
 
-                    <article class="employees-metric-card">
-                        <span>Active Employees</span>
-                        <strong data-employee-metric="active">—</strong>
-                    </article>
 
                     <article class="employees-metric-card">
-                        <span>DOT Regulated</span>
-                        <strong data-employee-metric="dot">—</strong>
+
+                        <span>
+                            Active Employees
+                        </span>
+
+                        <strong
+                            data-employee-metric="active"
+                        >
+                            —
+                        </strong>
+
                     </article>
 
+
                     <article class="employees-metric-card">
-                        <span>Inactive Employees</span>
-                        <strong data-employee-metric="inactive">—</strong>
+
+                        <span>
+                            DOT Regulated
+                        </span>
+
+                        <strong
+                            data-employee-metric="dot"
+                        >
+                            —
+                        </strong>
+
+                    </article>
+
+
+                    <article class="employees-metric-card">
+
+                        <span>
+                            Inactive Employees
+                        </span>
+
+                        <strong
+                            data-employee-metric="inactive"
+                        >
+                            —
+                        </strong>
+
                     </article>
 
                 </section>
@@ -169,34 +409,72 @@
                 ================================================== -->
                 <section class="employees-panel">
 
+
                     <div class="employees-toolbar">
 
+
                         <div class="employees-search">
+
                             <input
                                 type="search"
                                 id="employeeSearch"
                                 placeholder="Search name, email, employee number, or CDL..."
                                 autocomplete="off"
                             >
+
                         </div>
 
+
                         <select id="employeeEmployerFilter">
-                            <option value="">All Employers</option>
+
+                            <option value="">
+                                All Employers
+                            </option>
+
                         </select>
+
 
                         <select id="employeeStatusFilter">
-                            <option value="">All Statuses</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                            <option value="terminated">Terminated</option>
-                            <option value="leave">On Leave</option>
+
+                            <option value="">
+                                All Statuses
+                            </option>
+
+                            <option value="active">
+                                Active
+                            </option>
+
+                            <option value="inactive">
+                                Inactive
+                            </option>
+
+                            <option value="terminated">
+                                Terminated
+                            </option>
+
+                            <option value="leave">
+                                On Leave
+                            </option>
+
                         </select>
 
+
                         <select id="employeeDotFilter">
-                            <option value="">All Employees</option>
-                            <option value="true">DOT Regulated</option>
-                            <option value="false">Non-DOT</option>
+
+                            <option value="">
+                                All Employees
+                            </option>
+
+                            <option value="true">
+                                DOT Regulated
+                            </option>
+
+                            <option value="false">
+                                Non-DOT
+                            </option>
+
                         </select>
+
 
                         <button
                             type="button"
@@ -206,6 +484,7 @@
                             Refresh
                         </button>
 
+
                     </div>
 
 
@@ -214,7 +493,9 @@
                         <table class="employees-table">
 
                             <thead>
+
                                 <tr>
+
                                     <th>Employee</th>
                                     <th>Employer</th>
                                     <th>Employee #</th>
@@ -222,18 +503,23 @@
                                     <th>DOT / CDL</th>
                                     <th>Status</th>
                                     <th></th>
+
                                 </tr>
+
                             </thead>
+
 
                             <tbody id="employeesTableBody">
 
                                 <tr>
+
                                     <td
                                         colspan="7"
                                         class="employees-loading"
                                     >
                                         Loading employees...
                                     </td>
+
                                 </tr>
 
                             </tbody>
@@ -250,6 +536,7 @@
                         </span>
 
                     </div>
+
 
                 </section>
 
@@ -277,4 +564,5 @@
     <script src="assets/js/admin-employees.js"></script>
 
 </body>
+
 </html>

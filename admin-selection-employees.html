@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Selection Employees | screenings4u Management Portal</title>
+<link rel="stylesheet" href="assets/css/admin-lms.css">
+<style>
+:root{--se-blue:#173d78;--se-blue2:#214f91;--se-orange:#ff6b00;--se-text:#263246;--se-muted:#6d7888;--se-line:#dfe5ec;--se-bg:#f5f7fa;--se-ok:#18794e;--se-warn:#a15c00;--se-bad:#b42318}
+*{box-sizing:border-box}.se-page{padding:28px;background:var(--se-bg);min-height:calc(100vh - 72px);color:var(--se-text)}
+.se-heading,.se-panel-head,.se-pagination,.se-actions{display:flex;align-items:center}.se-heading{justify-content:space-between;gap:22px;margin-bottom:22px}.se-heading h1{margin:4px 0 6px;color:var(--se-blue);font-size:36px;line-height:1.05}.se-heading p,.se-panel-head p{margin:0;color:var(--se-muted);font-size:13px;line-height:1.55;max-width:780px}.se-kicker{display:block;color:var(--se-orange);font-size:10px;font-weight:900;letter-spacing:.12em}.se-heading-actions,.se-actions{gap:8px;flex-wrap:wrap}
+.se-btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 14px;border:1px solid #cfd7e2;border-radius:7px;background:#fff;color:var(--se-blue);font:800 11px/1 Arial,sans-serif;text-decoration:none;cursor:pointer}.se-btn:hover{border-color:#aebdce}.se-btn.primary{background:var(--se-blue);border-color:var(--se-blue);color:#fff}.se-btn.orange{background:var(--se-orange);border-color:var(--se-orange);color:#fff}
+.se-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}.se-metric{background:#fff;border:1px solid var(--se-line);border-radius:9px;padding:17px 18px;box-shadow:0 2px 8px rgba(23,61,120,.035)}.se-metric span{display:block;color:var(--se-muted);font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}.se-metric strong{display:block;margin:8px 0 4px;color:var(--se-blue);font-size:27px}.se-metric small{color:#8b95a3;font-size:9px}
+.se-panel{background:#fff;border:1px solid var(--se-line);border-radius:9px;overflow:hidden;box-shadow:0 2px 10px rgba(23,61,120,.035)}.se-panel-head{justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid var(--se-line)}.se-panel-head h2{margin:3px 0 4px;color:var(--se-blue);font-size:18px}
+.se-toolbar{display:grid;grid-template-columns:minmax(240px,1.5fr) repeat(5,minmax(120px,.7fr)) auto;gap:9px;padding:14px 16px;background:#fbfcfe;border-bottom:1px solid var(--se-line)}.se-toolbar input,.se-toolbar select{width:100%;height:38px;border:1px solid #d4dce6;border-radius:7px;background:#fff;padding:0 10px;color:var(--se-text);font-size:11px;outline:none}.se-toolbar input:focus,.se-toolbar select:focus{border-color:#8aa7cb;box-shadow:0 0 0 3px rgba(23,61,120,.07)}
+.se-table-wrap{overflow:auto}.se-table{width:100%;border-collapse:collapse;min-width:1180px}.se-table th{padding:11px 12px;background:#f8fafc;border-bottom:1px solid var(--se-line);color:#657286;font-size:9px;text-align:left;text-transform:uppercase;letter-spacing:.045em;white-space:nowrap}.se-table td{padding:12px;border-bottom:1px solid #edf0f4;font-size:10px;vertical-align:middle}.se-table tbody tr:hover{background:#fbfcff}.se-name strong{display:block;color:var(--se-blue);font-size:11px}.se-name small,.se-sub{display:block;margin-top:3px;color:var(--se-muted);font-size:8px;line-height:1.35}.se-badge{display:inline-flex;align-items:center;min-height:23px;padding:0 8px;border-radius:999px;background:#eef4fb;color:var(--se-blue);font-size:8px;font-weight:900;text-transform:uppercase;white-space:nowrap}.se-badge.ok{background:#edf8f2;color:var(--se-ok)}.se-badge.warn{background:#fff6e8;color:var(--se-warn)}.se-badge.orange{background:#fff2e8;color:#b44b00}.se-badge.gray{background:#f1f3f5;color:#697586}
+.se-row-actions{display:flex;gap:6px;white-space:nowrap}.se-row-btn{border:1px solid #d3dbe5;border-radius:6px;background:#fff;color:var(--se-blue);padding:7px 9px;font-size:8px;font-weight:900;text-decoration:none;cursor:pointer}.se-row-btn.notify{border-color:#ffd0ad;color:#c34f00;background:#fff8f2}
+.se-pagination{justify-content:space-between;gap:12px;padding:13px 16px;color:var(--se-muted);font-size:9px}.se-pagination-nav{display:flex;align-items:center;gap:7px}.se-pagination button{height:31px;border:1px solid #d5dde6;border-radius:6px;background:#fff;color:var(--se-blue);font-size:9px;font-weight:900;padding:0 10px}.se-pagination button:disabled{opacity:.45}
+.se-loading,.se-empty,.se-error{text-align:center!important;padding:30px!important;color:var(--se-muted)!important}.se-error{color:var(--se-bad)!important}
+.se-modal-bg{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(12,25,45,.52)}.se-modal-bg.open{display:flex}.se-modal{width:min(760px,calc(100vw - 30px));max-height:calc(100vh - 40px);overflow:auto;background:#fff;border-radius:10px;box-shadow:0 24px 70px rgba(0,0,0,.25)}.se-modal-head{display:flex;justify-content:space-between;gap:15px;padding:20px 22px;border-bottom:1px solid var(--se-line)}.se-modal-head h2{margin:3px 0;color:var(--se-blue);font-size:20px}.se-modal-close{border:0;background:#f1f4f8;color:var(--se-blue);width:34px;height:34px;border-radius:7px;font-size:20px;cursor:pointer}.se-modal-body{padding:20px 22px}.se-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.se-detail{padding:12px;border:1px solid #e4e9ef;border-radius:7px;background:#fbfcfe}.se-detail span{display:block;color:var(--se-muted);font-size:8px;font-weight:900;text-transform:uppercase}.se-detail strong{display:block;margin-top:5px;color:var(--se-blue);font-size:11px}.se-modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:15px 22px;border-top:1px solid var(--se-line)}
+@media(max-width:1180px){.se-metrics{grid-template-columns:repeat(2,1fr)}.se-toolbar{grid-template-columns:repeat(3,1fr)}.se-toolbar input{grid-column:1/-1}}
+@media(max-width:760px){.se-page{padding:18px}.se-heading,.se-panel-head,.se-pagination,.se-modal-foot{flex-direction:column;align-items:stretch}.se-heading h1{font-size:31px}.se-metrics,.se-toolbar,.se-detail-grid{grid-template-columns:1fr}.se-btn{width:100%}}
+</style>
+</head>
+<body class="admin-selection-employees-page">
+<div class="admin-lms-app">
+<div id="admin-lms-sidebar-target"></div>
+<main class="admin-lms-main">
+<header class="admin-lms-topbar">
+<div class="admin-lms-topbar-left">
+<button type="button" class="admin-lms-sidebar-collapse" data-admin-sidebar-collapse aria-label="Collapse sidebar" aria-expanded="true"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"></path></svg></button>
+<div class="admin-lms-page-context"><small>Random Testing</small><strong>Selection Employees</strong></div>
+</div>
+<div class="admin-lms-topbar-right">
+<a href="admin-notifications.html" class="admin-lms-icon-button" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg></a>
+<div class="admin-user-dropdown">
+<button type="button" class="admin-user-dropdown-toggle" data-admin-user-menu-toggle aria-expanded="false"><span class="admin-lms-avatar">AD</span><span class="admin-lms-user-copy"><span class="admin-lms-user-name">Administrator</span><span class="admin-lms-user-role">System Administrator</span></span><span class="admin-user-dropdown-chevron"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span></button>
+<div class="admin-user-dropdown-menu" data-admin-user-menu>
+<div class="admin-user-dropdown-header"><strong>Administrator</strong><span>System Administrator</span></div>
+<a href="../index.html" class="admin-user-dropdown-item"><span>Visit Main Website</span></a>
+<a href="admin-account-access.html" class="admin-user-dropdown-item"><span>Account Access</span></a>
+<a href="admin-accounts.html" class="admin-user-dropdown-item"><span>My Account</span></a>
+<div class="admin-user-dropdown-divider"></div>
+<button type="button" class="admin-user-dropdown-item admin-user-logout" data-admin-logout><span>Logout</span></button>
+</div></div></div>
+</header>
+
+<section class="se-page">
+<header class="se-heading">
+<div><span class="se-kicker">RANDOM TESTING</span><h1>Selection Employees</h1><p>Review every employee selected for random testing across all programs, employers, periods, and testing types from one live registry.</p></div>
+<div class="se-heading-actions">
+<a class="se-btn" href="admin-random-programs.html">Random Programs</a>
+<a class="se-btn" href="admin-random-selections.html">Random Selections</a>
+<button class="se-btn primary" id="seRefresh" type="button">Refresh</button>
+</div>
+</header>
+
+<section class="se-metrics">
+<article class="se-metric"><span>Total Selected</span><strong id="seMetricTotal">—</strong><small>All selection employee records</small></article>
+<article class="se-metric"><span>Awaiting Completion</span><strong id="seMetricPending">—</strong><small>Currently selected / open</small></article>
+<article class="se-metric"><span>Completed</span><strong id="seMetricCompleted">—</strong><small>Completed selection records</small></article>
+<article class="se-metric"><span>Employer Notified</span><strong id="seMetricNotified">—</strong><small>Records with notification timestamp</small></article>
+</section>
+
+<section class="se-panel">
+<header class="se-panel-head">
+<div><span class="se-kicker">SELECTION REGISTRY</span><h2>Selected Employees</h2><p>Live data from random selection employee records joined with selections, programs, employers, and employees.</p></div>
+</header>
+<div class="se-toolbar">
+<input id="seSearch" type="search" placeholder="Search employee, employer, employee #, program...">
+<select id="seProgram"><option value="">All programs</option></select>
+<select id="seYear"><option value="">All years</option></select>
+<select id="sePeriod"><option value="">All periods</option></select>
+<select id="seType"><option value="">All test types</option><option value="drug">Drug</option><option value="alcohol">Alcohol</option></select>
+<select id="seStatus"><option value="">All statuses</option></select>
+<button class="se-btn" id="seClear" type="button">Clear</button>
+</div>
+<div class="se-table-wrap">
+<table class="se-table">
+<thead><tr><th>Employee</th><th>Employer</th><th>Program / Period</th><th>Test Type</th><th>Status</th><th>Selected</th><th>Notified</th><th>Completed</th><th>Actions</th></tr></thead>
+<tbody id="seTableBody"><tr><td colspan="9" class="se-loading">Loading selected employees...</td></tr></tbody>
+</table>
+</div>
+<div class="se-pagination">
+<span id="seResults">Loading...</span>
+<div class="se-pagination-nav"><button id="sePrevious" type="button">Previous</button><strong id="sePage">1</strong><button id="seNext" type="button">Next</button></div>
+</div>
+</section>
+</section>
+</main>
+</div>
+
+<div class="se-modal-bg" id="seDetailsBackdrop" aria-hidden="true">
+<div class="se-modal" role="dialog" aria-modal="true" aria-labelledby="seDetailsTitle">
+<header class="se-modal-head"><div><span class="se-kicker">SELECTION EMPLOYEE</span><h2 id="seDetailsTitle">Selection Details</h2></div><button class="se-modal-close" type="button" data-se-close aria-label="Close">×</button></header>
+<div class="se-modal-body"><div class="se-detail-grid">
+<div class="se-detail"><span>Employee</span><strong id="seDetailEmployee">—</strong></div>
+<div class="se-detail"><span>Employee Number</span><strong id="seDetailNumber">—</strong></div>
+<div class="se-detail"><span>Employer</span><strong id="seDetailEmployer">—</strong></div>
+<div class="se-detail"><span>Program</span><strong id="seDetailProgram">—</strong></div>
+<div class="se-detail"><span>Selection Period</span><strong id="seDetailPeriod">—</strong></div>
+<div class="se-detail"><span>Selection Type</span><strong id="seDetailType">—</strong></div>
+<div class="se-detail"><span>Status</span><strong id="seDetailStatus">—</strong></div>
+<div class="se-detail"><span>Selected At</span><strong id="seDetailSelected">—</strong></div>
+<div class="se-detail"><span>Employer Notified</span><strong id="seDetailNotified">—</strong></div>
+<div class="se-detail"><span>Completed At</span><strong id="seDetailCompleted">—</strong></div>
+</div></div>
+<footer class="se-modal-foot"><a class="se-btn" id="seViewSelection" href="admin-random-selections.html">Random Selection</a><a class="se-btn orange" id="seNotifyEmployer" href="random-selection-notify.html">Notify Employer</a><button class="se-btn primary" type="button" data-se-close>Close</button></footer>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/core-auth.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/session-security.js"></script>
+<script src="assets/js/portal-auth-guard.js"></script>
+<script src="assets/js/admin-auth-guard.js"></script>
+<script src="assets/js/admin-lms-sidebar.js"></script>
+<script src="assets/js/admin-selection-employees.js"></script>
+</body>
+</html>

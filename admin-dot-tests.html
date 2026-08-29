@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOT Tests | screenings4u Management Portal</title>
+    <link rel="stylesheet" href="assets/css/admin-lms.css">
+
+    <style>
+        /* ============================================================
+           screenings4u — ADMIN DOT TESTS
+           Page-only styling. Uses the same colors/card language as
+           the administration dashboard without changing shared CSS.
+           ============================================================ */
+
+        .admin-dot-tests-page {
+            --dot-blue: var(--dashboard-blue, #173d78);
+            --dot-blue-light: var(--dashboard-blue-light, #325aa3);
+            --dot-orange: var(--dashboard-orange, #ff6b00);
+            --dot-orange-hover: var(--dashboard-orange-hover, #e86000);
+            --dot-bg: var(--dashboard-bg, #f5f7fa);
+            --dot-card: var(--dashboard-card, #ffffff);
+            --dot-line: var(--dashboard-line, #e1e7ef);
+            --dot-line-soft: var(--dashboard-line-soft, #edf0f4);
+            --dot-muted: var(--dashboard-muted, #617087);
+            --dot-text: var(--dashboard-text, #172033);
+            --dot-success: var(--dashboard-success, #16804d);
+            --dot-warning: #b7791f;
+            --dot-danger: #c53030;
+            --dot-info: #2b6cb0;
+        }
+
+        .admin-dot-tests-page .admin-lms-main {
+            min-width: 0;
+            background: var(--dot-bg);
+        }
+
+        .admin-dot-tests-page .s4u-dot-page,
+        .admin-dot-tests-page .s4u-dot-page *,
+        .admin-dot-tests-page .s4u-dot-page *::before,
+        .admin-dot-tests-page .s4u-dot-page *::after,
+        .admin-dot-tests-page .s4u-dot-modal,
+        .admin-dot-tests-page .s4u-dot-modal *,
+        .admin-dot-tests-page .s4u-dot-modal *::before,
+        .admin-dot-tests-page .s4u-dot-modal *::after {
+            box-sizing: border-box;
+        }
+
+        .admin-dot-tests-page .s4u-dot-page {
+            width: 100%;
+            min-width: 0;
+            padding: 28px;
+        }
+
+        /* PAGE HEADING */
+        .admin-dot-tests-page .s4u-dot-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .admin-dot-tests-page .s4u-dot-heading-copy {
+            min-width: 0;
+        }
+
+        .admin-dot-tests-page .s4u-dot-kicker {
+            margin: 0 0 8px;
+            color: var(--dot-orange);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .admin-dot-tests-page .s4u-dot-heading h1 {
+            margin: 0 0 8px;
+            color: var(--dot-blue);
+            font-size: 38px;
+            line-height: 1.05;
+            font-weight: 900;
+            letter-spacing: -.04em;
+        }
+
+        .admin-dot-tests-page .s4u-dot-heading p {
+            max-width: 760px;
+            margin: 0;
+            color: var(--dot-muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .admin-dot-tests-page .s4u-dot-primary-button,
+        .admin-dot-tests-page .s4u-dot-secondary-button,
+        .admin-dot-tests-page .s4u-dot-danger-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
+        }
+
+        .admin-dot-tests-page .s4u-dot-primary-button {
+            border: 1px solid var(--dot-orange);
+            background: var(--dot-orange);
+            color: #fff;
+            box-shadow: 0 7px 16px rgba(255, 107, 0, .14);
+        }
+
+        .admin-dot-tests-page .s4u-dot-primary-button:hover {
+            transform: translateY(-1px);
+            background: var(--dot-orange-hover);
+            border-color: var(--dot-orange-hover);
+        }
+
+        .admin-dot-tests-page .s4u-dot-primary-button svg,
+        .admin-dot-tests-page .s4u-dot-secondary-button svg,
+        .admin-dot-tests-page .s4u-dot-danger-button svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .admin-dot-tests-page .s4u-dot-secondary-button {
+            border: 1px solid var(--dot-line);
+            background: #fff;
+            color: var(--dot-blue);
+        }
+
+        .admin-dot-tests-page .s4u-dot-secondary-button:hover {
+            border-color: #c8d3e0;
+            background: #f9fbfd;
+        }
+
+        .admin-dot-tests-page .s4u-dot-danger-button {
+            border: 1px solid #fed7d7;
+            background: #fff5f5;
+            color: var(--dot-danger);
+        }
+
+        /* METRICS */
+        .admin-dot-tests-page .s4u-dot-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .admin-dot-tests-page .s4u-dot-metric-card {
+            min-width: 0;
+            padding: 19px;
+            border: 1px solid var(--dot-line);
+            border-radius: 10px;
+            background: var(--dot-card);
+            box-shadow: 0 4px 14px rgba(20, 48, 82, .04);
+        }
+
+        .admin-dot-tests-page .s4u-dot-metric-card > span {
+            display: block;
+            color: var(--dot-muted);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .admin-dot-tests-page .s4u-dot-metric-card > strong {
+            display: block;
+            margin-top: 8px;
+            color: var(--dot-blue);
+            font-size: 31px;
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -.035em;
+        }
+
+        .admin-dot-tests-page .s4u-dot-metric-card > small {
+            display: block;
+            margin-top: 9px;
+            color: var(--dot-muted);
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        /* MAIN PANEL */
+        .admin-dot-tests-page .s4u-dot-panel {
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid var(--dot-line);
+            border-radius: 10px;
+            background: var(--dot-card);
+            box-shadow: 0 4px 14px rgba(20, 48, 82, .04);
+        }
+
+        .admin-dot-tests-page .s4u-dot-panel-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--dot-line);
+        }
+
+        .admin-dot-tests-page .s4u-dot-panel-kicker {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--dot-orange);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .admin-dot-tests-page .s4u-dot-panel-header h2 {
+            margin: 0;
+            color: var(--dot-blue);
+            font-size: 16px;
+            line-height: 1.25;
+            font-weight: 900;
+        }
+
+        .admin-dot-tests-page .s4u-dot-panel-header p {
+            margin: 5px 0 0;
+            color: var(--dot-muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .admin-dot-tests-page .s4u-dot-panel-actions {
+            display: flex;
+            gap: 8px;
+            flex: 0 0 auto;
+        }
+
+        /* TOOLBAR */
+        .admin-dot-tests-page .s4u-dot-toolbar {
+            display: grid;
+            grid-template-columns: minmax(240px, 1fr) repeat(3, minmax(150px, 190px)) auto;
+            gap: 10px;
+            align-items: center;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--dot-line-soft);
+            background: #fbfcfe;
+        }
+
+        .admin-dot-tests-page .s4u-dot-search {
+            position: relative;
+            min-width: 0;
+        }
+
+        .admin-dot-tests-page .s4u-dot-search svg {
+            position: absolute;
+            top: 50%;
+            left: 13px;
+            width: 16px;
+            height: 16px;
+            transform: translateY(-50%);
+            fill: none;
+            stroke: #7a8798;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            pointer-events: none;
+        }
+
+        .admin-dot-tests-page .s4u-dot-search input,
+        .admin-dot-tests-page .s4u-dot-toolbar select,
+        .admin-dot-tests-page .s4u-dot-field input,
+        .admin-dot-tests-page .s4u-dot-field select,
+        .admin-dot-tests-page .s4u-dot-field textarea {
+            width: 100%;
+            border: 1px solid var(--dot-line);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--dot-text);
+            font: inherit;
+            font-size: 12px;
+            outline: none;
+            transition: border-color .18s ease, box-shadow .18s ease;
+        }
+
+        .admin-dot-tests-page .s4u-dot-search input {
+            min-height: 40px;
+            padding: 10px 12px 10px 38px;
+        }
+
+        .admin-dot-tests-page .s4u-dot-toolbar select {
+            min-height: 40px;
+            padding: 9px 34px 9px 11px;
+        }
+
+        .admin-dot-tests-page .s4u-dot-search input:focus,
+        .admin-dot-tests-page .s4u-dot-toolbar select:focus,
+        .admin-dot-tests-page .s4u-dot-field input:focus,
+        .admin-dot-tests-page .s4u-dot-field select:focus,
+        .admin-dot-tests-page .s4u-dot-field textarea:focus {
+            border-color: #8fa8cf;
+            box-shadow: 0 0 0 3px rgba(50, 90, 163, .10);
+        }
+
+        .admin-dot-tests-page .s4u-dot-field input[readonly],
+        .admin-dot-tests-page .s4u-dot-field select:disabled {
+            background: #f7f9fc;
+            color: #6d7a8d;
+            cursor: not-allowed;
+        }
+
+        .admin-dot-tests-page .s4u-dot-filter-button {
+            min-height: 40px;
+            padding: 9px 13px;
+            border: 1px solid var(--dot-line);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--dot-blue);
+            font: inherit;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* TABLE */
+        .admin-dot-tests-page .s4u-dot-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .admin-dot-tests-page .s4u-dot-table {
+            width: 100%;
+            min-width: 1080px;
+            border-collapse: collapse;
+        }
+
+        .admin-dot-tests-page .s4u-dot-table th {
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--dot-line);
+            background: #f8fafc;
+            color: #6a788b;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .05em;
+            text-align: left;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .admin-dot-tests-page .s4u-dot-table td {
+            padding: 13px 14px;
+            border-bottom: 1px solid var(--dot-line-soft);
+            color: var(--dot-text);
+            font-size: 11px;
+            vertical-align: middle;
+        }
+
+        .admin-dot-tests-page .s4u-dot-table tbody tr:hover {
+            background: #fbfcfe;
+        }
+
+        .admin-dot-tests-page .s4u-dot-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .admin-dot-tests-page .s4u-dot-person {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .admin-dot-tests-page .s4u-dot-person-avatar {
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: #edf3fb;
+            color: var(--dot-blue);
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .admin-dot-tests-page .s4u-dot-person-copy {
+            min-width: 0;
+        }
+
+        .admin-dot-tests-page .s4u-dot-person-copy strong {
+            display: block;
+            color: var(--dot-blue);
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .admin-dot-tests-page .s4u-dot-person-copy span {
+            display: block;
+            margin-top: 2px;
+            color: var(--dot-muted);
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .admin-dot-tests-page .s4u-dot-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 24px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 9px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .admin-dot-tests-page .s4u-dot-status--scheduled {
+            background: #ebf4ff;
+            color: #2b6cb0;
+        }
+
+        .admin-dot-tests-page .s4u-dot-status--pending {
+            background: #fff8e6;
+            color: #9b640b;
+        }
+
+        .admin-dot-tests-page .s4u-dot-status--complete {
+            background: #eaf8f0;
+            color: #167449;
+        }
+
+        .admin-dot-tests-page .s4u-dot-status--cancelled {
+            background: #fff0f0;
+            color: #b83232;
+        }
+
+        .admin-dot-tests-page .s4u-dot-result {
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .admin-dot-tests-page .s4u-dot-result--negative { color: var(--dot-success); }
+        .admin-dot-tests-page .s4u-dot-result--positive { color: var(--dot-danger); }
+        .admin-dot-tests-page .s4u-dot-result--pending { color: var(--dot-muted); }
+
+        .admin-dot-tests-page .s4u-dot-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        .admin-dot-tests-page .s4u-dot-icon-action {
+            display: grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--dot-line);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--dot-blue);
+            cursor: pointer;
+            transition: background .18s ease, border-color .18s ease, color .18s ease;
+        }
+
+        .admin-dot-tests-page .s4u-dot-icon-action:hover {
+            border-color: #c8d3e0;
+            background: #edf3fb;
+        }
+
+        .admin-dot-tests-page .s4u-dot-icon-action svg {
+            width: 15px;
+            height: 15px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.9;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .admin-dot-tests-page .s4u-dot-table-empty {
+            display: none;
+            padding: 42px 20px;
+            text-align: center;
+            color: var(--dot-muted);
+            font-size: 12px;
+        }
+
+        .admin-dot-tests-page .s4u-dot-table-empty strong {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--dot-blue);
+            font-size: 14px;
+        }
+
+        /* PAGINATION */
+        .admin-dot-tests-page .s4u-dot-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 20px;
+            border-top: 1px solid var(--dot-line);
+            background: #fff;
+        }
+
+        .admin-dot-tests-page .s4u-dot-pagination-copy {
+            color: var(--dot-muted);
+            font-size: 10px;
+        }
+
+        .admin-dot-tests-page .s4u-dot-pagination-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .admin-dot-tests-page .s4u-dot-page-button {
+            min-width: 32px;
+            height: 32px;
+            padding: 0 10px;
+            border: 1px solid var(--dot-line);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--dot-blue);
+            font: inherit;
+            font-size: 10px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .admin-dot-tests-page .s4u-dot-page-button[aria-current="page"] {
+            border-color: var(--dot-blue);
+            background: var(--dot-blue);
+            color: #fff;
+        }
+
+        .admin-dot-tests-page .s4u-dot-page-button:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        /* MODAL */
+        .admin-dot-tests-page .s4u-dot-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 1200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(17, 32, 56, .48);
+            backdrop-filter: blur(2px);
+        }
+
+        .admin-dot-tests-page .s4u-dot-modal-backdrop.is-open {
+            display: flex;
+        }
+
+        .admin-dot-tests-page .s4u-dot-modal {
+            width: min(760px, 100%);
+            max-height: calc(100vh - 40px);
+            overflow: auto;
+            border: 1px solid var(--dot-line);
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 24px 65px rgba(18, 38, 68, .25);
+        }
+
+        .admin-dot-tests-page .s4u-dot-modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 20px 22px 16px;
+            border-bottom: 1px solid var(--dot-line);
+        }
+
+        .admin-dot-tests-page .s4u-dot-modal-header h2 {
+            margin: 0;
+            color: var(--dot-blue);
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .admin-dot-tests-page .s4u-dot-modal-header p {
+            margin: 5px 0 0;
+            color: var(--dot-muted);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .admin-dot-tests-page .s4u-dot-modal-close {
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--dot-line);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--dot-blue);
+            cursor: pointer;
+        }
+
+        .admin-dot-tests-page .s4u-dot-modal-close svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+
+        .admin-dot-tests-page .s4u-dot-modal-body {
+            padding: 20px 22px;
+        }
+
+        .admin-dot-tests-page .s4u-dot-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .admin-dot-tests-page .s4u-dot-field {
+            min-width: 0;
+        }
+
+        .admin-dot-tests-page .s4u-dot-field--full {
+            grid-column: 1 / -1;
+        }
+
+        .admin-dot-tests-page .s4u-dot-field label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--dot-blue);
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .admin-dot-tests-page .s4u-dot-field input,
+        .admin-dot-tests-page .s4u-dot-field select {
+            min-height: 41px;
+            padding: 9px 11px;
+        }
+
+        .admin-dot-tests-page .s4u-dot-field textarea {
+            min-height: 92px;
+            padding: 10px 11px;
+            resize: vertical;
+        }
+
+        .admin-dot-tests-page .s4u-dot-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+            padding: 15px 22px 20px;
+            border-top: 1px solid var(--dot-line);
+            background: #fbfcfe;
+        }
+
+        .admin-dot-tests-page .s4u-dot-form-message {
+            display: none;
+            margin-bottom: 14px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: #eaf8f0;
+            color: #167449;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .admin-dot-tests-page .s4u-dot-form-message.is-visible {
+            display: block;
+        }
+
+
+        .admin-dot-tests-page .s4u-dot-form-message.is-error {
+            border-color: #fed7d7;
+            background: #fff5f5;
+            color: var(--dot-danger);
+        }
+
+        /* TOPBAR SAFETY */
+        .admin-dot-tests-page .admin-lms-topbar-right,
+        .admin-dot-tests-page .admin-user-dropdown {
+            position: relative;
+            min-width: 0;
+        }
+
+        .admin-dot-tests-page .admin-lms-topbar svg,
+        .admin-dot-tests-page .admin-user-dropdown svg {
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        @media (max-width: 1180px) {
+            .admin-dot-tests-page .s4u-dot-metrics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .admin-dot-tests-page .s4u-dot-toolbar {
+                grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(150px, 1fr));
+            }
+
+            .admin-dot-tests-page .s4u-dot-toolbar > :nth-child(4),
+            .admin-dot-tests-page .s4u-dot-toolbar > :nth-child(5) {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 860px) {
+            .admin-dot-tests-page .s4u-dot-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .admin-dot-tests-page .s4u-dot-heading .s4u-dot-primary-button {
+                width: 100%;
+            }
+
+            .admin-dot-tests-page .s4u-dot-toolbar {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .admin-dot-tests-page .s4u-dot-search {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .admin-dot-tests-page .s4u-dot-page {
+                padding: 18px;
+            }
+
+            .admin-dot-tests-page .s4u-dot-heading h1 {
+                font-size: 32px;
+            }
+
+            .admin-dot-tests-page .s4u-dot-metrics,
+            .admin-dot-tests-page .s4u-dot-toolbar,
+            .admin-dot-tests-page .s4u-dot-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-dot-tests-page .s4u-dot-field--full,
+            .admin-dot-tests-page .s4u-dot-search {
+                grid-column: auto;
+            }
+
+            .admin-dot-tests-page .s4u-dot-panel-header,
+            .admin-dot-tests-page .s4u-dot-pagination {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .admin-dot-tests-page .s4u-dot-panel-actions,
+            .admin-dot-tests-page .s4u-dot-pagination-buttons {
+                width: 100%;
+            }
+
+            .admin-dot-tests-page .s4u-dot-panel-actions .s4u-dot-secondary-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="admin-dot-tests-page">
+    <div class="admin-lms-app">
+        <!-- Sidebar is rendered by admin-lms-sidebar.js -->
+        <div id="admin-lms-sidebar-target"></div>
+
+        <main class="admin-lms-main">
+            <!-- =====================================================
+                 TOPBAR
+            ====================================================== -->
+            <header class="admin-lms-topbar">
+                <div class="admin-lms-topbar-left">
+                    <button
+                        type="button"
+                        class="admin-lms-sidebar-collapse"
+                        data-admin-sidebar-collapse
+                        aria-label="Collapse sidebar"
+                        aria-expanded="true"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M15 18l-6-6 6-6"></path>
+                        </svg>
+                    </button>
+
+                    <div class="admin-lms-page-context">
+                        <small>screenings4u Management Portal</small>
+                        <strong>Administration</strong>
+                    </div>
+                </div>
+
+                <div class="admin-lms-topbar-right">
+                    <a
+                        href="admin-notifications.html"
+                        class="admin-lms-icon-button"
+                        aria-label="Notifications"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                            <path d="M10 21h4"></path>
+                        </svg>
+                    </a>
+
+                    <div class="admin-user-dropdown">
+                        <button
+                            type="button"
+                            class="admin-user-dropdown-toggle"
+                            data-admin-user-menu-toggle
+                            aria-expanded="false"
+                        >
+                            <span class="admin-lms-avatar">AD</span>
+
+                            <span class="admin-lms-user-copy">
+                                <span class="admin-lms-user-name">Administrator</span>
+                                <span class="admin-lms-user-role">System Administrator</span>
+                            </span>
+
+                            <span class="admin-user-dropdown-chevron">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="m6 9 6 6 6-6"></path>
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div class="admin-user-dropdown-menu" data-admin-user-menu>
+                            <div class="admin-user-dropdown-header">
+                                <strong>Administrator</strong>
+                                <span>System Administrator</span>
+                            </div>
+
+                            <a href="../index.html" class="admin-user-dropdown-item">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="9"></circle>
+                                    <path d="M3 12h18"></path>
+                                    <path d="M12 3a14 14 0 0 1 0 18"></path>
+                                    <path d="M12 3a14 14 0 0 0 0 18"></path>
+                                </svg>
+                                <span>Visit Main Website</span>
+                            </a>
+
+                            <a href="admin-account-access.html" class="admin-user-dropdown-item">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="8" r="4"></circle>
+                                    <path d="M4 21c1-4.5 3.7-7 8-7s7 2.5 8 7"></path>
+                                </svg>
+                                <span>Account Access</span>
+                            </a>
+
+                            <a href="admin-accounts.html" class="admin-user-dropdown-item">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M4 19V5h16v14z"></path>
+                                    <path d="M8 9h8M8 13h5"></path>
+                                </svg>
+                                <span>My Account</span>
+                            </a>
+
+                            <div class="admin-user-dropdown-divider"></div>
+
+                            <button
+                                type="button"
+                                class="admin-user-dropdown-item admin-user-logout"
+                                data-admin-logout
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M10 17l5-5-5-5"></path>
+                                    <path d="M15 12H3"></path>
+                                    <path d="M21 19V5"></path>
+                                </svg>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- =====================================================
+                 DOT TEST MANAGEMENT
+            ====================================================== -->
+            <section class="s4u-dot-page">
+                <div class="s4u-dot-heading">
+                    <div class="s4u-dot-heading-copy">
+                        <div class="s4u-dot-kicker">DOT TESTING</div>
+                        <h1>DOT Tests</h1>
+                        <p>
+                            Manage DOT drug and alcohol testing records, scheduling, test status,
+                            results, employer assignments, and compliance activity from one place.
+                        </p>
+                    </div>
+
+                    <button type="button" class="s4u-dot-primary-button" data-dot-test-open>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 5v14M5 12h14"></path>
+                        </svg>
+                        Add DOT Test
+                    </button>
+                </div>
+
+                <!-- Metrics -->
+                <div class="s4u-dot-metrics">
+                    <article class="s4u-dot-metric-card">
+                        <span>Total DOT Tests</span>
+                        <strong id="dotMetricTotal">0</strong>
+                        <small>All DOT testing records</small>
+                    </article>
+
+                    <article class="s4u-dot-metric-card">
+                        <span>Scheduled / Pending</span>
+                        <strong id="dotMetricPending">0</strong>
+                        <small>Tests still in progress</small>
+                    </article>
+
+                    <article class="s4u-dot-metric-card">
+                        <span>Completed</span>
+                        <strong id="dotMetricComplete">0</strong>
+                        <small>Finished DOT tests</small>
+                    </article>
+
+                    <article class="s4u-dot-metric-card">
+                        <span>Positive / Review</span>
+                        <strong id="dotMetricReview">0</strong>
+                        <small>Records requiring attention</small>
+                    </article>
+                </div>
+
+                <!-- Management panel -->
+                <section class="s4u-dot-panel">
+                    <div class="s4u-dot-panel-header">
+                        <div>
+                            <span class="s4u-dot-panel-kicker">MANAGEMENT</span>
+                            <h2>DOT Testing Records</h2>
+                            <p>Search, filter, review, and update DOT testing records.</p>
+                        </div>
+
+                        <div class="s4u-dot-panel-actions">
+                            <button type="button" class="s4u-dot-secondary-button" id="dotExportButton">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 3v12"></path>
+                                    <path d="m8 11 4 4 4-4"></path>
+                                    <path d="M5 21h14"></path>
+                                </svg>
+                                Export CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="s4u-dot-toolbar">
+                        <div class="s4u-dot-search">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="m20 20-3.5-3.5"></path>
+                            </svg>
+                            <input
+                                type="search"
+                                id="dotSearchInput"
+                                placeholder="Search employee, employer, test type..."
+                                autocomplete="off"
+                            >
+                        </div>
+
+                        <select id="dotStatusFilter" aria-label="Filter by status">
+                            <option value="">All statuses</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="notified">Notified</option>
+                            <option value="collected">Collected</option>
+                            <option value="pending_result">Pending Result</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="no_show">No Show</option>
+                        </select>
+
+                        <select id="dotTypeFilter" aria-label="Filter by test type">
+                            <option value="">All test types</option>
+                            <option value="drug">Drug Test</option>
+                            <option value="alcohol">Alcohol Test</option>
+                            <option value="drug_and_alcohol">Drug + Alcohol</option>
+                        </select>
+
+                        <select id="dotReasonFilter" aria-label="Filter by reason">
+                            <option value="">All reasons</option>
+                            <option value="pre_employment">Pre-Employment</option>
+                            <option value="random">Random</option>
+                            <option value="post_accident">Post-Accident</option>
+                            <option value="reasonable_suspicion">Reasonable Suspicion</option>
+                            <option value="return_to_duty">Return-to-Duty</option>
+                            <option value="follow_up">Follow-Up</option>
+                            <option value="other">Other</option>
+                        </select>
+
+                        <button type="button" class="s4u-dot-filter-button" id="dotClearFilters">
+                            Clear
+                        </button>
+                    </div>
+
+                    <div class="s4u-dot-table-wrap">
+                        <table class="s4u-dot-table">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Employer</th>
+                                    <th>Test Type</th>
+                                    <th>Reason</th>
+                                    <th>Scheduled</th>
+                                    <th>Status</th>
+                                    <th>Result</th>
+                                    <th style="text-align:right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dotTestsTableBody">
+                                <tr>
+                                    <td colspan="8" style="padding:36px;text-align:center;color:#617087;">
+                                        Loading DOT testing records...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="s4u-dot-table-empty" id="dotTableEmpty">
+                            <strong id="dotEmptyTitle">No DOT tests found</strong>
+                            <span id="dotEmptyMessage">Create the first DOT testing record or change your filters.</span>
+                        </div>
+                    </div>
+
+                    <div class="s4u-dot-pagination">
+                        <div class="s4u-dot-pagination-copy" id="dotPaginationCopy">
+                            Showing 0 records
+                        </div>
+
+                        <div class="s4u-dot-pagination-buttons">
+                            <button type="button" class="s4u-dot-page-button" id="dotPrevPage" disabled>Previous</button>
+                            <button type="button" class="s4u-dot-page-button" id="dotCurrentPage" aria-current="page">1</button>
+                            <button type="button" class="s4u-dot-page-button" id="dotNextPage" disabled>Next</button>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <!-- =====================================================
+         ADD / EDIT DOT TEST MODAL
+    ====================================================== -->
+    <div class="s4u-dot-modal-backdrop" id="dotTestModalBackdrop" aria-hidden="true">
+        <section
+            class="s4u-dot-modal"
+            id="dotTestModal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="dotTestModalTitle"
+        >
+            <div class="s4u-dot-modal-header">
+                <div>
+                    <h2 id="dotTestModalTitle">Add DOT Test</h2>
+                    <p>Create or update a DOT drug or alcohol testing record.</p>
+                </div>
+
+                <button type="button" class="s4u-dot-modal-close" data-dot-test-close aria-label="Close modal">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6 6 18"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="dotTestForm">
+                <div class="s4u-dot-modal-body">
+                    <div class="s4u-dot-form-message" id="dotFormMessage">
+                        DOT test saved successfully.
+                    </div>
+
+                    <input type="hidden" id="dotRecordId">
+
+                    <div class="s4u-dot-form-grid">
+                        <div class="s4u-dot-field">
+                            <label for="dotEmployer">Employer</label>
+                            <select id="dotEmployer" name="employer_id" required>
+                                <option value="">Select employer</option>
+                            </select>
+                        </div>
+
+                        <div class="s4u-dot-field">
+                            <label for="dotEmployee">Employee</label>
+                            <select id="dotEmployee" name="employee_id" required disabled>
+                                <option value="">Select employer first</option>
+                            </select>
+                        </div>
+
+                        <div class="s4u-dot-field">
+                            <label for="dotEmployeeEmail">Employee Email</label>
+                            <input type="email" id="dotEmployeeEmail" name="employee_email" placeholder="Employee email" readonly>
+                        </div>
+
+                        <div class="s4u-dot-field">
+                            <label for="dotTestType">Test Type</label>
+                            <select id="dotTestType" name="test_type" required>
+                                <option value="">Select test type</option>
+                                <option value="drug">DOT Drug Test</option>
+                                <option value="alcohol">DOT Alcohol Test</option>
+                                <option value="drug_and_alcohol">DOT Drug + Alcohol</option>
+                            </select>
+                        </div>
+
+                        <div class="s4u-dot-field">
+                            <label for="dotReason">Testing Reason</label>
+                            <select id="dotReason" name="test_reason" required>
+                                <option value="">Select reason</option>
+                                <option value="pre_employment">Pre-Employment</option>
+                                <option value="random">Random</option>
+                                <option value="post_accident">Post-Accident</option>
+                                <option value="reasonable_suspicion">Reasonable Suspicion</option>
+                                <option value="return_to_duty">Return-to-Duty</option>
+                                <option value="follow_up">Follow-Up</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="s4u-dot-field">
+                            <label for="dotScheduledDate">Scheduled Date & Time</label>
+                            <input type="datetime-local" id="dotScheduledDate" name="scheduled_at" required>
+                        </div>
+
+                        <div class="s4u-dot-field">
+                            <label for="dotCollectionSite">Collection Site</label>
+                            <input type="text" id="dotCollectionSite" name="collection_site_name" placeholder="Collection site or clinic">
+                        </div>
+
+                        <div class="s4u-dot-field">
+                            <label for="dotStatus">Status</label>
+                            <select id="dotStatus" name="status" required>
+                                <option value="scheduled">Scheduled</option>
+                                <option value="notified">Notified</option>
+                                <option value="collected">Collected</option>
+                                <option value="pending_result">Pending Result</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="no_show">No Show</option>
+                            </select>
+                        </div>
+
+                        <div class="s4u-dot-field">
+                            <label for="dotResult">Result</label>
+                            <select id="dotResult" name="result_status">
+                                <option value="pending">Pending</option>
+                                <option value="negative">Negative</option>
+                                <option value="positive">Positive</option>
+                                <option value="refusal">Refusal</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="invalid">Invalid</option>
+                                <option value="not_reported">Not Reported</option>
+                            </select>
+                        </div>
+
+                        <div class="s4u-dot-field s4u-dot-field--full">
+                            <label for="dotNotes">Notes</label>
+                            <textarea id="dotNotes" name="notes" placeholder="Add internal notes, result notes, or follow-up instructions..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="s4u-dot-modal-footer">
+                    <button type="button" class="s4u-dot-secondary-button" data-dot-test-close>Cancel</button>
+                    <button type="submit" class="s4u-dot-primary-button">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 12l4 4L19 6"></path>
+                        </svg>
+                        Save DOT Test
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/core-auth.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/session-security.js"></script>
+    <script src="assets/js/portal-auth-guard.js"></script>
+    <script src="assets/js/admin-auth-guard.js"></script>
+    <script src="assets/js/admin-lms-sidebar.js"></script>
+
+    <script src="assets/js/admin-dot-tests.js"></script>
+</body>
+</html>

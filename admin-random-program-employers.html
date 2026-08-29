@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Employers | screenings4u Management Portal</title>
+
+    <link rel="stylesheet" href="assets/css/admin-lms.css">
+
+    <style>
+        :root {
+            --rpe-blue: #173d78;
+            --rpe-blue-light: #325aa3;
+            --rpe-orange: #ff6b00;
+            --rpe-orange-hover: #e86000;
+            --rpe-bg: #f5f7fa;
+            --rpe-card: #ffffff;
+            --rpe-line: #e1e7ef;
+            --rpe-line-soft: #edf0f4;
+            --rpe-muted: #617087;
+            --rpe-text: #172033;
+            --rpe-success: #16804d;
+            --rpe-danger: #c53030;
+            --rpe-warning: #9a5a00;
+        }
+
+        .admin-random-program-employers-page .admin-lms-main {
+            min-width: 0;
+            background: var(--rpe-bg);
+        }
+
+        .admin-random-program-employers-content {
+            width: 100%;
+            min-width: 0;
+            padding: 28px;
+            box-sizing: border-box;
+        }
+
+        .admin-random-program-employers-content *,
+        .admin-random-program-employers-content *::before,
+        .admin-random-program-employers-content *::after {
+            box-sizing: border-box;
+        }
+
+        .rpe-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 22px;
+        }
+
+        .rpe-heading-copy {
+            min-width: 0;
+        }
+
+        .rpe-kicker {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--rpe-orange);
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .rpe-heading h1 {
+            margin: 0;
+            color: var(--rpe-blue);
+            font-size: 38px;
+            line-height: 1.05;
+            font-weight: 900;
+            letter-spacing: -.04em;
+        }
+
+        .rpe-heading p {
+            max-width: 790px;
+            margin: 9px 0 0;
+            color: var(--rpe-muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .rpe-primary-button,
+        .rpe-secondary-button,
+        .rpe-filter-button,
+        .rpe-row-button {
+            appearance: none;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .rpe-primary-button,
+        .rpe-secondary-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 10px 17px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 900;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .rpe-primary-button {
+            border: 1px solid var(--rpe-orange);
+            background: var(--rpe-orange);
+            color: #fff;
+            box-shadow: 0 7px 16px rgba(255,107,0,.14);
+        }
+
+        .rpe-primary-button:hover {
+            background: var(--rpe-orange-hover);
+            border-color: var(--rpe-orange-hover);
+        }
+
+        .rpe-secondary-button {
+            border: 1px solid var(--rpe-line);
+            background: #fff;
+            color: var(--rpe-blue);
+        }
+
+        .rpe-secondary-button:hover {
+            background: #edf3fb;
+        }
+
+        .rpe-primary-button svg,
+        .rpe-secondary-button svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .rpe-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .rpe-metric {
+            min-width: 0;
+            padding: 18px 19px;
+            border: 1px solid var(--rpe-line);
+            border-radius: 10px;
+            background: var(--rpe-card);
+            box-shadow: 0 4px 14px rgba(20,48,82,.04);
+        }
+
+        .rpe-metric span {
+            display: block;
+            color: var(--rpe-muted);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .rpe-metric strong {
+            display: block;
+            margin-top: 8px;
+            color: var(--rpe-blue);
+            font-size: 30px;
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -.035em;
+        }
+
+        .rpe-metric small {
+            display: block;
+            margin-top: 8px;
+            color: var(--rpe-muted);
+            font-size: 10px;
+            line-height: 1.45;
+        }
+
+        .rpe-panel {
+            overflow: hidden;
+            border: 1px solid var(--rpe-line);
+            border-radius: 10px;
+            background: var(--rpe-card);
+            box-shadow: 0 4px 14px rgba(20,48,82,.04);
+        }
+
+        .rpe-panel-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--rpe-line);
+        }
+
+        .rpe-panel-header h2 {
+            margin: 0;
+            color: var(--rpe-blue);
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .rpe-panel-header p {
+            margin: 5px 0 0;
+            color: var(--rpe-muted);
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        .rpe-panel-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .rpe-toolbar {
+            display: grid;
+            grid-template-columns: minmax(260px,1fr) repeat(3,minmax(145px,190px)) auto;
+            gap: 10px;
+            align-items: center;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--rpe-line-soft);
+            background: #fbfcfe;
+        }
+
+        .rpe-search {
+            position: relative;
+            min-width: 0;
+        }
+
+        .rpe-search svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            width: 16px;
+            height: 16px;
+            transform: translateY(-50%);
+            fill: none;
+            stroke: var(--rpe-muted);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            pointer-events: none;
+        }
+
+        .rpe-search input,
+        .rpe-toolbar select,
+        .rpe-filter-button {
+            width: 100%;
+            min-height: 40px;
+            border: 1px solid var(--rpe-line);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--rpe-text);
+            font: inherit;
+            font-size: 11px;
+        }
+
+        .rpe-search input {
+            padding: 9px 12px 9px 38px;
+        }
+
+        .rpe-toolbar select {
+            padding: 9px 30px 9px 11px;
+        }
+
+        .rpe-filter-button {
+            width: auto;
+            padding: 9px 13px;
+            color: var(--rpe-blue);
+            font-weight: 900;
+        }
+
+        .rpe-search input:focus,
+        .rpe-toolbar select:focus,
+        .rpe-field input:focus,
+        .rpe-field select:focus,
+        .rpe-field textarea:focus {
+            outline: none;
+            border-color: #9eb6d6;
+            box-shadow: 0 0 0 3px rgba(50,90,163,.08);
+        }
+
+        .rpe-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .rpe-table {
+            width: 100%;
+            min-width: 1250px;
+            border-collapse: collapse;
+        }
+
+        .rpe-table th,
+        .rpe-table td {
+            padding: 13px 14px;
+            border-bottom: 1px solid var(--rpe-line-soft);
+            vertical-align: middle;
+            text-align: left;
+        }
+
+        .rpe-table th {
+            background: #fbfcfe;
+            color: var(--rpe-muted);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+        }
+
+        .rpe-table td {
+            color: var(--rpe-text);
+            font-size: 10px;
+        }
+
+        .rpe-table tbody tr:hover {
+            background: #fbfcfe;
+        }
+
+        .rpe-name {
+            min-width: 220px;
+        }
+
+        .rpe-name strong {
+            display: block;
+            color: var(--rpe-blue);
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .rpe-name small,
+        .rpe-subtext {
+            display: block;
+            margin-top: 4px;
+            color: var(--rpe-muted);
+            font-size: 9px;
+            line-height: 1.4;
+        }
+
+        .rpe-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 24px;
+            padding: 5px 8px;
+            border-radius: 999px;
+            font-size: 9px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .rpe-badge--active {
+            background: #e8f7ef;
+            color: var(--rpe-success);
+        }
+
+        .rpe-badge--inactive {
+            background: #f1f3f6;
+            color: #697386;
+        }
+
+        .rpe-badge--dot {
+            background: #edf3fb;
+            color: var(--rpe-blue-light);
+        }
+
+        .rpe-badge--nondot {
+            background: #fff4e9;
+            color: #9b5700;
+        }
+
+        .rpe-testing {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .rpe-testing-chip {
+            display: inline-flex;
+            align-items: center;
+            min-height: 24px;
+            padding: 4px 7px;
+            border: 1px solid var(--rpe-line);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--rpe-blue);
+            font-size: 9px;
+            font-weight: 900;
+        }
+
+        .rpe-testing-chip.is-off {
+            color: #8490a1;
+            background: #f7f8fa;
+        }
+
+        .rpe-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        .rpe-row-button {
+            min-height: 32px;
+            padding: 6px 9px;
+            border: 1px solid var(--rpe-line);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--rpe-blue);
+            font-size: 9px;
+            font-weight: 900;
+        }
+
+        .rpe-row-button:hover {
+            background: #edf3fb;
+        }
+
+        .rpe-row-button.is-danger {
+            color: var(--rpe-danger);
+        }
+
+        .rpe-empty,
+        .rpe-loading,
+        .rpe-error {
+            padding: 40px 20px !important;
+            text-align: center !important;
+            color: var(--rpe-muted) !important;
+        }
+
+        .rpe-error {
+            color: var(--rpe-danger) !important;
+        }
+
+        .rpe-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 13px 16px;
+            border-top: 1px solid var(--rpe-line-soft);
+        }
+
+        .rpe-pagination-copy {
+            color: var(--rpe-muted);
+            font-size: 10px;
+        }
+
+        .rpe-pagination-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .rpe-pagination-buttons button {
+            min-width: 35px;
+            min-height: 33px;
+            border: 1px solid var(--rpe-line);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--rpe-blue);
+            font: inherit;
+            font-size: 10px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .rpe-pagination-buttons button:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        .rpe-pagination-buttons .is-current {
+            border-color: var(--rpe-blue);
+            background: var(--rpe-blue);
+            color: #fff;
+        }
+
+        /* MODAL */
+        .rpe-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 24px;
+            background: rgba(13,29,52,.58);
+            backdrop-filter: blur(2px);
+        }
+
+        .rpe-modal-backdrop.is-open {
+            display: flex;
+        }
+
+        .rpe-modal {
+            position: relative;
+            width: min(1180px, calc(100vw - 48px));
+            max-height: calc(100vh - 32px);
+            overflow: hidden;
+            border: 1px solid #d8e0ea;
+            border-radius: 14px;
+            background: #fff;
+            box-shadow: 0 28px 80px rgba(16,38,66,.30);
+        }
+
+        .rpe-modal::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            z-index: 2;
+            height: 4px;
+            background: var(--rpe-orange);
+        }
+
+        .rpe-modal > form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-height: calc(100vh - 32px);
+            min-height: 0;
+        }
+
+        .rpe-modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
+            padding: 24px 28px 20px;
+            border-bottom: 1px solid var(--rpe-line);
+            background: linear-gradient(180deg,#ffffff 0%,#fbfcfe 100%);
+        }
+
+        .rpe-modal-header h2 {
+            margin: 0;
+            color: var(--rpe-blue);
+            font-size: 24px;
+            line-height: 1.1;
+            font-weight: 900;
+            letter-spacing: -.025em;
+        }
+
+        .rpe-modal-header p {
+            max-width: 760px;
+            margin: 7px 0 0;
+            color: var(--rpe-muted);
+            font-size: 11px;
+            line-height: 1.55;
+        }
+
+        .rpe-modal-close {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            border: 1px solid var(--rpe-line);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--rpe-muted);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .rpe-modal-body {
+            flex: 1 1 auto;
+            min-height: 0;
+            max-height: none;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 24px 28px 28px;
+            scrollbar-gutter: stable;
+        }
+
+        .rpe-form-message {
+            display: none;
+            margin-bottom: 15px;
+            padding: 11px 13px;
+            border: 1px solid #c6ead5;
+            border-radius: 7px;
+            background: #effaf4;
+            color: var(--rpe-success);
+            font-size: 10px;
+            font-weight: 800;
+            line-height: 1.45;
+        }
+
+        .rpe-form-message.is-visible {
+            display: block;
+        }
+
+        .rpe-form-message.is-error {
+            border-color: #fed7d7;
+            background: #fff5f5;
+            color: var(--rpe-danger);
+        }
+
+        .rpe-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2,minmax(0,1fr));
+            gap: 16px 18px;
+        }
+
+        .rpe-field {
+            min-width: 0;
+        }
+
+        .rpe-field--full {
+            grid-column: 1 / -1;
+        }
+
+        .rpe-field label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--rpe-blue);
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .rpe-field input,
+        .rpe-field select,
+        .rpe-field textarea {
+            width: 100%;
+            min-height: 46px;
+            padding: 11px 13px;
+            border: 1px solid var(--rpe-line);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--rpe-text);
+            font: inherit;
+            font-size: 12px;
+        }
+
+        .rpe-field textarea {
+            min-height: 90px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .rpe-field small {
+            display: block;
+            margin-top: 5px;
+            color: var(--rpe-muted);
+            font-size: 9px;
+            line-height: 1.45;
+        }
+
+        .rpe-program-summary {
+            display: none;
+            grid-template-columns: repeat(4,minmax(0,1fr));
+            gap: 12px;
+            margin: 16px 0 0;
+            padding: 15px 16px;
+            border: 1px solid #dce7f3;
+            border-radius: 8px;
+            background: #f7faff;
+        }
+
+        .rpe-program-summary.is-visible {
+            display: grid;
+        }
+
+        .rpe-summary-item span {
+            display: block;
+            color: var(--rpe-muted);
+            font-size: 8px;
+            font-weight: 900;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+        }
+
+        .rpe-summary-item strong {
+            display: block;
+            margin-top: 4px;
+            color: var(--rpe-blue);
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .rpe-check-grid {
+            display: grid;
+            grid-template-columns: repeat(2,minmax(0,1fr));
+            gap: 9px;
+        }
+
+        .rpe-check-card {
+            position: relative;
+            display: block;
+            cursor: pointer;
+        }
+
+        .rpe-check-card input {
+            position: absolute;
+            top: 15px;
+            right: 16px;
+            z-index: 2;
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            opacity: 1;
+            pointer-events: auto;
+            accent-color: var(--rpe-orange);
+            cursor: pointer;
+        }
+
+        .rpe-check-copy {
+            display: block;
+            min-height: 82px;
+            padding: 15px 48px 15px 16px;
+            border: 1px solid var(--rpe-line);
+            border-radius: 8px;
+            background: #fff;
+            transition:
+                border-color .15s ease,
+                background .15s ease,
+                box-shadow .15s ease;
+        }
+
+        .rpe-check-copy strong {
+            display: block;
+            color: var(--rpe-blue);
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .rpe-check-copy small {
+            display: block;
+            margin-top: 5px;
+            color: var(--rpe-muted);
+            font-size: 9px;
+            line-height: 1.4;
+        }
+
+        .rpe-check-card input:checked + .rpe-check-copy::after {
+            content: "Selected";
+            display: inline-flex;
+            margin-top: 9px;
+            padding: 3px 7px;
+            border-radius: 999px;
+            background: #fff0e4;
+            color: #cc5600;
+            font-size: 8px;
+            font-weight: 900;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .rpe-check-card input:checked + .rpe-check-copy {
+            border-color: var(--rpe-orange);
+            background: #fff8f2;
+            box-shadow: 0 0 0 2px rgba(255,107,0,.10);
+        }
+
+        .rpe-check-card input:focus-visible + .rpe-check-copy {
+            outline: 2px solid rgba(50,90,163,.32);
+            outline-offset: 2px;
+        }
+
+        .rpe-form-section + .rpe-form-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--rpe-line-soft);
+        }
+
+        .rpe-form-section-header {
+            margin-bottom: 12px;
+        }
+
+        .rpe-form-section-header h3 {
+            margin: 0;
+            color: var(--rpe-blue);
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .rpe-form-section-header p {
+            margin: 4px 0 0;
+            color: var(--rpe-muted);
+            font-size: 9px;
+            line-height: 1.45;
+        }
+
+        .rpe-info {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border: 1px solid #dce7f3;
+            border-radius: 7px;
+            background: #f7faff;
+            color: var(--rpe-muted);
+            font-size: 9px;
+            line-height: 1.5;
+        }
+
+        .rpe-info.is-warning {
+            border-color: #f3c998;
+            background: #fff8ef;
+            color: #81500f;
+        }
+
+        .rpe-modal-footer {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 28px;
+            border-top: 1px solid var(--rpe-line);
+            background: #fbfcfe;
+            box-shadow: 0 -6px 18px rgba(26,54,88,.035);
+        }
+
+        .rpe-modal-footer-right {
+            display: flex;
+            gap: 9px;
+        }
+
+        .admin-random-program-employers-page .admin-lms-topbar-right,
+        .admin-random-program-employers-page .admin-user-dropdown {
+            position: relative;
+            min-width: 0;
+        }
+
+        .admin-random-program-employers-page .admin-lms-topbar svg,
+        .admin-random-program-employers-page .admin-user-dropdown svg {
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        @media (max-width: 1180px) {
+            .rpe-metrics {
+                grid-template-columns: repeat(2,minmax(0,1fr));
+            }
+
+            .rpe-toolbar {
+                grid-template-columns: repeat(2,minmax(0,1fr));
+            }
+
+            .rpe-search {
+                grid-column: 1 / -1;
+            }
+
+            .rpe-filter-button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .rpe-modal-backdrop {
+                padding: 10px;
+            }
+
+            .rpe-modal {
+                width: calc(100vw - 20px);
+                max-height: calc(100vh - 20px);
+            }
+
+            .rpe-modal > form {
+                max-height: calc(100vh - 20px);
+            }
+        }
+
+        @media (max-width: 760px) {
+            .admin-random-program-employers-content {
+                padding: 18px;
+            }
+
+            .rpe-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .rpe-heading h1 {
+                font-size: 32px;
+            }
+
+            .rpe-primary-button,
+            .rpe-secondary-button {
+                width: 100%;
+            }
+
+            .rpe-metrics,
+            .rpe-toolbar,
+            .rpe-form-grid,
+            .rpe-check-grid,
+            .rpe-program-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .rpe-field--full,
+            .rpe-search {
+                grid-column: auto;
+            }
+
+            .rpe-panel-header,
+            .rpe-pagination,
+            .rpe-modal-footer,
+            .rpe-modal-footer-right {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .rpe-panel-actions {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="admin-random-program-employers-page">
+    <div class="admin-lms-app">
+
+        <!-- Sidebar is rendered by admin-lms-sidebar.js -->
+        <div id="admin-lms-sidebar-target"></div>
+
+        <main class="admin-lms-main">
+
+            <!-- =====================================================
+                 TOPBAR
+            ====================================================== -->
+            <header class="admin-lms-topbar">
+                <div class="admin-lms-topbar-left">
+                    <button
+                        type="button"
+                        class="admin-lms-sidebar-collapse"
+                        data-admin-sidebar-collapse
+                        aria-label="Collapse sidebar"
+                        aria-expanded="true"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M15 18l-6-6 6-6"></path>
+                        </svg>
+                    </button>
+
+                    <div class="admin-lms-page-context">
+                        <small>screenings4u Management Portal</small>
+                        <strong>Administration</strong>
+                    </div>
+                </div>
+
+                <div class="admin-lms-topbar-right">
+                    <a
+                        href="admin-notifications.html"
+                        class="admin-lms-icon-button"
+                        aria-label="Notifications"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                            <path d="M10 21h4"></path>
+                        </svg>
+                    </a>
+
+                    <div class="admin-user-dropdown">
+                        <button
+                            type="button"
+                            class="admin-user-dropdown-toggle"
+                            data-admin-user-menu-toggle
+                            aria-expanded="false"
+                        >
+                            <span class="admin-lms-avatar">AD</span>
+                            <span class="admin-lms-user-copy">
+                                <span class="admin-lms-user-name">Administrator</span>
+                                <span class="admin-lms-user-role">System Administrator</span>
+                            </span>
+                            <span class="admin-user-dropdown-chevron">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="m6 9 6 6 6-6"></path>
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div class="admin-user-dropdown-menu" data-admin-user-menu>
+                            <div class="admin-user-dropdown-header">
+                                <strong>Administrator</strong>
+                                <span>System Administrator</span>
+                            </div>
+
+                            <a href="../index.html" class="admin-user-dropdown-item">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="9"></circle>
+                                    <path d="M3 12h18"></path>
+                                    <path d="M12 3a14 14 0 0 1 0 18"></path>
+                                    <path d="M12 3a14 14 0 0 0 0 18"></path>
+                                </svg>
+                                <span>Visit Main Website</span>
+                            </a>
+
+                            <a href="admin-account-access.html" class="admin-user-dropdown-item">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="8" r="4"></circle>
+                                    <path d="M4 21c1-4.5 3.7-7 8-7s7 2.5 8 7"></path>
+                                </svg>
+                                <span>Account Access</span>
+                            </a>
+
+                            <a href="admin-accounts.html" class="admin-user-dropdown-item">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M4 19V5h16v14z"></path>
+                                    <path d="M8 9h8M8 13h5"></path>
+                                </svg>
+                                <span>My Account</span>
+                            </a>
+
+                            <div class="admin-user-dropdown-divider"></div>
+
+                            <button
+                                type="button"
+                                class="admin-user-dropdown-item admin-user-logout"
+                                data-admin-logout
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M10 17l5-5-5-5"></path>
+                                    <path d="M15 12H3"></path>
+                                    <path d="M21 19V5"></path>
+                                </svg>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="admin-random-program-employers-content">
+
+                <header class="rpe-heading">
+                    <div class="rpe-heading-copy">
+                        <span class="rpe-kicker">RANDOM TESTING</span>
+                        <h1>Program Employers</h1>
+                        <p>
+                            Enroll employers into random testing programs, control drug and alcohol
+                            participation, selection frequency, employer-specific rate overrides,
+                            and review live eligible employee counts.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="rpe-primary-button"
+                        id="enrollEmployerButton"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 5v14"></path>
+                            <path d="M5 12h14"></path>
+                        </svg>
+                        Enroll Employer
+                    </button>
+                </header>
+
+                <section class="rpe-metrics" aria-label="Program employer metrics">
+                    <article class="rpe-metric">
+                        <span>Total Enrollments</span>
+                        <strong id="rpeMetricTotal">—</strong>
+                        <small>Live rows in dot_random_program_employers</small>
+                    </article>
+
+                    <article class="rpe-metric">
+                        <span>Active Enrollments</span>
+                        <strong id="rpeMetricActive">—</strong>
+                        <small>Employers currently included in active pool membership</small>
+                    </article>
+
+                    <article class="rpe-metric">
+                        <span>Eligible Employees</span>
+                        <strong id="rpeMetricEligible">—</strong>
+                        <small>Live active employee count across active enrollments</small>
+                    </article>
+
+                    <article class="rpe-metric">
+                        <span>Dedicated Needs Setup</span>
+                        <strong id="rpeMetricDedicatedMissing">—</strong>
+                        <small>Dedicated programs missing their required employer enrollment row</small>
+                    </article>
+                </section>
+
+                <section class="rpe-panel">
+                    <header class="rpe-panel-header">
+                        <div>
+                            <span class="rpe-kicker">EMPLOYER ENROLLMENT</span>
+                            <h2>Random Program Employer Registry</h2>
+                            <p>
+                                Every row is loaded from your existing Supabase program-employer table.
+                                Dedicated programs are also checked against their configured dedicated employer.
+                            </p>
+                        </div>
+
+                        <div class="rpe-panel-actions">
+                            <a
+                                href="admin-random-programs.html"
+                                class="rpe-secondary-button"
+                            >
+                                Random Programs
+                            </a>
+
+                            <button
+                                type="button"
+                                class="rpe-secondary-button"
+                                id="refreshProgramEmployersButton"
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M20 11a8 8 0 0 0-14.9-4"></path>
+                                    <path d="M4 13a8 8 0 0 0 14.9 4"></path>
+                                    <path d="M5 3v4h4"></path>
+                                    <path d="M19 21v-4h-4"></path>
+                                </svg>
+                                Refresh
+                            </button>
+                        </div>
+                    </header>
+
+                    <div class="rpe-toolbar">
+                        <div class="rpe-search">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="m20 20-3.8-3.8"></path>
+                            </svg>
+                            <input
+                                type="search"
+                                id="rpeSearch"
+                                placeholder="Search employer, program, DOT number..."
+                                autocomplete="off"
+                            >
+                        </div>
+
+                        <select id="rpeProgramFilter" aria-label="Filter by program">
+                            <option value="">All programs</option>
+                        </select>
+
+                        <select id="rpeStatusFilter" aria-label="Filter by status">
+                            <option value="">All statuses</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+
+                        <select id="rpeTestingFilter" aria-label="Filter by testing enrollment">
+                            <option value="">All testing</option>
+                            <option value="drug">Drug enrolled</option>
+                            <option value="alcohol">Alcohol enrolled</option>
+                            <option value="both">Drug + Alcohol</option>
+                        </select>
+
+                        <button
+                            type="button"
+                            class="rpe-filter-button"
+                            id="clearRpeFilters"
+                        >
+                            Clear
+                        </button>
+                    </div>
+
+                    <div class="rpe-table-wrap">
+                        <table class="rpe-table">
+                            <thead>
+                                <tr>
+                                    <th>Employer</th>
+                                    <th>Program</th>
+                                    <th>Testing</th>
+                                    <th>Frequency</th>
+                                    <th>Effective Rates</th>
+                                    <th>Eligible Employees</th>
+                                    <th>Year Progress</th>
+                                    <th>Status</th>
+                                    <th>Enrolled</th>
+                                    <th style="text-align:right;">Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="rpeTableBody">
+                                <tr>
+                                    <td colspan="10" class="rpe-loading">
+                                        Loading program employers...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="rpe-pagination">
+                        <span class="rpe-pagination-copy" id="rpeResultsCount">
+                            0 enrollments
+                        </span>
+
+                        <div class="rpe-pagination-buttons">
+                            <button type="button" id="rpePrevious">Previous</button>
+                            <button type="button" class="is-current" id="rpePage">1</button>
+                            <button type="button" id="rpeNext">Next</button>
+                        </div>
+                    </div>
+                </section>
+
+            </section>
+        </main>
+    </div>
+
+    <!-- =========================================================
+         ENROLL / EDIT EMPLOYER MODAL
+    ========================================================== -->
+    <div
+        class="rpe-modal-backdrop"
+        id="rpeModalBackdrop"
+        aria-hidden="true"
+    >
+        <section
+            class="rpe-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="rpeModalTitle"
+        >
+            <form id="rpeForm">
+                <header class="rpe-modal-header">
+                    <div>
+                        <span class="rpe-kicker" id="rpeModalKicker">ENROLL EMPLOYER</span>
+                        <h2 id="rpeModalTitle">Enroll Employer</h2>
+                        <p id="rpeModalSubtitle">
+                            Add an employer to an existing random testing program.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="rpe-modal-close"
+                        data-rpe-close
+                        aria-label="Close"
+                    >
+                        ×
+                    </button>
+                </header>
+
+                <div class="rpe-modal-body">
+                    <div class="rpe-form-message" id="rpeFormMessage"></div>
+
+                    <section class="rpe-form-section">
+                        <header class="rpe-form-section-header">
+                            <h3>Program & Employer</h3>
+                            <p>
+                                Select the random program and employer. Dedicated programs automatically
+                                use the employer assigned to the program.
+                            </p>
+                        </header>
+
+                        <div class="rpe-form-grid">
+                            <div class="rpe-field">
+                                <label for="rpeProgramId">Random Program *</label>
+                                <select id="rpeProgramId" required>
+                                    <option value="">Select program</option>
+                                </select>
+                            </div>
+
+                            <div class="rpe-field">
+                                <label for="rpeEmployerId">Employer *</label>
+                                <select id="rpeEmployerId" required>
+                                    <option value="">Select employer</option>
+                                </select>
+                                <small id="rpeEmployerHelp">
+                                    Choose the employer being enrolled.
+                                </small>
+                            </div>
+
+                            <div class="rpe-field">
+                                <label for="rpeStatus">Enrollment Status *</label>
+                                <select id="rpeStatus" required>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+
+                            <div class="rpe-field">
+                                <label for="rpeFrequency">Selection Frequency *</label>
+                                <select id="rpeFrequency" required>
+                                    <option value="">Select frequency</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="quarterly">Quarterly</option>
+                                    <option value="semi_annually">Semi-Annually</option>
+                                    <option value="annually">Annually</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="rpe-program-summary" id="rpeProgramSummary">
+                            <div class="rpe-summary-item">
+                                <span>Program Type</span>
+                                <strong id="rpeSummaryType">—</strong>
+                            </div>
+                            <div class="rpe-summary-item">
+                                <span>Pool</span>
+                                <strong id="rpeSummaryPool">—</strong>
+                            </div>
+                            <div class="rpe-summary-item">
+                                <span>Program Drug Rate</span>
+                                <strong id="rpeSummaryDrug">—</strong>
+                            </div>
+                            <div class="rpe-summary-item">
+                                <span>Program Alcohol Rate</span>
+                                <strong id="rpeSummaryAlcohol">—</strong>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="rpe-form-section">
+                        <header class="rpe-form-section-header">
+                            <h3>Testing Enrollment</h3>
+                            <p>
+                                At least one testing category is required by the existing database constraint.
+                            </p>
+                        </header>
+
+                        <div class="rpe-check-grid">
+                            <label class="rpe-check-card">
+                                <input type="checkbox" id="rpeDrugEnrolled">
+                                <span class="rpe-check-copy">
+                                    <strong>Drug Testing</strong>
+                                    <small>
+                                        Include eligible employees from this employer in drug selections.
+                                    </small>
+                                </span>
+                            </label>
+
+                            <label class="rpe-check-card">
+                                <input type="checkbox" id="rpeAlcoholEnrolled">
+                                <span class="rpe-check-copy">
+                                    <strong>Alcohol Testing</strong>
+                                    <small>
+                                        Include eligible employees from this employer in alcohol selections.
+                                    </small>
+                                </span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <section class="rpe-form-section">
+                        <header class="rpe-form-section-header">
+                            <h3>Employer Rate Overrides</h3>
+                            <p>
+                                Leave a rate blank to use the rate stored on the random program.
+                            </p>
+                        </header>
+
+                        <div class="rpe-form-grid">
+                            <div class="rpe-field">
+                                <label for="rpeDrugRate">Drug Rate Override (%)</label>
+                                <input
+                                    type="number"
+                                    id="rpeDrugRate"
+                                    min="0"
+                                    max="100"
+                                    step="0.01"
+                                    placeholder="Use program rate"
+                                >
+                            </div>
+
+                            <div class="rpe-field">
+                                <label for="rpeAlcoholRate">Alcohol Rate Override (%)</label>
+                                <input
+                                    type="number"
+                                    id="rpeAlcoholRate"
+                                    min="0"
+                                    max="100"
+                                    step="0.01"
+                                    placeholder="Use program rate"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="rpe-info" id="rpeRateHelp">
+                            Effective rates are resolved from the employer override first, then the program rate.
+                        </div>
+                    </section>
+
+                    <section class="rpe-form-section">
+                        <header class="rpe-form-section-header">
+                            <h3>Notes</h3>
+                            <p>Optional internal notes for this program enrollment.</p>
+                        </header>
+
+                        <div class="rpe-form-grid">
+                            <div class="rpe-field rpe-field--full">
+                                <label for="rpeNotes">Notes</label>
+                                <textarea
+                                    id="rpeNotes"
+                                    placeholder="Internal program enrollment notes..."
+                                ></textarea>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <footer class="rpe-modal-footer">
+                    <button
+                        type="button"
+                        class="rpe-secondary-button"
+                        id="deleteRpeButton"
+                        style="display:none;color:#c53030;"
+                    >
+                        Remove Enrollment
+                    </button>
+
+                    <div class="rpe-modal-footer-right">
+                        <button
+                            type="button"
+                            class="rpe-secondary-button"
+                            data-rpe-close
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="rpe-primary-button"
+                            id="saveRpeButton"
+                        >
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M5 12l4 4L19 6"></path>
+                            </svg>
+                            Save Enrollment
+                        </button>
+                    </div>
+                </footer>
+            </form>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/core-auth.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/session-security.js"></script>
+    <script src="assets/js/portal-auth-guard.js"></script>
+    <script src="assets/js/admin-auth-guard.js"></script>
+    <script src="assets/js/admin-lms-sidebar.js"></script>
+    <script src="assets/js/admin-random-program-employers.js"></script>
+</body>
+</html>

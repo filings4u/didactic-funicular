@@ -3,99 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Assessment Builder | Screenings4u Learning Center</title>
+<title>Assessment Builder | screenings4u Management Portal</title>
 <link rel="stylesheet" href="assets/css/admin-lms.css">
 <style>
-.builder-layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:24px;align-items:start}
-.builder-stack{display:grid;gap:20px}
-.card{background:#fff;border:1px solid var(--admin-border);border-radius:var(--r-md);box-shadow:var(--shadow-soft)}
-.card-head{padding:20px 22px;border-bottom:1px solid var(--admin-border)}.card-head h2{margin:0;font-size:16px}.card-head p{margin:6px 0 0;color:var(--admin-muted);font-size:12px;line-height:1.55}.card-body{padding:22px}
-.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}.field{display:flex;flex-direction:column;gap:8px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:800}.field label em{color:var(--admin-orange);font-style:normal}.field input,.field select,.field textarea{width:100%;border:1px solid var(--admin-border);border-radius:10px;font:inherit;color:var(--admin-text);outline:none}.field input,.field select{height:44px;padding:0 12px;font-size:13px}.field textarea{min-height:90px;padding:12px;font-size:13px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--admin-blue);box-shadow:0 0 0 3px rgba(50,90,163,.09)}
-.question-list{display:grid;gap:14px}.question-card{border:1px solid var(--admin-border);border-radius:13px;overflow:hidden}.question-card.dragging{opacity:.55}.question-head{display:flex;align-items:center;gap:12px;padding:13px 15px;background:#fafbfd;border-bottom:1px solid var(--admin-border)}.drag-handle{color:var(--admin-muted);font-size:18px;cursor:grab}.question-number{width:26px;height:26px;border-radius:8px;background:#fff0e5;color:var(--admin-orange);display:grid;place-items:center;font-size:11px;font-weight:900}.question-head strong{font-size:12px;flex:1}.remove-question{border:0;background:transparent;color:#b34b4b;font-size:18px}.question-body{padding:16px}.question-top{display:grid;grid-template-columns:1fr 165px;gap:12px}.question-input{height:43px;width:100%;border:1px solid var(--admin-border);border-radius:9px;padding:0 11px;font:inherit;font-size:12px;outline:none}.answer-options{display:grid;gap:8px;margin-top:13px}.answer-row{display:grid;grid-template-columns:30px 1fr 34px;gap:8px;align-items:center}.correct-radio{width:18px;height:18px;accent-color:var(--admin-orange);justify-self:center}.answer-row input[type=text]{height:40px;border:1px solid var(--admin-border);border-radius:9px;padding:0 10px;font:inherit;font-size:12px}.answer-delete{border:0;background:transparent;color:var(--admin-muted);font-size:17px}.add-answer{margin-top:10px;border:1px dashed #b9c6da;background:#fff;color:var(--admin-blue);height:38px;width:100%;border-radius:9px;font-size:11px;font-weight:800}.explanation{margin-top:13px;width:100%;min-height:65px;border:1px solid var(--admin-border);border-radius:9px;padding:10px;font:inherit;font-size:12px;resize:vertical}.add-question{width:100%;height:48px;border:1px dashed #e0b78f;background:#fffaf5;border-radius:11px;color:var(--admin-orange);font-size:12px;font-weight:900}
-.sidebar{position:sticky;top:20px}.side-section{padding:20px}.side-section+.side-section{border-top:1px solid var(--admin-border)}.side-section h2{margin:0 0 14px;font-size:13px}.status-choice{display:grid;gap:9px}.status-option{display:flex;gap:10px;padding:11px;border:1px solid var(--admin-border);border-radius:10px;cursor:pointer}.status-option input{margin-top:2px;accent-color:var(--admin-orange)}.status-option strong{display:block;font-size:12px}.status-option span{display:block;margin-top:3px;color:var(--admin-muted);font-size:10px;line-height:1.45}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;font-size:12px;font-weight:700}.setting-row input[type=number]{width:72px;height:39px;border:1px solid var(--admin-border);border-radius:9px;padding:0 10px;font:inherit}.toggle{width:42px;height:24px;border-radius:999px;background:#d7dee9;position:relative;border:0;cursor:pointer}.toggle:after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;left:3px;top:3px;transition:.2s}.toggle.active{background:var(--admin-orange)}.toggle.active:after{left:21px}.side-actions{display:grid;gap:10px}.side-actions>*{width:100%;justify-content:center;text-align:center}.preview-link{height:42px;border:1px solid var(--admin-border);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--admin-blue);font-size:12px;font-weight:800}.breadcrumb{display:flex;gap:8px;align-items:center;margin-bottom:12px;color:var(--admin-muted);font-size:12px}.breadcrumb a{color:var(--admin-blue);font-weight:700}.empty{padding:35px;text-align:center;border:1px dashed #e0b78f;border-radius:12px;color:var(--admin-muted);font-size:12px}.warning{margin-top:12px;padding:12px;border-radius:10px;background:#fff8ef;border:1px solid #f0d5b4;color:#79522b;font-size:10px;line-height:1.55}
-@media(max-width:1080px){.builder-layout{grid-template-columns:1fr}.sidebar{position:static}}@media(max-width:700px){.field-grid,.question-top{grid-template-columns:1fr}.card-body{padding:17px}.card-head{padding:17px}}
+:root{--ab-blue:#173d78;--ab-orange:#ff6b00;--ab-text:#263246;--ab-muted:#6d7888;--ab-line:#dfe5ec;--ab-bg:#f5f7fa;--ab-ok:#18794e;--ab-warn:#a15c00;--ab-bad:#b42318}
+*{box-sizing:border-box}.ab-page{padding:28px;background:var(--ab-bg);min-height:calc(100vh - 72px);color:var(--ab-text)}
+.ab-heading,.ab-card-head,.ab-actions,.ab-footer{display:flex;align-items:center}.ab-heading{justify-content:space-between;gap:22px;margin-bottom:18px}.ab-heading h1{margin:4px 0 6px;color:var(--ab-blue);font-size:36px;line-height:1.05}.ab-heading p,.ab-card-head p{margin:0;color:var(--ab-muted);font-size:13px;line-height:1.55;max-width:790px}.ab-kicker{display:block;color:var(--ab-orange);font-size:10px;font-weight:900;letter-spacing:.12em}.ab-actions{gap:8px;flex-wrap:wrap}
+.ab-btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 14px;border:1px solid #cfd7e2;border-radius:7px;background:#fff;color:var(--ab-blue);font:800 11px/1 Arial,sans-serif;text-decoration:none;cursor:pointer}.ab-btn.primary{background:var(--ab-blue);border-color:var(--ab-blue);color:#fff}.ab-btn.orange{background:var(--ab-orange);border-color:var(--ab-orange);color:#fff}.ab-btn.danger{color:var(--ab-bad);border-color:#efcaca}.ab-btn:disabled{opacity:.45;cursor:not-allowed}
+.ab-message{display:none;margin-bottom:14px;padding:10px 12px;border-radius:7px;font-size:10px;font-weight:800}.ab-message.show{display:block}.ab-message.ok{background:#edf8f2;border:1px solid #cce8d9;color:var(--ab-ok)}.ab-message.error{background:#fff5f5;border:1px solid #fed7d7;color:var(--ab-bad)}
+.ab-layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start}.ab-main,.ab-side{display:grid;gap:18px}.ab-card{background:#fff;border:1px solid var(--ab-line);border-radius:9px;overflow:hidden;box-shadow:0 2px 10px rgba(23,61,120,.035)}.ab-card-head{justify-content:space-between;gap:16px;padding:17px 18px;border-bottom:1px solid var(--ab-line)}.ab-card-head h2,.ab-card-head h3{margin:3px 0 4px;color:var(--ab-blue);font-size:17px}.ab-title-wrap{display:flex;align-items:flex-start;gap:11px}.ab-step{width:31px;height:31px;border-radius:50%;background:#eef4fb;color:var(--ab-blue);display:grid;place-items:center;font-size:9px;font-weight:900;flex:0 0 auto}.ab-body{padding:18px}
+.ab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.ab-field{display:grid;gap:6px}.ab-field.full{grid-column:1/-1}.ab-field label{color:var(--ab-blue);font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.035em}.ab-field input,.ab-field textarea,.ab-field select{width:100%;border:1px solid #d4dce6;border-radius:7px;background:#fff;color:var(--ab-text);font:11px Arial,sans-serif;outline:none}.ab-field input,.ab-field select{height:40px;padding:0 10px}.ab-field textarea{padding:10px;resize:vertical;line-height:1.5}.ab-field input:focus,.ab-field textarea:focus,.ab-field select:focus{border-color:#8aa7cb;box-shadow:0 0 0 3px rgba(23,61,120,.07)}.ab-help{color:var(--ab-muted);font-size:8px;line-height:1.45}
+.ab-question-list{display:grid;gap:12px}.ab-question{border:1px solid #e2e7ed;border-radius:8px;overflow:hidden}.ab-question.dragging{opacity:.55}.ab-question-head{display:flex;align-items:center;gap:10px;padding:11px 12px;background:#fbfcfe;border-bottom:1px solid #edf0f4}.ab-drag{cursor:grab;color:#97a2b0;font-size:16px}.ab-number{width:29px;height:29px;border-radius:50%;background:#fff2e8;color:#b44b00;display:grid;place-items:center;font-size:9px;font-weight:900}.ab-question-head strong{flex:1;color:var(--ab-blue);font-size:10px}.ab-question-body{padding:13px}.ab-question-top{display:grid;grid-template-columns:minmax(0,1fr) 160px 95px;gap:9px}.ab-question-top input,.ab-question-top select,.ab-points{height:38px;border:1px solid #d4dce6;border-radius:7px;padding:0 9px;font-size:10px}.ab-options{display:grid;gap:7px;margin-top:11px}.ab-option{display:grid;grid-template-columns:30px minmax(0,1fr) 34px;gap:7px;align-items:center}.ab-option input[type=radio]{width:17px;height:17px;accent-color:var(--ab-orange);justify-self:center}.ab-option input[type=text]{height:36px;border:1px solid #d4dce6;border-radius:7px;padding:0 9px;font-size:10px}.ab-icon-btn{border:0;background:transparent;color:var(--ab-bad);font-size:17px;cursor:pointer}.ab-add-option{width:100%;height:36px;margin-top:8px;border:1px dashed #a9bad0;border-radius:7px;background:#f9fbfe;color:var(--ab-blue);font-size:9px;font-weight:900;cursor:pointer}.ab-explanation{width:100%;min-height:64px;margin-top:10px;border:1px solid #d4dce6;border-radius:7px;padding:9px;font-size:10px;resize:vertical}.ab-required{display:flex;align-items:center;gap:7px;margin-top:9px;color:var(--ab-muted);font-size:9px}.ab-required input{accent-color:var(--ab-orange)}
+.ab-empty{padding:30px;text-align:center;color:var(--ab-muted);font-size:10px;border:1px dashed #d8e0e9;border-radius:8px}.ab-add-question{width:100%;min-height:45px;margin-top:12px;border:1px dashed #e0b78f;border-radius:8px;background:#fffaf5;color:var(--ab-orange);font-size:10px;font-weight:900;cursor:pointer}
+.ab-check{display:flex;align-items:center;gap:8px;padding:9px 0;color:var(--ab-text);font-size:10px}.ab-check input{width:17px;height:17px;accent-color:var(--ab-orange)}
+.ab-summary-row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #edf0f4}.ab-summary-row:last-child{border-bottom:0}.ab-summary-row span{color:var(--ab-muted);font-size:9px}.ab-summary-row strong{color:var(--ab-blue);font-size:10px;text-align:right}.ab-side{position:sticky;top:18px}.ab-footer{justify-content:space-between;gap:12px;margin-top:18px;padding:16px 18px;background:#fff;border:1px solid var(--ab-line);border-radius:9px}
+@media(max-width:1080px){.ab-layout{grid-template-columns:1fr}.ab-side{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.ab-page{padding:18px}.ab-heading,.ab-card-head,.ab-footer{flex-direction:column;align-items:stretch}.ab-heading h1{font-size:31px}.ab-grid,.ab-question-top,.ab-side{grid-template-columns:1fr}.ab-field.full{grid-column:auto}.ab-btn{width:100%}}
 </style>
 </head>
-<body>
+<body class="admin-lms-assessment-builder-page">
 <div class="admin-lms-app">
 <div id="admin-lms-sidebar-target"></div>
 <main class="admin-lms-main">
 <header class="admin-lms-topbar">
-<div class="admin-lms-topbar-left"><button type="button" class="admin-lms-menu-button" data-admin-menu-toggle aria-label="Toggle navigation"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div class="admin-lms-page-context"><small>Screenings4u Learning Center</small><strong>Assessment Builder</strong></div></div>
-<div class="admin-lms-topbar-right"><a href="admin-lms-notifications.html" class="admin-lms-icon-button" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a><div class="admin-lms-user"><span class="admin-lms-avatar">AD</span><span class="admin-lms-user-copy"><span class="admin-lms-user-name">Administrator</span><span class="admin-lms-user-role">Learning Center Admin</span></span></div></div>
+<div class="admin-lms-topbar-left">
+<button type="button" class="admin-lms-sidebar-collapse" data-admin-sidebar-collapse aria-label="Collapse sidebar" aria-expanded="true"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"></path></svg></button>
+<div class="admin-lms-page-context"><small>Training</small><strong>Assessment Builder</strong></div>
+</div>
+<div class="admin-lms-topbar-right">
+<a href="admin-notifications.html" class="admin-lms-icon-button" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg></a>
+<div class="admin-user-dropdown">
+<button type="button" class="admin-user-dropdown-toggle" data-admin-user-menu-toggle aria-expanded="false"><span class="admin-lms-avatar">AD</span><span class="admin-lms-user-copy"><span class="admin-lms-user-name">Administrator</span><span class="admin-lms-user-role">System Administrator</span></span><span class="admin-user-dropdown-chevron"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span></button>
+<div class="admin-user-dropdown-menu" data-admin-user-menu>
+<div class="admin-user-dropdown-header"><strong>Administrator</strong><span>System Administrator</span></div>
+<a href="../index.html" class="admin-user-dropdown-item"><span>Visit Main Website</span></a>
+<a href="admin-account-access.html" class="admin-user-dropdown-item"><span>Account Access</span></a>
+<a href="admin-accounts.html" class="admin-user-dropdown-item"><span>My Account</span></a>
+<div class="admin-user-dropdown-divider"></div>
+<button type="button" class="admin-user-dropdown-item admin-user-logout" data-admin-logout><span>Logout</span></button>
+</div></div></div>
 </header>
 
-<section class="admin-lms-content">
-<div class="breadcrumb"><a href="admin-lms-assessments.html">Assessment Management</a><span>/</span><span id="crumb">Create Assessment</span></div>
-<div class="admin-page-heading"><div><span class="admin-page-eyebrow">Final Certification Step</span><h1 id="pageTitle">Create Final Assessment</h1><p id="pageDescription">Build the final assessment learners must pass before becoming certificate eligible.</p></div><a href="admin-lms-assessments.html" class="admin-secondary-btn">Back to Assessments</a></div>
+<section class="ab-page">
+<header class="ab-heading">
+<div><span class="ab-kicker">LEARNING ASSESSMENTS</span><h1 id="abHeading">Create Assessment</h1><p>Build quizzes, knowledge checks, and final assessments using the live LMS assessment, question, and answer-option tables.</p></div>
+<div class="ab-actions"><a class="ab-btn" href="admin-lms-courses.html">All Courses</a><a class="ab-btn" id="abCourseManager" href="admin-lms-course-manager.html">Course Manager</a></div>
+</header>
 
-<form id="assessmentForm" class="builder-layout">
-<div class="builder-stack">
-<section class="card"><div class="card-head"><h2>Assessment Details</h2><p>This assessment is the final learning requirement for a completed course.</p></div><div class="card-body"><div class="field-grid">
-<div class="field full"><label>Assessment Title <em>*</em></label><input id="assessmentTitle" required placeholder="Enter final assessment title"></div>
-<div class="field full"><label>Course <em>*</em></label><select id="assessmentCourse" required><option value="">Select a course</option><option value="dot">DOT Specimen Collector Training</option><option value="hair">DOT Specimen Collector Training + Hair</option><option value="trainer">DOT Specimen Collector Train the Trainer</option><option value="trainer-hair">DOT Collector Train the Trainer + Hair</option></select></div>
-<div class="field full"><label>Instructions</label><textarea id="assessmentInstructions" placeholder="Explain the final assessment requirements to the learner."></textarea></div>
-</div></div></section>
+<div class="ab-message" id="abMessage"></div>
 
-<section class="card"><div class="card-head"><h2>Assessment Questions</h2><p>Add the questions used to determine whether the learner has successfully completed the training.</p></div><div class="card-body"><div id="questionList" class="question-list"></div><div id="emptyQuestions" class="empty">No assessment questions have been added yet.</div><button type="button" class="add-question" id="addQuestionBtn">+ Add Assessment Question</button></div></section>
-</div>
+<form id="abForm" class="ab-layout">
+<div class="ab-main">
 
-<aside class="card sidebar">
-<div class="side-section"><h2>Publishing</h2><div class="status-choice">
-<label class="status-option"><input type="radio" name="status" value="draft" checked><span><strong>Save as Draft</strong><span>Only administrators can access this assessment.</span></span></label>
-<label class="status-option"><input type="radio" name="status" value="published"><span><strong>Published</strong><span>Available to learners who meet completion requirements.</span></span></label>
+<section class="ab-card">
+<header class="ab-card-head"><div class="ab-title-wrap"><span class="ab-step">01</span><div><span class="ab-kicker">ASSESSMENT DETAILS</span><h2>Assessment Information</h2><p>Assessments are attached to a lesson in the selected course.</p></div></div></header>
+<div class="ab-body"><div class="ab-grid">
+<div class="ab-field full"><label for="abTitle">Assessment Title</label><input id="abTitle" required type="text" placeholder="Enter assessment title"></div>
+<div class="ab-field"><label for="abCourse">Course</label><select id="abCourse" required><option value="">Select course</option></select></div>
+<div class="ab-field"><label for="abLesson">Lesson</label><select id="abLesson" required><option value="">Select lesson</option></select></div>
+<div class="ab-field"><label for="abType">Assessment Type</label><select id="abType"><option value="quiz">Quiz</option><option value="knowledge_check">Knowledge Check</option><option value="final">Final Assessment</option></select></div>
+<div class="ab-field"><label for="abStatus">Status</label><select id="abStatus"><option value="draft">Draft</option><option value="published">Published</option><option value="archived">Archived</option></select></div>
+<div class="ab-field full"><label for="abDescription">Instructions / Description</label><textarea id="abDescription" rows="5" placeholder="Explain the assessment requirements to the learner..."></textarea></div>
 </div></div>
-<div class="side-section"><h2>Completion Settings</h2>
-<div class="setting-row"><span>Passing score</span><input id="passingScore" type="number" min="0" max="100" value="80"></div>
-<div class="setting-row"><span>Maximum attempts</span><input id="maxAttempts" type="number" min="0" value="3"></div>
-<div class="setting-row"><span>Randomize questions</span><button type="button" class="toggle active" id="randomToggle" aria-label="Toggle randomization"></button></div>
-<div class="setting-row"><span>Review answers after attempt</span><button type="button" class="toggle" id="reviewToggle" aria-label="Toggle answer review"></button></div>
-<div class="warning">Final assessment completion will later connect to learner progress and the certificate issuance workflow.</div>
+</section>
+
+<section class="ab-card">
+<header class="ab-card-head"><div class="ab-title-wrap"><span class="ab-step">02</span><div><span class="ab-kicker">QUESTIONS</span><h2>Assessment Questions</h2><p>Add multiple-choice or true/false questions, choose the correct answer, and set point values.</p></div></div></header>
+<div class="ab-body">
+<div id="abQuestionList" class="ab-question-list"></div>
+<div id="abEmpty" class="ab-empty">No assessment questions have been added yet.</div>
+<button class="ab-add-question" id="abAddQuestion" type="button">+ Add Assessment Question</button>
 </div>
-<div class="side-section"><h2>Actions</h2><div class="side-actions"><button type="submit" class="admin-primary-btn" id="saveBtn">Save Assessment</button><a href="#" class="preview-link" id="previewBtn">Preview Assessment</a><a href="admin-lms-assessments.html" class="admin-secondary-btn">Cancel</a></div></div>
+</section>
+
+</div>
+
+<aside class="ab-side">
+<section class="ab-card"><header class="ab-card-head"><div><span class="ab-kicker">COMPLETION</span><h3>Assessment Settings</h3></div></header><div class="ab-body">
+<div class="ab-field"><label for="abPassingScore">Passing Score (%)</label><input id="abPassingScore" type="number" min="0" max="100" step="0.01" value="80"></div>
+<div class="ab-field" style="margin-top:12px"><label for="abMaxAttempts">Maximum Attempts</label><input id="abMaxAttempts" type="number" min="0" value="0"><span class="ab-help">0 means unlimited attempts.</span></div>
+<div class="ab-field" style="margin-top:12px"><label for="abTimeLimit">Time Limit (Minutes)</label><input id="abTimeLimit" type="number" min="0" value="0"><span class="ab-help">0 means no time limit.</span></div>
+<label class="ab-check"><input id="abRandomQuestions" type="checkbox"> Randomize questions</label>
+<label class="ab-check"><input id="abRandomOptions" type="checkbox"> Randomize answer options</label>
+<label class="ab-check"><input id="abShowAnswers" type="checkbox" checked> Show correct answers</label>
+<label class="ab-check"><input id="abRequirePass" type="checkbox" checked> Require passing score</label>
+</div></section>
+
+<section class="ab-card"><header class="ab-card-head"><div><span class="ab-kicker">SUMMARY</span><h3>Assessment Record</h3></div></header><div class="ab-body">
+<div class="ab-summary-row"><span>Mode</span><strong id="abSummaryMode">New Assessment</strong></div>
+<div class="ab-summary-row"><span>Status</span><strong id="abSummaryStatus">Draft</strong></div>
+<div class="ab-summary-row"><span>Questions</span><strong id="abSummaryQuestions">0</strong></div>
+<div class="ab-summary-row"><span>Total Points</span><strong id="abSummaryPoints">0</strong></div>
+<div class="ab-summary-row"><span>Last Saved</span><strong id="abSummarySaved">Not saved</strong></div>
+</div></section>
+
+<section class="ab-card"><header class="ab-card-head"><div><span class="ab-kicker">ACTIONS</span><h3>Assessment Actions</h3></div></header><div class="ab-body" style="display:grid;gap:8px">
+<button class="ab-btn primary" id="abSave" type="submit">Save Assessment</button>
+<a class="ab-btn" id="abBackCourse" href="admin-lms-course-builder.html">Back to Course</a>
+<button class="ab-btn danger" id="abDelete" type="button" disabled>Delete Assessment</button>
+</div></section>
 </aside>
 </form>
+
+<div class="ab-footer">
+<a class="ab-btn" href="admin-lms-courses.html">Cancel</a>
+<div class="ab-actions"><button class="ab-btn primary" id="abSaveBottom" type="button">Save Assessment</button><button class="ab-btn orange" id="abPublishBottom" type="button">Save & Publish</button></div>
+</div>
 </section>
 </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/core-auth.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/session-security.js"></script>
+<script src="assets/js/portal-auth-guard.js"></script>
+<script src="assets/js/admin-auth-guard.js"></script>
 <script src="assets/js/admin-lms-sidebar.js"></script>
-<script>
-(function(){
-"use strict";
-var list=document.getElementById("questionList"),empty=document.getElementById("emptyQuestions"),params=new URLSearchParams(location.search),assessmentId=params.get("assessment");
-var data={
-"dot-final":{title:"DOT Specimen Collector Final Assessment",course:"dot",instructions:"Complete the final assessment to demonstrate your understanding of the course material and become eligible for certification."},
-"dot-hair-final":{title:"DOT Specimen Collector + Hair Final Assessment",course:"hair",instructions:"Complete all questions covering DOT specimen collection and hair collection procedures."},
-"trainer-final":{title:"DOT Train the Trainer Final Assessment",course:"trainer",instructions:"Demonstrate your competency in the course material before certification."},
-"trainer-hair-final":{title:"DOT Train the Trainer + Hair Final Assessment",course:"trainer-hair",instructions:"Complete the final assessment covering trainer and hair collection requirements."}
-};
-function updateNumbers(){var cards=list.querySelectorAll(".question-card");cards.forEach(function(card,i){card.querySelector(".question-number").textContent=i+1;});empty.style.display=cards.length?"none":"block";}
-function makeAnswer(name,correct){var row=document.createElement("div");row.className="answer-row";row.innerHTML='<input class="correct-radio" type="radio" name="'+name+'" '+(correct?"checked":"")+' aria-label="Correct answer"><input type="text" placeholder="Answer option"><button type="button" class="answer-delete" aria-label="Remove answer">×</button>';return row;}
-function addQuestion(){
-var id="assessment_question_"+Date.now()+"_"+Math.floor(Math.random()*999);
-var card=document.createElement("article");card.className="question-card";card.draggable=true;
-card.innerHTML='<div class="question-head"><span class="drag-handle">⋮⋮</span><span class="question-number"></span><strong>Assessment Question</strong><button type="button" class="remove-question" aria-label="Remove question">×</button></div><div class="question-body"><div class="question-top"><input class="question-input" placeholder="Enter your question"><select class="question-type"><option value="multiple">Multiple Choice</option><option value="truefalse">True / False</option></select></div><div class="answer-options"></div><button type="button" class="add-answer">+ Add Answer Option</button><textarea class="explanation" placeholder="Optional feedback or explanation."></textarea></div>';
-var answers=card.querySelector(".answer-options");
-for(var i=0;i<4;i++)answers.appendChild(makeAnswer(id,i===0));
-card.querySelector(".add-answer").onclick=function(){answers.appendChild(makeAnswer(id,false));};
-card.querySelector(".remove-question").onclick=function(){card.remove();updateNumbers();};
-card.querySelector(".question-type").onchange=function(){if(this.value==="truefalse"){answers.innerHTML="";var a=makeAnswer(id,true),b=makeAnswer(id,false);a.querySelector("input[type=text]").value="True";b.querySelector("input[type=text]").value="False";answers.append(a,b);}};
-answers.addEventListener("click",function(e){if(e.target.classList.contains("answer-delete"))e.target.closest(".answer-row").remove();});
-card.addEventListener("dragstart",function(){card.classList.add("dragging");});
-card.addEventListener("dragend",function(){card.classList.remove("dragging");updateNumbers();});
-list.appendChild(card);updateNumbers();
-}
-list.addEventListener("dragover",function(e){e.preventDefault();var dragging=list.querySelector(".dragging");if(!dragging)return;var after=[].slice.call(list.querySelectorAll(".question-card:not(.dragging)")).find(function(el){var r=el.getBoundingClientRect();return e.clientY<r.top+r.height/2;});if(after)list.insertBefore(dragging,after);else list.appendChild(dragging);});
-document.getElementById("addQuestionBtn").onclick=addQuestion;
-["randomToggle","reviewToggle"].forEach(function(id){document.getElementById(id).onclick=function(){this.classList.toggle("active");};});
-
-if(assessmentId&&data[assessmentId]){
-var a=data[assessmentId];document.getElementById("pageTitle").textContent="Edit Final Assessment";document.getElementById("crumb").textContent="Edit Assessment";document.getElementById("pageDescription").textContent="Update assessment requirements, questions, and completion settings.";document.getElementById("assessmentTitle").value=a.title;document.getElementById("assessmentCourse").value=a.course;document.getElementById("assessmentInstructions").value=a.instructions;addQuestion();addQuestion();addQuestion();
-}
-document.getElementById("assessmentForm").addEventListener("submit",function(e){e.preventDefault();if(!this.reportValidity())return;if(!list.querySelector(".question-card")){alert("Add at least one assessment question before saving.");return;}var status=document.querySelector('input[name="status"]:checked').value;document.getElementById("saveBtn").textContent=status==="published"?"Assessment Published":"Draft Saved";setTimeout(function(){location.href="admin-lms-assessments.html";},650);});
-document.getElementById("previewBtn").onclick=function(e){e.preventDefault();if(!list.querySelector(".question-card")){alert("Add a question before previewing the assessment.");return;}alert("The final learner assessment preview will be connected during LMS wiring.");};
-})();
-</script>
+<script src="assets/js/admin-lms-assessment-builder.js?v=20260829-2350"></script>
 </body>
 </html>

@@ -1,1279 +1,575 @@
+/* ============================================================
+   screenings4u — ADMIN DASHBOARD
+   Dashboard-only styling
+   Matches the visual language of the Employees page
+   ============================================================ */
 
 :root {
-  --employer-blue: #173d78;
-  --employer-blue-2: #325aa3;
-  --employer-orange: #f05a00;
-
-  --employer-bg: #f6f8fb;
-  --employer-surface: #ffffff;
-  --employer-border: #dfe5ed;
-
-  --employer-text: #25344a;
-  --employer-muted: #617087;
-
-  --employer-success: #16804d;
-  --employer-success-bg: #e9f8ef;
-
-  --employer-inactive: #687486;
-  --employer-inactive-bg: #f1f3f6;
-
-  --employer-radius: 10px;
-  --employer-shadow: 0 3px 11px rgba(20, 48, 82, .055);
+    --dashboard-blue: #173d78;
+    --dashboard-blue-light: #325aa3;
+    --dashboard-orange: #ff6b00;
+    --dashboard-orange-hover: #e86000;
+    --dashboard-card: #ffffff;
+    --dashboard-bg: #f5f7fa;
+    --dashboard-line: #e1e7ef;
+    --dashboard-line-soft: #edf0f4;
+    --dashboard-muted: #617087;
+    --dashboard-text: #172033;
+    --dashboard-success: #16804d;
 }
+
 
 /* ============================================================
    PAGE
    ============================================================ */
 
-.admin-employers-page {
-  width: 100%;
-  padding: 22px 24px 30px;
-  background: var(--employer-bg);
+.admin-dashboard-page .s4u-dashboard-page {
+    width: 100%;
+    min-width: 0;
+    padding: 28px;
 }
+
+.admin-dashboard-page .s4u-dashboard-page *,
+.admin-dashboard-page .s4u-dashboard-page *::before,
+.admin-dashboard-page .s4u-dashboard-page *::after {
+    box-sizing: border-box;
+}
+
 
 /* ============================================================
-   HEADING
+   PAGE HEADING
    ============================================================ */
 
-.admin-employers-heading {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-
-  min-height: 137px;
-  padding-bottom: 22px;
-  border-bottom: 1px solid #e3e8ef;
+.admin-dashboard-page .s4u-dashboard-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 24px;
 }
 
-.admin-employers-heading-copy {
-  min-width: 0;
+.admin-dashboard-page .s4u-dashboard-heading-copy {
+    min-width: 0;
 }
 
-.admin-employers-kicker {
-  display: block;
-  margin-bottom: 5px;
-
-  color: var(--employer-orange);
-
-  font-size: 11px;
-  line-height: 1;
-  font-weight: 900;
-  letter-spacing: .045em;
-  text-transform: uppercase;
+.admin-dashboard-page .s4u-dashboard-kicker {
+    margin-bottom: 8px;
+    color: var(--dashboard-orange);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
-.admin-employers-heading h1 {
-  margin: 0;
-
-  color: var(--employer-blue);
-
-  font-size: clamp(38px, 3vw, 45px);
-  line-height: .98;
-  font-weight: 800;
-  letter-spacing: -.045em;
+.admin-dashboard-page .s4u-dashboard-heading h1 {
+    margin: 0 0 8px;
+    color: var(--dashboard-blue);
+    font-size: 38px;
+    line-height: 1.05;
+    font-weight: 900;
+    letter-spacing: -0.04em;
 }
 
-.admin-employers-heading p {
-  max-width: 850px;
-  margin: 8px 0 0;
-
-  color: #52627a;
-
-  font-size: 13px;
-  line-height: 1.45;
+.admin-dashboard-page .s4u-dashboard-heading p {
+    max-width: 760px;
+    margin: 0;
+    color: var(--dashboard-muted);
+    font-size: 13px;
+    line-height: 1.6;
 }
 
-.admin-employers-primary-button {
-  min-width: 145px;
-  height: 54px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-
-  flex: 0 0 auto;
-
-  padding: 0 20px;
-
-  border: 0;
-  border-radius: 10px;
-
-  background: linear-gradient(135deg, #ff8a16, var(--employer-orange));
-  color: #ffffff;
-
-  box-shadow: 0 10px 20px rgba(240, 90, 0, .16);
-
-  font: inherit;
-  font-size: 12px;
-  font-weight: 900;
-
-  cursor: pointer;
-  transition: transform .16s ease, box-shadow .16s ease;
+.admin-dashboard-page .s4u-dashboard-primary-button {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 11px 18px;
+    border: 1px solid var(--dashboard-orange);
+    border-radius: 8px;
+    background: var(--dashboard-orange);
+    color: #ffffff;
+    box-shadow: 0 7px 16px rgba(255, 107, 0, 0.14);
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+        transform 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease;
 }
 
-.admin-employers-primary-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 13px 24px rgba(240, 90, 0, .22);
+.admin-dashboard-page .s4u-dashboard-primary-button:hover {
+    transform: translateY(-1px);
+    background: var(--dashboard-orange-hover);
+    border-color: var(--dashboard-orange-hover);
 }
 
-.admin-employers-primary-button:active {
-  transform: translateY(0);
-}
-
-.admin-employers-primary-button span {
-  font-size: 20px;
-  line-height: 1;
-  font-weight: 500;
-}
 
 /* ============================================================
    METRICS
    ============================================================ */
 
-.admin-employer-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 13px;
-
-  margin-top: 22px;
+.admin-dashboard-page .s4u-dashboard-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
 }
 
-.admin-employer-metric-card {
-  min-width: 0;
-  height: 138px;
-
-  padding: 17px 20px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  background: var(--employer-surface);
-
-  border: 1px solid var(--employer-border);
-  border-radius: var(--employer-radius);
-
-  box-shadow: var(--employer-shadow);
+.admin-dashboard-page .s4u-dashboard-metric-card {
+    min-width: 0;
+    padding: 19px;
+    border: 1px solid var(--dashboard-line);
+    border-radius: 10px;
+    background: var(--dashboard-card);
+    box-shadow: 0 4px 14px rgba(20, 48, 82, 0.04);
 }
 
-.admin-employer-metric-label {
-  display: block;
-
-  color: #5f6d83;
-
-  font-size: 10px;
-  line-height: 1.2;
-  font-weight: 900;
-  letter-spacing: .075em;
-  text-transform: uppercase;
-}
-
-.admin-employer-metric-value {
-  display: block;
-  margin-top: 16px;
-
-  color: #183f7c;
-
-  font-size: 31px;
-  line-height: 1;
-  font-weight: 800;
-  letter-spacing: -.04em;
-}
-
-/* ============================================================
-   DIRECTORY PANEL
-   ============================================================ */
-
-.admin-employers-panel {
-  margin-top: 16px;
-
-  overflow: hidden;
-
-  background: var(--employer-surface);
-
-  border: 1px solid var(--employer-border);
-  border-radius: var(--employer-radius);
-
-  box-shadow: var(--employer-shadow);
-}
-
-/* ============================================================
-   TOOLBAR
-   ============================================================ */
-
-.admin-employers-toolbar {
-  min-height: 76px;
-
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  padding: 16px;
-
-  border-bottom: 1px solid #e7ebf1;
-}
-
-.admin-employers-search {
-  min-width: 220px;
-  flex: 1;
-
-  position: relative;
-}
-
-.admin-employers-search svg {
-  position: absolute;
-  top: 50%;
-  left: 13px;
-
-  width: 17px;
-  height: 17px;
-
-  transform: translateY(-50%);
-
-  fill: none;
-  stroke: #7d8aa0;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-
-  pointer-events: none;
-}
-
-.admin-employers-search input,
-.admin-employers-toolbar select {
-  width: 100%;
-  height: 42px;
-
-  border: 1px solid #d9e1eb;
-  border-radius: 8px;
-  outline: none;
-
-  background: #ffffff;
-  color: var(--employer-text);
-
-  font: inherit;
-  font-size: 12px;
-
-  transition: border-color .18s ease, box-shadow .18s ease;
-}
-
-.admin-employers-search input {
-  padding: 0 13px 0 39px;
-}
-
-.admin-employers-search input::placeholder {
-  color: #9aa5b5;
-}
-
-.admin-employers-toolbar select {
-  width: 155px;
-  padding: 0 34px 0 12px;
-  cursor: pointer;
-}
-
-.admin-employers-search input:focus,
-.admin-employers-toolbar select:focus {
-  border-color: var(--employer-blue-2);
-  box-shadow: 0 0 0 3px rgba(50, 90, 163, .10);
-}
-
-.admin-employers-secondary-button {
-  height: 42px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0 16px;
-
-  border: 1px solid #cbd7e5;
-  border-radius: 8px;
-
-  background: #ffffff;
-  color: #214b87;
-
-  font: inherit;
-  font-size: 11px;
-  font-weight: 900;
-
-  cursor: pointer;
-
-  transition: background .16s ease, border-color .16s ease;
-}
-
-.admin-employers-secondary-button:hover {
-  background: #f7faff;
-  border-color: #9fb6d3;
-}
-
-/* ============================================================
-   TABLE
-   ============================================================ */
-
-.admin-employers-table-wrap {
-  width: 100%;
-  overflow-x: auto;
-}
-
-.admin-employers-table {
-  width: 100%;
-  min-width: 1080px;
-
-  border-collapse: collapse;
-}
-
-.admin-employers-table thead {
-  background: #fbfcfe;
-}
-
-.admin-employers-table th,
-.admin-employers-table td {
-  padding: 16px 18px;
-
-  border-bottom: 1px solid #edf0f4;
-
-  text-align: left;
-  vertical-align: middle;
-}
-
-.admin-employers-table th {
-  color: #718096;
-
-  font-size: 10px;
-  line-height: 1.2;
-  font-weight: 900;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-}
-
-.admin-employers-table td {
-  color: #4e5d72;
-
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-.admin-employers-table tbody tr {
-  transition: background .16s ease;
-}
-
-.admin-employers-table tbody tr:hover {
-  background: #fafcff;
-}
-
-.admin-employers-table tbody tr:last-child td {
-  border-bottom: 0;
-}
-
-.admin-employers-table td strong {
-  display: block;
-
-  color: #173b73;
-
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.admin-employers-table td small {
-  display: block;
-  margin-top: 3px;
-
-  color: #748198;
-
-  font-size: 10px;
-  line-height: 1.35;
-}
-
-/* ============================================================
-   STATUS
-   ============================================================ */
-
-.status {
-  display: inline-flex;
-  align-items: center;
-
-  min-height: 26px;
-  padding: 0 10px;
-
-  border-radius: 999px;
-
-  font-size: 10px;
-  line-height: 1;
-  font-weight: 900;
-  text-transform: capitalize;
-}
-
-.status.active {
-  background: var(--employer-success-bg);
-  color: var(--employer-success);
-}
-
-.status.inactive {
-  background: var(--employer-inactive-bg);
-  color: var(--employer-inactive);
-}
-
-/* ============================================================
-   ACTION BUTTON
-   ============================================================ */
-
-.row-action {
-  min-height: 32px;
-
-  padding: 6px 10px;
-
-  border: 1px solid #dfe5ed;
-  border-radius: 7px;
-
-  background: #ffffff;
-  color: #214b87;
-
-  font: inherit;
-  font-size: 11px;
-  font-weight: 800;
-
-  cursor: pointer;
-
-  transition: background .16s ease, border-color .16s ease;
-}
-
-.row-action:hover {
-  background: #f7faff;
-  border-color: #bfcfe2;
-}
-
-/* ============================================================
-   TABLE STATES
-   ============================================================ */
-
-.admin-employers-loading-row,
-.empty-row {
-  height: 150px;
-
-  color: #647189 !important;
-
-  text-align: center !important;
-
-  font-size: 13px !important;
-}
-
-/* ============================================================
-   FOOTER
-   ============================================================ */
-
-.admin-employers-table-footer {
-  min-height: 52px;
-
-  display: flex;
-  align-items: center;
-
-  padding: 13px 18px;
-
-  border-top: 1px solid #edf0f4;
-
-  color: #647189;
-
-  font-size: 11px;
-  font-weight: 700;
-}
-
-/* ============================================================
-   SHARED UI.JS FORM MODAL SUPPORT
-   ============================================================ */
-
-.s4u-form-modal-field {
-  display: block;
-  margin-bottom: 14px;
-}
-
-.s4u-form-modal-field span {
-  display: block;
-  margin-bottom: 6px;
-
-  color: var(--employer-text);
-
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.s4u-form-modal-field input,
-.s4u-form-modal-field select,
-.s4u-form-modal-field textarea {
-  width: 100%;
-
-  border: 1px solid #d9e1eb;
-  border-radius: 8px;
-
-  background: #ffffff;
-  color: var(--employer-text);
-
-  font: inherit;
-  font-size: 13px;
-}
-
-.s4u-form-modal-field input,
-.s4u-form-modal-field select {
-  height: 42px;
-  padding: 0 12px;
-}
-
-.s4u-form-modal-field textarea {
-  min-height: 100px;
-  padding: 10px 12px;
-  resize: vertical;
-}
-
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
-
-@media (max-width: 1250px) {
-  .admin-employer-metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 900px) {
-  .admin-employers-page {
-    padding: 20px;
-  }
-
-  .admin-employers-heading {
-    align-items: flex-start;
-    flex-direction: column;
-
-    min-height: 0;
-  }
-
-  .admin-employers-primary-button {
-    min-width: 150px;
-  }
-}
-
-@media (max-width: 700px) {
-  .admin-employers-page {
-    padding: 18px 14px 24px;
-  }
-
-  .admin-employers-heading {
-    gap: 18px;
-    padding-bottom: 18px;
-  }
-
-  .admin-employers-heading h1 {
-    font-size: 36px;
-  }
-
-  .admin-employers-heading p {
+.admin-dashboard-page .s4u-dashboard-metric-card > span {
+    display: block;
+    color: var(--dashboard-muted);
     font-size: 12px;
-  }
-
-  .admin-employer-metrics {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin-top: 16px;
-  }
-
-  .admin-employer-metric-card {
-    height: 118px;
-  }
-
-  .admin-employers-toolbar {
-    align-items: stretch;
-    flex-wrap: wrap;
-  }
-
-  .admin-employers-search {
-    width: 100%;
-    min-width: 100%;
-  }
-
-  .admin-employers-toolbar select,
-  .admin-employers-secondary-button {
-    flex: 1;
-    width: auto;
-  }
+    font-weight: 800;
 }
 
-@media (max-width: 430px) {
-  .admin-employers-toolbar select,
-  .admin-employers-secondary-button {
-    width: 100%;
-    flex-basis: 100%;
-  }
-
-  .admin-employers-primary-button {
-    width: 100%;
-  }
+.admin-dashboard-page .s4u-dashboard-metric-card > strong {
+    display: block;
+    margin-top: 8px;
+    color: var(--dashboard-blue);
+    font-size: 31px;
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: -0.035em;
 }
 
-/* ============================================================
-   EMPLOYER ADD / EDIT MODAL
-============================================================ */
-
-.s4u-modal-root {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-}
-
-.s4u-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-
-.s4u-modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(20, 35, 60, 0.58);
-  backdrop-filter: blur(4px);
-}
-
-.s4u-modal-panel {
-  position: relative;
-  z-index: 2;
-
-  width: min(760px, calc(100vw - 48px));
-  max-height: calc(100vh - 48px);
-
-  overflow-y: auto;
-
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-
-  box-shadow: 0 24px 70px rgba(20, 48, 82, 0.28);
-}
-
-.s4u-form-modal-panel {
-  width: min(760px, calc(100vw - 48px));
-}
-
-.s4u-modal-content {
-  padding: 28px;
-}
-
-.s4u-modal-content h2 {
-  margin: 0;
-  color: #24364f;
-  font-size: 24px;
-  line-height: 1.2;
-  font-weight: 800;
-}
-
-.s4u-modal-content > p {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 13px;
+.admin-dashboard-page .s4u-dashboard-metric-card > small {
+    display: block;
+    margin-top: 9px;
+    color: var(--dashboard-muted);
+    font-size: 11px;
+    line-height: 1.45;
 }
 
 
 /* ============================================================
-   FORM GRID
-============================================================ */
+   MAIN GRID
+   ============================================================ */
 
-.s4u-form-modal-form {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px 20px;
-  margin-top: 24px;
-}
-
-.s4u-form-modal-field {
-  display: grid;
-  gap: 7px;
-}
-
-/* Full width fields */
-
-.s4u-form-modal-field:nth-last-child(1),
-.s4u-form-modal-field:has(textarea) {
-  grid-column: 1 / -1;
-}
-
-.s4u-form-modal-field > span {
-  color: #3f5068;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.s4u-form-modal-field input,
-.s4u-form-modal-field select,
-.s4u-form-modal-field textarea {
-  box-sizing: border-box;
-
-  width: 100%;
-  min-height: 44px;
-
-  padding: 11px 13px;
-
-  border: 1px solid #d9e1eb;
-  border-radius: 8px;
-
-  background: #fff;
-  color: #24364f;
-
-  font: inherit;
-  font-size: 13px;
-
-  outline: none;
-
-  transition:
-    border-color .18s ease,
-    box-shadow .18s ease;
-}
-
-.s4u-form-modal-field textarea {
-  min-height: 105px;
-  resize: vertical;
-}
-
-.s4u-form-modal-field input:focus,
-.s4u-form-modal-field select:focus,
-.s4u-form-modal-field textarea:focus {
-  border-color: var(--blue2);
-  box-shadow: 0 0 0 3px rgba(50, 90, 163, .12);
+.admin-dashboard-page .s4u-dashboard-main-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(330px, 0.85fr);
+    gap: 18px;
+    align-items: start;
+    margin-bottom: 22px;
 }
 
 
 /* ============================================================
-   ACTIONS
-============================================================ */
+   PANELS
+   ============================================================ */
 
-.s4u-modal-actions {
-  grid-column: 1 / -1;
-
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-
-  margin-top: 6px;
-  padding-top: 20px;
-
-  border-top: 1px solid var(--line);
+.admin-dashboard-page .s4u-dashboard-panel {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--dashboard-line);
+    border-radius: 10px;
+    background: var(--dashboard-card);
+    box-shadow: 0 4px 14px rgba(20, 48, 82, 0.04);
 }
 
-.s4u-modal-button {
-  min-width: 120px;
-  min-height: 44px;
-
-  padding: 10px 18px;
-
-  border-radius: 8px;
-
-  font: inherit;
-  font-size: 13px;
-  font-weight: 800;
-
-  cursor: pointer;
+.admin-dashboard-page .s4u-dashboard-panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--dashboard-line);
 }
 
-.s4u-modal-button.primary {
-  border: 0;
-  background: var(--orange);
-  color: #fff;
+.admin-dashboard-page .s4u-dashboard-panel-kicker {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--dashboard-orange);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
 }
 
-.s4u-modal-button.primary:hover {
-  background: #d94f00;
+.admin-dashboard-page .s4u-dashboard-panel-header h2 {
+    margin: 0;
+    color: var(--dashboard-blue);
+    font-size: 16px;
+    line-height: 1.25;
+    font-weight: 900;
 }
 
-.s4u-modal-button.secondary {
-  border: 1px solid var(--line);
-  background: #fff;
-  color: var(--blue);
+.admin-dashboard-page .s4u-dashboard-panel-header p {
+    margin: 5px 0 0;
+    color: var(--dashboard-muted);
+    font-size: 12px;
+    line-height: 1.5;
 }
 
-.s4u-modal-button.secondary:hover {
-  background: #f4f7fb;
+.admin-dashboard-page .s4u-dashboard-text-link {
+    flex: 0 0 auto;
+    margin-top: 17px;
+    color: var(--dashboard-blue-light);
+    font-size: 11px;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
 }
 
-.s4u-modal-button:disabled {
-  opacity: .6;
-  cursor: not-allowed;
+.admin-dashboard-page .s4u-dashboard-text-link:hover {
+    color: var(--dashboard-orange);
+}
+
+
+/* ============================================================
+   SYSTEM ACTIVITY
+   ============================================================ */
+
+.admin-dashboard-page .s4u-dashboard-activity-list {
+    padding: 0 20px;
+}
+
+.admin-dashboard-page .s4u-dashboard-activity-item,
+.admin-dashboard-page #admin-system-activity-target > .admin-activity {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 13px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--dashboard-line-soft);
+}
+
+.admin-dashboard-page .s4u-dashboard-activity-item:last-child,
+.admin-dashboard-page #admin-system-activity-target > .admin-activity:last-child {
+    border-bottom: 0;
+}
+
+.admin-dashboard-page .s4u-dashboard-activity-number,
+.admin-dashboard-page #admin-system-activity-target .admin-activity-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: #fff0e5;
+    color: var(--dashboard-orange);
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.admin-dashboard-page .s4u-dashboard-activity-copy,
+.admin-dashboard-page #admin-system-activity-target .admin-activity-copy {
+    min-width: 0;
+}
+
+.admin-dashboard-page .s4u-dashboard-activity-copy strong,
+.admin-dashboard-page #admin-system-activity-target .admin-activity-title {
+    display: block;
+    color: var(--dashboard-blue);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.admin-dashboard-page .s4u-dashboard-activity-copy span,
+.admin-dashboard-page #admin-system-activity-target .admin-activity-text {
+    display: block;
+    margin-top: 4px;
+    color: var(--dashboard-muted);
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+.admin-dashboard-page .s4u-dashboard-activity-item time,
+.admin-dashboard-page #admin-system-activity-target .admin-activity-time {
+    align-self: start;
+    padding-top: 2px;
+    color: var(--dashboard-muted);
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   QUICK ACTIONS
+   ============================================================ */
+
+.admin-dashboard-page .s4u-dashboard-quick-actions {
+    display: grid;
+    gap: 0;
+    padding: 4px 18px 12px;
+}
+
+.admin-dashboard-page .s4u-dashboard-action-row {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--dashboard-line-soft);
+    color: var(--dashboard-text);
+    text-decoration: none;
+}
+
+.admin-dashboard-page .s4u-dashboard-action-row:last-child {
+    border-bottom: 0;
+}
+
+.admin-dashboard-page .s4u-dashboard-action-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    background: #edf3fb;
+    color: var(--dashboard-blue);
+}
+
+.admin-dashboard-page .s4u-dashboard-action-icon svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.admin-dashboard-page .s4u-dashboard-action-copy {
+    min-width: 0;
+}
+
+.admin-dashboard-page .s4u-dashboard-action-copy strong {
+    display: block;
+    color: var(--dashboard-blue);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.admin-dashboard-page .s4u-dashboard-action-copy small {
+    display: block;
+    margin-top: 3px;
+    color: var(--dashboard-muted);
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.admin-dashboard-page .s4u-dashboard-action-arrow {
+    color: var(--dashboard-blue-light);
+    font-size: 19px;
+    font-weight: 900;
+    transition: transform 0.18s ease, color 0.18s ease;
+}
+
+.admin-dashboard-page .s4u-dashboard-action-row:hover .s4u-dashboard-action-arrow {
+    transform: translateX(2px);
+    color: var(--dashboard-orange);
+}
+
+.admin-dashboard-page .s4u-dashboard-action-row:hover .s4u-dashboard-action-icon {
+    background: #fff0e5;
+    color: var(--dashboard-orange);
+}
+
+
+/* ============================================================
+   MANAGEMENT MODULES
+   ============================================================ */
+
+.admin-dashboard-page .s4u-dashboard-modules-panel {
+    margin-bottom: 6px;
+}
+
+.admin-dashboard-page .s4u-dashboard-modules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    padding: 18px;
+}
+
+.admin-dashboard-page .s4u-dashboard-module-card {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    min-height: 84px;
+    padding: 14px;
+    border: 1px solid var(--dashboard-line);
+    border-radius: 9px;
+    background: #ffffff;
+    color: var(--dashboard-text);
+    text-decoration: none;
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.admin-dashboard-page .s4u-dashboard-module-card:hover {
+    transform: translateY(-1px);
+    border-color: #c9d4e2;
+    background: #fbfcfe;
+    box-shadow: 0 5px 14px rgba(20, 48, 82, 0.05);
+}
+
+.admin-dashboard-page .s4u-dashboard-module-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: #edf3fb;
+    color: var(--dashboard-blue);
+}
+
+.admin-dashboard-page .s4u-dashboard-module-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.admin-dashboard-page .s4u-dashboard-module-copy {
+    min-width: 0;
+}
+
+.admin-dashboard-page .s4u-dashboard-module-copy strong {
+    display: block;
+    color: var(--dashboard-blue);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.admin-dashboard-page .s4u-dashboard-module-copy small {
+    display: block;
+    margin-top: 4px;
+    color: var(--dashboard-muted);
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.admin-dashboard-page .s4u-dashboard-module-arrow {
+    color: var(--dashboard-blue-light);
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.admin-dashboard-page .s4u-dashboard-module-card:hover .s4u-dashboard-module-icon {
+    background: #fff0e5;
+    color: var(--dashboard-orange);
+}
+
+.admin-dashboard-page .s4u-dashboard-module-card:hover .s4u-dashboard-module-arrow {
+    color: var(--dashboard-orange);
+}
+
+
+/* ============================================================
+   GLOBAL SHELL COMPATIBILITY
+   ============================================================ */
+
+.admin-dashboard-page .admin-lms-main {
+    min-width: 0;
+}
+
+.admin-dashboard-page .admin-lms-topbar-right {
+    position: relative;
+    min-width: 0;
+}
+
+.admin-dashboard-page .admin-user-dropdown {
+    position: relative;
+}
+
+/* Keep shared SVGs from inheriting accidental page styles. */
+.admin-dashboard-page .admin-lms-topbar svg,
+.admin-dashboard-page .admin-user-dropdown svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 
 /* ============================================================
    RESPONSIVE
-============================================================ */
-
-@media (max-width: 650px) {
-
-  .s4u-modal {
-    padding: 12px;
-  }
-
-  .s4u-modal-panel,
-  .s4u-form-modal-panel {
-    width: 100%;
-    max-height: calc(100vh - 24px);
-  }
-
-  .s4u-modal-content {
-    padding: 22px 18px;
-  }
-
-  .s4u-form-modal-form {
-    grid-template-columns: 1fr;
-  }
-
-  .s4u-modal-actions {
-    flex-direction: column-reverse;
-  }
-
-  .s4u-modal-button {
-    width: 100%;
-  }
-
-}
-
-/* ============================================================
-   EMPLOYER MODAL — WIDE HORIZONTAL LAYOUT
-============================================================ */
-
-.s4u-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-
-.s4u-modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(18, 34, 58, .62);
-  backdrop-filter: blur(4px);
-}
-
-.s4u-modal-panel,
-.s4u-form-modal-panel {
-  position: relative;
-  z-index: 2;
-
-  width: min(1100px, calc(100vw - 48px));
-  max-width: 1100px;
-  max-height: 90vh;
-
-  overflow-y: auto;
-
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-
-  box-shadow: 0 24px 70px rgba(20, 48, 82, .28);
-}
-
-.s4u-modal-content {
-  padding: 30px 32px;
-}
-
-.s4u-modal-content h2 {
-  margin: 0;
-  color: #24364f;
-  font-size: 24px;
-  font-weight: 800;
-}
-
-.s4u-modal-content > p {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-
-/* THREE-COLUMN HORIZONTAL FORM */
-
-.s4u-form-modal-form {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 18px 20px;
-  margin-top: 26px;
-}
-
-.s4u-form-modal-field {
-  display: grid;
-  gap: 7px;
-  min-width: 0;
-}
-
-.s4u-form-modal-field > span {
-  color: #3f5068;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.s4u-form-modal-field input,
-.s4u-form-modal-field select,
-.s4u-form-modal-field textarea {
-  box-sizing: border-box;
-  width: 100%;
-  height: 44px;
-
-  padding: 10px 13px;
-
-  border: 1px solid #d5deea;
-  border-radius: 8px;
-
-  background: #fff;
-  color: #24364f;
-
-  font: inherit;
-  font-size: 13px;
-}
-
-.s4u-form-modal-field input:focus,
-.s4u-form-modal-field select:focus,
-.s4u-form-modal-field textarea:focus {
-  outline: none;
-  border-color: var(--blue2);
-  box-shadow: 0 0 0 3px rgba(50, 90, 163, .12);
-}
-
-
-/* BUTTON AREA */
-
-.s4u-modal-actions {
-  grid-column: 1 / -1 !important;
-
-  display: flex !important;
-  align-items: center;
-  justify-content: flex-end !important;
-
-  gap: 12px;
-
-  width: 100%;
-  margin-top: 10px;
-  padding-top: 22px;
-
-  border-top: 1px solid var(--line);
-}
-
-.s4u-modal-button {
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-
-  min-width: 130px !important;
-  height: 44px !important;
-
-  padding: 0 18px !important;
-
-  border-radius: 8px;
-
-  font-size: 13px !important;
-  font-weight: 800 !important;
-
-  cursor: pointer;
-}
-
-.s4u-modal-button.secondary {
-  border: 1px solid var(--line) !important;
-  background: #fff !important;
-  color: var(--blue) !important;
-}
-
-.s4u-modal-button.primary {
-  border: 0 !important;
-  background: var(--orange) !important;
-  color: #fff !important;
-}
-
-.s4u-modal-button.primary:hover {
-  background: #d94f00 !important;
-}
-
-
-@media (max-width: 1000px) {
-  .s4u-form-modal-form {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
-@media (max-width: 650px) {
-  .s4u-modal {
-    padding: 12px;
-  }
-
-  .s4u-modal-panel,
-  .s4u-form-modal-panel {
-    width: 100%;
-    max-height: calc(100vh - 24px);
-  }
-
-  .s4u-modal-content {
-    padding: 22px 18px;
-  }
-
-  .s4u-form-modal-form {
-    grid-template-columns: 1fr !important;
-  }
-
-  .s4u-modal-actions {
-    flex-direction: column-reverse;
-  }
-
-  .s4u-modal-button {
-    width: 100%;
-  }
-}
-
-/* ============================================================
-   EMPLOYER MODAL — ACTUAL MARKUP FROM admin-employers.js
    ============================================================ */
 
-#employerModalOverlay,
-.employer-modal-overlay {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 10000 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 24px !important;
-  box-sizing: border-box !important;
-  overflow-y: auto !important;
-  background: rgba(18, 34, 58, 0.62) !important;
-  backdrop-filter: blur(4px);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity .15s ease, visibility .15s ease;
+@media (max-width: 1180px) {
+
+    .admin-dashboard-page .s4u-dashboard-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-dashboard-page .s4u-dashboard-main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-dashboard-page .s4u-dashboard-modules-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
-#employerModalOverlay.show,
-.employer-modal-overlay.show {
-  opacity: 1;
-  visibility: visible;
+@media (max-width: 760px) {
+
+    .admin-dashboard-page .s4u-dashboard-page {
+        padding: 18px;
+    }
+
+    .admin-dashboard-page .s4u-dashboard-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admin-dashboard-page .s4u-dashboard-heading h1 {
+        font-size: 32px;
+    }
+
+    .admin-dashboard-page .s4u-dashboard-primary-button {
+        width: 100%;
+    }
+
+    .admin-dashboard-page .s4u-dashboard-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-dashboard-page .s4u-dashboard-modules-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-dashboard-page .s4u-dashboard-panel-header {
+        flex-direction: column;
+    }
+
+    .admin-dashboard-page .s4u-dashboard-text-link {
+        margin-top: 0;
+    }
 }
 
-.employer-modal {
-  width: min(1100px, 100%) !important;
-  max-height: calc(100vh - 48px) !important;
-  overflow: auto !important;
-  position: relative !important;
-  background: #ffffff !important;
-  border: 1px solid #dfe5ed !important;
-  border-radius: 14px !important;
-  box-shadow: 0 24px 70px rgba(20, 48, 82, .28) !important;
-  color: #25344a !important;
-  transform: translateY(10px);
-  transition: transform .15s ease;
-}
+@media (max-width: 520px) {
 
-#employerModalOverlay.show .employer-modal {
-  transform: translateY(0);
-}
+    .admin-dashboard-page .s4u-dashboard-activity-item,
+    .admin-dashboard-page #admin-system-activity-target > .admin-activity {
+        grid-template-columns: 38px minmax(0, 1fr);
+    }
 
-.employer-modal *,
-.employer-modal *::before,
-.employer-modal *::after {
-  box-sizing: border-box;
-}
-
-.employer-modal-header {
-  display: flex !important;
-  align-items: flex-start !important;
-  justify-content: space-between !important;
-  gap: 24px !important;
-  padding: 28px 32px 22px !important;
-  border-bottom: 1px solid #e7ebf1 !important;
-}
-
-.employer-modal-header > div {
-  min-width: 0;
-}
-
-.employer-modal-header h2 {
-  margin: 0 !important;
-  color: #173d78 !important;
-  font-size: 25px !important;
-  line-height: 1.2 !important;
-  font-weight: 800 !important;
-  letter-spacing: -.02em !important;
-}
-
-.employer-modal-header p {
-  margin: 8px 0 0 !important;
-  color: #617087 !important;
-  font-size: 13px !important;
-  line-height: 1.5 !important;
-}
-
-.employer-modal-close {
-  width: 38px !important;
-  height: 38px !important;
-  flex: 0 0 38px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important;
-  border: 1px solid #d9e1eb !important;
-  border-radius: 8px !important;
-  background: #ffffff !important;
-  color: #617087 !important;
-  font-size: 25px !important;
-  line-height: 1 !important;
-  cursor: pointer !important;
-}
-
-.employer-modal-close:hover {
-  background: #f6f8fb !important;
-  color: #173d78 !important;
-  border-color: #bfcfe2 !important;
-}
-
-.employer-modal-form {
-  display: block !important;
-  margin: 0 !important;
-}
-
-.employer-form-grid {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 18px 20px !important;
-  padding: 26px 32px 28px !important;
-}
-
-.employer-form-field {
-  display: grid !important;
-  gap: 7px !important;
-  min-width: 0 !important;
-  margin: 0 !important;
-}
-
-.employer-form-field label {
-  display: block !important;
-  margin: 0 !important;
-  color: #3f5068 !important;
-  font-size: 12px !important;
-  line-height: 1.3 !important;
-  font-weight: 800 !important;
-}
-
-.employer-form-field input,
-.employer-form-field select {
-  display: block !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  height: 44px !important;
-  margin: 0 !important;
-  padding: 0 13px !important;
-  border: 1px solid #d5deea !important;
-  border-radius: 8px !important;
-  outline: none !important;
-  background: #ffffff !important;
-  color: #25344a !important;
-  font: inherit !important;
-  font-size: 13px !important;
-  line-height: 1.3 !important;
-  box-shadow: none !important;
-  transition: border-color .18s ease, box-shadow .18s ease !important;
-}
-
-.employer-form-field input:focus,
-.employer-form-field select:focus {
-  border-color: #325aa3 !important;
-  box-shadow: 0 0 0 3px rgba(50, 90, 163, .12) !important;
-}
-
-.employer-modal-footer {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  gap: 12px !important;
-  padding: 20px 32px 24px !important;
-  border-top: 1px solid #e7ebf1 !important;
-}
-
-.employer-modal-cancel,
-.employer-modal-save {
-  min-width: 130px !important;
-  height: 44px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 18px !important;
-  border-radius: 8px !important;
-  font: inherit !important;
-  font-size: 13px !important;
-  font-weight: 800 !important;
-  cursor: pointer !important;
-}
-
-.employer-modal-cancel {
-  border: 1px solid #dfe5ed !important;
-  background: #ffffff !important;
-  color: #173d78 !important;
-}
-
-.employer-modal-cancel:hover {
-  background: #f4f7fb !important;
-  border-color: #bfcfe2 !important;
-}
-
-.employer-modal-save {
-  border: 0 !important;
-  background: #f05a00 !important;
-  color: #ffffff !important;
-  box-shadow: 0 8px 18px rgba(240, 90, 0, .16) !important;
-}
-
-.employer-modal-save:hover {
-  background: #d94f00 !important;
-}
-
-.employer-modal-save:disabled,
-.employer-modal-cancel:disabled {
-  opacity: .6 !important;
-  cursor: not-allowed !important;
-}
-
-@media (max-width: 1000px) {
-  .employer-form-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
-@media (max-width: 650px) {
-  #employerModalOverlay,
-  .employer-modal-overlay {
-    align-items: flex-start !important;
-    padding: 12px !important;
-  }
-
-  .employer-modal {
-    width: 100% !important;
-    max-height: calc(100vh - 24px) !important;
-    margin: 0 !important;
-  }
-
-  .employer-modal-header {
-    padding: 22px 18px 18px !important;
-  }
-
-  .employer-form-grid {
-    grid-template-columns: 1fr !important;
-    padding: 20px 18px 22px !important;
-  }
-
-  .employer-modal-footer {
-    flex-direction: column-reverse !important;
-    align-items: stretch !important;
-    padding: 18px !important;
-  }
-
-  .employer-modal-cancel,
-  .employer-modal-save {
-    width: 100% !important;
-  }
+    .admin-dashboard-page .s4u-dashboard-activity-item time,
+    .admin-dashboard-page #admin-system-activity-target .admin-activity-time {
+        grid-column: 2;
+        padding-top: 0;
+    }
 }

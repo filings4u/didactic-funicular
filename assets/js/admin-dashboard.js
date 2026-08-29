@@ -96,28 +96,32 @@
       .select("*", { count: "exact", head: true })
       .eq("status", "active");
 
-    if (error) throw error;
+    if (error) {
+      console.warn("Unable to count active employers:", error.message);
+      return 0;
+    }
 
     return Number(count || 0);
   }
 
   async function countActiveEmployees(client) {
-    let query = client
+    const activeResult = await client
       .from("employer_employees")
-      .select("*", { count: "exact", head: true });
+      .select("*", { count: "exact", head: true })
+      .eq("employment_status", "active");
 
-    const { count, error } = await query.eq("employment_status", "active");
-
-    if (!error) {
-      return Number(count || 0);
+    if (!activeResult.error) {
+      return Number(activeResult.count || 0);
     }
 
-    /* Fallback for older data that may not use "active" consistently. */
     const fallback = await client
       .from("employer_employees")
       .select("*", { count: "exact", head: true });
 
-    if (fallback.error) throw fallback.error;
+    if (fallback.error) {
+      console.warn("Unable to count employees:", fallback.error.message);
+      return 0;
+    }
 
     return Number(fallback.count || 0);
   }
@@ -127,16 +131,20 @@
       .from("dot_tests")
       .select("*", { count: "exact", head: true });
 
-    if (error) throw error;
+    if (error) {
+      console.warn("Unable to count DOT tests:", error.message);
+      return 0;
+    }
 
     return Number(count || 0);
   }
 
-  async function countOpenSupportTickets(client) {
+  async function countOpenSupportTickets() {
     /*
-      The current database structure does not include a support_tickets table.
-      Keep this metric at zero until that module/table is added.
-    */
+     * The current database structure supplied for this dashboard does
+     * not include a support_tickets table. Keep the metric at zero
+     * until that module/table exists.
+     */
     return 0;
   }
 
@@ -155,30 +163,21 @@
         .limit(10)
     ]);
 
-    const events = [];
-    const audit = [];
+    const rows = [];
 
-    if (sources[0].status === "fulfilled") {
-      const result = sources[0].value;
+    for (const source of sources) {
+      if (source.status !== "fulfilled") {
+        continue;
+      }
 
-      if (!result.error && Array.isArray(result.data)) {
-        events.push(...result.data);
-      } else if (result.error) {
-        console.warn("system_events could not be loaded:", result.error.message);
+      const result = source.value;
+
+      if (!result?.error && Array.isArray(result?.data)) {
+        rows.push(...result.data);
       }
     }
 
-    if (sources[1].status === "fulfilled") {
-      const result = sources[1].value;
-
-      if (!result.error && Array.isArray(result.data)) {
-        audit.push(...result.data);
-      } else if (result.error) {
-        console.warn("audit_log could not be loaded:", result.error.message);
-      }
-    }
-
-    return [...events, ...audit]
+    return rows
       .map(normalizeActivity)
       .sort((a, b) => {
         return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
@@ -188,35 +187,37 @@
 
   function normalizeActivity(row) {
     const title =
-      row.event_name ||
-      row.event_type ||
-      row.action ||
-      row.operation ||
-      row.event ||
-      row.table_name ||
+      row?.event_name ||
+      row?.event_type ||
+      row?.action ||
+      row?.operation ||
+      row?.event ||
+      row?.table_name ||
       "System activity";
 
     const description =
-      row.description ||
-      row.message ||
-      row.summary ||
+      row?.description ||
+      row?.message ||
+      row?.summary ||
       buildAuditDescription(row) ||
       "System record updated.";
 
     return {
       title: humanize(title),
-      description,
+      description: String(description),
       createdAt:
-        row.created_at ||
-        row.updated_at ||
-        row.occurred_at ||
-        row.event_at ||
+        row?.created_at ||
+        row?.updated_at ||
+        row?.occurred_at ||
+        row?.event_at ||
         null
     };
   }
 
   function buildAuditDescription(row) {
-    if (!row || typeof row !== "object") return "";
+    if (!row || typeof row !== "object") {
+      return "";
+    }
 
     const table =
       row.table_name ||
@@ -239,9 +240,11 @@
   function renderActivity(items) {
     const target = document.getElementById("admin-system-activity-target");
 
-    if (!target) return;
+    if (!target) {
+      return;
+    }
 
-    if (!items.length) {
+    if (!Array.isArray(items) || items.length === 0) {
       renderEmptyActivity();
       return;
     }
@@ -276,7 +279,9 @@
   function renderEmptyActivity() {
     const target = document.getElementById("admin-system-activity-target");
 
-    if (!target) return;
+    if (!target) {
+      return;
+    }
 
     target.innerHTML = `
       <div class="admin-activity">
@@ -298,9 +303,7 @@
   }
 
   function setStat(name, value) {
-    const target = document.querySelector(
-      `[data-admin-stat="${name}"]`
-    );
+    const target = document.querySelector(`[data-admin-stat="${name}"]`);
 
     if (target) {
       target.textContent = Number(value || 0).toLocaleString();
@@ -323,18 +326,24 @@
   }
 
   function formatRelativeTime(value) {
-    if (!value) return "Recently";
+    if (!value) {
+      return "Recently";
+    }
 
     const date = new Date(value);
 
-    if (Number.isNaN(date.getTime())) return "Recently";
+    if (Number.isNaN(date.getTime())) {
+      return "Recently";
+    }
 
     const seconds = Math.max(
       0,
       Math.floor((Date.now() - date.getTime()) / 1000)
     );
 
-    if (seconds < 60) return "Now";
+    if (seconds < 60) {
+      return "Now";
+    }
 
     const minutes = Math.floor(seconds / 60);
 
