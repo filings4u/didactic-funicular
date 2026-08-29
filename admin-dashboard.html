@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Administration | screenings4u Management Portal</title>
+
+    <link rel="stylesheet" href="assets/css/admin-lms.css">
+</head>
+
+<body>
+
+    <div class="admin-lms-app">
+
+        <!-- Sidebar is rendered by admin-lms-sidebar.js -->
+        <div id="admin-lms-sidebar-target"></div>
+
+        <main class="admin-lms-main">
+
+            <!-- =====================================================
+                 TOPBAR
+            ====================================================== -->
+            <header class="admin-lms-topbar">
+
+<div class="admin-lms-topbar-left">
+
+    <button
+        type="button"
+        class="admin-lms-sidebar-collapse"
+        data-admin-sidebar-collapse
+        aria-label="Collapse sidebar"
+        aria-expanded="true"
+    >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+    </button>
+
+    <div class="admin-lms-page-context">
+        <small>screenings4u Management Portal</small>
+        <strong>Administration</strong>
+    </div>
+
+</div>
+
+
+                <div class="admin-lms-topbar-right">
+
+                    <a
+                        href="admin-notifications.html"
+                        class="admin-lms-icon-button"
+                        aria-label="Notifications"
+                    >
+                        <svg viewBox="0 0 24 24">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                            <path d="M10 21h4"/>
+                        </svg>
+                    </a>
+
+
+<div class="admin-user-dropdown">
+
+    <button
+        type="button"
+        class="admin-user-dropdown-toggle"
+        data-admin-user-menu-toggle
+        aria-expanded="false"
+    >
+
+        <span class="admin-lms-avatar">
+            AD
+        </span>
+
+        <span class="admin-lms-user-copy">
+
+            <span class="admin-lms-user-name">
+                Administrator
+            </span>
+
+            <span class="admin-lms-user-role">
+                System Administrator
+            </span>
+
+        </span>
+
+        <span class="admin-user-dropdown-chevron">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m6 9 6 6 6-6"></path>
+            </svg>
+        </span>
+
+    </button>
+
+
+    <div
+        class="admin-user-dropdown-menu"
+        data-admin-user-menu
+    >
+
+        <div class="admin-user-dropdown-header">
+
+            <strong>Administrator</strong>
+
+            <span>
+                System Administrator
+            </span>
+
+        </div>
+
+
+        <a
+            href="../index.html"
+            class="admin-user-dropdown-item"
+        >
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M3 12h18"></path>
+                <path d="M12 3a14 14 0 0 1 0 18"></path>
+                <path d="M12 3a14 14 0 0 0 0 18"></path>
+            </svg>
+
+            <span>Visit Main Website</span>
+
+        </a>
+
+
+        <a
+            href="admin-account-access.html"
+            class="admin-user-dropdown-item"
+        >
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="8" r="4"></circle>
+                <path d="M4 21c1-4.5 3.7-7 8-7s7 2.5 8 7"></path>
+            </svg>
+
+            <span>Account Access</span>
+
+        </a>
+
+
+        <a
+            href="admin-accounts.html"
+            class="admin-user-dropdown-item"
+        >
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 19V5h16v14z"></path>
+                <path d="M8 9h8M8 13h5"></path>
+            </svg>
+
+            <span>My Account</span>
+
+        </a>
+
+
+        <div class="admin-user-dropdown-divider"></div>
+
+
+        <button
+            type="button"
+            class="admin-user-dropdown-item admin-user-logout"
+            data-admin-logout
+        >
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M10 17l5-5-5-5"></path>
+                <path d="M15 12H3"></path>
+                <path d="M21 19V5"></path>
+            </svg>
+
+            <span>Logout</span>
+
+        </button>
+
+    </div>
+
+</div>
+
+            </header>
+
+
+            <!-- =====================================================
+                 MAIN CONTENT
+            ====================================================== -->
+            <section class="admin-lms-content">
+
+
+                <!-- PAGE HEADING -->
+                <div class="admin-page-heading">
+
+                    <div>
+
+                        <span class="admin-page-eyebrow">
+                            Platform Overview
+                        </span>
+
+                        <h1>
+                            Management Dashboard
+                        </h1>
+
+                        <p>
+                            Manage customers, employers, employees, DOT testing,
+                            random testing, training, sales, scheduling, support,
+                            documents, and system operations from one central portal.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="admin-employers.html"
+                        class="admin-primary-btn"
+                    >
+                        Manage Employers
+                    </a>
+
+                </div>
+
+
+                <!-- =====================================================
+                     PRIMARY METRICS
+                ====================================================== -->
+                <section class="admin-metrics">
+
+
+                    <article class="admin-metric-card">
+
+                        <div class="admin-metric-label">
+                            Active Employers
+                        </div>
+
+                        <div
+                            class="admin-metric-value"
+                            data-admin-stat="employers"
+                        >
+                            0
+                        </div>
+
+                        <div class="admin-metric-note">
+                            Active organizations
+                        </div>
+
+                    </article>
+
+
+                    <article class="admin-metric-card">
+
+                        <div class="admin-metric-label">
+                            Active Employees
+                        </div>
+
+                        <div
+                            class="admin-metric-value"
+                            data-admin-stat="employees"
+                        >
+                            0
+                        </div>
+
+                        <div class="admin-metric-note">
+                            Across all employers
+                        </div>
+
+                    </article>
+
+
+                    <article class="admin-metric-card">
+
+                        <div class="admin-metric-label">
+                            DOT Tests
+                        </div>
+
+                        <div
+                            class="admin-metric-value"
+                            data-admin-stat="dot-tests"
+                        >
+                            0
+                        </div>
+
+                        <div class="admin-metric-note">
+                            Testing records in the system
+                        </div>
+
+                    </article>
+
+
+                    <article class="admin-metric-card">
+
+                        <div class="admin-metric-label">
+                            Open Support Tickets
+                        </div>
+
+                        <div
+                            class="admin-metric-value"
+                            data-admin-stat="support-tickets"
+                        >
+                            0
+                        </div>
+
+                        <div class="admin-metric-note">
+                            Requiring attention
+                        </div>
+
+                    </article>
+
+
+                </section>
+
+
+                <!-- =====================================================
+                     MAIN GRID
+                ====================================================== -->
+                <section class="admin-grid">
+
+
+                    <!-- SYSTEM ACTIVITY -->
+                    <article class="admin-card">
+
+                        <header class="admin-card-header">
+
+                            <div>
+
+                                <h2 class="admin-card-title">
+                                    Recent System Activity
+                                </h2>
+
+                                <p class="admin-card-subtitle">
+                                    Activity from across the screenings4u ecosystem.
+                                </p>
+
+                            </div>
+
+                        </header>
+
+
+                        <div
+                            class="admin-card-body"
+                            id="admin-system-activity-target"
+                        >
+
+                            <div class="admin-activity">
+
+                                <div class="admin-activity-icon">
+                                    01
+                                </div>
+
+                                <div>
+
+                                    <div class="admin-activity-title">
+                                        Management Portal Ready
+                                    </div>
+
+                                    <div class="admin-activity-text">
+                                        This dashboard will display activity from
+                                        employers, customers, DOT testing, random
+                                        testing, training, orders, scheduling,
+                                        support, and system administration.
+                                    </div>
+
+                                </div>
+
+                                <div class="admin-activity-time">
+                                    Now
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- QUICK ACTIONS -->
+                    <aside class="admin-card">
+
+                        <header class="admin-card-header">
+
+                            <div>
+
+                                <h2 class="admin-card-title">
+                                    Quick Actions
+                                </h2>
+
+                                <p class="admin-card-subtitle">
+                                    Access key areas of the management system.
+                                </p>
+
+                            </div>
+
+                        </header>
+
+
+                        <div class="admin-card-body">
+
+                            <div class="admin-action-list">
+
+
+                                <a
+                                    class="admin-action"
+                                    href="admin-employers.html"
+                                >
+
+                                    <div>
+
+                                        <strong>
+                                            Manage Employers
+                                        </strong>
+
+                                        <span>
+                                            Organizations and employer accounts
+                                        </span>
+
+                                    </div>
+
+                                    <b class="admin-action-arrow">
+                                        ›
+                                    </b>
+
+                                </a>
+
+
+                                <a
+                                    class="admin-action"
+                                    href="admin-employees.html"
+                                >
+
+                                    <div>
+
+                                        <strong>
+                                            Manage Employees
+                                        </strong>
+
+                                        <span>
+                                            Employee records and access
+                                        </span>
+
+                                    </div>
+
+                                    <b class="admin-action-arrow">
+                                        ›
+                                    </b>
+
+                                </a>
+
+
+                                <a
+                                    class="admin-action"
+                                    href="admin-dot-tests.html"
+                                >
+
+                                    <div>
+
+                                        <strong>
+                                            DOT Testing
+                                        </strong>
+
+                                        <span>
+                                            Manage testing activity and results
+                                        </span>
+
+                                    </div>
+
+                                    <b class="admin-action-arrow">
+                                        ›
+                                    </b>
+
+                                </a>
+
+
+                                <a
+                                    class="admin-action"
+                                    href="admin-random-programs.html"
+                                >
+
+                                    <div>
+
+                                        <strong>
+                                            Random Testing
+                                        </strong>
+
+                                        <span>
+                                            Programs, pools, and selections
+                                        </span>
+
+                                    </div>
+
+                                    <b class="admin-action-arrow">
+                                        ›
+                                    </b>
+
+                                </a>
+
+
+                                <a
+                                    class="admin-action"
+                                    href="admin-support-tickets.html"
+                                >
+
+                                    <div>
+
+                                        <strong>
+                                            Support Center
+                                        </strong>
+
+                                        <span>
+                                            Tickets, chat, and account support
+                                        </span>
+
+                                    </div>
+
+                                    <b class="admin-action-arrow">
+                                        ›
+                                    </b>
+
+                                </a>
+
+
+                                <a
+                                    class="admin-action"
+                                    href="admin-global-settings.html"
+                                >
+
+                                    <div>
+
+                                        <strong>
+                                            Global Settings
+                                        </strong>
+
+                                        <span>
+                                            Configure the entire ecosystem
+                                        </span>
+
+                                    </div>
+
+                                    <b class="admin-action-arrow">
+                                        ›
+                                    </b>
+
+                                </a>
+
+
+                            </div>
+
+                        </div>
+
+                    </aside>
+
+
+                </section>
+
+
+                <!-- =====================================================
+                     MANAGEMENT MODULES
+                ====================================================== -->
+                <section class="admin-card">
+
+                    <header class="admin-card-header">
+
+                        <div>
+
+                            <h2 class="admin-card-title">
+                                Management Modules
+                            </h2>
+
+                            <p class="admin-card-subtitle">
+                                Core areas of the screenings4u Management Portal.
+                            </p>
+
+                        </div>
+
+                    </header>
+
+
+                    <div class="admin-card-body">
+
+                        <div class="admin-action-list">
+
+
+                            <a class="admin-action" href="admin-customers.html">
+
+                                <div>
+
+                                    <strong>Customer Management</strong>
+
+                                    <span>
+                                        Customers, CRM, orders, and support
+                                    </span>
+
+                                </div>
+
+                                <b class="admin-action-arrow">›</b>
+
+                            </a>
+
+
+                            <a class="admin-action" href="admin-lms-courses.html">
+
+                                <div>
+
+                                    <strong>Training Management</strong>
+
+                                    <span>
+                                        Courses, lessons, assessments, and learners
+                                    </span>
+
+                                </div>
+
+                                <b class="admin-action-arrow">›</b>
+
+                            </a>
+
+
+                            <a class="admin-action" href="admin-orders.html">
+
+                                <div>
+
+                                    <strong>Sales &amp; Orders</strong>
+
+                                    <span>
+                                        Orders, quotes, proposals, and invoices
+                                    </span>
+
+                                </div>
+
+                                <b class="admin-action-arrow">›</b>
+
+                            </a>
+
+
+                            <a class="admin-action" href="admin-scheduling.html">
+
+                                <div>
+
+                                    <strong>Scheduling</strong>
+
+                                    <span>
+                                        Phone, in-person, and online appointments
+                                    </span>
+
+                                </div>
+
+                                <b class="admin-action-arrow">›</b>
+
+                            </a>
+
+
+                            <a class="admin-action" href="admin-document-vault.html">
+
+                                <div>
+
+                                    <strong>Document Vault</strong>
+
+                                    <span>
+                                        Secure documents and shared records
+                                    </span>
+
+                                </div>
+
+                                <b class="admin-action-arrow">›</b>
+
+                            </a>
+
+
+                            <a class="admin-action" href="admin-account-access.html">
+
+                                <div>
+
+                                    <strong>Account Access</strong>
+
+                                    <span>
+                                        Support access for customer, employer,
+                                        and employee accounts
+                                    </span>
+
+                                </div>
+
+                                <b class="admin-action-arrow">›</b>
+
+                            </a>
+
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/core-auth.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/session-security.js"></script>
+<script src="assets/js/portal-auth-guard.js"></script>
+<script src="assets/js/admin-auth-guard.js"></script>
+<script src="assets/js/admin-lms-sidebar.js"></script>
+<script src="assets/js/admin-dashboard.js"></script>
+
+</body>
+</html>

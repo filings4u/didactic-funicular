@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Employer Users | screenings4u Management Portal</title>
+
+    <link rel="stylesheet" href="assets/css/admin-lms.css">
+    <link rel="stylesheet" href="assets/css/admin-employer-users.css">
+</head>
+
+<body>
+
+    <div class="admin-lms-app">
+
+        <!-- Sidebar rendered by admin-lms-sidebar.js -->
+        <div id="admin-lms-sidebar-target"></div>
+
+        <main class="admin-lms-main">
+
+            <!-- =====================================================
+                 TOPBAR
+            ====================================================== -->
+            <header class="admin-lms-topbar">
+
+                <div class="admin-lms-topbar-left">
+
+                    <button
+                        type="button"
+                        class="admin-lms-sidebar-collapse"
+                        data-admin-sidebar-collapse
+                        aria-label="Collapse sidebar"
+                        aria-expanded="true"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M15 18l-6-6 6-6"></path>
+                        </svg>
+                    </button>
+
+                    <div class="admin-lms-page-context">
+                        <small>Employer Management</small>
+                        <strong>Employer Users</strong>
+                    </div>
+
+                </div>
+
+                <div class="admin-lms-topbar-right">
+
+                    <a
+                        href="admin-notifications.html"
+                        class="admin-lms-icon-button"
+                        aria-label="Notifications"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                            <path d="M10 21h4"></path>
+                        </svg>
+                    </a>
+
+                    <div class="admin-user-dropdown">
+
+                        <button
+                            type="button"
+                            class="admin-user-dropdown-toggle"
+                            data-admin-user-menu-toggle
+                            aria-expanded="false"
+                        >
+                            <span class="admin-lms-avatar">
+                                AD
+                            </span>
+
+                            <span class="admin-lms-user-copy">
+                                <span
+                                    class="admin-lms-user-name"
+                                    id="adminUserName"
+                                >
+                                    Administrator
+                                </span>
+
+                                <span class="admin-lms-user-role">
+                                    System Administrator
+                                </span>
+                            </span>
+
+                            <span class="admin-user-dropdown-chevron">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="m6 9 6 6 6-6"></path>
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div
+                            class="admin-user-dropdown-menu"
+                            data-admin-user-menu
+                        >
+
+                            <div class="admin-user-dropdown-header">
+                                <strong id="adminUserMenuName">
+                                    Administrator
+                                </strong>
+
+                                <span>
+                                    System Administrator
+                                </span>
+                            </div>
+
+                            <a
+                                href="../index.html"
+                                class="admin-user-dropdown-item"
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="9"></circle>
+                                    <path d="M3 12h18"></path>
+                                    <path d="M12 3a14 14 0 0 1 0 18"></path>
+                                    <path d="M12 3a14 14 0 0 0 0 18"></path>
+                                </svg>
+
+                                <span>Visit Main Website</span>
+                            </a>
+
+                            <a
+                                href="admin-account-access.html"
+                                class="admin-user-dropdown-item"
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="8" r="4"></circle>
+                                    <path d="M4 21c1-4.5 3.7-7 8-7s7 2.5 8 7"></path>
+                                </svg>
+
+                                <span>Account Access</span>
+                            </a>
+
+                            <a
+                                href="admin-accounts.html"
+                                class="admin-user-dropdown-item"
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M4 19V5h16v14z"></path>
+                                    <path d="M8 9h8M8 13h5"></path>
+                                </svg>
+
+                                <span>My Account</span>
+                            </a>
+
+                            <div class="admin-user-dropdown-divider"></div>
+
+                            <button
+                                type="button"
+                                class="admin-user-dropdown-item admin-user-logout"
+                                data-admin-logout
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M10 17l5-5-5-5"></path>
+                                    <path d="M15 12H3"></path>
+                                    <path d="M21 19V5"></path>
+                                </svg>
+
+                                <span>Logout</span>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- =====================================================
+                 PAGE CONTENT
+            ====================================================== -->
+            <section class="admin-employer-users-page">
+
+                <div class="employer-users-heading">
+
+                    <div>
+                        <div class="employer-users-kicker">
+                            EMPLOYER MANAGEMENT
+                        </div>
+
+                        <h1>Employer Users</h1>
+
+                        <p>
+                            Manage employer administrators and authorized
+                            employer portal users.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="employer-users-primary-button"
+                        id="addEmployerUserButton"
+                    >
+                        + Add Employer User
+                    </button>
+
+                </div>
+
+
+                <!-- Metrics -->
+                <section class="employer-users-metrics">
+
+                    <article class="employer-users-metric-card">
+                        <span>Total Employer Users</span>
+                        <strong data-employer-user-metric="total">—</strong>
+                    </article>
+
+                    <article class="employer-users-metric-card">
+                        <span>Active Users</span>
+                        <strong data-employer-user-metric="active">—</strong>
+                    </article>
+
+                    <article class="employer-users-metric-card">
+                        <span>Employer Administrators</span>
+                        <strong data-employer-user-metric="admins">—</strong>
+                    </article>
+
+                    <article class="employer-users-metric-card">
+                        <span>Other Employer Staff</span>
+                        <strong data-employer-user-metric="staff">—</strong>
+                    </article>
+
+                </section>
+
+
+                <!-- User Management Panel -->
+                <section class="employer-users-panel">
+
+                    <div class="employer-users-toolbar">
+
+                        <div class="employer-users-search">
+                            <input
+                                type="search"
+                                id="employerUserSearch"
+                                placeholder="Search name or email..."
+                                autocomplete="off"
+                            >
+                        </div>
+
+                        <select id="employerUserEmployerFilter">
+                            <option value="all">All Employers</option>
+                        </select>
+
+                        <select id="employerUserRoleFilter">
+                            <option value="all">All Roles</option>
+                            <option value="employer_admin">
+                                Employer Administrator
+                            </option>
+                            <option value="employer_hr">
+                                HR
+                            </option>
+                            <option value="employer_safety">
+                                Safety
+                            </option>
+                            <option value="employer_billing">
+                                Billing
+                            </option>
+                        </select>
+
+                        <select id="employerUserStatusFilter">
+                            <option value="all">All Statuses</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+
+                        <button
+                            type="button"
+                            class="employer-users-secondary-button"
+                            id="refreshEmployerUsersButton"
+                        >
+                            Refresh
+                        </button>
+
+                    </div>
+
+
+                    <div class="employer-users-table-wrap">
+
+                        <table class="employer-users-table">
+
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Employer</th>
+                                    <th>Role</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                    <th>Last Seen</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="employerUsersTableBody">
+
+                                <tr>
+                                    <td
+                                        colspan="7"
+                                        class="employer-users-loading"
+                                    >
+                                        Loading employer users...
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <div class="employer-users-footer">
+
+                        <span id="employerUsersResultsCount">
+                            0 users
+                        </span>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         SCRIPTS
+    ====================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="assets/js/supabase-config.js"></script>
+
+    <script src="assets/js/core-auth.js"></script>
+
+    <script src="assets/js/ui.js"></script>
+
+    <script src="assets/js/session-security.js"></script>
+
+    <script src="assets/js/portal-auth-guard.js"></script>
+
+    <script src="assets/js/admin-auth-guard.js"></script>
+
+    <script src="assets/js/admin-lms-sidebar.js"></script>
+
+    <script src="assets/js/admin-employer-users.js"></script>
+
+</body>
+
+</html>

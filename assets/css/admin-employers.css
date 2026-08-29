@@ -611,467 +611,32 @@
 
 /* ============================================================
    EMPLOYER ADD / EDIT MODAL
-============================================================ */
-
-.s4u-modal-root {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-}
-
-.s4u-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-
-.s4u-modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(20, 35, 60, 0.58);
-  backdrop-filter: blur(4px);
-}
-
-.s4u-modal-panel {
-  position: relative;
-  z-index: 2;
-
-  width: min(760px, calc(100vw - 48px));
-  max-height: calc(100vh - 48px);
-
-  overflow-y: auto;
-
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-
-  box-shadow: 0 24px 70px rgba(20, 48, 82, 0.28);
-}
-
-.s4u-form-modal-panel {
-  width: min(760px, calc(100vw - 48px));
-}
-
-.s4u-modal-content {
-  padding: 28px;
-}
-
-.s4u-modal-content h2 {
-  margin: 0;
-  color: #24364f;
-  font-size: 24px;
-  line-height: 1.2;
-  font-weight: 800;
-}
-
-.s4u-modal-content > p {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-
-/* ============================================================
-   FORM GRID
-============================================================ */
-
-.s4u-form-modal-form {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px 20px;
-  margin-top: 24px;
-}
-
-.s4u-form-modal-field {
-  display: grid;
-  gap: 7px;
-}
-
-/* Full width fields */
-
-.s4u-form-modal-field:nth-last-child(1),
-.s4u-form-modal-field:has(textarea) {
-  grid-column: 1 / -1;
-}
-
-.s4u-form-modal-field > span {
-  color: #3f5068;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.s4u-form-modal-field input,
-.s4u-form-modal-field select,
-.s4u-form-modal-field textarea {
-  box-sizing: border-box;
-
-  width: 100%;
-  min-height: 44px;
-
-  padding: 11px 13px;
-
-  border: 1px solid #d9e1eb;
-  border-radius: 8px;
-
-  background: #fff;
-  color: #24364f;
-
-  font: inherit;
-  font-size: 13px;
-
-  outline: none;
-
-  transition:
-    border-color .18s ease,
-    box-shadow .18s ease;
-}
-
-.s4u-form-modal-field textarea {
-  min-height: 105px;
-  resize: vertical;
-}
-
-.s4u-form-modal-field input:focus,
-.s4u-form-modal-field select:focus,
-.s4u-form-modal-field textarea:focus {
-  border-color: var(--blue2);
-  box-shadow: 0 0 0 3px rgba(50, 90, 163, .12);
-}
-
-
-/* ============================================================
-   ACTIONS
-============================================================ */
-
-.s4u-modal-actions {
-  grid-column: 1 / -1;
-
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-
-  margin-top: 6px;
-  padding-top: 20px;
-
-  border-top: 1px solid var(--line);
-}
-
-.s4u-modal-button {
-  min-width: 120px;
-  min-height: 44px;
-
-  padding: 10px 18px;
-
-  border-radius: 8px;
-
-  font: inherit;
-  font-size: 13px;
-  font-weight: 800;
-
-  cursor: pointer;
-}
-
-.s4u-modal-button.primary {
-  border: 0;
-  background: var(--orange);
-  color: #fff;
-}
-
-.s4u-modal-button.primary:hover {
-  background: #d94f00;
-}
-
-.s4u-modal-button.secondary {
-  border: 1px solid var(--line);
-  background: #fff;
-  color: var(--blue);
-}
-
-.s4u-modal-button.secondary:hover {
-  background: #f4f7fb;
-}
-
-.s4u-modal-button:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-}
-
-
-/* ============================================================
-   RESPONSIVE
-============================================================ */
-
-@media (max-width: 650px) {
-
-  .s4u-modal {
-    padding: 12px;
-  }
-
-  .s4u-modal-panel,
-  .s4u-form-modal-panel {
-    width: 100%;
-    max-height: calc(100vh - 24px);
-  }
-
-  .s4u-modal-content {
-    padding: 22px 18px;
-  }
-
-  .s4u-form-modal-form {
-    grid-template-columns: 1fr;
-  }
-
-  .s4u-modal-actions {
-    flex-direction: column-reverse;
-  }
-
-  .s4u-modal-button {
-    width: 100%;
-  }
-
-}
-
-/* ============================================================
-   EMPLOYER MODAL — WIDE HORIZONTAL LAYOUT
-============================================================ */
-
-.s4u-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-
-.s4u-modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(18, 34, 58, .62);
-  backdrop-filter: blur(4px);
-}
-
-.s4u-modal-panel,
-.s4u-form-modal-panel {
-  position: relative;
-  z-index: 2;
-
-  width: min(1100px, calc(100vw - 48px));
-  max-width: 1100px;
-  max-height: 90vh;
-
-  overflow-y: auto;
-
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-
-  box-shadow: 0 24px 70px rgba(20, 48, 82, .28);
-}
-
-.s4u-modal-content {
-  padding: 30px 32px;
-}
-
-.s4u-modal-content h2 {
-  margin: 0;
-  color: #24364f;
-  font-size: 24px;
-  font-weight: 800;
-}
-
-.s4u-modal-content > p {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-
-/* THREE-COLUMN HORIZONTAL FORM */
-
-.s4u-form-modal-form {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 18px 20px;
-  margin-top: 26px;
-}
-
-.s4u-form-modal-field {
-  display: grid;
-  gap: 7px;
-  min-width: 0;
-}
-
-.s4u-form-modal-field > span {
-  color: #3f5068;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.s4u-form-modal-field input,
-.s4u-form-modal-field select,
-.s4u-form-modal-field textarea {
-  box-sizing: border-box;
-  width: 100%;
-  height: 44px;
-
-  padding: 10px 13px;
-
-  border: 1px solid #d5deea;
-  border-radius: 8px;
-
-  background: #fff;
-  color: #24364f;
-
-  font: inherit;
-  font-size: 13px;
-}
-
-.s4u-form-modal-field input:focus,
-.s4u-form-modal-field select:focus,
-.s4u-form-modal-field textarea:focus {
-  outline: none;
-  border-color: var(--blue2);
-  box-shadow: 0 0 0 3px rgba(50, 90, 163, .12);
-}
-
-
-/* BUTTON AREA */
-
-.s4u-modal-actions {
-  grid-column: 1 / -1 !important;
-
-  display: flex !important;
-  align-items: center;
-  justify-content: flex-end !important;
-
-  gap: 12px;
-
-  width: 100%;
-  margin-top: 10px;
-  padding-top: 22px;
-
-  border-top: 1px solid var(--line);
-}
-
-.s4u-modal-button {
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-
-  min-width: 130px !important;
-  height: 44px !important;
-
-  padding: 0 18px !important;
-
-  border-radius: 8px;
-
-  font-size: 13px !important;
-  font-weight: 800 !important;
-
-  cursor: pointer;
-}
-
-.s4u-modal-button.secondary {
-  border: 1px solid var(--line) !important;
-  background: #fff !important;
-  color: var(--blue) !important;
-}
-
-.s4u-modal-button.primary {
-  border: 0 !important;
-  background: var(--orange) !important;
-  color: #fff !important;
-}
-
-.s4u-modal-button.primary:hover {
-  background: #d94f00 !important;
-}
-
-
-@media (max-width: 1000px) {
-  .s4u-form-modal-form {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
-@media (max-width: 650px) {
-  .s4u-modal {
-    padding: 12px;
-  }
-
-  .s4u-modal-panel,
-  .s4u-form-modal-panel {
-    width: 100%;
-    max-height: calc(100vh - 24px);
-  }
-
-  .s4u-modal-content {
-    padding: 22px 18px;
-  }
-
-  .s4u-form-modal-form {
-    grid-template-columns: 1fr !important;
-  }
-
-  .s4u-modal-actions {
-    flex-direction: column-reverse;
-  }
-
-  .s4u-modal-button {
-    width: 100%;
-  }
-}
-
-/* ============================================================
-   EMPLOYER MODAL — ACTUAL MARKUP FROM admin-employers.js
+   Matches admin-employers.js exactly
    ============================================================ */
 
-#employerModalOverlay,
-.employer-modal-overlay {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 10000 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 24px !important;
-  box-sizing: border-box !important;
-  overflow-y: auto !important;
-  background: rgba(18, 34, 58, 0.62) !important;
+#employerModalOverlay.employer-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+  background: rgba(18, 34, 58, 0.62);
   backdrop-filter: blur(4px);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity .15s ease, visibility .15s ease;
-}
-
-#employerModalOverlay.show,
-.employer-modal-overlay.show {
-  opacity: 1;
-  visibility: visible;
+  box-sizing: border-box;
 }
 
 .employer-modal {
-  width: min(1100px, 100%) !important;
-  max-height: calc(100vh - 48px) !important;
-  overflow: auto !important;
-  position: relative !important;
-  background: #ffffff !important;
-  border: 1px solid #dfe5ed !important;
-  border-radius: 14px !important;
-  box-shadow: 0 24px 70px rgba(20, 48, 82, .28) !important;
-  color: #25344a !important;
-  transform: translateY(10px);
-  transition: transform .15s ease;
-}
-
-#employerModalOverlay.show .employer-modal {
-  transform: translateY(0);
+  position: relative;
+  width: min(1100px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #dfe5ed;
+  border-radius: 14px;
+  box-shadow: 0 24px 70px rgba(20, 48, 82, 0.28);
 }
 
 .employer-modal *,
@@ -1081,199 +646,155 @@
 }
 
 .employer-modal-header {
-  display: flex !important;
-  align-items: flex-start !important;
-  justify-content: space-between !important;
-  gap: 24px !important;
-  padding: 28px 32px 22px !important;
-  border-bottom: 1px solid #e7ebf1 !important;
-}
-
-.employer-modal-header > div {
-  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 32px 22px;
+  border-bottom: 1px solid #e7ebf1;
 }
 
 .employer-modal-header h2 {
-  margin: 0 !important;
-  color: #173d78 !important;
-  font-size: 25px !important;
-  line-height: 1.2 !important;
-  font-weight: 800 !important;
-  letter-spacing: -.02em !important;
+  margin: 0;
+  color: var(--employer-blue);
+  font-size: 25px;
+  line-height: 1.2;
+  font-weight: 800;
 }
 
 .employer-modal-header p {
-  margin: 8px 0 0 !important;
-  color: #617087 !important;
-  font-size: 13px !important;
-  line-height: 1.5 !important;
+  margin: 8px 0 0;
+  color: var(--employer-muted);
+  font-size: 13px;
 }
 
 .employer-modal-close {
-  width: 38px !important;
-  height: 38px !important;
-  flex: 0 0 38px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important;
-  border: 1px solid #d9e1eb !important;
-  border-radius: 8px !important;
-  background: #ffffff !important;
-  color: #617087 !important;
-  font-size: 25px !important;
-  line-height: 1 !important;
-  cursor: pointer !important;
-}
-
-.employer-modal-close:hover {
-  background: #f6f8fb !important;
-  color: #173d78 !important;
-  border-color: #bfcfe2 !important;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  padding: 0;
+  border: 1px solid var(--employer-border);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--employer-muted);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .employer-modal-form {
-  display: block !important;
-  margin: 0 !important;
+  margin: 0;
 }
 
 .employer-form-grid {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 18px 20px !important;
-  padding: 26px 32px 28px !important;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px 20px;
+  padding: 26px 32px 28px;
 }
 
 .employer-form-field {
-  display: grid !important;
-  gap: 7px !important;
-  min-width: 0 !important;
-  margin: 0 !important;
+  display: grid;
+  gap: 7px;
+  min-width: 0;
 }
 
 .employer-form-field label {
-  display: block !important;
-  margin: 0 !important;
-  color: #3f5068 !important;
-  font-size: 12px !important;
-  line-height: 1.3 !important;
-  font-weight: 800 !important;
+  margin: 0;
+  color: var(--employer-text);
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .employer-form-field input,
 .employer-form-field select {
-  display: block !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  height: 44px !important;
-  margin: 0 !important;
-  padding: 0 13px !important;
-  border: 1px solid #d5deea !important;
-  border-radius: 8px !important;
-  outline: none !important;
-  background: #ffffff !important;
-  color: #25344a !important;
-  font: inherit !important;
-  font-size: 13px !important;
-  line-height: 1.3 !important;
-  box-shadow: none !important;
-  transition: border-color .18s ease, box-shadow .18s ease !important;
+  width: 100%;
+  height: 44px;
+  min-width: 0;
+  margin: 0;
+  padding: 0 13px;
+  border: 1px solid #d5deea;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--employer-text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
 }
 
 .employer-form-field input:focus,
 .employer-form-field select:focus {
-  border-color: #325aa3 !important;
-  box-shadow: 0 0 0 3px rgba(50, 90, 163, .12) !important;
+  border-color: var(--employer-blue);
+  box-shadow: 0 0 0 3px rgba(50, 90, 163, 0.12);
 }
 
 .employer-modal-footer {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  gap: 12px !important;
-  padding: 20px 32px 24px !important;
-  border-top: 1px solid #e7ebf1 !important;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 32px 24px;
+  border-top: 1px solid #e7ebf1;
 }
 
 .employer-modal-cancel,
 .employer-modal-save {
-  min-width: 130px !important;
-  height: 44px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 18px !important;
-  border-radius: 8px !important;
-  font: inherit !important;
-  font-size: 13px !important;
-  font-weight: 800 !important;
-  cursor: pointer !important;
+  min-width: 130px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .employer-modal-cancel {
-  border: 1px solid #dfe5ed !important;
-  background: #ffffff !important;
-  color: #173d78 !important;
-}
-
-.employer-modal-cancel:hover {
-  background: #f4f7fb !important;
-  border-color: #bfcfe2 !important;
+  border: 1px solid var(--employer-border);
+  background: #ffffff;
+  color: var(--employer-blue);
 }
 
 .employer-modal-save {
-  border: 0 !important;
-  background: #f05a00 !important;
-  color: #ffffff !important;
-  box-shadow: 0 8px 18px rgba(240, 90, 0, .16) !important;
-}
-
-.employer-modal-save:hover {
-  background: #d94f00 !important;
-}
-
-.employer-modal-save:disabled,
-.employer-modal-cancel:disabled {
-  opacity: .6 !important;
-  cursor: not-allowed !important;
+  border: 0;
+  background: var(--employer-orange);
+  color: #ffffff;
 }
 
 @media (max-width: 1000px) {
   .employer-form-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 650px) {
-  #employerModalOverlay,
-  .employer-modal-overlay {
-    align-items: flex-start !important;
-    padding: 12px !important;
+  #employerModalOverlay.employer-modal-overlay {
+    align-items: flex-start;
+    padding: 12px;
   }
 
   .employer-modal {
-    width: 100% !important;
-    max-height: calc(100vh - 24px) !important;
-    margin: 0 !important;
+    width: 100%;
+    max-height: calc(100vh - 24px);
   }
 
   .employer-modal-header {
-    padding: 22px 18px 18px !important;
+    padding: 22px 18px 18px;
   }
 
   .employer-form-grid {
-    grid-template-columns: 1fr !important;
-    padding: 20px 18px 22px !important;
+    grid-template-columns: 1fr;
+    padding: 20px 18px 22px;
   }
 
   .employer-modal-footer {
-    flex-direction: column-reverse !important;
-    align-items: stretch !important;
-    padding: 18px !important;
+    flex-direction: column-reverse;
+    align-items: stretch;
+    padding: 18px;
   }
 
   .employer-modal-cancel,
   .employer-modal-save {
-    width: 100% !important;
+    width: 100%;
   }
 }

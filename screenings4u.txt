@@ -36,3 +36,75 @@ Training Progress
 Certificates
 Contact Employer
 My Account
+
+
+Dashboard
+Dashboard
+Employer Management
+Employers
+Employer Users
+Employees
+Customer Management
+Customers
+Customer CRM
+Customer Orders
+Customer Support
+DOT Testing
+DOT Tests
+Test Results
+Collection & Testing Management
+Random Testing
+Random Programs
+Program Employers
+Random Selections
+Selection Employees
+Training
+Courses
+Course Manager
+Course Builder
+Lesson Builder
+Assessment Builder
+Sales & CRM
+Admin CRM
+Leads
+Proposals
+Quotes
+Orders
+Order History
+Invoices
+Scheduling
+Phone Appointments
+In-Person Appointments
+Online Meetings
+Microsoft Teams Meetings
+Marketing & Communication
+Email Marketing
+Blog
+Website FAQs
+Knowledge Base
+Notifications
+Support
+Support Tickets
+Internal Chat
+Customer Chat
+Employer Support
+Documents
+Document Vault
+Proposals & Contracts
+Shared Documents
+System
+Accounts
+Audit Log
+Global Settings
+Account Access / Support Tools
+
+This needs to be a major admin capability.
+
+Add a section or secure management tool called:
+
+Account Access
+Login as Customer
+Login as Employer
+Login as Employee
+Active Support Sessions
+Account Access History

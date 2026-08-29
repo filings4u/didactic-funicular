@@ -1,54 +1,79 @@
 /* ============================================================
-   screenings4u — CORE AUTH
-   Shared authentication and portal access control.
+   SCREENINGS4U — CORE AUTH
+   STRICT ROLE-BASED PORTAL AUTHENTICATION
 
-   Requires:
-   - Supabase JavaScript library
-   - supabase-config.js
+   PORTALS:
+   - Admin
+   - Customer
+   - Employer
+   - Employee / LMS
 
-   Provides:
-   - Shared Supabase client access
-   - Session initialization
-   - Sign in
-   - Shared sign out
-   - Role detection
-   - Profile verification
-   - Active/inactive account checks
-   - Portal access verification
-   - Protected-page authorization helpers
+   IMPORTANT:
+   Users may have more than one system role, but they must
+   authenticate through the correct portal.
+
    ============================================================ */
 
 (() => {
   "use strict";
 
-  /* ==========================================================
-     DASHBOARD ROUTING
-     ========================================================== */
+  /* ============================================================
+     PORTAL CONFIGURATION
+     ============================================================ */
 
-  const DASH = {
-    admin: "admin-dashboard.html",
-    customer: "customer-dashboard.html",
-    employer: "employer-dashboard.html",
-    employee: "employee-dashboard.html"
-  };
+  const PORTALS = Object.freeze({
+
+    admin: {
+      login: "admin-login.html",
+      dashboard: "admin-dashboard.html",
+
+      allowedRoles: [
+        "super_admin",
+        "admin",
+        "administrator",
+        "operations",
+        "compliance",
+        "billing",
+        "support",
+        "content",
+        "readonly"
+      ]
+    },
+
+    customer: {
+      login: "customer-login.html",
+      dashboard: "customer-dashboard.html",
+
+      allowedRoles: [
+        "customer",
+        "client"
+      ]
+    },
+
+    employer: {
+      login: "employer-login.html",
+      dashboard: "employer-dashboard.html",
+
+      allowedRoles: [
+        "employer"
+      ]
+    },
+
+    employee: {
+      login: "lms-login.html",
+      dashboard: "lms-dashboard.html",
+
+      allowedRoles: [
+        "employee"
+      ]
+    }
+
+  });
 
 
-  /* ==========================================================
-     ROLE ALIASES
-     ========================================================== */
-
-  const ALIAS = {
-    administrator: "admin",
-    user: "customer",
-    client: "customer",
-    company: "employer",
-    staff: "employee"
-  };
-
-
-  /* ==========================================================
+  /* ============================================================
      AUTH STATE
-     ========================================================== */
+     ============================================================ */
 
   let state = {
     initialized: false,
@@ -60,22 +85,60 @@
   };
 
 
-  /* ==========================================================
-     ROLE HELPERS
-     ========================================================== */
+  /* ============================================================
+     SUPABASE CLIENT
+     ============================================================ */
 
-  function normalizeRole(value) {
-    if (!value) return null;
+  function getClient() {
 
-    const role = String(value)
-      .trim()
-      .toLowerCase();
+    if (
+      typeof window.getScreenings4uSupabase === "function"
+    ) {
+      return window.getScreenings4uSupabase();
+    }
 
-    return ALIAS[role] || role;
+    if (
+      window.screenings4uSupabase &&
+      window.screenings4uSupabase.auth
+    ) {
+      return window.screenings4uSupabase;
+    }
+
+    if (
+      window.supabaseClient &&
+      window.supabaseClient.auth
+    ) {
+      return window.supabaseClient;
+    }
+
+    throw new Error(
+      "Supabase client is not available. " +
+      "Load Supabase and supabase-config.js before core-auth.js."
+    );
+
   }
 
 
-  function roles(values = []) {
+  /* ============================================================
+     ROLE NORMALIZATION
+     ============================================================ */
+
+  function normalizeRole(value) {
+
+    if (!value) {
+      return null;
+    }
+
+    return String(value)
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "_");
+
+  }
+
+
+  function uniqueRoles(values = []) {
+
     return [
       ...new Set(
         values
@@ -83,357 +146,270 @@
           .filter(Boolean)
       )
     ];
+
   }
 
 
-  function primary(roleList) {
-    const priority = [
-      "admin",
-      "employer",
-      "employee",
-      "customer"
-    ];
+  /* ============================================================
+     GET PORTAL
+     ============================================================ */
 
-    return (
-      priority.find(role =>
-        roleList.includes(role)
-      ) ||
-      roleList[0] ||
-      null
-    );
-  }
+  function getPortal(portalName) {
 
+    const name = String(portalName || "")
+      .trim()
+      .toLowerCase();
 
-  /* ==========================================================
-     SUPABASE CLIENT
-     ========================================================== */
+    const portal = PORTALS[name];
 
-  function getClient() {
-    if (
-      typeof window.getScreenings4uSupabase ===
-      "function"
-    ) {
-      return window.getScreenings4uSupabase();
-    }
-
-    if (window.screenings4uSupabase) {
-      return window.screenings4uSupabase;
-    }
-
-    throw new Error(
-      "Load Supabase and supabase-config.js before core-auth.js."
-    );
-  }
-
-
-  /* ==========================================================
-     MAIN USER PROFILE
-     ========================================================== */
-
-  async function loadProfile(id) {
-    const { data, error } =
-      await getClient()
-        .from("user_profiles")
-        .select("*")
-        .eq("id", id)
-        .maybeSingle();
-
-    if (error) {
-      throw error;
-    }
-
-    return data || null;
-  }
-
-
-  /* ==========================================================
-     ROLE PROFILE VERIFICATION
-     ========================================================== */
-
-  async function verifyRoleProfile(id, role) {
-    const tableMap = {
-      admin: "admin_profiles",
-      customer: "customer_profiles",
-      employer: "employer_profiles"
-    };
-
-    const normalized = normalizeRole(role);
-    const table = tableMap[normalized];
-
-    if (!table) {
-      return {
-        allowed: false,
-        reason: "Unsupported portal role.",
-        profile: null
-      };
-    }
-
-    const { data, error } =
-      await getClient()
-        .from(table)
-        .select("*")
-        .eq("id", id)
-        .maybeSingle();
-
-    if (error) {
-      throw error;
-    }
-
-    if (!data) {
-      return {
-        allowed: false,
-        reason:
-          `This account is not registered for the ${normalized} portal.`,
-        profile: null
-      };
-    }
-
-    /*
-     * Only an explicit false value blocks access.
-     *
-     * This preserves compatibility with existing profile rows
-     * where is_active may be null or not yet populated.
-     */
-    if (data.is_active === false) {
-      return {
-        allowed: false,
-        reason:
-          "This account is inactive. Please contact support.",
-        profile: data
-      };
-    }
-
-    return {
-      allowed: true,
-      reason: null,
-      profile: data
-    };
-  }
-
-
-  /* ==========================================================
-     EMPLOYEE PROFILE VERIFICATION
-     ========================================================== */
-
-  async function verifyEmployeeProfile(id) {
-    const columns = [
-      "user_id",
-      "profile_id",
-      "auth_user_id",
-      "id"
-    ];
-
-    let foundSchemaColumn = false;
-
-    for (const column of columns) {
-      const { data, error } =
-        await getClient()
-          .from("employer_employees")
-          .select("*")
-          .eq(column, id)
-          .limit(1);
-
-      /*
-       * Some deployments may not contain every possible
-       * employee auth-link column. Try the next option.
-       */
-      if (error) {
-        continue;
-      }
-
-      foundSchemaColumn = true;
-
-      const employee =
-        Array.isArray(data)
-          ? data[0]
-          : null;
-
-      if (!employee) {
-        continue;
-      }
-
-      if (employee.is_active === false) {
-        return {
-          allowed: false,
-          reason:
-            "Your employee account is inactive. Please contact your employer.",
-          profile: employee
-        };
-      }
-
-      return {
-        allowed: true,
-        reason: null,
-        profile: employee
-      };
-    }
-
-    if (!foundSchemaColumn) {
-      console.warn(
-        "[S4UAuth] Employee profile columns could not be verified."
+    if (!portal) {
+      throw new Error(
+        `Unknown portal "${portalName}".`
       );
     }
 
     return {
-      allowed: false,
-      reason:
-        "This account is not registered for the employee portal.",
-      profile: null
+      name,
+      ...portal
     };
+
   }
 
 
-  /* ==========================================================
-     PORTAL ACCESS VERIFICATION
-     ========================================================== */
+  /* ============================================================
+     GET SESSION
+     ============================================================ */
 
-  async function verifyPortalAccess(id, role) {
-    const normalized = normalizeRole(role);
+  async function getSession() {
 
-    if (normalized === "employee") {
-      return verifyEmployeeProfile(id);
-    }
-
-    return verifyRoleProfile(
-      id,
-      normalized
-    );
-  }
-
-
-  /* ==========================================================
-     ROLE LOADING
-     ========================================================== */
-
-  async function loadRoles(
-    id,
-    profileData
-  ) {
     const client = getClient();
-    const found = [];
-
-
-    /*
-     * USER ROLE ASSIGNMENTS
-     */
 
     const {
-      data: assignmentData,
-      error: assignmentError
-    } =
-      await client
-        .from("user_role_assignments")
-        .select("*")
-        .eq("user_id", id);
+      data,
+      error
+    } = await client.auth.getSession();
 
-    if (!assignmentError) {
-      (assignmentData || []).forEach(row => {
-        [
-          row.role,
-          row.role_key,
-          row.role_name,
-          row.app_role
-        ].forEach(value => {
-          const normalized =
-            normalizeRole(value);
-
-          if (normalized) {
-            found.push(normalized);
-          }
-        });
-      });
+    if (error) {
+      throw error;
     }
 
+    return data?.session || null;
 
-    /*
-     * ROLE PROFILE TABLES
-     *
-     * This checks whether a profile exists.
-     * Active status is verified separately by
-     * verifyPortalAccess().
-     */
+  }
 
-    for (
-      const [table, role] of [
-        ["admin_profiles", "admin"],
-        ["customer_profiles", "customer"],
-        ["employer_profiles", "employer"]
-      ]
-    ) {
-      const { data, error } =
-        await client
-          .from(table)
-          .select("id")
-          .eq("id", id)
-          .maybeSingle();
 
-      if (!error && data) {
-        found.push(role);
+  /* ============================================================
+     GET USER PROFILE
+
+     The central profile table is user_profiles.
+     This function does NOT require a nonexistent
+     admin_profiles table.
+     ============================================================ */
+
+  async function getProfile(userId = null) {
+
+    const client = getClient();
+
+    let id = userId;
+
+    if (!id) {
+
+      const session = await getSession();
+
+      if (!session?.user?.id) {
+        return null;
       }
+
+      id = session.user.id;
+
     }
 
+    const {
+      data,
+      error
+    } = await client
+      .from("user_profiles")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
 
-    /*
-     * EMPLOYEE PROFILE
-     */
+    if (error) {
 
-    for (
-      const column of [
-        "user_id",
-        "profile_id",
-        "auth_user_id",
-        "id"
-      ]
-    ) {
-      const {
-        data,
+      console.warn(
+        "[S4UAuth] Unable to load user profile:",
         error
-      } =
-        await client
-          .from("employer_employees")
-          .select("id")
-          .eq(column, id)
-          .limit(1);
+      );
 
-      if (
-        !error &&
-        data?.length
-      ) {
-        found.push("employee");
-        break;
+      return null;
+
+    }
+
+    return data || null;
+
+  }
+
+
+  /* ============================================================
+     GET USER ROLES
+
+     Roles are loaded from:
+
+     user_role_assignments
+     ============================================================ */
+
+  async function getRoles(userId = null) {
+
+    const client = getClient();
+
+    let id = userId;
+
+    if (!id) {
+
+      const session = await getSession();
+
+      if (!session?.user?.id) {
+        return [];
       }
+
+      id = session.user.id;
+
     }
 
 
-    /*
-     * ROLE VALUES STORED ON user_profiles
-     */
+    const {
+      data,
+      error
+    } = await client
+      .from("user_role_assignments")
+      .select("*")
+      .eq("user_id", id);
 
-    [
-      profileData?.role,
-      profileData?.role_key,
-      profileData?.account_role
-    ].forEach(value => {
-      const normalized =
-        normalizeRole(value);
 
-      if (normalized) {
-        found.push(normalized);
-      }
+    if (error) {
+
+      console.error(
+        "[S4UAuth] Unable to load user roles:",
+        error
+      );
+
+      return [];
+
+    }
+
+
+    const foundRoles = [];
+
+    (data || []).forEach((row) => {
+
+      [
+        row.role,
+        row.role_name,
+        row.role_code,
+        row.role_key,
+        row.app_role
+      ].forEach((value) => {
+
+        const role = normalizeRole(value);
+
+        if (role) {
+          foundRoles.push(role);
+        }
+
+      });
+
     });
 
 
-    return roles(found);
+    return uniqueRoles(foundRoles);
+
   }
 
 
-  /* ==========================================================
-     SESSION INITIALIZATION
-     ========================================================== */
+  /* ============================================================
+     CHECK PORTAL ACCESS
+
+     This is the central authorization check.
+
+     ADMIN:
+       Any recognized administrative role.
+
+     CUSTOMER:
+       Customer role only.
+
+     EMPLOYER:
+       Employer role only.
+
+     EMPLOYEE:
+       Employee role only.
+       Employee dashboard is LMS only.
+     ============================================================ */
+
+  function userCanAccessPortal(
+    userRoles = [],
+    portalName
+  ) {
+
+    const portal = getPortal(portalName);
+
+    const normalizedUserRoles =
+      uniqueRoles(userRoles);
+
+    const allowedRoles =
+      uniqueRoles(portal.allowedRoles);
+
+
+    return normalizedUserRoles.some(
+      (role) => allowedRoles.includes(role)
+    );
+
+  }
+
+
+  /* ============================================================
+     GET PRIMARY ROLE
+     ============================================================ */
+
+  function getPrimaryRole(userRoles = []) {
+
+    const roles = uniqueRoles(userRoles);
+
+    if (
+      userCanAccessPortal(roles, "admin")
+    ) {
+      return "admin";
+    }
+
+    if (
+      userCanAccessPortal(roles, "employer")
+    ) {
+      return "employer";
+    }
+
+    if (
+      userCanAccessPortal(roles, "employee")
+    ) {
+      return "employee";
+    }
+
+    if (
+      userCanAccessPortal(roles, "customer")
+    ) {
+      return "customer";
+    }
+
+    return null;
+
+  }
+
+
+  /* ============================================================
+     INITIALIZE
+     ============================================================ */
 
   async function initialize({
     force = false
   } = {}) {
+
     if (
       state.initialized &&
       !force
@@ -444,27 +420,17 @@
       };
     }
 
-    const client = getClient();
-
-    const {
-      data,
-      error
-    } =
-      await client.auth.getSession();
-
-    if (error) {
-      throw error;
-    }
 
     const session =
-      data?.session || null;
+      await getSession();
 
 
-    /*
-     * NO ACTIVE SESSION
-     */
+    /* ----------------------------------------------------------
+       NO SESSION
+       ---------------------------------------------------------- */
 
     if (!session?.user) {
+
       state = {
         initialized: true,
         session: null,
@@ -478,267 +444,571 @@
         ...state,
         roles: []
       };
+
     }
 
+
+    /* ----------------------------------------------------------
+       AUTHENTICATED USER
+       ---------------------------------------------------------- */
 
     const user =
       session.user;
 
 
-    /*
-     * MAIN PROFILE
-     *
-     * Do not block authentication if user_profiles
-     * is temporarily unavailable. Role/profile checks
-     * will still determine portal access.
-     */
+    const [
+      profile,
+      roles
+    ] = await Promise.all([
 
-    let profile = null;
+      getProfile(user.id),
 
-    try {
-      profile =
-        await loadProfile(user.id);
-    } catch (error) {
-      console.warn(
-        "[S4UAuth] Could not load user_profiles:",
-        error.message
-      );
-    }
+      getRoles(user.id)
 
-
-    const roleList =
-      await loadRoles(
-        user.id,
-        profile
-      );
+    ]);
 
 
     state = {
+
       initialized: true,
+
       session,
+
       user,
+
       profile,
-      roles: roleList,
+
+      roles,
+
       primaryRole:
-        primary(roleList)
+        getPrimaryRole(roles)
+
     };
 
 
     return {
       ...state,
-      roles: [...roleList]
+      roles: [...roles]
     };
+
   }
 
 
-  /* ==========================================================
+  /* ============================================================
+     HAS ROLE
+     ============================================================ */
+
+  async function hasRole(
+    role,
+    userId = null
+  ) {
+
+    const requestedRole =
+      normalizeRole(role);
+
+    if (!requestedRole) {
+      return false;
+    }
+
+
+    const userRoles =
+      await getRoles(userId);
+
+
+    return userRoles.includes(
+      requestedRole
+    );
+
+  }
+
+
+  /* ============================================================
+     HAS ANY ROLE
+     ============================================================ */
+
+  async function hasAnyRole(
+    allowedRoles = [],
+    userId = null
+  ) {
+
+    const allowed =
+      uniqueRoles(allowedRoles);
+
+    if (!allowed.length) {
+      return false;
+    }
+
+
+    const userRoles =
+      await getRoles(userId);
+
+
+    return userRoles.some(
+      (role) => allowed.includes(role)
+    );
+
+  }
+
+
+  /* ============================================================
+     GET DASHBOARD
+     ============================================================ */
+
+  function getDashboardForRole(role) {
+
+    const normalizedRole =
+      normalizeRole(role);
+
+    if (!normalizedRole) {
+      return null;
+    }
+
+
+    if (
+      PORTALS.admin.allowedRoles.includes(
+        normalizedRole
+      )
+    ) {
+      return PORTALS.admin.dashboard;
+    }
+
+
+    if (
+      PORTALS.customer.allowedRoles.includes(
+        normalizedRole
+      )
+    ) {
+      return PORTALS.customer.dashboard;
+    }
+
+
+    if (
+      PORTALS.employer.allowedRoles.includes(
+        normalizedRole
+      )
+    ) {
+      return PORTALS.employer.dashboard;
+    }
+
+
+    if (
+      PORTALS.employee.allowedRoles.includes(
+        normalizedRole
+      )
+    ) {
+      return PORTALS.employee.dashboard;
+    }
+
+
+    return null;
+
+  }
+
+
+  /* ============================================================
+     GET LOGIN PAGE
+     ============================================================ */
+
+  function getLoginForPortal(
+    portalName
+  ) {
+
+    return getPortal(
+      portalName
+    ).login;
+
+  }
+
+
+  /* ============================================================
+     REQUIRE AUTHENTICATION
+
+     Example:
+
+     S4UAuth.requireAuth({
+       portal: "admin"
+     });
+
+     If the user is not authorized for that exact
+     portal, they are signed out and returned to
+     THAT portal's login page.
+     ============================================================ */
+
+  async function requireAuth({
+    portal = null,
+    loginPage = null
+  } = {}) {
+
+    let portalConfig = null;
+
+
+    if (portal) {
+
+      portalConfig =
+        getPortal(portal);
+
+    }
+
+
+    const resolvedLoginPage =
+
+      loginPage ||
+
+      portalConfig?.login ||
+
+      "admin-login.html";
+
+
+    const session =
+      await getSession();
+
+
+    /* ----------------------------------------------------------
+       NO SESSION
+       ---------------------------------------------------------- */
+
+    if (!session?.user) {
+
+      window.location.replace(
+        resolvedLoginPage
+      );
+
+      return null;
+
+    }
+
+
+    /* ----------------------------------------------------------
+       LOAD FRESH AUTH STATE
+       ---------------------------------------------------------- */
+
+    const authState =
+      await initialize({
+        force: true
+      });
+
+
+    /* ----------------------------------------------------------
+       NO PORTAL SPECIFIED
+       ---------------------------------------------------------- */
+
+    if (!portalConfig) {
+
+      return authState;
+
+    }
+
+
+    /* ----------------------------------------------------------
+       STRICT PORTAL ACCESS
+       ---------------------------------------------------------- */
+
+    const allowed =
+      userCanAccessPortal(
+        authState.roles,
+        portal
+      );
+
+
+    if (!allowed) {
+
+      console.warn(
+        "[S4UAuth] Portal access denied.",
+        {
+          portal,
+          userId:
+            authState.user?.id,
+          roles:
+            authState.roles
+        }
+      );
+
+
+      await signOutSilently();
+
+
+      window.location.replace(
+        resolvedLoginPage
+      );
+
+
+      return null;
+
+    }
+
+
+    return authState;
+
+  }
+
+
+  /* ============================================================
      SIGN IN
-     ========================================================== */
+     ============================================================ */
 
   async function signIn(
     email,
     password
   ) {
+
+    const client =
+      getClient();
+
+
     const {
       data,
       error
-    } =
-      await getClient()
-        .auth
-        .signInWithPassword({
-          email: String(
+    } = await client
+      .auth
+      .signInWithPassword({
+
+        email:
+          String(
             email || ""
           ).trim(),
-          password
-        });
+
+        password
+
+      });
+
 
     if (error) {
       throw error;
     }
 
-    /*
-     * Refresh the shared state immediately after login.
-     */
+
+    /* Refresh auth state immediately */
 
     await initialize({
       force: true
     });
 
+
     return data;
+
   }
 
 
-  /* ==========================================================
-     SIGN OUT
-     ========================================================== */
+  /* ============================================================
+     STRICT PORTAL SIGN IN
 
-  async function signOut({
-    redirectTo = null
-  } = {}) {
-    const { error } =
-      await getClient()
-        .auth
-        .signOut();
+     IMPORTANT:
 
-    if (error) {
-      throw error;
+     The user is authenticated first.
+
+     Then the user's roles are checked.
+
+     If they do not belong to the portal:
+     - session is destroyed
+     - an error is returned
+     - no other portal redirect occurs
+     ============================================================ */
+
+  async function signInToPortal(
+    portalName,
+    email,
+    password
+  ) {
+
+    const portal =
+      getPortal(portalName);
+
+
+    const result =
+      await signIn(
+        email,
+        password
+      );
+
+
+    const authState =
+      await initialize({
+        force: true
+      });
+
+
+    if (!authState?.user?.id) {
+
+      await signOutSilently();
+
+      throw new Error(
+        "Unable to verify your account."
+      );
+
     }
 
+
+    const authorized =
+      userCanAccessPortal(
+        authState.roles,
+        portalName
+      );
+
+
+    if (!authorized) {
+
+      console.warn(
+        "[S4UAuth] Login denied for portal.",
+        {
+          portal:
+            portalName,
+          userId:
+            authState.user.id,
+          roles:
+            authState.roles
+        }
+      );
+
+
+      await signOutSilently();
+
+
+      throw new Error(
+        "This account does not have access to the " +
+        portalName +
+        " portal."
+      );
+
+    }
+
+
+    return {
+
+      ...result,
+
+      portal,
+
+      state:
+        authState
+
+    };
+
+  }
+
+
+  /* ============================================================
+     SILENT SIGN OUT
+     ============================================================ */
+
+  async function signOutSilently() {
+
+    try {
+
+      const client =
+        getClient();
+
+
+      await client.auth.signOut();
+
+
+    } catch (error) {
+
+      console.error(
+        "[S4UAuth] Unable to sign out:",
+        error
+      );
+
+    }
+
+
     state = {
+
       initialized: true,
       session: null,
       user: null,
       profile: null,
       roles: [],
       primaryRole: null
+
     };
 
-    if (redirectTo) {
-      window.location.replace(
-        redirectTo
-      );
-    }
   }
 
 
-  /* ==========================================================
-     PROTECTED PAGE AUTHORIZATION
-     ========================================================== */
+  /* ============================================================
+     SIGN OUT
+     ============================================================ */
 
-  async function requireAuth({
-    loginPage =
-      "customer-login.html",
+  async function signOut(
+    loginPage = "admin-login.html"
+  ) {
 
-    allowedRoles = [],
+    await signOutSilently();
 
-    fallback = null
-  } = {}) {
-    const authState =
-      await initialize();
+    window.location.replace(
+      loginPage
+    );
 
-    const wanted =
-      roles(allowedRoles);
-
-
-    /*
-     * NOT AUTHENTICATED
-     */
-
-    if (
-      !authState.session ||
-      !authState.user
-    ) {
-      window.location.replace(
-        loginPage
-      );
-
-      return null;
-    }
-
-
-    /*
-     * ROLE AUTHORIZATION
-     */
-
-    if (wanted.length) {
-      const matchedRole =
-        wanted.find(role =>
-          authState.roles.includes(
-            role
-          )
-        );
-
-      if (!matchedRole) {
-        window.location.replace(
-          fallback ||
-          DASH[authState.primaryRole] ||
-          loginPage
-        );
-
-        return null;
-      }
-
-
-      /*
-       * CENTRAL PROFILE + ACTIVE STATUS CHECK
-       */
-
-      const access =
-        await verifyPortalAccess(
-          authState.user.id,
-          matchedRole
-        );
-
-      if (!access.allowed) {
-        await signOut({
-          redirectTo:
-            fallback ||
-            loginPage
-        });
-
-        return null;
-      }
-    }
-
-
-    return authState;
   }
 
 
-  /* ==========================================================
+  /* ============================================================
      PUBLIC API
-     ========================================================== */
+     ============================================================ */
 
-  window.S4UAuth =
-    Object.freeze({
+  window.S4UAuth = Object.freeze({
 
-      getClient,
+    /* Client */
 
-      initialize,
-
-      signIn,
-
-      signOut,
-
-      requireAuth,
-
-      verifyPortalAccess,
-
-      verifyRoleProfile,
-
-      verifyEmployeeProfile,
+    getClient,
 
 
-      hasRole: role =>
-        state.roles.includes(
-          normalizeRole(role)
-        ),
+    /* Session */
+
+    getSession,
 
 
-      hasAnyRole: roleList =>
-        roles(roleList).some(
-          role =>
-            state.roles.includes(
-              role
-            )
-        ),
+    /* State */
+
+    initialize,
 
 
-      getDashboardForRole: role =>
-        DASH[
-          normalizeRole(role)
-        ] || null,
+    /* User */
+
+    getProfile,
 
 
-      getState: () => ({
-        ...state,
-        roles: [
-          ...state.roles
-        ]
-      }),
+    /* Roles */
+
+    getRoles,
+
+    hasRole,
+
+    hasAnyRole,
+
+    normalizeRole,
+
+    userCanAccessPortal,
+
+    getPrimaryRole,
 
 
-      normalizeRole
-    });
+    /* Portals */
+
+    PORTALS,
+
+    getPortal,
+
+    getDashboardForRole,
+
+    getLoginForPortal,
+
+
+    /* Protection */
+
+    requireAuth,
+
+
+    /* Authentication */
+
+    signIn,
+
+    signInToPortal,
+
+    signOut,
+
+    signOutSilently
+
+  });
 
 })();

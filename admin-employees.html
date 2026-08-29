@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Employees | screenings4u Management Portal</title>
+
+    <link rel="stylesheet" href="assets/css/admin-lms.css">
+    <link rel="stylesheet" href="assets/css/admin-employees.css">
+</head>
+
+<body>
+
+    <div class="admin-lms-app">
+
+        <!-- Shared sidebar rendered by admin-lms-sidebar.js -->
+        <div id="admin-lms-sidebar-target"></div>
+
+        <main class="admin-lms-main">
+
+            <!-- =====================================================
+                 TOPBAR
+            ====================================================== -->
+            <header class="admin-lms-topbar">
+
+                <div class="admin-lms-topbar-left">
+
+                    <button
+                        type="button"
+                        class="admin-lms-sidebar-collapse"
+                        data-admin-sidebar-collapse
+                        aria-label="Collapse sidebar"
+                        aria-expanded="true"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M15 18l-6-6 6-6"></path>
+                        </svg>
+                    </button>
+
+                    <div class="admin-lms-page-context">
+                        <small>Employer Management</small>
+                        <strong>Employees</strong>
+                    </div>
+
+                </div>
+
+                <div class="admin-lms-topbar-right">
+
+                    <a
+                        href="admin-notifications.html"
+                        class="admin-lms-notification-button"
+                        aria-label="Notifications"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                            <path d="M10 21h4"></path>
+                        </svg>
+                    </a>
+
+                    <div
+                        class="admin-lms-user-menu"
+                        data-admin-user-menu
+                    >
+                        <button
+                            type="button"
+                            class="admin-lms-user-trigger"
+                            data-admin-user-trigger
+                            aria-expanded="false"
+                        >
+                            <span
+                                class="admin-lms-user-avatar"
+                                data-admin-user-initials
+                            >
+                                AD
+                            </span>
+
+                            <span class="admin-lms-user-details">
+                                <strong data-admin-user-name>Administrator</strong>
+                                <small data-admin-user-role>System Administrator</small>
+                            </span>
+
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </button>
+
+                        <div
+                            class="admin-lms-user-dropdown"
+                            data-admin-user-dropdown
+                        >
+                            <a href="admin-account.html">My Account</a>
+
+                            <button
+                                type="button"
+                                data-admin-logout
+                            >
+                                Sign Out
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- =====================================================
+                 PAGE CONTENT
+            ====================================================== -->
+            <section class="admin-employees-page">
+
+                <div class="employees-heading">
+
+                    <div>
+                        <div class="employees-kicker">
+                            EMPLOYER MANAGEMENT
+                        </div>
+
+                        <h1>Employees</h1>
+
+                        <p>
+                            Manage employer employee records, DOT status,
+                            workforce details, and employment information.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="employees-primary-button"
+                        id="addEmployeeButton"
+                    >
+                        + Add Employee
+                    </button>
+
+                </div>
+
+
+                <!-- =================================================
+                     METRICS
+                ================================================== -->
+                <section class="employees-metrics">
+
+                    <article class="employees-metric-card">
+                        <span>Total Employees</span>
+                        <strong data-employee-metric="total">—</strong>
+                    </article>
+
+                    <article class="employees-metric-card">
+                        <span>Active Employees</span>
+                        <strong data-employee-metric="active">—</strong>
+                    </article>
+
+                    <article class="employees-metric-card">
+                        <span>DOT Regulated</span>
+                        <strong data-employee-metric="dot">—</strong>
+                    </article>
+
+                    <article class="employees-metric-card">
+                        <span>Inactive Employees</span>
+                        <strong data-employee-metric="inactive">—</strong>
+                    </article>
+
+                </section>
+
+
+                <!-- =================================================
+                     EMPLOYEE DIRECTORY
+                ================================================== -->
+                <section class="employees-panel">
+
+                    <div class="employees-toolbar">
+
+                        <div class="employees-search">
+                            <input
+                                type="search"
+                                id="employeeSearch"
+                                placeholder="Search name, email, employee number, or CDL..."
+                                autocomplete="off"
+                            >
+                        </div>
+
+                        <select id="employeeEmployerFilter">
+                            <option value="">All Employers</option>
+                        </select>
+
+                        <select id="employeeStatusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="terminated">Terminated</option>
+                            <option value="leave">On Leave</option>
+                        </select>
+
+                        <select id="employeeDotFilter">
+                            <option value="">All Employees</option>
+                            <option value="true">DOT Regulated</option>
+                            <option value="false">Non-DOT</option>
+                        </select>
+
+                        <button
+                            type="button"
+                            class="employees-secondary-button"
+                            id="refreshEmployeesButton"
+                        >
+                            Refresh
+                        </button>
+
+                    </div>
+
+
+                    <div class="employees-table-wrap">
+
+                        <table class="employees-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Employer</th>
+                                    <th>Employee #</th>
+                                    <th>Position</th>
+                                    <th>DOT / CDL</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="employeesTableBody">
+
+                                <tr>
+                                    <td
+                                        colspan="7"
+                                        class="employees-loading"
+                                    >
+                                        Loading employees...
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <div class="employees-footer">
+
+                        <span id="employeesResultsCount">
+                            0 employees
+                        </span>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================================================
+         SCRIPTS
+    ========================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/core-auth.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/session-security.js"></script>
+    <script src="assets/js/portal-auth-guard.js"></script>
+    <script src="assets/js/admin-auth-guard.js"></script>
+    <script src="assets/js/admin-lms-sidebar.js"></script>
+
+    <script src="assets/js/admin-employees.js"></script>
+
+</body>
+</html>
