@@ -1,177 +1,40 @@
-screenings4u
-│
-├── OPERATIONS
-│   ├── Dashboard
-│   ├── Customers
-│   ├── Accounts
-│   ├── Orders
-│   ├── Billing
-│   ├── Proposals
-│   └── Documents
-│
-├── DOT COMPLIANCE
-│   ├── Consortium
-│   ├── Employers
-│   ├── Drivers
-│   ├── Random Selection
-│   ├── DOT Testing
-│   ├── MIS Reports
-│   └── Certificates
-│
-├── TRAINING / LMS
-│   ├── LMS Dashboard
-│   ├── Courses
-│   ├── Course Manager
-│   ├── Lessons
-│   ├── Assessments
-│   ├── Students
-│   ├── Enrollments
-│   ├── Progress
-│   └── Certificates
-│
-├── COMMUNICATIONS
-│   ├── Email
-│   ├── Meetings
-│   ├── Messages
-│   └── Support
-│
-├── CONTENT
-│   └── Blog
-│
-└── SYSTEM
-    ├── Automations
-    ├── Audit Log
-    ├── Users & Roles
-    ├── Integrations
-    └── Settings
+What Changes Per Portal
+Customer Portal
 
+Navigation and pages for:
 
+Dashboard
+Orders
+Results
+Donor Pass
+Documents
+Notifications
+Service Catalog
+Billing & Receipts
+My Account
+Employer Portal
 
-    screenings4u
-│
-├── PLATFORM ADMINISTRATION
-│   │
-│   ├── Admin Profiles
-│   ├── Roles
-│   ├── Permissions
-│   └── Audit
-│
-├── CUSTOMERS
-│   │
-│   ├── Customer Profiles
-│   ├── Customer Orders
-│   ├── Customer Order Items
-│   ├── Customer Invoices
-│   ├── Customer Invoice Items
-│   ├── Customer Invoice Payments
-│   ├── Customer Documents
-│   ├── Customer Training
-│   └── Customer Support
-│
-├── EMPLOYERS
-│   │
-│   ├── Employer Profiles
-│   ├── Employer Members
-│   ├── Employer Employees
-│   ├── Employer Drivers
-│   ├── Employer Locations
-│   ├── Employer Team
-│   │
-│   ├── Employer Orders
-│   ├── Employer Order Items
-│   │
-│   ├── Employer DOT Consortiums
-│   ├── Employer Random Pools
-│   ├── Employer Random Selections
-│   ├── Employer DOT Tests
-│   ├── Employer DOT Test Results
-│   ├── Employer MIS Reports
-│   ├── Employer Certificates
-│   └── Employer Clearinghouse
-│
-├── BILLING
-│   │
-│   ├── Customer Invoices
-│   ├── Customer Invoice Payments
-│   │
-│   ├── Employer Invoices
-│   └── Employer Invoice Payments
-│
-├── TRAINING
-│   │
-│   ├── Courses
-│   ├── Lessons
-│   ├── Assessments
-│   ├── Enrollments
-│   ├── Progress
-│   └── Certificates
-│
-├── COMMUNICATIONS
-│   │
-│   ├── Email Campaigns
-│   ├── Microsoft Teams Meetings
-│   ├── Scheduled Meetings
-│   ├── In-Person Meetings
-│   ├── Internal Messaging
-│   ├── External Chat
-│   └── Support Tickets
-│
-├── PROPOSALS
-│   │
-│   ├── Employer Proposals
-│   ├── Employer Proposal Items
-│   └── Employer Proposal Events
-│
-├── AUTOMATIONS
-│   │
-│   ├── Automations
-│   ├── Triggers
-│   ├── Actions
-│   ├── Runs
-│   └── Logs
-│
-└── SYSTEM
-    │
-    ├── Audit Logs
-    ├── System Events
-    ├── Integrations
-    └── Global Settings
+Same shell, but employer-specific navigation:
 
+Dashboard
+Employees
+Programs
+Orders
+Training Management
+Proposals
+Invoices
+Service Catalog
+Post-Accident Testing
+Onsite Testing
+Business Profile
+Employee Portal
 
+Simplified navigation:
 
-    This is helpful. Your LMS database foundation is already there, and all LMS tables have RLS enabled.
-
-I see the core structure we need:
-
-LMS Content
-lms_courses
-lms_sections
-lms_lessons
-lms_content_blocks
-lms_media
-Quizzes
-lms_quizzes
-lms_questions
-lms_question_options
-lms_quiz_attempts
-lms_quiz_answers
-Assessments
-lms_assessments
-lms_assessment_questions
-lms_assessment_options
-lms_assessment_attempts
-lms_assessment_attempt_answers
-lms_assessment_answers
-Learner Activity
-lms_enrollments
-lms_lesson_progress
-lms_block_progress
+Dashboard
+My Courses
+Available Courses
+Training Progress
 Certificates
-lms_certificates
-Account Types
-customer_profiles
-employer_profiles
-employer_members
-employer_employees
-user_profiles
-user_role_assignments
+Contact Employer
+My Account

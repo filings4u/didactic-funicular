@@ -1,116 +1,364 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Orders | screenings4u Customer Portal</title>
-<link rel="icon" type="image/png" href="images/fav.png">
-<link rel="stylesheet" href="assets/css/admin-core.css">
-<style>
-/* ============================================================
-   screenings4u — CUSTOMER PORTAL MANAGEMENT
-   Customer pages only. No employer terminology or workflows.
-   No pop-ups or modal workflows.
-   ============================================================ */
-.customer-page{padding:22px 24px 34px;max-width:none}
-.customer-header{min-height:116px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid #e3e8ef}
-.customer-heading{min-width:0}.customer-kicker{margin-bottom:5px;color:#f05a00;font-size:11px;line-height:1;font-weight:900;letter-spacing:.05em}
-.customer-heading h1{margin:0;color:#173d78;font-size:clamp(36px,3vw,44px);line-height:.98;font-weight:800;letter-spacing:-.045em}
-.customer-heading p{max-width:760px;margin:9px 0 0;color:#52627a;font-size:13px;line-height:1.45}
-.customer-actions{flex:0 0 auto;display:flex;align-items:center;gap:10px}
-.customer-actions a.customer-btn{min-width:126px;height:43px;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;padding:0 18px!important;border:1px solid #cbd7e5!important;border-radius:9px!important;background:#fff!important;color:#173d78!important;font-size:11px!important;font-weight:900!important;line-height:1!important;text-decoration:none!important;box-sizing:border-box}
-.customer-actions a.customer-btn:hover{background:#f4f7fb!important;border-color:#aebfd3!important}
-.customer-actions a.customer-btn.primary{min-width:158px;border-color:#f05a00!important;background:#f05a00!important;color:#fff!important}
-.customer-actions a.customer-btn.primary:hover{background:#d94f00!important;border-color:#d94f00!important}
-.customer-btn-icon{font-size:17px;line-height:1}
-.customer-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:22px}
-.customer-kpi{min-width:0;min-height:153px;padding:17px 20px;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 10px rgba(20,48,82,.055)}
-.customer-kpi-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.customer-kpi-label{color:#5f6d83;font-size:10px;line-height:1;font-weight:900;letter-spacing:.075em}
-.customer-kpi-mark{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-size:16px;font-weight:900}
-.customer-kpi:nth-child(2) .customer-kpi-mark{background:#eaf7f0;color:#16804d}.customer-kpi:nth-child(3) .customer-kpi-mark{background:#fff3e5;color:#c96a00}.customer-kpi:nth-child(4) .customer-kpi-mark{background:#fceeee;color:#b64141}
-.customer-kpi strong{display:block;margin-top:20px;color:#183f7c;font-size:30px;line-height:1;font-weight:800;letter-spacing:-.04em}.customer-kpi small{display:block;margin-top:12px;color:#647189;font-size:10px;line-height:1.3}
-.customer-grid{display:grid;grid-template-columns:minmax(0,1.34fr) minmax(360px,1fr);gap:16px 22px;margin-top:16px}
-.customer-card{min-width:0;overflow:hidden;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 11px rgba(20,48,82,.055)}
-.customer-card-header{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 23px;border-bottom:1px solid #e3e8ef}
-.customer-card-header h2{margin:0;color:#173d78;font-size:19px;line-height:1.15;font-weight:800;letter-spacing:-.025em}.customer-card-header p{margin:6px 0 0;color:#607089;font-size:11px;line-height:1.3}
-.customer-header-link{color:#17519b;text-decoration:none;font-size:10px;font-weight:900}.customer-header-link span{padding-left:5px;font-size:16px}
-.customer-list{padding:9px 12px}.customer-row{min-height:76px;display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;color:inherit;text-decoration:none}.customer-row:hover{background:#f7f9fc}
-.customer-row-icon{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-size:12px;font-weight:900}
-.customer-row:nth-child(2) .customer-row-icon{background:#eaf7f0;color:#16804d}.customer-row:nth-child(3) .customer-row-icon{background:#fff3e5;color:#c96a00}.customer-row:nth-child(4) .customer-row-icon{background:#fceeee;color:#b64141}.customer-row:nth-child(5) .customer-row-icon{background:#f0eefb;color:#6045a8}
-.customer-row strong{display:block;color:#173b73;font-size:13px;line-height:1.2;font-weight:800}.customer-row small{display:block;margin-top:5px;color:#617088;font-size:10px;line-height:1.25}.customer-arrow{padding-right:7px;color:#667a98;font-size:22px}
-.customer-side{display:grid;grid-template-rows:auto auto;gap:16px}.customer-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:13px}
-.customer-action{min-height:93px;display:flex;flex-direction:column;justify-content:center;padding:12px 15px;border:1px solid #dfe5ed;border-radius:8px;background:#fff;color:inherit;text-decoration:none}.customer-action:hover{border-color:#bfcfe2;background:#f9fbfe;transform:translateY(-1px)}
-.customer-action-mark{display:block;color:#f05a00;font-size:21px;line-height:.8;font-weight:700}.customer-action strong{display:block;margin-top:10px;color:#173b73;font-size:12px;line-height:1.15;font-weight:800}.customer-action small{display:block;margin-top:5px;color:#647189;font-size:10px;line-height:1.2}
-.customer-resources{padding:7px 13px 12px}.customer-resources a{min-height:45px;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:0 10px;border-bottom:1px solid #edf0f4;color:#173b73;text-decoration:none;font-size:11px;font-weight:800}.customer-resources a:last-child{border-bottom:0}.customer-resources a:hover{background:#f7f9fc}.customer-resources span:last-child{color:#667a98;font-size:17px}
-@media(max-width:1250px){.customer-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.customer-grid{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr)}}
-@media(max-width:1050px){.customer-header{align-items:flex-start;flex-direction:column}.customer-actions{width:100%}.customer-actions .customer-btn{flex:1 1 0}.customer-grid{grid-template-columns:1fr}.customer-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}}
-@media(max-width:700px){.customer-page{padding:18px 14px 22px}.customer-header{min-height:0;padding-bottom:18px}.customer-kpis{gap:9px}.customer-kpi{min-height:128px;padding:14px}.customer-kpi strong{margin-top:14px;font-size:25px}.customer-side{grid-template-columns:1fr}.customer-card-header{padding-left:17px;padding-right:17px}}
-@media(max-width:500px){.customer-actions{flex-direction:column}.customer-actions .customer-btn{width:100%;flex:none}}
-@media(max-width:430px){.customer-kpis{grid-template-columns:1fr}.customer-row{grid-template-columns:38px minmax(0,1fr) auto;padding-left:5px;padding-right:5px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Orders | Screenings4u Customer Portal</title>
+
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+  <!-- CUSTOMER PORTAL SHELL -->
+  <link rel="stylesheet" href="assets/css/customer-portal.css">
+
+  <!-- CUSTOMER ORDERS -->
+  <link rel="stylesheet" href="assets/css/customer-orders.css">
 </head>
-<body>
-<div class="s4u-app">
-    <nav class="s4u-nav" id="adminNavigation" aria-label="Admin navigation"></nav>
-  <main class="s4u-main">
-    <div class="customer-page">
-      <header class="customer-header">
-        <div class="customer-heading">
-          <div class="customer-kicker">CUSTOMER PORTAL / ORDERS</div>
-          <h1>My Orders</h1>
-          <p>Review your customer service orders, current order activity, and order records.</p>
-        </div>
-        <div class="customer-actions">
-          <a class="customer-btn" href="customer-orders.html"><span class="customer-btn-icon">↻</span>Refresh</a>
-          <a class="customer-btn primary" href="customer-order-history.html"><span class="customer-btn-icon">→</span>Order History</a>
-        </div>
-      </header>
 
-      <section class="customer-kpis" aria-label="Customer portal metrics"><article class="customer-kpi"><div class="customer-kpi-top"><span class="customer-kpi-label">ACCOUNT ACTIVITY</span><span class="customer-kpi-mark">▤</span></div><strong>—</strong><small>Customer portal activity</small></article>
-<article class="customer-kpi"><div class="customer-kpi-top"><span class="customer-kpi-label">AVAILABLE</span><span class="customer-kpi-mark">✓</span></div><strong>—</strong><small>Customer records available</small></article>
-<article class="customer-kpi"><div class="customer-kpi-top"><span class="customer-kpi-label">REQUIRES ACTION</span><span class="customer-kpi-mark">!</span></div><strong>—</strong><small>Items requiring your attention</small></article>
-<article class="customer-kpi"><div class="customer-kpi-top"><span class="customer-kpi-label">RECENT</span><span class="customer-kpi-mark">□</span></div><strong>—</strong><small>Recent customer activity</small></article></section>
+<body
+  class="customer-orders-page"
+  data-page-title="Orders"
+  data-page-subtitle="Track your services, order activity, and completed purchases."
+>
 
-      <section class="customer-grid">
-        <article class="customer-card">
-          <header class="customer-card-header">
-            <div><h2>My Orders</h2><p>Each customer workflow opens on its own page.</p></div>
-            <a class="customer-header-link" href="customer-current-orders.html">Open <span>→</span></a>
-          </header>
-          <div class="customer-list"><a class="customer-row" href="customer-current-orders.html"><span class="customer-row-icon">01</span><span><strong>Current Orders</strong><small>Review service orders currently in progress.</small></span><span class="customer-arrow">→</span></a>
-<a class="customer-row" href="customer-order-history.html"><span class="customer-row-icon">02</span><span><strong>Order History</strong><small>Review completed and historical service orders.</small></span><span class="customer-arrow">→</span></a>
-<a class="customer-row" href="customer-order-detail.html"><span class="customer-row-icon">03</span><span><strong>Order Details</strong><small>Open detailed customer order records.</small></span><span class="customer-arrow">→</span></a>
-<a class="customer-row" href="client-documents.html"><span class="customer-row-icon">04</span><span><strong>Order Documents</strong><small>Access documents connected to your orders.</small></span><span class="customer-arrow">→</span></a>
-<a class="customer-row" href="customer-dashboard.html"><span class="customer-row-icon">05</span><span><strong>Customer Dashboard</strong><small>Return to your customer dashboard.</small></span><span class="customer-arrow">→</span></a></div>
+  <!-- CUSTOMER PORTAL SIDEBAR -->
+  <div id="customer-portal-sidebar"></div>
+
+
+  <!-- MAIN PORTAL APPLICATION -->
+  <main class="customer-portal-main">
+
+    <!-- PORTAL HEADER -->
+    <div id="customer-portal-header"></div>
+
+
+    <!-- PAGE CONTENT -->
+    <div class="customer-orders-content">
+
+      <!-- PAGE INTRO -->
+      <section class="customer-orders-intro">
+
+        <div class="customer-orders-intro-copy">
+
+          <span class="customer-orders-eyebrow">
+            MY SERVICES
+          </span>
+
+          <h1>Orders</h1>
+
+          <p>
+            View and track your Screenings4u services from purchase
+            through completion.
+          </p>
+
+        </div>
+
+        <a
+          href="customer-catalog.html"
+          class="customer-orders-primary-action"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 5v14"></path>
+            <path d="M5 12h14"></path>
+          </svg>
+
+          Purchase a Service
+        </a>
+
+      </section>
+
+
+      <!-- ORDER SUMMARY -->
+      <section
+        class="customer-orders-summary"
+        aria-label="Order summary"
+      >
+
+        <article class="customer-orders-stat-card">
+
+          <div class="customer-orders-stat-icon active">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 7h18"></path>
+              <path d="M6 3h12l2 4H4l2-4Z"></path>
+              <path d="M5 7l1 13h12l1-13"></path>
+            </svg>
+          </div>
+
+          <div>
+            <span class="customer-orders-stat-value" id="orders-active-count">
+              --
+            </span>
+
+            <strong>Active Orders</strong>
+
+            <small>Services currently in progress</small>
+          </div>
+
         </article>
 
-        <aside class="customer-side">
-          <article class="customer-card">
-            <header class="customer-card-header"><div><h2>Customer Actions</h2><p>Each action opens its own page.</p></div></header>
-            <div class="customer-action-grid"><a class="customer-action" href="customer-current-orders.html"><span class="customer-action-mark">→</span><strong>Current Orders</strong><small>Open current orders</small></a>
-<a class="customer-action" href="customer-order-history.html"><span class="customer-action-mark">▤</span><strong>Order History</strong><small>Open order history</small></a>
-<a class="customer-action" href="customer-order-detail.html"><span class="customer-action-mark">□</span><strong>Order Details</strong><small>Open order records</small></a>
-<a class="customer-action" href="client-documents.html"><span class="customer-action-mark">✓</span><strong>Documents</strong><small>Open documents</small></a></div>
-          </article>
-          <article class="customer-card">
-            <header class="customer-card-header"><div><h2>Related Customer Areas</h2><p>Connected customer portal pages.</p></div></header>
-            <div class="customer-resources"><a href="customer-dashboard.html"><span>Dashboard</span><span>→</span></a>
-<a href="customer-account.html"><span>Account</span><span>→</span></a>
-<a href="customer-training.html"><span>Training</span><span>→</span></a></div>
-          </article>
-        </aside>
+
+        <article class="customer-orders-stat-card">
+
+          <div class="customer-orders-stat-icon completed">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m5 12 4 4L19 6"></path>
+            </svg>
+          </div>
+
+          <div>
+            <span class="customer-orders-stat-value" id="orders-completed-count">
+              --
+            </span>
+
+            <strong>Completed</strong>
+
+            <small>Services successfully completed</small>
+          </div>
+
+        </article>
+
+
+        <article class="customer-orders-stat-card">
+
+          <div class="customer-orders-stat-icon total">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+              <path d="M7 3v4"></path>
+              <path d="M17 3v4"></path>
+              <path d="M7 11h10"></path>
+              <path d="M7 15h6"></path>
+            </svg>
+          </div>
+
+          <div>
+            <span class="customer-orders-stat-value" id="orders-total-count">
+              --
+            </span>
+
+            <strong>All Orders</strong>
+
+            <small>Your complete purchase history</small>
+          </div>
+
+        </article>
+
       </section>
+
+
+      <!-- ORDERS PANEL -->
+      <section class="customer-orders-panel">
+
+        <header class="customer-orders-panel-header">
+
+          <div>
+
+            <span class="customer-orders-panel-eyebrow">
+              SERVICE HISTORY
+            </span>
+
+            <h2>My Orders</h2>
+
+            <p>
+              Search, filter, and review your services.
+            </p>
+
+          </div>
+
+
+          <div class="customer-orders-header-actions">
+
+            <label
+              class="customer-orders-search"
+              for="customer-orders-search-input"
+            >
+
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="6"></circle>
+                <path d="m20 20-4.2-4.2"></path>
+              </svg>
+
+              <input
+                type="search"
+                id="customer-orders-search-input"
+                placeholder="Search orders..."
+                autocomplete="off"
+              >
+
+            </label>
+
+          </div>
+
+        </header>
+
+
+        <!-- FILTERS -->
+        <div class="customer-orders-toolbar">
+
+          <div
+            class="customer-orders-filters"
+            role="tablist"
+            aria-label="Filter orders"
+          >
+
+            <button
+              type="button"
+              class="customer-orders-filter is-active"
+              data-order-filter="all"
+              role="tab"
+              aria-selected="true"
+            >
+              All
+            </button>
+
+            <button
+              type="button"
+              class="customer-orders-filter"
+              data-order-filter="active"
+              role="tab"
+              aria-selected="false"
+            >
+              Active
+            </button>
+
+            <button
+              type="button"
+              class="customer-orders-filter"
+              data-order-filter="completed"
+              role="tab"
+              aria-selected="false"
+            >
+              Completed
+            </button>
+
+            <button
+              type="button"
+              class="customer-orders-filter"
+              data-order-filter="cancelled"
+              role="tab"
+              aria-selected="false"
+            >
+              Cancelled
+            </button>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="customer-orders-sort"
+            id="customer-orders-sort"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 6h12"></path>
+              <path d="M8 12h8"></path>
+              <path d="M8 18h4"></path>
+              <path d="M4 4v16"></path>
+              <path d="m2 6 2-2 2 2"></path>
+            </svg>
+
+            Newest First
+          </button>
+
+        </div>
+
+
+        <!-- LOADING STATE -->
+        <div
+          class="customer-orders-loading"
+          id="customer-orders-loading"
+        >
+
+          <span class="customer-orders-spinner"></span>
+
+          <p>Loading your orders...</p>
+
+        </div>
+
+
+        <!-- EMPTY STATE -->
+        <div
+          class="customer-orders-empty"
+          id="customer-orders-empty"
+          hidden
+        >
+
+          <div class="customer-orders-empty-icon">
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 7h18"></path>
+              <path d="M6 3h12l2 4H4l2-4Z"></path>
+              <path d="M5 7l1 13h12l1-13"></path>
+            </svg>
+
+          </div>
+
+          <h3>No orders found</h3>
+
+          <p>
+            We could not find any orders matching your current search.
+          </p>
+
+          <a
+            href="customer-catalog.html"
+            class="customer-orders-empty-action"
+          >
+            Browse Services
+          </a>
+
+        </div>
+
+
+        <!-- ORDER LIST -->
+        <div
+          class="customer-orders-list"
+          id="customer-orders-list"
+          hidden
+        ></div>
+
+      </section>
+
+
+      <!-- HELP PANEL -->
+      <section class="customer-orders-help">
+
+        <div class="customer-orders-help-icon">
+
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M9.5 9a2.5 2.5 0 1 1 4.1 1.9c-1.1.9-1.6 1.4-1.6 2.6"></path>
+            <path d="M12 17h.01"></path>
+          </svg>
+
+        </div>
+
+        <div>
+
+          <strong>Need help with an order?</strong>
+
+          <p>
+            Contact Screenings4u if you have questions about an
+            order, service status, or next steps.
+          </p>
+
+        </div>
+
+        <a href="mailto:support@screenings4u.com">
+          Contact Support
+          <span>→</span>
+        </a>
+
+      </section>
+
     </div>
+
   </main>
-</div>
 
-<script>
-/* Customer portal page. No pop-ups or modal workflows. */
-document.addEventListener("DOMContentLoaded", function () {
-  /* Navigation is intentionally separate from page workflows. */
-});
-</script>
 
-  <script src="assets/js/customer-navigation.js"></script>
+  <!-- CUSTOMER PORTAL SHELL -->
+  <script src="assets/js/customer-portal.js"></script>
+
+  <!-- CUSTOMER ORDERS -->
+  <script src="assets/js/customer-orders.js"></script>
+
 </body>
 </html>

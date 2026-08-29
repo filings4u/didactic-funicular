@@ -1,127 +1,1195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Customer Dashboard | screenings4u Customer Portal</title>
-<link rel="icon" type="image/png" href="images/fav.png">
-<link rel="stylesheet" href="assets/css/admin-core.css">
+  <meta charset="UTF-8">
 
-<style>
-/* ============================================================
-   screenings4u — CUSTOMER PORTAL MANAGEMENT
-   Customer pages only. No employer terminology or workflows.
-   No pop-ups or modal workflows.
-   ============================================================ */
-.customer-page{padding:22px 24px 34px;max-width:none}
-.customer-header{min-height:116px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid #e3e8ef}
-.customer-heading{min-width:0}.customer-kicker{margin-bottom:5px;color:#f05a00;font-size:11px;line-height:1;font-weight:900;letter-spacing:.05em}
-.customer-heading h1{margin:0;color:#173d78;font-size:clamp(36px,3vw,44px);line-height:.98;font-weight:800;letter-spacing:-.045em}
-.customer-heading p{max-width:760px;margin:9px 0 0;color:#52627a;font-size:13px;line-height:1.45}
-.customer-actions{flex:0 0 auto;display:flex;align-items:center;gap:10px}
-.customer-actions a.customer-btn{min-width:126px;height:43px;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;padding:0 18px!important;border:1px solid #cbd7e5!important;border-radius:9px!important;background:#fff!important;color:#173d78!important;font-size:11px!important;font-weight:900!important;line-height:1!important;text-decoration:none!important;box-sizing:border-box}
-.customer-actions a.customer-btn:hover{background:#f4f7fb!important;border-color:#aebfd3!important}
-.customer-actions a.customer-btn.primary{min-width:158px;border-color:#f05a00!important;background:#f05a00!important;color:#fff!important}
-.customer-actions a.customer-btn.primary:hover{background:#d94f00!important;border-color:#d94f00!important}
-.customer-btn-icon{font-size:17px;line-height:1}
-.customer-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:22px}
-.customer-kpi{min-width:0;min-height:153px;padding:17px 20px;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 10px rgba(20,48,82,.055)}
-.customer-kpi-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.customer-kpi-label{color:#5f6d83;font-size:10px;line-height:1;font-weight:900;letter-spacing:.075em}
-.customer-kpi-mark{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-size:16px;font-weight:900}
-.customer-kpi:nth-child(2) .customer-kpi-mark{background:#eaf7f0;color:#16804d}.customer-kpi:nth-child(3) .customer-kpi-mark{background:#fff3e5;color:#c96a00}.customer-kpi:nth-child(4) .customer-kpi-mark{background:#fceeee;color:#b64141}
-.customer-kpi strong{display:block;margin-top:20px;color:#183f7c;font-size:30px;line-height:1;font-weight:800;letter-spacing:-.04em}.customer-kpi small{display:block;margin-top:12px;color:#647189;font-size:10px;line-height:1.3}
-.customer-grid{display:grid;grid-template-columns:minmax(0,1.34fr) minmax(360px,1fr);gap:16px 22px;margin-top:16px}
-.customer-card{min-width:0;overflow:hidden;background:#fff;border:1px solid #dfe5ed;border-radius:10px;box-shadow:0 3px 11px rgba(20,48,82,.055)}
-.customer-card-header{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 23px;border-bottom:1px solid #e3e8ef}
-.customer-card-header h2{margin:0;color:#173d78;font-size:19px;line-height:1.15;font-weight:800;letter-spacing:-.025em}.customer-card-header p{margin:6px 0 0;color:#607089;font-size:11px;line-height:1.3}
-.customer-header-link{color:#17519b;text-decoration:none;font-size:10px;font-weight:900}.customer-header-link span{padding-left:5px;font-size:16px}
-.customer-list{padding:9px 12px}.customer-row{min-height:76px;display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;color:inherit;text-decoration:none}.customer-row:hover{background:#f7f9fc}
-.customer-row-icon{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;background:#edf4fc;color:#17519b;font-size:12px;font-weight:900}
-.customer-row:nth-child(2) .customer-row-icon{background:#eaf7f0;color:#16804d}.customer-row:nth-child(3) .customer-row-icon{background:#fff3e5;color:#c96a00}.customer-row:nth-child(4) .customer-row-icon{background:#fceeee;color:#b64141}.customer-row:nth-child(5) .customer-row-icon{background:#f0eefb;color:#6045a8}
-.customer-row strong{display:block;color:#173b73;font-size:13px;line-height:1.2;font-weight:800}.customer-row small{display:block;margin-top:5px;color:#617088;font-size:10px;line-height:1.25}.customer-arrow{padding-right:7px;color:#667a98;font-size:22px}
-.customer-side{display:grid;grid-template-rows:auto auto;gap:16px}.customer-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:13px}
-.customer-action{min-height:93px;display:flex;flex-direction:column;justify-content:center;padding:12px 15px;border:1px solid #dfe5ed;border-radius:8px;background:#fff;color:inherit;text-decoration:none}.customer-action:hover{border-color:#bfcfe2;background:#f9fbfe;transform:translateY(-1px)}
-.customer-action-mark{display:block;color:#f05a00;font-size:21px;line-height:.8;font-weight:700}.customer-action strong{display:block;margin-top:10px;color:#173b73;font-size:12px;line-height:1.15;font-weight:800}.customer-action small{display:block;margin-top:5px;color:#647189;font-size:10px;line-height:1.2}
-.customer-resources{padding:7px 13px 12px}.customer-resources a{min-height:45px;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:0 10px;border-bottom:1px solid #edf0f4;color:#173b73;text-decoration:none;font-size:11px;font-weight:800}.customer-resources a:last-child{border-bottom:0}.customer-resources a:hover{background:#f7f9fc}.customer-resources span:last-child{color:#667a98;font-size:17px}
-@media(max-width:1250px){.customer-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.customer-grid{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr)}}
-@media(max-width:1050px){.customer-header{align-items:flex-start;flex-direction:column}.customer-actions{width:100%}.customer-actions .customer-btn{flex:1 1 0}.customer-grid{grid-template-columns:1fr}.customer-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}}
-@media(max-width:700px){.customer-page{padding:18px 14px 22px}.customer-header{min-height:0;padding-bottom:18px}.customer-kpis{gap:9px}.customer-kpi{min-height:128px;padding:14px}.customer-kpi strong{margin-top:14px;font-size:25px}.customer-side{grid-template-columns:1fr}.customer-card-header{padding-left:17px;padding-right:17px}}
-@media(max-width:500px){.customer-actions{flex-direction:column}.customer-actions .customer-btn{width:100%;flex:none}}
-@media(max-width:430px){.customer-kpis{grid-template-columns:1fr}.customer-row{grid-template-columns:38px minmax(0,1fr) auto;padding-left:5px;padding-right:5px}}
-</style>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-<script>
-  window.S4U_DASHBOARD_SECURITY_CONFIG = {
-    timeoutMinutes: 10,
-    warningSeconds: 60,
-    loginPage: "customer-login.html"
-  };
-</script>
+  <title>Customer Dashboard | Screenings4u</title>
 
-<script src="dashboard-security.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="images/favicon.png"
+  >
+
+  <!-- CUSTOMER PORTAL SHELL -->
+<!-- CUSTOMER PORTAL SHELL -->
+<link
+  rel="stylesheet"
+  href="assets/css/customer-portal.css"
+>
+
+<!-- CUSTOMER DASHBOARD -->
+<link
+  rel="stylesheet"
+  href="assets/css/customer-dashboard.css"
+>
 </head>
-<body>
-<div class="s4u-app">
-    <nav class="s4u-nav" id="adminNavigation" aria-label="Admin navigation"></nav>
-  <main class="s4u-main">
-    <div class="customer-page">
-      <header class="customer-header">
-        <div class="customer-heading">
-          <div class="customer-kicker">CUSTOMER PORTAL / DASHBOARD</div>
-          <h1>Customer Dashboard</h1>
-          <p>View your account activity, service orders, training, documents, and customer account information.</p>
-        </div>
-        <div class="customer-actions">
-          <a class="customer-btn" href="customer-dashboard.html"><span class="customer-btn-icon">↻</span>Refresh</a>
-          <a class="customer-btn primary" href="customer-orders.html"><span class="customer-btn-icon">→</span>View Orders</a>
-        </div>
-      </header>
 
-      <section class="customer-kpis" aria-label="Customer portal metrics"><article class="customer-kpi"><div class="customer-kpi-top"><span class="customer-kpi-label">ACCOUNT ACTIVITY</span><span class="customer-kpi-mark">▤</span></div><strong>—</strong><small>Customer portal activity</small></article>
-<article class="customer-kpi"><div class="customer-kpi-top"><span class="customer-kpi-label">AVAILABLE</span><span class="customer-kpi-mark">✓</span></div><strong>—</strong><small>Customer records available</small></article>
-<article class="customer-kpi"><div class="customer-kpi-top"><span class="customer-kpi-label">REQUIRES ACTION</span><span class="customer-kpi-mark">!</span></div><strong>—</strong><small>Items requiring your attention</small></article>
-<article class="customer-kpi"><div class="customer-kpi-top"><span class="customer-kpi-label">RECENT</span><span class="customer-kpi-mark">□</span></div><strong>—</strong><small>Recent customer activity</small></article></section>
 
-      <section class="customer-grid">
-        <article class="customer-card">
-          <header class="customer-card-header">
-            <div><h2>Customer Dashboard</h2><p>Each customer workflow opens on its own page.</p></div>
-            <a class="customer-header-link" href="customer-orders.html">Open <span>→</span></a>
-          </header>
-          <div class="customer-list"><a class="customer-row" href="customer-orders.html"><span class="customer-row-icon">01</span><span><strong>My Orders</strong><small>Review your service order history and current order activity.</small></span><span class="customer-arrow">→</span></a>
-<a class="customer-row" href="customer-training.html"><span class="customer-row-icon">02</span><span><strong>My Training</strong><small>Access your assigned training and learning activity.</small></span><span class="customer-arrow">→</span></a>
-<a class="customer-row" href="client-training-certificates.html"><span class="customer-row-icon">03</span><span><strong>Training Certificates</strong><small>View and access your completed training certificates.</small></span><span class="customer-arrow">→</span></a>
-<a class="customer-row" href="client-documents.html"><span class="customer-row-icon">04</span><span><strong>My Documents</strong><small>Access documents available through your customer account.</small></span><span class="customer-arrow">→</span></a>
-<a class="customer-row" href="customer-account.html"><span class="customer-row-icon">05</span><span><strong>My Account</strong><small>Review and manage your customer account information.</small></span><span class="customer-arrow">→</span></a></div>
+<body
+  class="customer-dashboard-page"
+  data-page-title="Dashboard"
+  data-page-subtitle="Manage your services, orders, results, and account."
+>
+
+
+  <!-- ========================================================
+       CUSTOMER PORTAL SIDEBAR
+       Dynamically injected by customer-portal.js
+       ======================================================== -->
+
+  <div id="customer-portal-sidebar"></div>
+
+
+  <!-- ========================================================
+       MAIN PORTAL APPLICATION
+       ======================================================== -->
+
+  <main class="customer-portal-main">
+
+
+    <!-- ======================================================
+         HEADER
+         Dynamically injected by customer-portal.js
+         ====================================================== -->
+
+    <div id="customer-portal-header"></div>
+
+
+    <!-- ======================================================
+         PAGE CONTENT
+         ====================================================== -->
+
+    <div class="customer-dashboard-content">
+
+
+      <!-- ====================================================
+           WELCOME SECTION
+           ==================================================== -->
+
+      <section
+        class="customer-welcome-section"
+        aria-labelledby="customer-welcome-title"
+      >
+
+        <div class="customer-welcome-content">
+
+          <div class="customer-welcome-copy">
+
+            <span class="customer-welcome-eyebrow">
+              SCREENINGS4U CUSTOMER PORTAL
+            </span>
+
+
+            <h2
+              class="customer-welcome-title"
+              id="customer-welcome-title"
+            >
+              Welcome back,
+              <span id="customer-welcome-name">
+                Customer
+              </span>
+            </h2>
+
+
+            <p class="customer-welcome-description">
+              Manage your services, track your orders, access
+              available results, and keep your important documents
+              all in one place.
+            </p>
+
+          </div>
+
+
+          <div class="customer-welcome-actions">
+
+            <a
+              href="customer-catalog.html"
+              class="customer-primary-action"
+            >
+
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path d="M12 5v14"></path>
+                <path d="M5 12h14"></path>
+              </svg>
+
+              Purchase a Service
+
+            </a>
+
+          </div>
+
+        </div>
+
+
+        <!-- DECORATIVE BACKGROUND -->
+
+        <div
+          class="customer-welcome-decoration"
+          aria-hidden="true"
+        >
+
+          <div class="customer-welcome-circle circle-one"></div>
+          <div class="customer-welcome-circle circle-two"></div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ====================================================
+           SUMMARY CARDS
+           ==================================================== -->
+
+      <section
+        class="customer-summary-grid"
+        aria-label="Account summary"
+      >
+
+
+        <!-- ACTIVE ORDERS -->
+
+        <article class="customer-summary-card">
+
+          <div class="customer-summary-card-top">
+
+            <div
+              class="customer-summary-icon orders"
+              aria-hidden="true"
+            >
+              <svg viewBox="0 0 24 24">
+                <path d="M6 3h12"></path>
+                <path d="M6 7h12"></path>
+                <path d="M6 11h12"></path>
+                <path d="M6 15h8"></path>
+                <path d="M4 3h.01"></path>
+                <path d="M4 7h.01"></path>
+                <path d="M4 11h.01"></path>
+                <path d="M4 15h.01"></path>
+              </svg>
+            </div>
+
+
+            <a
+              href="customer-orders.html"
+              class="customer-summary-link"
+              aria-label="View all orders"
+            >
+              View All
+            </a>
+
+          </div>
+
+
+          <div class="customer-summary-value">
+            <span id="customer-stat-active-orders">
+              --
+            </span>
+          </div>
+
+
+          <div class="customer-summary-label">
+            Active Orders
+          </div>
+
+
+          <p class="customer-summary-description">
+            Services currently in progress.
+          </p>
+
         </article>
 
-        <aside class="customer-side">
-          <article class="customer-card">
-            <header class="customer-card-header"><div><h2>Customer Actions</h2><p>Each action opens its own page.</p></div></header>
-            <div class="customer-action-grid"><a class="customer-action" href="customer-orders.html"><span class="customer-action-mark">→</span><strong>View Orders</strong><small>Open service orders</small></a>
-<a class="customer-action" href="customer-training.html"><span class="customer-action-mark">▤</span><strong>Training</strong><small>Open training</small></a>
-<a class="customer-action" href="client-training-certificates.html"><span class="customer-action-mark">✓</span><strong>Certificates</strong><small>View certificates</small></a>
-<a class="customer-action" href="client-documents.html"><span class="customer-action-mark">□</span><strong>Documents</strong><small>Open documents</small></a></div>
-          </article>
-          <article class="customer-card">
-            <header class="customer-card-header"><div><h2>Related Customer Areas</h2><p>Connected customer portal pages.</p></div></header>
-            <div class="customer-resources"><a href="customer-account.html"><span>Account</span><span>→</span></a>
-<a href="customer-orders.html"><span>Orders</span><span>→</span></a>
-<a href="client-documents.html"><span>Documents</span><span>→</span></a></div>
-          </article>
-        </aside>
+
+        <!-- AVAILABLE RESULTS -->
+
+        <article class="customer-summary-card">
+
+          <div class="customer-summary-card-top">
+
+            <div
+              class="customer-summary-icon results"
+              aria-hidden="true"
+            >
+              <svg viewBox="0 0 24 24">
+                <path d="M7 3h7l4 4v14H7z"></path>
+                <path d="M14 3v5h5"></path>
+                <path d="M9 13l2 2 4-4"></path>
+              </svg>
+            </div>
+
+
+            <a
+              href="customer-results.html"
+              class="customer-summary-link"
+              aria-label="View all results"
+            >
+              View All
+            </a>
+
+          </div>
+
+
+          <div class="customer-summary-value">
+
+            <span id="customer-stat-results">
+              --
+            </span>
+
+          </div>
+
+
+          <div class="customer-summary-label">
+            Available Results
+          </div>
+
+
+          <p class="customer-summary-description">
+            Results ready for your review.
+          </p>
+
+        </article>
+
+
+        <!-- DONOR PASSES -->
+
+        <article class="customer-summary-card">
+
+          <div class="customer-summary-card-top">
+
+            <div
+              class="customer-summary-icon donor-pass"
+              aria-hidden="true"
+            >
+              <svg viewBox="0 0 24 24">
+                <rect
+                  x="3"
+                  y="5"
+                  width="18"
+                  height="14"
+                  rx="2"
+                ></rect>
+
+                <circle
+                  cx="8"
+                  cy="12"
+                  r="2"
+                ></circle>
+
+                <path d="M13 10h5"></path>
+                <path d="M13 14h5"></path>
+              </svg>
+            </div>
+
+
+            <a
+              href="customer-donor-pass.html"
+              class="customer-summary-link"
+              aria-label="View donor passes"
+            >
+              View All
+            </a>
+
+          </div>
+
+
+          <div class="customer-summary-value">
+
+            <span id="customer-stat-donor-passes">
+              --
+            </span>
+
+          </div>
+
+
+          <div class="customer-summary-label">
+            Active Donor Passes
+          </div>
+
+
+          <p class="customer-summary-description">
+            Passes ready to use or download.
+          </p>
+
+        </article>
+
+
+        <!-- DOCUMENTS -->
+
+        <article class="customer-summary-card">
+
+          <div class="customer-summary-card-top">
+
+            <div
+              class="customer-summary-icon documents"
+              aria-hidden="true"
+            >
+              <svg viewBox="0 0 24 24">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <path d="M14 2v6h6"></path>
+                <path d="M8 13h8"></path>
+                <path d="M8 17h5"></path>
+              </svg>
+            </div>
+
+
+            <a
+              href="customer-documents.html"
+              class="customer-summary-link"
+              aria-label="View all documents"
+            >
+              View All
+            </a>
+
+          </div>
+
+
+          <div class="customer-summary-value">
+
+            <span id="customer-stat-documents">
+              --
+            </span>
+
+          </div>
+
+
+          <div class="customer-summary-label">
+            Documents Available
+          </div>
+
+
+          <p class="customer-summary-description">
+            Important files ready for you.
+          </p>
+
+        </article>
+
       </section>
+
+
+      <!-- ====================================================
+           MAIN CONTENT GRID
+           ==================================================== -->
+
+      <div class="customer-dashboard-grid">
+
+
+        <!-- ==================================================
+             LEFT COLUMN
+             ================================================== -->
+
+        <div class="customer-dashboard-column">
+
+
+          <!-- RECENT ORDERS -->
+
+          <section
+            class="customer-dashboard-card customer-orders-card"
+            aria-labelledby="recent-orders-title"
+          >
+
+            <div class="customer-card-header">
+
+              <div>
+
+                <span class="customer-card-eyebrow">
+                  YOUR SERVICES
+                </span>
+
+                <h2
+                  class="customer-card-title"
+                  id="recent-orders-title"
+                >
+                  Recent Orders
+                </h2>
+
+              </div>
+
+
+              <a
+                href="customer-orders.html"
+                class="customer-card-action-link"
+              >
+                View All
+
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M9 18l6-6-6-6"></path>
+                </svg>
+
+              </a>
+
+            </div>
+
+
+            <!-- ORDERS LIST -->
+
+            <div
+              class="customer-orders-list"
+              id="customer-recent-orders"
+            >
+
+
+              <!-- LOADING STATE -->
+
+              <div
+                class="customer-dashboard-loading"
+                id="customer-orders-loading"
+              >
+
+                <span class="customer-loading-spinner"></span>
+
+                <span>
+                  Loading your orders...
+                </span>
+
+              </div>
+
+
+              <!--
+                Dynamic order items will be inserted here.
+
+                Example structure:
+
+                <article class="customer-order-item">
+                  ...
+                </article>
+              -->
+
+            </div>
+
+
+            <!-- EMPTY STATE -->
+
+            <div
+              class="customer-dashboard-empty"
+              id="customer-orders-empty"
+              hidden
+            >
+
+              <div class="customer-empty-icon">
+
+                <svg viewBox="0 0 24 24">
+                  <path d="M6 3h12"></path>
+                  <path d="M6 7h12"></path>
+                  <path d="M6 11h12"></path>
+                  <path d="M6 15h8"></path>
+                </svg>
+
+              </div>
+
+
+              <h3>
+                No orders yet
+              </h3>
+
+
+              <p>
+                When you purchase a service, your order
+                information will appear here.
+              </p>
+
+
+              <a
+                href="customer-catalog.html"
+                class="customer-empty-action"
+              >
+                Browse Services
+              </a>
+
+            </div>
+
+          </section>
+
+
+          <!-- RECENT RESULTS -->
+
+          <section
+            class="customer-dashboard-card customer-results-card"
+            aria-labelledby="recent-results-title"
+          >
+
+            <div class="customer-card-header">
+
+              <div>
+
+                <span class="customer-card-eyebrow">
+                  SCREENING RESULTS
+                </span>
+
+                <h2
+                  class="customer-card-title"
+                  id="recent-results-title"
+                >
+                  Recent Results
+                </h2>
+
+              </div>
+
+
+              <a
+                href="customer-results.html"
+                class="customer-card-action-link"
+              >
+                View Results
+
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M9 18l6-6-6-6"></path>
+                </svg>
+
+              </a>
+
+            </div>
+
+
+            <div
+              class="customer-results-list"
+              id="customer-recent-results"
+            >
+
+
+              <!-- LOADING STATE -->
+
+              <div
+                class="customer-dashboard-loading"
+                id="customer-results-loading"
+              >
+
+                <span class="customer-loading-spinner"></span>
+
+                <span>
+                  Checking for available results...
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <!-- EMPTY STATE -->
+
+            <div
+              class="customer-dashboard-empty"
+              id="customer-results-empty"
+              hidden
+            >
+
+              <div class="customer-empty-icon">
+
+                <svg viewBox="0 0 24 24">
+                  <path d="M7 3h7l4 4v14H7z"></path>
+                  <path d="M14 3v5h5"></path>
+                  <path d="M9 13l2 2 4-4"></path>
+                </svg>
+
+              </div>
+
+
+              <h3>
+                No results available
+              </h3>
+
+
+              <p>
+                Your completed screening results will
+                appear here when they become available.
+              </p>
+
+            </div>
+
+          </section>
+
+        </div>
+
+
+        <!-- ==================================================
+             RIGHT COLUMN
+             ================================================== -->
+
+        <aside class="customer-dashboard-side-column">
+
+
+          <!-- QUICK ACTIONS -->
+
+          <section
+            class="customer-dashboard-card customer-quick-actions-card"
+            aria-labelledby="quick-actions-title"
+          >
+
+            <div class="customer-card-header">
+
+              <div>
+
+                <span class="customer-card-eyebrow">
+                  QUICK ACCESS
+                </span>
+
+                <h2
+                  class="customer-card-title"
+                  id="quick-actions-title"
+                >
+                  Quick Actions
+                </h2>
+
+              </div>
+
+            </div>
+
+
+            <div class="customer-quick-actions-list">
+
+
+              <a
+                href="customer-results.html"
+                class="customer-quick-action"
+              >
+
+                <span
+                  class="customer-quick-action-icon results"
+                >
+
+                  <svg viewBox="0 0 24 24">
+                    <path d="M7 3h7l4 4v14H7z"></path>
+                    <path d="M14 3v5h5"></path>
+                    <path d="M9 13l2 2 4-4"></path>
+                  </svg>
+
+                </span>
+
+
+                <span class="customer-quick-action-copy">
+
+                  <strong>
+                    View Results
+                  </strong>
+
+                  <small>
+                    Access available screening results
+                  </small>
+
+                </span>
+
+
+                <svg
+                  class="customer-quick-action-arrow"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M9 18l6-6-6-6"></path>
+                </svg>
+
+              </a>
+
+
+              <a
+                href="customer-donor-pass.html"
+                class="customer-quick-action"
+              >
+
+                <span
+                  class="customer-quick-action-icon donor"
+                >
+
+                  <svg viewBox="0 0 24 24">
+                    <rect
+                      x="3"
+                      y="5"
+                      width="18"
+                      height="14"
+                      rx="2"
+                    ></rect>
+
+                    <circle
+                      cx="8"
+                      cy="12"
+                      r="2"
+                    ></circle>
+
+                    <path d="M13 10h5"></path>
+                    <path d="M13 14h5"></path>
+                  </svg>
+
+                </span>
+
+
+                <span class="customer-quick-action-copy">
+
+                  <strong>
+                    Donor Pass
+                  </strong>
+
+                  <small>
+                    View or download your pass
+                  </small>
+
+                </span>
+
+
+                <svg
+                  class="customer-quick-action-arrow"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M9 18l6-6-6-6"></path>
+                </svg>
+
+              </a>
+
+
+              <a
+                href="customer-catalog.html"
+                class="customer-quick-action"
+              >
+
+                <span
+                  class="customer-quick-action-icon purchase"
+                >
+
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="9" cy="20" r="1"></circle>
+                    <circle cx="20" cy="20" r="1"></circle>
+                    <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L22 6H6"></path>
+                  </svg>
+
+                </span>
+
+
+                <span class="customer-quick-action-copy">
+
+                  <strong>
+                    Purchase a Service
+                  </strong>
+
+                  <small>
+                    Browse available services
+                  </small>
+
+                </span>
+
+
+                <svg
+                  class="customer-quick-action-arrow"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M9 18l6-6-6-6"></path>
+                </svg>
+
+              </a>
+
+
+              <a
+                href="customer-documents.html"
+                class="customer-quick-action"
+              >
+
+                <span
+                  class="customer-quick-action-icon documents"
+                >
+
+                  <svg viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2-2V8z"></path>
+                    <path d="M14 2v6h6"></path>
+                    <path d="M8 13h8"></path>
+                    <path d="M8 17h5"></path>
+                  </svg>
+
+                </span>
+
+
+                <span class="customer-quick-action-copy">
+
+                  <strong>
+                    My Documents
+                  </strong>
+
+                  <small>
+                    Access important files
+                  </small>
+
+                </span>
+
+
+                <svg
+                  class="customer-quick-action-arrow"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M9 18l6-6-6-6"></path>
+                </svg>
+
+              </a>
+
+            </div>
+
+          </section>
+
+
+          <!-- NOTIFICATIONS -->
+
+          <section
+            class="customer-dashboard-card customer-notifications-card"
+            aria-labelledby="dashboard-notifications-title"
+          >
+
+            <div class="customer-card-header">
+
+              <div>
+
+                <span class="customer-card-eyebrow">
+                  ACCOUNT ACTIVITY
+                </span>
+
+                <h2
+                  class="customer-card-title"
+                  id="dashboard-notifications-title"
+                >
+                  Notifications
+                </h2>
+
+              </div>
+
+
+              <a
+                href="customer-notifications.html"
+                class="customer-card-action-link"
+              >
+                View All
+
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M9 18l6-6-6-6"></path>
+                </svg>
+
+              </a>
+
+            </div>
+
+
+            <div
+              class="customer-dashboard-notifications"
+              id="customer-dashboard-notifications"
+            >
+
+
+              <!-- LOADING -->
+
+              <div
+                class="customer-dashboard-loading compact"
+                id="customer-notifications-loading"
+              >
+
+                <span class="customer-loading-spinner"></span>
+
+                <span>
+                  Loading notifications...
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <!-- EMPTY STATE -->
+
+            <div
+              class="customer-dashboard-empty compact"
+              id="customer-notifications-empty"
+              hidden
+            >
+
+              <div class="customer-empty-icon">
+
+                <svg viewBox="0 0 24 24">
+                  <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                  <path d="M10 21h4"></path>
+                </svg>
+
+              </div>
+
+
+              <h3>
+                You're all caught up
+              </h3>
+
+
+              <p>
+                New account activity will appear here.
+              </p>
+
+            </div>
+
+          </section>
+
+        </aside>
+
+      </div>
+
+
+      <!-- ====================================================
+           DONOR PASS FEATURE CARD
+           ==================================================== -->
+
+      <section
+        class="customer-donor-feature"
+        id="customer-dashboard-donor-feature"
+      >
+
+        <div class="customer-donor-feature-icon">
+
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <rect
+              x="3"
+              y="5"
+              width="18"
+              height="14"
+              rx="2"
+            ></rect>
+
+            <circle
+              cx="8"
+              cy="12"
+              r="2"
+            ></circle>
+
+            <path d="M13 10h5"></path>
+            <path d="M13 14h5"></path>
+          </svg>
+
+        </div>
+
+
+        <div class="customer-donor-feature-copy">
+
+          <span class="customer-donor-feature-eyebrow">
+            NEED TO COMPLETE A SCREENING?
+          </span>
+
+
+          <h2>
+            Access Your Donor Pass
+          </h2>
+
+
+          <p>
+            Your donor pass contains the information you need
+            when visiting your assigned testing location.
+          </p>
+
+        </div>
+
+
+        <a
+          href="customer-donor-pass.html"
+          class="customer-donor-feature-action"
+        >
+          View Donor Pass
+
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M9 18l6-6-6-6"></path>
+          </svg>
+
+        </a>
+
+      </section>
+
+
+      <!-- ====================================================
+           RECENT DOCUMENTS
+           ==================================================== -->
+
+      <section
+        class="customer-dashboard-card customer-documents-dashboard-card"
+        aria-labelledby="recent-documents-title"
+      >
+
+        <div class="customer-card-header">
+
+          <div>
+
+            <span class="customer-card-eyebrow">
+              YOUR FILES
+            </span>
+
+            <h2
+              class="customer-card-title"
+              id="recent-documents-title"
+            >
+              Recent Documents
+            </h2>
+
+          </div>
+
+
+          <a
+            href="customer-documents.html"
+            class="customer-card-action-link"
+          >
+            View All Documents
+
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+
+          </a>
+
+        </div>
+
+
+        <div
+          class="customer-dashboard-documents"
+          id="customer-recent-documents"
+        >
+
+
+          <!-- LOADING STATE -->
+
+          <div
+            class="customer-dashboard-loading"
+            id="customer-documents-loading"
+          >
+
+            <span class="customer-loading-spinner"></span>
+
+            <span>
+              Loading your documents...
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- EMPTY STATE -->
+
+        <div
+          class="customer-dashboard-empty"
+          id="customer-documents-empty"
+          hidden
+        >
+
+          <div class="customer-empty-icon">
+
+            <svg viewBox="0 0 24 24">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2-2V8z"></path>
+              <path d="M14 2v6h6"></path>
+              <path d="M8 13h8"></path>
+            </svg>
+
+          </div>
+
+
+          <h3>
+            No documents available yet
+          </h3>
+
+
+          <p>
+            Documents associated with your services and
+            orders will appear here.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- ====================================================
+           SUPPORT / HELP
+           ==================================================== -->
+
+      <section class="customer-dashboard-support">
+
+        <div class="customer-support-copy">
+
+          <div class="customer-support-icon">
+
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="9"
+              ></circle>
+
+              <path d="M9.5 9a2.7 2.7 0 1 1 4.7 1.8c-.9.9-2.2 1.4-2.2 3.2"></path>
+
+              <path d="M12 17h.01"></path>
+            </svg>
+
+          </div>
+
+
+          <div>
+
+            <h2>
+              Need help?
+            </h2>
+
+            <p>
+              Our team is here to help you with your
+              services, orders, testing information, and
+              account questions.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <a
+          href="contact.html"
+          class="customer-support-action"
+        >
+          Contact Support
+        </a>
+
+      </section>
+
+
     </div>
+
   </main>
-</div>
 
-<script>
-/* Customer portal page. No pop-ups or modal workflows. */
-document.addEventListener("DOMContentLoaded", function () {
-  /* Navigation is intentionally separate from page workflows. */
-});
-</script>
+  
+<!-- ========================================================
+     JAVASCRIPT
+     ======================================================== -->
 
-  <script src="assets/js/customer-navigation.js"></script>
+<!-- SUPABASE CONFIG -->
+<!--
+<script src="supabase-config.js"></script>
+-->
+
+<!-- CUSTOMER PORTAL SHELL -->
+<script src="assets/js/customer-portal.js"></script>
+
+<!-- CUSTOMER DASHBOARD -->
+<script src="assets/js/customer-dashboard.js"></script>
+
+</body>
+</html>
+
 </body>
 </html>
