@@ -1,0 +1,282 @@
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Service Catalog | Screenings4u Customer Portal</title>
+
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="assets/css/customer-portal.css">
+  <link rel="stylesheet" href="assets/css/customer-service-catalog.css">
+</head>
+
+<body
+  class="customer-service-catalog-page"
+  data-page-title="Service Catalog"
+  data-page-subtitle="Purchase additional screening services and training from your secure portal."
+>
+
+  <div id="customer-portal-sidebar"></div>
+
+  <main class="customer-portal-main">
+    <div id="customer-portal-header"></div>
+
+    <div class="customer-catalog-content">
+
+      <section class="customer-catalog-hero">
+        <div class="customer-catalog-hero-copy">
+          <span class="customer-catalog-eyebrow">SCREENINGS4U SERVICES</span>
+          <h1>Purchase More Services</h1>
+          <p>
+            Browse available screening services and training options.
+            Complete your purchase securely without leaving your portal.
+          </p>
+        </div>
+
+        <div class="customer-catalog-help">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M9.5 9a2.5 2.5 0 1 1 4.2 1.8c-1.2 1.1-1.7 1.6-1.7 3.2"></path>
+            <path d="M12 17h.01"></path>
+          </svg>
+          <div>
+            <strong>Need help choosing?</strong>
+            <span>Our team can help you find the right service.</span>
+          </div>
+        </div>
+      </section>
+
+
+      <section class="customer-catalog-toolbar">
+
+        <div class="customer-catalog-search">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6"></circle>
+            <path d="m16 16 4 4"></path>
+          </svg>
+
+          <input
+            type="search"
+            id="catalog-search"
+            placeholder="Search services..."
+            autocomplete="off"
+          >
+        </div>
+
+
+        <div class="customer-catalog-actions">
+          <button
+            type="button"
+            class="customer-catalog-filter-toggle"
+            id="catalog-filter-toggle"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 6h16"></path>
+              <path d="M7 12h10"></path>
+              <path d="M10 18h4"></path>
+            </svg>
+            Filters
+          </button>
+
+          <select
+            id="catalog-sort"
+            aria-label="Sort catalog"
+          >
+            <option value="featured">Featured</option>
+            <option value="name">Name A–Z</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+          </select>
+        </div>
+
+      </section>
+
+
+      <div class="customer-catalog-layout">
+
+        <aside
+          class="customer-catalog-sidebar"
+          id="catalog-sidebar"
+        >
+
+          <div class="customer-catalog-sidebar-heading">
+            <h2>Categories</h2>
+            <button
+              type="button"
+              id="catalog-clear-filters"
+            >
+              Clear
+            </button>
+          </div>
+
+
+          <nav
+            class="customer-catalog-categories"
+            aria-label="Service categories"
+          >
+            <button
+              type="button"
+              class="customer-catalog-category active"
+              data-category="all"
+            >
+              <span>All Services</span>
+              <strong id="catalog-count-all">0</strong>
+            </button>
+
+            <button
+              type="button"
+              class="customer-catalog-category"
+              data-category="drug-alcohol"
+            >
+              <span>Drug &amp; Alcohol Testing</span>
+              <strong id="catalog-count-drug-alcohol">0</strong>
+            </button>
+
+            <button
+              type="button"
+              class="customer-catalog-category"
+              data-category="background"
+            >
+              <span>Background Checks</span>
+              <strong id="catalog-count-background">0</strong>
+            </button>
+
+            <button
+              type="button"
+              class="customer-catalog-category"
+              data-category="physical"
+            >
+              <span>Physicals &amp; Exams</span>
+              <strong id="catalog-count-physical">0</strong>
+            </button>
+
+            <button
+              type="button"
+              class="customer-catalog-category"
+              data-category="training"
+            >
+              <span>Training Courses</span>
+              <strong id="catalog-count-training">0</strong>
+            </button>
+
+            <button
+              type="button"
+              class="customer-catalog-category"
+              data-category="other"
+            >
+              <span>Other Services</span>
+              <strong id="catalog-count-other">0</strong>
+            </button>
+          </nav>
+
+
+          <div class="customer-catalog-sidebar-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 21s7-3.5 7-10V5l-7-3-7 3v6c0 6.5 7 10 7 10z"></path>
+              <path d="m9 12 2 2 4-4"></path>
+            </svg>
+
+            <p>
+              Services are purchased securely through the Screenings4u checkout process.
+            </p>
+          </div>
+
+        </aside>
+
+
+        <section class="customer-catalog-results">
+
+          <div class="customer-catalog-results-heading">
+            <div>
+              <h2>Available Services</h2>
+              <p id="catalog-result-count">
+                Loading available services...
+              </p>
+            </div>
+          </div>
+
+
+          <div
+            class="customer-catalog-loading"
+            id="catalog-loading"
+          >
+            <div class="customer-catalog-spinner"></div>
+
+            <div>
+              <strong>Loading service catalog</strong>
+              <span>Please wait while available services are retrieved.</span>
+            </div>
+          </div>
+
+
+          <div
+            class="customer-catalog-grid"
+            id="catalog-grid"
+            hidden
+          ></div>
+
+
+          <div
+            class="customer-catalog-empty"
+            id="catalog-empty"
+            hidden
+          >
+            <div class="customer-catalog-empty-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="6"></circle>
+                <path d="m16 16 4 4"></path>
+              </svg>
+            </div>
+
+            <h3>No services found</h3>
+
+            <p>
+              Try adjusting your search or selecting a different category.
+            </p>
+
+            <button
+              type="button"
+              id="catalog-empty-clear"
+            >
+              Clear Filters
+            </button>
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <section class="customer-catalog-footer-note">
+        <div class="customer-catalog-footer-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 21s7-3.5 7-10V5l-7-3-7 3v6c0 6.5 7 10 7 10z"></path>
+          </svg>
+        </div>
+
+        <div>
+          <strong>Secure purchasing</strong>
+          <p>
+            Orders are securely processed through the Screenings4u purchase and checkout flow.
+          </p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/core-auth.js"></script>
+<script src="assets/js/core-ui.js"></script>
+<script src="assets/js/session-security.js"></script>
+<script src="assets/js/portal-auth-guard.js"></script>
+<script src="assets/js/customer-auth-guard.js"></script>
+
+<script src="assets/js/customer-portal.js"></script>
+<script src="assets/js/customer-dashboard.js"></script>
+  <script src="assets/js/customer-service-catalog.js"></script>
+</body>
+</html>

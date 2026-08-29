@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson Builder | Screenings4u Learning Center</title>
+  <link rel="stylesheet" href="assets/css/admin-lms.css">
+  <style>
+    .lesson-builder-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;align-items:start}
+    .lesson-builder-stack{display:grid;gap:20px}
+    .builder-card{background:#fff;border:1px solid var(--admin-border);border-radius:var(--r-md);box-shadow:var(--shadow-soft)}
+    .builder-card-head{padding:20px 22px;border-bottom:1px solid var(--admin-border)}
+    .builder-card-head h2{margin:0;font-size:16px;letter-spacing:-.01em}
+    .builder-card-head p{margin:6px 0 0;color:var(--admin-muted);font-size:12px;line-height:1.6}
+    .builder-card-body{padding:22px}
+    .builder-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .builder-field{display:flex;flex-direction:column;gap:8px}
+    .builder-field.full{grid-column:1/-1}
+    .builder-field label{font-size:12px;font-weight:800;color:var(--admin-text)}
+    .builder-field label span{color:var(--admin-orange)}
+    .builder-field input,.builder-field select,.builder-field textarea{width:100%;border:1px solid var(--admin-border);border-radius:11px;background:#fff;color:var(--admin-text);font:inherit;outline:none}
+    .builder-field input,.builder-field select{height:44px;padding:0 13px;font-size:13px}
+    .builder-field textarea{min-height:110px;padding:12px 13px;resize:vertical;font-size:13px;line-height:1.55}
+    .builder-field input:focus,.builder-field select:focus,.builder-field textarea:focus{border-color:var(--admin-blue);box-shadow:0 0 0 3px rgba(50,90,163,.09)}
+    .builder-help{font-size:11px;color:var(--admin-muted);line-height:1.5}
+    .builder-editor{border:1px solid var(--admin-border);border-radius:12px;overflow:hidden}
+    .builder-editor-toolbar{display:flex;flex-wrap:wrap;gap:6px;padding:10px;border-bottom:1px solid var(--admin-border);background:#fafbfd}
+    .builder-editor-tool{height:32px;min-width:32px;padding:0 9px;border:1px solid var(--admin-border);border-radius:8px;background:#fff;color:var(--admin-text);font-size:12px;font-weight:800}
+    .builder-editor-content{min-height:240px;padding:16px;outline:none;font-size:13px;line-height:1.75}
+    .video-source-box{border:1px dashed #b9c6da;border-radius:13px;background:#fafcff;padding:20px}
+    .video-source-top{display:flex;align-items:flex-start;gap:14px}
+    .video-source-icon{width:44px;height:44px;border-radius:12px;background:#edf2fb;color:var(--admin-blue);display:grid;place-items:center;flex:0 0 auto}
+    .video-source-icon svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8}
+    .video-source-copy strong{display:block;font-size:13px}
+    .video-source-copy p{margin:5px 0 0;color:var(--admin-muted);font-size:11px;line-height:1.6}
+    .video-source-fields{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:18px}
+    .video-source-fields input{height:42px;border:1px solid var(--admin-border);border-radius:10px;padding:0 12px;font:inherit;font-size:12px}
+    .video-preview{display:none;margin-top:16px;border-radius:12px;background:#172033;color:#fff;min-height:150px;align-items:center;justify-content:center;text-align:center;padding:20px}
+    .video-preview.active{display:flex}
+    .video-preview svg{width:34px;height:34px;fill:none;stroke:#fff;stroke-width:1.6}
+    .video-preview p{margin:9px 0 0;color:#cbd4e2;font-size:11px}
+    .resource-list{display:grid;gap:10px}
+    .resource-row{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--admin-border);border-radius:11px}
+    .resource-file-icon{width:36px;height:36px;border-radius:9px;background:#f5f7fa;color:var(--admin-blue);display:grid;place-items:center;font-size:10px;font-weight:900}
+    .resource-row-copy{min-width:0;flex:1}
+    .resource-row-copy strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .resource-row-copy span{display:block;margin-top:3px;color:var(--admin-muted);font-size:10px}
+    .resource-remove{border:0;background:transparent;color:var(--admin-muted);font-size:18px}
+    .add-resource{margin-top:12px;width:100%;height:42px;border:1px dashed #b9c6da;border-radius:10px;background:#fff;color:var(--admin-blue);font-size:12px;font-weight:800}
+    .builder-sidebar{position:sticky;top:20px}
+    .builder-sidebar-section{padding:20px}
+    .builder-sidebar-section + .builder-sidebar-section{border-top:1px solid var(--admin-border)}
+    .builder-sidebar-title{margin:0 0 15px;font-size:13px}
+    .builder-status-options{display:grid;gap:9px}
+    .builder-status-option{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--admin-border);border-radius:11px;cursor:pointer}
+    .builder-status-option input{margin-top:2px;accent-color:var(--admin-blue)}
+    .builder-status-option strong{display:block;font-size:12px}
+    .builder-status-option span{display:block;margin-top:3px;color:var(--admin-muted);font-size:10px;line-height:1.45}
+    .builder-order-box{display:flex;gap:10px}
+    .builder-order-box input{width:80px;height:42px;border:1px solid var(--admin-border);border-radius:10px;padding:0 12px;font:inherit}
+    .builder-order-box p{margin:0;color:var(--admin-muted);font-size:11px;line-height:1.55}
+    .builder-actions{display:grid;gap:10px}
+    .builder-actions .admin-primary-btn,.builder-actions .admin-secondary-btn{width:100%;justify-content:center;text-align:center}
+    .builder-delete-btn{width:100%;height:42px;border:1px solid #f0c6c6;border-radius:10px;background:#fff;color:#b34b4b;font-weight:800;font-size:12px}
+    .builder-preview-link{display:flex;align-items:center;justify-content:center;height:42px;border:1px solid var(--admin-border);border-radius:10px;color:var(--admin-blue);font-size:12px;font-weight:800}
+    .builder-breadcrumb{display:flex;align-items:center;gap:8px;margin-bottom:12px;color:var(--admin-muted);font-size:12px}
+    .builder-breadcrumb a{color:var(--admin-blue);font-weight:700}
+    @media(max-width:1100px){.lesson-builder-layout{grid-template-columns:1fr}.builder-sidebar{position:static}}
+    @media(max-width:720px){.builder-grid{grid-template-columns:1fr}.video-source-fields{grid-template-columns:1fr}.builder-card-body{padding:17px}.builder-card-head{padding:17px}}
+  </style>
+</head>
+<body>
+  <div class="admin-lms-app">
+    <div id="admin-lms-sidebar-target"></div>
+
+    <main class="admin-lms-main">
+      <header class="admin-lms-topbar">
+        <div class="admin-lms-topbar-left">
+          <button type="button" class="admin-lms-menu-button" data-admin-menu-toggle aria-label="Toggle administration navigation">
+            <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div class="admin-lms-page-context">
+            <small>Screenings4u Learning Center</small>
+            <strong>Lesson Builder</strong>
+          </div>
+        </div>
+        <div class="admin-lms-topbar-right">
+          <a href="admin-lms-notifications.html" class="admin-lms-icon-button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
+          </a>
+          <div class="admin-lms-user">
+            <span class="admin-lms-avatar">AD</span>
+            <span class="admin-lms-user-copy"><span class="admin-lms-user-name">Administrator</span><span class="admin-lms-user-role">Learning Center Admin</span></span>
+          </div>
+        </div>
+      </header>
+
+      <section class="admin-lms-content">
+        <div class="builder-breadcrumb">
+          <a href="admin-lms-lessons.html">Lesson Management</a>
+          <span>/</span>
+          <span id="breadcrumbLesson">Create Lesson</span>
+        </div>
+
+        <div class="admin-page-heading">
+          <div>
+            <span class="admin-page-eyebrow">Course Content</span>
+            <h1 id="builderHeading">Create Lesson</h1>
+            <p id="builderDescription">Build the lesson content, connect media, and prepare it for your learners.</p>
+          </div>
+          <a href="admin-lms-lessons.html" class="admin-secondary-btn">Back to Lessons</a>
+        </div>
+
+        <form id="lessonBuilderForm" class="lesson-builder-layout">
+          <div class="lesson-builder-stack">
+            <section class="builder-card">
+              <div class="builder-card-head">
+                <h2>Lesson Details</h2>
+                <p>Define where this lesson belongs and what learners will see.</p>
+              </div>
+              <div class="builder-card-body">
+                <div class="builder-grid">
+                  <div class="builder-field full">
+                    <label for="lessonTitle">Lesson Title <span>*</span></label>
+                    <input id="lessonTitle" type="text" placeholder="Enter lesson title" required>
+                  </div>
+
+                  <div class="builder-field">
+                    <label for="lessonCourse">Course <span>*</span></label>
+                    <select id="lessonCourse" required>
+                      <option value="">Select a course</option>
+                      <option value="dot-specimen">DOT Specimen Collector Training</option>
+                      <option value="hair-collection">DOT Specimen Collector Training + Hair</option>
+                      <option value="train-the-trainer">DOT Specimen Collector Train the Trainer</option>
+                      <option value="trainer-hair">DOT Collector Train the Trainer + Hair</option>
+                    </select>
+                  </div>
+
+                  <div class="builder-field">
+                    <label for="lessonModule">Module <span>*</span></label>
+                    <select id="lessonModule" required>
+                      <option value="">Select a module</option>
+                      <option>Module 1 · Getting Started</option>
+                      <option>Module 2 · DOT Requirements</option>
+                      <option>Module 3 · Collection Procedures</option>
+                      <option>Module 4 · Practical Application</option>
+                    </select>
+                  </div>
+
+                  <div class="builder-field">
+                    <label for="lessonType">Lesson Type <span>*</span></label>
+                    <select id="lessonType">
+                      <option value="video">Video Lesson</option>
+                      <option value="content">Content Lesson</option>
+                      <option value="document">Document / Resource Lesson</option>
+                    </select>
+                  </div>
+
+                  <div class="builder-field">
+                    <label for="lessonDuration">Estimated Duration</label>
+                    <input id="lessonDuration" type="text" placeholder="Example: 15 minutes">
+                  </div>
+
+                  <div class="builder-field full">
+                    <label for="lessonSummary">Lesson Summary</label>
+                    <textarea id="lessonSummary" placeholder="Write a short description of what this lesson covers."></textarea>
+                    <span class="builder-help">This summary can be used throughout the learner experience to describe the lesson.</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="builder-card" id="videoSection">
+              <div class="builder-card-head">
+                <h2>Video</h2>
+                <p>Connect this lesson to your Cloudflare Stream video. Video files are not stored in Supabase.</p>
+              </div>
+              <div class="builder-card-body">
+                <div class="video-source-box">
+                  <div class="video-source-top">
+                    <div class="video-source-icon">
+                      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>
+                    </div>
+                    <div class="video-source-copy">
+                      <strong>Cloudflare Stream Video</strong>
+                      <p>Enter the Cloudflare video UID when wiring this lesson to the production video system.</p>
+                    </div>
+                  </div>
+
+                  <div class="video-source-fields">
+                    <input id="cloudflareVideoId" type="text" placeholder="Cloudflare video UID">
+                    <button type="button" class="admin-primary-btn" id="loadVideoBtn">Load Video</button>
+                  </div>
+
+                  <div class="video-preview" id="videoPreview">
+                    <div>
+                      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>
+                      <p id="videoPreviewText">Cloudflare video connected</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="builder-card">
+              <div class="builder-card-head">
+                <h2>Lesson Content</h2>
+                <p>Add supporting instructions, text, or learning material for this lesson.</p>
+              </div>
+              <div class="builder-card-body">
+                <div class="builder-editor">
+                  <div class="builder-editor-toolbar">
+                    <button type="button" class="builder-editor-tool" data-command="bold">B</button>
+                    <button type="button" class="builder-editor-tool" data-command="italic"><em>I</em></button>
+                    <button type="button" class="builder-editor-tool" data-command="insertUnorderedList">• List</button>
+                    <button type="button" class="builder-editor-tool" data-command="insertOrderedList">1. List</button>
+                    <button type="button" class="builder-editor-tool" data-command="createLink">Link</button>
+                  </div>
+                  <div id="lessonContent" class="builder-editor-content" contenteditable="true" data-placeholder="Start building the lesson content..."></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="builder-card">
+              <div class="builder-card-head">
+                <h2>Lesson Resources</h2>
+                <p>Attach supporting downloads, guides, or reference material for learners.</p>
+              </div>
+              <div class="builder-card-body">
+                <div class="resource-list" id="resourceList">
+                  <div class="resource-row">
+                    <div class="resource-file-icon">PDF</div>
+                    <div class="resource-row-copy"><strong>Collection Procedure Reference Guide</strong><span>Supporting resource</span></div>
+                    <button type="button" class="resource-remove" aria-label="Remove resource">×</button>
+                  </div>
+                </div>
+                <button type="button" class="add-resource" id="addResourceBtn">+ Add Resource</button>
+              </div>
+            </section>
+          </div>
+
+          <aside class="builder-card builder-sidebar">
+            <div class="builder-sidebar-section">
+              <h2 class="builder-sidebar-title">Publishing</h2>
+              <div class="builder-status-options">
+                <label class="builder-status-option">
+                  <input type="radio" name="lessonStatus" value="draft" checked>
+                  <span><strong>Save as Draft</strong><span>Only administrators can see this lesson.</span></span>
+                </label>
+                <label class="builder-status-option">
+                  <input type="radio" name="lessonStatus" value="published">
+                  <span><strong>Published</strong><span>Available to learners enrolled in the course.</span></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="builder-sidebar-section">
+              <h2 class="builder-sidebar-title">Lesson Order</h2>
+              <div class="builder-order-box">
+                <input id="lessonOrder" type="number" min="1" value="1">
+                <p>Controls where this lesson appears within the selected module.</p>
+              </div>
+            </div>
+
+            <div class="builder-sidebar-section">
+              <h2 class="builder-sidebar-title">Actions</h2>
+              <div class="builder-actions">
+                <button type="submit" class="admin-primary-btn" id="saveLessonBtn">Save Lesson</button>
+                <a href="admin-lms-lessons.html" class="admin-secondary-btn">Cancel</a>
+                <a href="#" class="builder-preview-link" id="previewLessonBtn">Preview Lesson</a>
+              </div>
+            </div>
+
+            <div class="builder-sidebar-section" id="deleteLessonSection" style="display:none">
+              <button type="button" class="builder-delete-btn" id="deleteLessonBtn">Delete Lesson</button>
+            </div>
+          </aside>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/js/admin-lms-sidebar.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      var params = new URLSearchParams(window.location.search);
+      var lessonId = params.get("lesson");
+      var form = document.getElementById("lessonBuilderForm");
+      var lessonType = document.getElementById("lessonType");
+      var videoSection = document.getElementById("videoSection");
+      var loadVideoBtn = document.getElementById("loadVideoBtn");
+      var videoId = document.getElementById("cloudflareVideoId");
+      var videoPreview = document.getElementById("videoPreview");
+      var videoPreviewText = document.getElementById("videoPreviewText");
+      var resourceList = document.getElementById("resourceList");
+
+      var lessons = {
+        "welcome-overview": {
+          title: "Welcome and Course Overview",
+          course: "dot-specimen",
+          module: "Module 1 · Getting Started",
+          type: "video",
+          duration: "8 minutes",
+          summary: "Introduction to the DOT Specimen Collector Training program.",
+          order: 1,
+          status: "published"
+        },
+        "dot-regulations": {
+          title: "DOT Collection Regulations",
+          course: "dot-specimen",
+          module: "Module 2 · DOT Requirements",
+          type: "video",
+          duration: "24 minutes",
+          summary: "Understand the governing requirements for DOT specimen collection.",
+          order: 2,
+          status: "published"
+        },
+        "collection-process": {
+          title: "The Collection Process",
+          course: "dot-specimen",
+          module: "Module 3 · Collection Procedures",
+          type: "content",
+          duration: "18 minutes",
+          summary: "Step-by-step collection procedures for professional specimen collection.",
+          order: 3,
+          status: "published"
+        },
+        "hair-procedures": {
+          title: "Hair Collection Procedures",
+          course: "hair-collection",
+          module: "Module 4 · Practical Application",
+          type: "video",
+          duration: "16 minutes",
+          summary: "Hair specimen collection workflow and handling procedures.",
+          order: 4,
+          status: "draft"
+        }
+      };
+
+      function toggleVideoSection() {
+        videoSection.style.display = lessonType.value === "video" ? "" : "none";
+      }
+
+      function loadExistingLesson() {
+        if (!lessonId || !lessons[lessonId]) return;
+
+        var lesson = lessons[lessonId];
+        document.getElementById("builderHeading").textContent = "Edit Lesson";
+        document.getElementById("breadcrumbLesson").textContent = "Edit Lesson";
+        document.getElementById("builderDescription").textContent = "Update the lesson content, media, resources, and publishing settings.";
+        document.title = "Edit Lesson | Screenings4u Learning Center";
+        document.getElementById("lessonTitle").value = lesson.title;
+        document.getElementById("lessonCourse").value = lesson.course;
+        document.getElementById("lessonModule").value = lesson.module;
+        lessonType.value = lesson.type;
+        document.getElementById("lessonDuration").value = lesson.duration;
+        document.getElementById("lessonSummary").value = lesson.summary;
+        document.getElementById("lessonOrder").value = lesson.order;
+        document.querySelector('input[name="lessonStatus"][value="' + lesson.status + '"]').checked = true;
+        document.getElementById("deleteLessonSection").style.display = "";
+        toggleVideoSection();
+      }
+
+      lessonType.addEventListener("change", toggleVideoSection);
+
+      loadVideoBtn.addEventListener("click", function () {
+        var value = videoId.value.trim();
+        if (!value) {
+          videoId.focus();
+          return;
+        }
+        videoPreviewText.textContent = "Cloudflare video UID connected: " + value;
+        videoPreview.classList.add("active");
+      });
+
+      document.querySelectorAll(".builder-editor-tool").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var command = button.dataset.command;
+          if (command === "createLink") {
+            var url = window.prompt("Enter the link URL:");
+            if (url) document.execCommand(command, false, url);
+            return;
+          }
+          document.execCommand(command, false, null);
+        });
+      });
+
+      document.getElementById("addResourceBtn").addEventListener("click", function () {
+        var name = window.prompt("Enter the resource name:");
+        if (!name) return;
+        var row = document.createElement("div");
+        row.className = "resource-row";
+        row.innerHTML = '<div class="resource-file-icon">FILE</div><div class="resource-row-copy"><strong></strong><span>Supporting resource</span></div><button type="button" class="resource-remove" aria-label="Remove resource">×</button>';
+        row.querySelector("strong").textContent = name;
+        resourceList.appendChild(row);
+      });
+
+      resourceList.addEventListener("click", function (event) {
+        if (event.target.classList.contains("resource-remove")) {
+          event.target.closest(".resource-row").remove();
+        }
+      });
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+        var status = document.querySelector('input[name="lessonStatus"]:checked').value;
+        var saveButton = document.getElementById("saveLessonBtn");
+        saveButton.textContent = status === "published" ? "Lesson Published" : "Draft Saved";
+        setTimeout(function () {
+          window.location.href = "admin-lms-lessons.html";
+        }, 650);
+      });
+
+      document.getElementById("deleteLessonBtn").addEventListener("click", function () {
+        if (window.confirm("Delete this lesson? This action can be wired to the database during integration.")) {
+          window.location.href = "admin-lms-lessons.html";
+        }
+      });
+
+      document.getElementById("previewLessonBtn").addEventListener("click", function (event) {
+        event.preventDefault();
+        alert("Lesson preview will open in the learner course experience once the LMS is wired to live course data.");
+      });
+
+      loadExistingLesson();
+      toggleVideoSection();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson Management | Screenings4u Learning Center</title>
+  <link rel="stylesheet" href="assets/css/admin-lms.css">
+  <style>
+    .admin-lessons-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-bottom:24px}
+    .admin-lessons-summary-card{background:#fff;border:1px solid var(--admin-border);border-radius:var(--r-md);padding:20px;box-shadow:var(--shadow-soft)}
+    .admin-lessons-summary-label{color:var(--admin-muted);font-size:12px;font-weight:700}
+    .admin-lessons-summary-value{margin-top:10px;font-size:30px;font-weight:800;letter-spacing:-.03em}
+    .admin-lessons-summary-note{margin-top:7px;color:var(--admin-muted);font-size:12px}
+    .admin-lessons-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid var(--admin-border)}
+    .admin-lessons-toolbar-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+    .admin-search-field{position:relative;flex:1;min-width:220px}
+    .admin-search-field svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--admin-muted);fill:none;stroke-width:1.8}
+    .admin-search-field input,.admin-filter-select{width:100%;height:44px;border:1px solid var(--admin-border);border-radius:11px;background:#fff;color:var(--admin-text);outline:none}
+    .admin-search-field input{padding:0 14px 0 42px}
+    .admin-filter-select{padding:0 34px 0 13px;font-size:13px}
+    .admin-search-field input:focus,.admin-filter-select:focus{border-color:var(--admin-blue);box-shadow:0 0 0 3px rgba(50,90,163,.09)}
+    .admin-secondary-btn{height:44px;padding:0 15px;border:1px solid var(--admin-border);border-radius:11px;background:#fff;color:var(--admin-text);font-weight:700;font-size:13px}
+    .admin-secondary-btn:hover{border-color:var(--admin-blue);color:var(--admin-blue)}
+    .admin-lessons-table-wrap{overflow-x:auto}
+    .admin-lessons-table{width:100%;border-collapse:collapse;min-width:920px}
+    .admin-lessons-table th{text-align:left;padding:13px 20px;background:#fafbfd;border-bottom:1px solid var(--admin-border);color:var(--admin-muted);font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+    .admin-lessons-table td{padding:16px 20px;border-bottom:1px solid var(--admin-border);vertical-align:middle;font-size:13px}
+    .admin-lessons-table tr:last-child td{border-bottom:0}
+    .admin-lessons-table tbody tr:hover{background:#fbfcfe}
+    .admin-lesson-order{width:34px;height:34px;border-radius:10px;background:#f5f7fa;border:1px solid var(--admin-border);display:grid;place-items:center;font-weight:800;color:var(--admin-blue)}
+    .admin-lesson-title{font-weight:800;font-size:13px}
+    .admin-lesson-meta{margin-top:4px;color:var(--admin-muted);font-size:11px}
+    .admin-course-cell{font-size:12px;font-weight:700}
+    .admin-course-cell small{display:block;margin-top:4px;color:var(--admin-muted);font-weight:500}
+    .admin-type-pill,.admin-status-pill{display:inline-flex;align-items:center;min-height:27px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:800}
+    .admin-type-pill{background:#edf2fb;color:var(--admin-blue)}
+    .admin-type-video{background:#fff0e5;color:var(--admin-orange)}
+    .admin-type-document{background:#f0f3f6;color:#526071}
+    .admin-status-pill{background:#eef8f1;color:#2f7d4b}
+    .admin-status-draft{background:#f4f1ec;color:#806843}
+    .admin-row-actions{display:flex;justify-content:flex-end;gap:8px}
+    .admin-row-action{width:36px;height:36px;border:1px solid var(--admin-border);border-radius:10px;background:#fff;color:var(--admin-blue);display:grid;place-items:center}
+    .admin-row-action:hover{border-color:var(--admin-blue);background:#f7f9fd}
+    .admin-row-action svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .admin-table-footer{padding:16px 20px;border-top:1px solid var(--admin-border);display:flex;align-items:center;justify-content:space-between;gap:16px;color:var(--admin-muted);font-size:12px}
+    .admin-pagination{display:flex;gap:7px}
+    .admin-page-btn{min-width:34px;height:34px;padding:0 9px;border:1px solid var(--admin-border);border-radius:9px;background:#fff;color:var(--admin-text);font-size:12px;font-weight:700}
+    .admin-page-btn.active{background:var(--admin-blue);border-color:var(--admin-blue);color:#fff}
+    .admin-lessons-empty{display:none;padding:56px 24px;text-align:center;color:var(--admin-muted)}
+    @media(max-width:1100px){.admin-lessons-summary{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:760px){.admin-lessons-summary{grid-template-columns:1fr}.admin-lessons-toolbar{align-items:stretch;flex-direction:column}.admin-lessons-toolbar-left{align-items:stretch;flex-direction:column}.admin-search-field{min-width:0}.admin-table-footer{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div class="admin-lms-app">
+    <div id="admin-lms-sidebar-target"></div>
+
+    <main class="admin-lms-main">
+      <header class="admin-lms-topbar">
+        <div class="admin-lms-topbar-left">
+          <button type="button" class="admin-lms-menu-button" data-admin-menu-toggle aria-label="Toggle administration navigation">
+            <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div class="admin-lms-page-context">
+            <small>Screenings4u Learning Center</small>
+            <strong>Lesson Management</strong>
+          </div>
+        </div>
+
+        <div class="admin-lms-topbar-right">
+          <a href="admin-lms-notifications.html" class="admin-lms-icon-button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
+          </a>
+          <div class="admin-lms-user">
+            <span class="admin-lms-avatar">AD</span>
+            <span class="admin-lms-user-copy">
+              <span class="admin-lms-user-name">Administrator</span>
+              <span class="admin-lms-user-role">Learning Center Admin</span>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <section class="admin-lms-content">
+        <div class="admin-page-heading">
+          <div>
+            <span class="admin-page-eyebrow">Course Content</span>
+            <h1>Lesson Management</h1>
+            <p>Create, organize, and manage the lessons learners complete throughout each course.</p>
+          </div>
+          <a href="admin-lms-lesson-builder.html" class="admin-primary-btn">Create Lesson</a>
+        </div>
+
+        <section class="admin-lessons-summary">
+          <article class="admin-lessons-summary-card">
+            <div class="admin-lessons-summary-label">Total Lessons</div>
+            <div class="admin-lessons-summary-value" data-lesson-stat="total">0</div>
+            <div class="admin-lessons-summary-note">Across all training courses</div>
+          </article>
+          <article class="admin-lessons-summary-card">
+            <div class="admin-lessons-summary-label">Published</div>
+            <div class="admin-lessons-summary-value" data-lesson-stat="published">0</div>
+            <div class="admin-lessons-summary-note">Available to enrolled learners</div>
+          </article>
+          <article class="admin-lessons-summary-card">
+            <div class="admin-lessons-summary-label">Draft Lessons</div>
+            <div class="admin-lessons-summary-value" data-lesson-stat="draft">0</div>
+            <div class="admin-lessons-summary-note">Still being prepared</div>
+          </article>
+          <article class="admin-lessons-summary-card">
+            <div class="admin-lessons-summary-label">Video Lessons</div>
+            <div class="admin-lessons-summary-value" data-lesson-stat="video">0</div>
+            <div class="admin-lessons-summary-note">Managed through Cloudflare video</div>
+          </article>
+        </section>
+
+        <section class="admin-card">
+          <div class="admin-lessons-toolbar">
+            <div class="admin-lessons-toolbar-left">
+              <div class="admin-search-field">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
+                <input type="search" id="lessonSearch" placeholder="Search lessons by title or course...">
+              </div>
+
+              <select class="admin-filter-select" id="courseFilter" aria-label="Filter by course">
+                <option value="all">All Courses</option>
+                <option value="dot-specimen">DOT Specimen Collector Training</option>
+                <option value="hair-collection">DOT Specimen Collector Training + Hair</option>
+              </select>
+
+              <select class="admin-filter-select" id="statusFilter" aria-label="Filter by status">
+                <option value="all">All Statuses</option>
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+              </select>
+            </div>
+
+            <button type="button" class="admin-secondary-btn" id="clearLessonFilters">Clear Filters</button>
+          </div>
+
+          <div class="admin-lessons-table-wrap">
+            <table class="admin-lessons-table">
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Lesson</th>
+                  <th>Course / Module</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Duration</th>
+                  <th style="text-align:right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="lessonsTableBody">
+                <tr data-title="Welcome and Course Overview" data-course="dot-specimen" data-status="published" data-type="video">
+                  <td><span class="admin-lesson-order">01</span></td>
+                  <td><div class="admin-lesson-title">Welcome and Course Overview</div><div class="admin-lesson-meta">Introduction to the training program</div></td>
+                  <td><div class="admin-course-cell">DOT Specimen Collector Training<small>Module 1 · Getting Started</small></div></td>
+                  <td><span class="admin-type-pill admin-type-video">Video</span></td>
+                  <td><span class="admin-status-pill">Published</span></td>
+                  <td>08 min</td>
+                  <td><div class="admin-row-actions"><a href="admin-lms-lesson-builder.html?lesson=welcome-overview" class="admin-row-action" aria-label="Edit lesson"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/></svg></a></div></td>
+                </tr>
+                <tr data-title="DOT Collection Regulations" data-course="dot-specimen" data-status="published" data-type="video">
+                  <td><span class="admin-lesson-order">02</span></td>
+                  <td><div class="admin-lesson-title">DOT Collection Regulations</div><div class="admin-lesson-meta">Understand the governing collection requirements</div></td>
+                  <td><div class="admin-course-cell">DOT Specimen Collector Training<small>Module 2 · DOT Requirements</small></div></td>
+                  <td><span class="admin-type-pill admin-type-video">Video</span></td>
+                  <td><span class="admin-status-pill">Published</span></td>
+                  <td>24 min</td>
+                  <td><div class="admin-row-actions"><a href="admin-lms-lesson-builder.html?lesson=dot-regulations" class="admin-row-action" aria-label="Edit lesson"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/></svg></a></div></td>
+                </tr>
+                <tr data-title="The Collection Process" data-course="dot-specimen" data-status="published" data-type="document">
+                  <td><span class="admin-lesson-order">03</span></td>
+                  <td><div class="admin-lesson-title">The Collection Process</div><div class="admin-lesson-meta">Step-by-step collection procedures</div></td>
+                  <td><div class="admin-course-cell">DOT Specimen Collector Training<small>Module 3 · Collection Procedures</small></div></td>
+                  <td><span class="admin-type-pill admin-type-document">Lesson</span></td>
+                  <td><span class="admin-status-pill">Published</span></td>
+                  <td>18 min</td>
+                  <td><div class="admin-row-actions"><a href="admin-lms-lesson-builder.html?lesson=collection-process" class="admin-row-action" aria-label="Edit lesson"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/></svg></a></div></td>
+                </tr>
+                <tr data-title="Hair Collection Procedures" data-course="hair-collection" data-status="draft" data-type="video">
+                  <td><span class="admin-lesson-order">04</span></td>
+                  <td><div class="admin-lesson-title">Hair Collection Procedures</div><div class="admin-lesson-meta">Hair specimen collection workflow</div></td>
+                  <td><div class="admin-course-cell">DOT Specimen Collector Training + Hair<small>Module 4 · Hair Collection</small></div></td>
+                  <td><span class="admin-type-pill admin-type-video">Video</span></td>
+                  <td><span class="admin-status-pill admin-status-draft">Draft</span></td>
+                  <td>16 min</td>
+                  <td><div class="admin-row-actions"><a href="admin-lms-lesson-builder.html?lesson=hair-procedures" class="admin-row-action" aria-label="Edit lesson"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/></svg></a></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="admin-lessons-empty" id="lessonsEmpty">
+            No lessons match your current search or filters.
+          </div>
+
+          <div class="admin-table-footer">
+            <span id="lessonResultCount">Showing 4 lessons</span>
+            <div class="admin-pagination">
+              <button type="button" class="admin-page-btn" aria-label="Previous page">‹</button>
+              <button type="button" class="admin-page-btn active">1</button>
+              <button type="button" class="admin-page-btn" aria-label="Next page">›</button>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/js/admin-lms-sidebar.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      var rows = Array.prototype.slice.call(document.querySelectorAll("#lessonsTableBody tr"));
+      var search = document.getElementById("lessonSearch");
+      var courseFilter = document.getElementById("courseFilter");
+      var statusFilter = document.getElementById("statusFilter");
+      var clearButton = document.getElementById("clearLessonFilters");
+      var resultCount = document.getElementById("lessonResultCount");
+      var emptyState = document.getElementById("lessonsEmpty");
+
+      function updateStats() {
+        var total = rows.length;
+        var published = rows.filter(function (row) { return row.dataset.status === "published"; }).length;
+        var draft = rows.filter(function (row) { return row.dataset.status === "draft"; }).length;
+        var video = rows.filter(function (row) { return row.dataset.type === "video"; }).length;
+
+        document.querySelector('[data-lesson-stat="total"]').textContent = total;
+        document.querySelector('[data-lesson-stat="published"]').textContent = published;
+        document.querySelector('[data-lesson-stat="draft"]').textContent = draft;
+        document.querySelector('[data-lesson-stat="video"]').textContent = video;
+      }
+
+      function filterLessons() {
+        var term = search.value.trim().toLowerCase();
+        var course = courseFilter.value;
+        var status = statusFilter.value;
+        var visible = 0;
+
+        rows.forEach(function (row) {
+          var matchesTerm = !term || row.dataset.title.toLowerCase().indexOf(term) !== -1 || row.textContent.toLowerCase().indexOf(term) !== -1;
+          var matchesCourse = course === "all" || row.dataset.course === course;
+          var matchesStatus = status === "all" || row.dataset.status === status;
+          var show = matchesTerm && matchesCourse && matchesStatus;
+
+          row.style.display = show ? "" : "none";
+          if (show) visible++;
+        });
+
+        resultCount.textContent = "Showing " + visible + " of " + rows.length + " lessons";
+        emptyState.style.display = visible ? "none" : "block";
+      }
+
+      [search, courseFilter, statusFilter].forEach(function (control) {
+        control.addEventListener("input", filterLessons);
+        control.addEventListener("change", filterLessons);
+      });
+
+      clearButton.addEventListener("click", function () {
+        search.value = "";
+        courseFilter.value = "all";
+        statusFilter.value = "all";
+        filterLessons();
+      });
+
+      updateStats();
+      filterLessons();
+    })();
+  </script>
+</body>
+</html>

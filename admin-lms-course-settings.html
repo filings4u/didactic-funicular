@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Settings | Screenings4u Learning Center</title>
+<link rel="stylesheet" href="assets/css/admin-lms.css">
+<style>
+.settings-layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px;align-items:start}
+.settings-nav,.settings-card{background:#fff;border:1px solid var(--admin-border);border-radius:var(--r-md);box-shadow:var(--shadow-soft)}
+.settings-nav{padding:12px;position:sticky;top:20px}.settings-nav-label{display:block;padding:9px 10px 12px;color:var(--admin-muted);font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.settings-tab{display:flex;width:100%;border:0;background:transparent;border-radius:9px;padding:11px 10px;text-align:left;font:inherit;font-size:12px;font-weight:800;color:#536077;cursor:pointer}.settings-tab:hover{background:#f6f8fc}.settings-tab.active{background:#edf3ff;color:var(--admin-blue)}
+.settings-panel{display:none}.settings-panel.active{display:block}.settings-card{padding:24px;margin-bottom:20px}.settings-card h2{margin:0;font-size:16px}.settings-card>p{margin:7px 0 22px;color:var(--admin-muted);font-size:11px;line-height:1.6}
+.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:11px;font-weight:900}.field .help{color:var(--admin-muted);font-size:10px;font-weight:500}.field input,.field select,.field textarea{width:100%;border:1px solid var(--admin-border);border-radius:9px;background:#fff;padding:11px 12px;font:inherit;font-size:12px;outline:none}.field input,.field select{height:44px}.field textarea{min-height:105px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--admin-blue);box-shadow:0 0 0 3px rgba(50,90,163,.09)}
+.divider{height:1px;background:var(--admin-border);margin:22px 0}.toggle-row{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:16px 0;border-bottom:1px solid var(--admin-border)}.toggle-row:last-child{border:0}.toggle-copy strong{display:block;font-size:12px}.toggle-copy span{display:block;margin-top:5px;color:var(--admin-muted);font-size:10px;line-height:1.5}.switch{position:relative;flex:0 0 44px;width:44px;height:24px}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;border-radius:999px;background:#cfd6e2;cursor:pointer;transition:.2s}.slider:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}.switch input:checked+.slider{background:var(--admin-blue)}.switch input:checked+.slider:before{transform:translateX(20px)}
+.completion-box{border:1px solid var(--admin-border);border-radius:11px;padding:17px;margin-top:15px}.completion-box strong{font-size:12px}.check-list{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:14px}.check-item{display:flex;gap:8px;align-items:center;font-size:11px}.check-item input{accent-color:var(--admin-blue)}
+.warning{padding:14px 15px;border-radius:10px;background:#fff8ed;border:1px solid #f5dfbb;color:#805a18;font-size:11px;line-height:1.55}
+.save-bar{position:sticky;bottom:18px;background:#fff;border:1px solid var(--admin-border);box-shadow:0 12px 30px rgba(27,39,64,.12);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:15px;margin-top:24px}.save-state{font-size:11px;color:var(--admin-muted)}.save-actions{display:flex;gap:9px}.secondary{height:40px;padding:0 14px;border:1px solid var(--admin-border);border-radius:9px;background:#fff;font-size:11px;font-weight:800;color:#536077}.toast{position:fixed;right:22px;bottom:22px;background:#1e2b42;color:#fff;padding:12px 16px;border-radius:10px;font-size:11px;font-weight:800;box-shadow:0 14px 40px rgba(0,0,0,.18);display:none;z-index:999}.toast.show{display:block}
+@media(max-width:900px){.settings-layout{grid-template-columns:1fr}.settings-nav{position:static;display:flex;overflow:auto;padding:8px}.settings-nav-label{display:none}.settings-tab{white-space:nowrap;width:auto}.field-grid,.check-list{grid-template-columns:1fr}}@media(max-width:600px){.settings-card{padding:18px}.save-bar{align-items:flex-start;flex-direction:column}.save-actions{width:100%}.save-actions>*{flex:1}}
+</style>
+</head>
+<body>
+<div class="admin-lms-app">
+<div id="admin-lms-sidebar-target"></div>
+<main class="admin-lms-main">
+<header class="admin-lms-topbar">
+<div class="admin-lms-topbar-left">
+<button type="button" class="admin-lms-menu-button" data-admin-menu-toggle aria-label="Toggle navigation"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+<div class="admin-lms-page-context"><small>Screenings4u Learning Center</small><strong>Course Settings</strong></div>
+</div>
+<div class="admin-lms-topbar-right">
+<a href="admin-lms-notifications.html" class="admin-lms-icon-button" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a>
+<div class="admin-lms-user"><span class="admin-lms-avatar">AD</span><span class="admin-lms-user-copy"><span class="admin-lms-user-name">Administrator</span><span class="admin-lms-user-role">Learning Center Admin</span></span></div>
+</div>
+</header>
+
+<section class="admin-lms-content">
+<div class="admin-page-heading">
+<div><span class="admin-page-eyebrow">Training Configuration</span><h1>Course Settings</h1><p>Configure how a course is accessed, completed, assessed, and certified.</p></div>
+<a href="admin-lms-courses.html" class="admin-primary-btn">Back to Courses</a>
+</div>
+
+<div class="settings-layout">
+<aside class="settings-nav">
+<span class="settings-nav-label">Settings</span>
+<button class="settings-tab active" data-tab="general">General</button>
+<button class="settings-tab" data-tab="access">Access & Enrollment</button>
+<button class="settings-tab" data-tab="completion">Completion Rules</button>
+<button class="settings-tab" data-tab="assessment">Assessment</button>
+<button class="settings-tab" data-tab="certificate">Certificate</button>
+<button class="settings-tab" data-tab="visibility">Visibility</button>
+</aside>
+
+<div>
+<section class="settings-panel active" id="general">
+<div class="settings-card">
+<h2>General Course Settings</h2>
+<p>Core information used throughout the learner and administration experience.</p>
+<div class="field-grid">
+<div class="field"><label>Course Title</label><input value="DOT Specimen Collector Training"></div>
+<div class="field"><label>Course Code</label><input value="DOT-SCT-001"></div>
+<div class="field full"><label>Course Short Description</label><textarea>Professional training designed to prepare learners for DOT specimen collection responsibilities and procedures.</textarea></div>
+<div class="field"><label>Estimated Duration</label><input value="4 hours"></div>
+<div class="field"><label>Course Category</label><select><option>DOT Training</option><option>Workplace Training</option><option>Professional Development</option></select></div>
+</div>
+</div>
+</section>
+
+<section class="settings-panel" id="access">
+<div class="settings-card">
+<h2>Access & Enrollment</h2>
+<p>Control who can enter the course and how access is granted.</p>
+<div class="field-grid">
+<div class="field"><label>Enrollment Method</label><select><option>Purchase or Admin Enrollment</option><option>Admin Enrollment Only</option><option>Open Enrollment</option></select></div>
+<div class="field"><label>Access Duration</label><select><option>Lifetime Access</option><option>365 Days</option><option>180 Days</option><option>90 Days</option></select></div>
+</div>
+<div class="divider"></div>
+<div class="toggle-row"><div class="toggle-copy"><strong>Allow Resume Learning</strong><span>Return learners to their most recently completed lesson.</span></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+<div class="toggle-row"><div class="toggle-copy"><strong>Require Enrollment</strong><span>Learners must have a valid enrollment before opening the course player.</span></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+<div class="toggle-row"><div class="toggle-copy"><strong>Allow Course Preview</strong><span>Show designated preview lessons before purchase.</span></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+</div>
+</section>
+
+<section class="settings-panel" id="completion">
+<div class="settings-card">
+<h2>Completion Rules</h2>
+<p>Define exactly what learners must finish before the course is considered complete.</p>
+<div class="completion-box">
+<strong>Required Learning Components</strong>
+<div class="check-list">
+<label class="check-item"><input type="checkbox" checked> Complete all required lessons</label>
+<label class="check-item"><input type="checkbox" checked> Pass required module quizzes</label>
+<label class="check-item"><input type="checkbox" checked> Complete the final assessment</label>
+<label class="check-item"><input type="checkbox" checked> Meet the final passing score</label>
+</div>
+</div>
+<div class="divider"></div>
+<div class="field-grid">
+<div class="field"><label>Minimum Course Completion</label><select><option>100% Required Content</option><option>90% Required Content</option><option>Custom</option></select></div>
+<div class="field"><label>Completion Behavior</label><select><option>Automatically Mark Complete</option><option>Admin Review Required</option></select></div>
+</div>
+</div>
+</section>
+
+<section class="settings-panel" id="assessment">
+<div class="settings-card">
+<h2>Final Assessment Settings</h2>
+<p>The final assessment is the last learning requirement before certificate eligibility.</p>
+<div class="field-grid">
+<div class="field"><label>Passing Score</label><input type="number" min="0" max="100" value="80"></div>
+<div class="field"><label>Maximum Attempts</label><input type="number" min="1" value="3"></div>
+</div>
+<div class="divider"></div>
+<div class="toggle-row"><div class="toggle-copy"><strong>Require Final Assessment</strong><span>Learners cannot receive a certificate without passing the final assessment.</span></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+<div class="toggle-row"><div class="toggle-copy"><strong>Randomize Questions</strong><span>Randomize available questions when supported by the assessment configuration.</span></div><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
+<div class="toggle-row"><div class="toggle-copy"><strong>Show Results Immediately</strong><span>Display pass or fail status immediately after submission.</span></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+</div>
+</section>
+
+<section class="settings-panel" id="certificate">
+<div class="settings-card">
+<h2>Certificate Configuration</h2>
+<p>Control the automatic certificate issued after successful course completion.</p>
+<div class="field-grid">
+<div class="field"><label>Certificate Template</label><select><option>Screenings4u Standard Certificate</option></select></div>
+<div class="field"><label>Certificate Validity</label><select><option>No Expiration</option><option>1 Year</option><option>2 Years</option></select></div>
+<div class="field full"><label>Certificate Title</label><input value="Certificate of Completion"></div>
+</div>
+<div class="divider"></div>
+<div class="toggle-row"><div class="toggle-copy"><strong>Generate Automatically</strong><span>Create a unique certificate record immediately after all completion rules are satisfied.</span></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+<div class="toggle-row"><div class="toggle-copy"><strong>Allow Learner Download</strong><span>Make the print-ready certificate available on lms-certificates.html.</span></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+</div>
+</section>
+
+<section class="settings-panel" id="visibility">
+<div class="settings-card">
+<h2>Course Visibility</h2>
+<p>Control whether the course is available to learners and visible in the course library.</p>
+<div class="field-grid">
+<div class="field"><label>Course Status</label><select><option>Published</option><option>Draft</option><option>Archived</option></select></div>
+<div class="field"><label>Library Visibility</label><select><option>Visible in Course Library</option><option>Hidden from Course Library</option></select></div>
+</div>
+<div class="divider"></div>
+<div class="warning"><strong>Important:</strong> Hiding or archiving a course should not remove existing learner progress or certificate records. Existing enrolled learners should retain access according to the final business rules established during wiring.</div>
+</div>
+</section>
+
+<div class="save-bar">
+<span class="save-state" id="saveState">No unsaved changes</span>
+<div class="save-actions"><button class="secondary" id="resetBtn">Reset Changes</button><button class="admin-primary-btn" id="saveBtn">Save Course Settings</button></div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<div class="toast" id="toast">Course settings saved in the interface.</div>
+<script src="assets/js/admin-lms-sidebar.js"></script>
+<script>
+(function(){
+"use strict";
+var tabs=[].slice.call(document.querySelectorAll(".settings-tab")),panels=[].slice.call(document.querySelectorAll(".settings-panel")),state=document.getElementById("saveState"),toast=document.getElementById("toast"),dirty=false;
+function markDirty(){dirty=true;state.textContent="You have unsaved changes";}
+document.querySelectorAll("input,select,textarea").forEach(function(el){el.addEventListener("change",markDirty);el.addEventListener("input",markDirty);});
+tabs.forEach(function(tab){tab.addEventListener("click",function(){var id=tab.dataset.tab;tabs.forEach(function(t){t.classList.toggle("active",t===tab);});panels.forEach(function(p){p.classList.toggle("active",p.id===id);});});});
+document.getElementById("saveBtn").addEventListener("click",function(){dirty=false;state.textContent="All changes saved";toast.classList.add("show");setTimeout(function(){toast.classList.remove("show");},2600);});
+document.getElementById("resetBtn").addEventListener("click",function(){if(dirty&&confirm("Reset unsaved settings changes?")){location.reload();}});
+})();
+</script>
+</body>
+</html>

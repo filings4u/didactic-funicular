@@ -1,0 +1,2479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    Course Builder | Screenings4u Admin
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="assets/css/admin-lms.css"
+  >
+</head>
+
+<body>
+
+  <div class="admin-lms-app">
+
+    <!-- ======================================================
+         ADMIN SIDEBAR
+         ====================================================== -->
+
+    <div id="admin-lms-sidebar-target"></div>
+
+
+    <!-- ======================================================
+         MAIN
+         ====================================================== -->
+
+    <main class="admin-lms-main">
+
+
+      <!-- ====================================================
+           TOPBAR
+           ==================================================== -->
+
+      <header class="admin-lms-topbar">
+
+        <div class="admin-lms-topbar-left">
+
+          <button
+            type="button"
+            class="admin-lms-menu-button"
+            data-admin-menu-toggle
+            aria-label="Toggle navigation"
+          >
+
+            <svg viewBox="0 0 24 24">
+              <path d="M4 7h16M4 12h16M4 17h16"></path>
+            </svg>
+
+          </button>
+
+
+          <div class="admin-lms-page-context">
+
+            <small>
+              Screenings4u Learning Center
+            </small>
+
+            <strong>
+              Course Builder
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="admin-lms-topbar-right">
+
+          <a
+            href="admin-lms-notifications.html"
+            class="admin-lms-icon-button"
+            aria-label="Notifications"
+          >
+
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+              ></path>
+              <path d="M10 21h4"></path>
+            </svg>
+
+          </a>
+
+
+          <div class="admin-lms-user">
+
+            <span class="admin-lms-avatar">
+              AD
+            </span>
+
+
+            <div class="admin-lms-user-copy">
+
+              <span class="admin-lms-user-name">
+                Administrator
+              </span>
+
+              <span class="admin-lms-user-role">
+                Learning Center Admin
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </header>
+
+
+      <!-- ====================================================
+           CONTENT
+           ==================================================== -->
+
+      <section class="admin-lms-content">
+
+
+        <!-- ==================================================
+             PAGE HEADER
+             ================================================== -->
+
+        <div class="admin-page-heading admin-builder-heading">
+
+          <div>
+
+            <a
+              href="admin-lms-courses.html"
+              class="admin-back-link"
+            >
+              ← Back to Courses
+            </a>
+
+
+            <span class="admin-page-eyebrow">
+              Learning Management
+            </span>
+
+
+            <h1 id="course-builder-heading">
+              Create New Course
+            </h1>
+
+
+            <p>
+              Build the course, organize its curriculum, and
+              prepare it for learner enrollment.
+            </p>
+
+          </div>
+
+
+          <div class="admin-builder-actions">
+
+            <button
+              type="button"
+              class="admin-secondary-btn"
+              id="save-course-draft"
+            >
+              Save Draft
+            </button>
+
+
+            <button
+              type="button"
+              class="admin-primary-btn"
+              id="publish-course"
+            >
+              Publish Course
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             BUILDER LAYOUT
+             ================================================== -->
+
+        <div class="admin-course-builder-layout">
+
+
+          <!-- ================================================
+               MAIN BUILDER
+               ================================================ -->
+
+          <div class="admin-course-builder-main">
+
+
+            <!-- ==============================================
+                 COURSE INFORMATION
+                 ============================================== -->
+
+            <section class="admin-card admin-builder-card">
+
+              <div class="admin-builder-card-header">
+
+                <div class="admin-builder-card-title">
+
+                  <span class="admin-builder-step">
+                    01
+                  </span>
+
+
+                  <div>
+
+                    <h2>
+                      Course Information
+                    </h2>
+
+                    <p>
+                      Add the primary information for this
+                      training course.
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div class="admin-card-body">
+
+
+                <div class="admin-form-group">
+
+                  <label for="course-title">
+                    Course Title
+                  </label>
+
+                  <input
+                    type="text"
+                    id="course-title"
+                    placeholder="Enter course title"
+                  >
+
+                </div>
+
+
+                <div class="admin-form-group">
+
+                  <label for="course-short-description">
+                    Short Description
+                  </label>
+
+                  <textarea
+                    id="course-short-description"
+                    rows="3"
+                    placeholder="Brief description shown in the course library..."
+                  ></textarea>
+
+                  <span class="admin-form-help">
+                    This appears on course cards and previews.
+                  </span>
+
+                </div>
+
+
+                <div class="admin-form-group">
+
+                  <label for="course-description">
+                    Full Course Description
+                  </label>
+
+                  <textarea
+                    id="course-description"
+                    rows="7"
+                    placeholder="Describe the course, who it is for, and what learners will gain..."
+                  ></textarea>
+
+                </div>
+
+
+                <div class="admin-form-grid">
+
+                  <div class="admin-form-group">
+
+                    <label for="course-category">
+                      Course Category
+                    </label>
+
+                    <select id="course-category">
+
+                      <option value="">
+                        Select Category
+                      </option>
+
+                      <option value="dot-training">
+                        DOT Training
+                      </option>
+
+                      <option value="drug-alcohol">
+                        Drug & Alcohol Training
+                      </option>
+
+                      <option value="specimen-collection">
+                        Specimen Collection
+                      </option>
+
+                      <option value="workplace-compliance">
+                        Workplace Compliance
+                      </option>
+
+                    </select>
+
+                  </div>
+
+
+                  <div class="admin-form-group">
+
+                    <label for="course-duration">
+                      Estimated Duration
+                    </label>
+
+                    <input
+                      type="text"
+                      id="course-duration"
+                      placeholder="Example: 4 hours"
+                    >
+
+                  </div>
+
+                </div>
+
+
+              </div>
+
+            </section>
+
+
+            <!-- ==============================================
+                 COURSE IMAGE
+                 ============================================== -->
+
+            <section class="admin-card admin-builder-card">
+
+              <div class="admin-builder-card-header">
+
+                <div class="admin-builder-card-title">
+
+                  <span class="admin-builder-step">
+                    02
+                  </span>
+
+
+                  <div>
+
+                    <h2>
+                      Course Image
+                    </h2>
+
+                    <p>
+                      Add the image displayed throughout the
+                      Learning Center.
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div class="admin-card-body">
+
+                <div class="admin-course-image-upload">
+
+
+                  <div
+                    class="admin-course-image-preview"
+                    id="course-image-preview"
+                  >
+
+                    <div
+                      class="admin-course-image-placeholder"
+                      id="course-image-placeholder"
+                    >
+
+                      <svg viewBox="0 0 24 24">
+
+                        <rect
+                          x="3"
+                          y="4"
+                          width="18"
+                          height="16"
+                          rx="2"
+                        ></rect>
+
+                        <circle
+                          cx="8"
+                          cy="9"
+                          r="1.5"
+                        ></circle>
+
+                        <path
+                          d="m21 15-5-5L5 20"
+                        ></path>
+
+                      </svg>
+
+                      <span>
+                        Course Image
+                      </span>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="admin-course-image-controls">
+
+                    <h3>
+                      Upload Course Image
+                    </h3>
+
+                    <p>
+                      Use a professional landscape image that
+                      represents the course.
+                    </p>
+
+
+                    <label
+                      for="course-image-input"
+                      class="admin-secondary-btn admin-upload-button"
+                    >
+                      Choose Image
+                    </label>
+
+
+                    <input
+                      type="file"
+                      id="course-image-input"
+                      accept="image/*"
+                      hidden
+                    >
+
+
+                    <span class="admin-form-help">
+                      Recommended format: landscape JPG or PNG.
+                    </span>
+
+                  </div>
+
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <!-- ==============================================
+                 LEARNING OBJECTIVES
+                 ============================================== -->
+
+            <section class="admin-card admin-builder-card">
+
+              <div class="admin-builder-card-header">
+
+                <div class="admin-builder-card-title">
+
+                  <span class="admin-builder-step">
+                    03
+                  </span>
+
+
+                  <div>
+
+                    <h2>
+                      Learning Objectives
+                    </h2>
+
+                    <p>
+                      Define what the learner should understand
+                      after completing the course.
+                    </p>
+
+                  </div>
+
+                </div>
+
+
+                <button
+                  type="button"
+                  class="admin-add-text-btn"
+                  id="add-learning-objective"
+                >
+                  + Add Objective
+                </button>
+
+              </div>
+
+
+              <div class="admin-card-body">
+
+                <div
+                  class="admin-objectives-list"
+                  id="learning-objectives-list"
+                >
+
+                  <div class="admin-objective-row">
+
+                    <span class="admin-objective-number">
+                      1
+                    </span>
+
+
+                    <input
+                      type="text"
+                      class="learning-objective-input"
+                      placeholder="Enter learning objective"
+                    >
+
+
+                    <button
+                      type="button"
+                      class="admin-remove-objective"
+                      aria-label="Remove objective"
+                    >
+                      ×
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <!-- ==============================================
+                 CURRICULUM BUILDER
+                 ============================================== -->
+
+            <section class="admin-card admin-builder-card">
+
+              <div class="admin-builder-card-header">
+
+                <div class="admin-builder-card-title">
+
+                  <span class="admin-builder-step">
+                    04
+                  </span>
+
+
+                  <div>
+
+                    <h2>
+                      Course Curriculum
+                    </h2>
+
+                    <p>
+                      Build modules and lessons that make up the
+                      complete training experience.
+                    </p>
+
+                  </div>
+
+                </div>
+
+
+                <button
+                  type="button"
+                  class="admin-add-text-btn"
+                  id="add-module-button"
+                >
+                  + Add Module
+                </button>
+
+              </div>
+
+
+              <div class="admin-card-body">
+
+
+                <div
+                  class="admin-curriculum-list"
+                  id="curriculum-list"
+                >
+
+
+                  <!-- EMPTY STATE -->
+
+                  <div
+                    class="admin-curriculum-empty"
+                    id="curriculum-empty"
+                  >
+
+                    <div class="admin-curriculum-empty-icon">
+
+                      <svg viewBox="0 0 24 24">
+                        <path d="M4 6h16"></path>
+                        <path d="M4 12h16"></path>
+                        <path d="M4 18h16"></path>
+                      </svg>
+
+                    </div>
+
+
+                    <h3>
+                      Start Building Your Curriculum
+                    </h3>
+
+
+                    <p>
+                      Create your first module, then add lessons
+                      and training content.
+                    </p>
+
+
+                    <button
+                      type="button"
+                      class="admin-primary-btn"
+                      id="add-first-module"
+                    >
+                      Create First Module
+                    </button>
+
+                  </div>
+
+
+                </div>
+
+
+              </div>
+
+            </section>
+
+
+            <!-- ==============================================
+                 PURCHASE & ACCESS
+                 ============================================== -->
+
+            <section class="admin-card admin-builder-card">
+
+              <div class="admin-builder-card-header">
+
+                <div class="admin-builder-card-title">
+
+                  <span class="admin-builder-step">
+                    05
+                  </span>
+
+
+                  <div>
+
+                    <h2>
+                      Purchase & Access
+                    </h2>
+
+                    <p>
+                      Connect the course to its appropriate
+                      Screenings4u checkout service.
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div class="admin-card-body">
+
+
+                <div class="admin-form-group">
+
+                  <label for="course-checkout-service">
+                    Checkout Service
+                  </label>
+
+                  <select id="course-checkout-service">
+
+                    <option value="">
+                      Select Checkout Service
+                    </option>
+
+                    <option
+                      value="dot_specimen_collector_training"
+                    >
+                      DOT Specimen Collector Training
+                    </option>
+
+                    <option
+                      value="dot_specimen_collector_training_hair"
+                    >
+                      DOT Specimen Collector Training + Hair
+                    </option>
+
+                    <option
+                      value="dot_specimen_collector_train_the_trainer"
+                    >
+                      DOT Collector Train the Trainer
+                    </option>
+
+                    <option
+                      value="dot_collector_train_the_trainer_hair"
+                    >
+                      DOT Collector Train the Trainer + Hair
+                    </option>
+
+                  </select>
+
+
+                  <span class="admin-form-help">
+                    The learner will be directed to the matching
+                    checkout flow before receiving access.
+                  </span>
+
+                </div>
+
+
+                <div class="admin-form-grid">
+
+                  <div class="admin-form-group">
+
+                    <label for="course-access-type">
+                      Access Type
+                    </label>
+
+                    <select id="course-access-type">
+
+                      <option value="paid">
+                        Paid Course
+                      </option>
+
+                      <option value="included">
+                        Included With Purchase
+                      </option>
+
+                      <option value="private">
+                        Private Enrollment
+                      </option>
+
+                    </select>
+
+                  </div>
+
+
+                  <div class="admin-form-group">
+
+                    <label for="course-price-display">
+                      Display Price
+                    </label>
+
+                    <input
+                      type="text"
+                      id="course-price-display"
+                      placeholder="Example: $199"
+                    >
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+          </div>
+
+
+          <!-- ================================================
+               RIGHT SIDEBAR
+               ================================================ -->
+
+          <aside class="admin-course-builder-sidebar">
+
+
+            <!-- PUBLISHING -->
+
+            <section class="admin-card admin-builder-sidebar-card">
+
+              <div class="admin-builder-sidebar-heading">
+
+                <h3>
+                  Publishing
+                </h3>
+
+              </div>
+
+
+              <div class="admin-builder-sidebar-body">
+
+                <div class="admin-form-group">
+
+                  <label for="course-status">
+                    Course Status
+                  </label>
+
+                  <select id="course-status">
+
+                    <option value="draft">
+                      Draft
+                    </option>
+
+                    <option value="published">
+                      Published
+                    </option>
+
+                    <option value="archived">
+                      Archived
+                    </option>
+
+                  </select>
+
+                </div>
+
+
+                <div class="admin-publishing-note">
+
+                  <span class="admin-publishing-note-icon">
+                    i
+                  </span>
+
+                  <p>
+                    Draft courses remain hidden from learners
+                    until published.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <!-- PREVIEW -->
+
+            <section class="admin-card admin-builder-sidebar-card">
+
+              <div class="admin-builder-sidebar-heading">
+
+                <h3>
+                  Learner Preview
+                </h3>
+
+              </div>
+
+
+              <div class="admin-course-preview-card">
+
+                <div
+                  class="admin-course-preview-image"
+                  id="course-preview-image"
+                >
+
+                  <span>
+                    Course Preview
+                  </span>
+
+                </div>
+
+
+                <div class="admin-course-preview-content">
+
+                  <span
+                    class="admin-course-preview-category"
+                    id="course-preview-category"
+                  >
+                    Training Course
+                  </span>
+
+
+                  <h3 id="course-preview-title">
+                    Course Title
+                  </h3>
+
+
+                  <p id="course-preview-description">
+                    Your short course description will appear here.
+                  </p>
+
+
+                  <div class="admin-course-preview-meta">
+
+                    <span id="course-preview-duration">
+                      Duration
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <!-- CHECKLIST -->
+
+            <section class="admin-card admin-builder-sidebar-card">
+
+              <div class="admin-builder-sidebar-heading">
+
+                <h3>
+                  Course Checklist
+                </h3>
+
+              </div>
+
+
+              <div class="admin-course-checklist">
+
+                <div
+                  class="admin-checklist-item"
+                  id="check-course-title"
+                >
+                  <span class="admin-check-circle"></span>
+                  Course title
+                </div>
+
+
+                <div
+                  class="admin-checklist-item"
+                  id="check-course-description"
+                >
+                  <span class="admin-check-circle"></span>
+                  Course description
+                </div>
+
+
+                <div
+                  class="admin-checklist-item"
+                  id="check-course-category"
+                >
+                  <span class="admin-check-circle"></span>
+                  Course category
+                </div>
+
+
+                <div
+                  class="admin-checklist-item"
+                  id="check-course-modules"
+                >
+                  <span class="admin-check-circle"></span>
+                  Course curriculum
+                </div>
+
+
+                <div
+                  class="admin-checklist-item"
+                  id="check-course-checkout"
+                >
+                  <span class="admin-check-circle"></span>
+                  Checkout connection
+                </div>
+
+              </div>
+
+            </section>
+
+
+          </aside>
+
+
+        </div>
+
+
+        <!-- ==================================================
+             FOOTER ACTIONS
+             ================================================== -->
+
+        <div class="admin-builder-footer-actions">
+
+          <a
+            href="admin-lms-courses.html"
+            class="admin-secondary-btn"
+          >
+            Cancel
+          </a>
+
+
+          <div class="admin-builder-footer-actions-right">
+
+            <button
+              type="button"
+              class="admin-secondary-btn"
+              id="save-course-draft-bottom"
+            >
+              Save Draft
+            </button>
+
+
+            <button
+              type="button"
+              class="admin-primary-btn"
+              id="publish-course-bottom"
+            >
+              Publish Course
+            </button>
+
+          </div>
+
+        </div>
+
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <!-- ======================================================
+       ADD MODULE MODAL
+       ====================================================== -->
+
+  <div
+    class="admin-builder-modal"
+    id="module-modal"
+    hidden
+  >
+
+    <div
+      class="admin-builder-modal-overlay"
+      data-close-module-modal
+    ></div>
+
+
+    <div
+      class="admin-builder-modal-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="module-modal-title"
+    >
+
+      <div class="admin-builder-modal-header">
+
+        <div>
+
+          <span class="admin-page-eyebrow">
+            Curriculum
+          </span>
+
+          <h2 id="module-modal-title">
+            Create Module
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="admin-modal-close"
+          data-close-module-modal
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="admin-builder-modal-body">
+
+        <div class="admin-form-group">
+
+          <label for="new-module-title">
+            Module Title
+          </label>
+
+          <input
+            type="text"
+            id="new-module-title"
+            placeholder="Example: Introduction to DOT Collection"
+          >
+
+        </div>
+
+
+        <div class="admin-form-group">
+
+          <label for="new-module-description">
+            Module Description
+          </label>
+
+          <textarea
+            id="new-module-description"
+            rows="4"
+            placeholder="Briefly describe this module..."
+          ></textarea>
+
+        </div>
+
+      </div>
+
+
+      <div class="admin-builder-modal-footer">
+
+        <button
+          type="button"
+          class="admin-secondary-btn"
+          data-close-module-modal
+        >
+          Cancel
+        </button>
+
+
+        <button
+          type="button"
+          class="admin-primary-btn"
+          id="create-module-button"
+        >
+          Create Module
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================================
+       SHARED ADMIN SIDEBAR
+       ====================================================== -->
+
+  <script src="assets/js/admin-lms-sidebar.js"></script>
+
+
+  <!-- ======================================================
+       COURSE BUILDER
+       ====================================================== -->
+
+  <script>
+
+    (function () {
+
+      "use strict";
+
+
+      /* =====================================================
+         ELEMENTS
+         ===================================================== */
+
+      const curriculumList =
+        document.getElementById(
+          "curriculum-list"
+        );
+
+
+      const curriculumEmpty =
+        document.getElementById(
+          "curriculum-empty"
+        );
+
+
+      const moduleModal =
+        document.getElementById(
+          "module-modal"
+        );
+
+
+      const addModuleButton =
+        document.getElementById(
+          "add-module-button"
+        );
+
+
+      const addFirstModule =
+        document.getElementById(
+          "add-first-module"
+        );
+
+
+      const createModuleButton =
+        document.getElementById(
+          "create-module-button"
+        );
+
+
+      const newModuleTitle =
+        document.getElementById(
+          "new-module-title"
+        );
+
+
+      const newModuleDescription =
+        document.getElementById(
+          "new-module-description"
+        );
+
+
+      let moduleCount = 0;
+
+
+      /* =====================================================
+         MODULE MODAL
+         ===================================================== */
+
+      function openModuleModal() {
+
+        moduleModal.hidden = false;
+
+        setTimeout(function () {
+
+          newModuleTitle.focus();
+
+        }, 50);
+
+      }
+
+
+      function closeModuleModal() {
+
+        moduleModal.hidden = true;
+
+        newModuleTitle.value = "";
+        newModuleDescription.value = "";
+
+      }
+
+
+      if (addModuleButton) {
+
+        addModuleButton.addEventListener(
+          "click",
+          openModuleModal
+        );
+
+      }
+
+
+      if (addFirstModule) {
+
+        addFirstModule.addEventListener(
+          "click",
+          openModuleModal
+        );
+
+      }
+
+
+      document.querySelectorAll(
+        "[data-close-module-modal]"
+      ).forEach(function (element) {
+
+        element.addEventListener(
+          "click",
+          closeModuleModal
+        );
+
+      });
+
+
+      /* =====================================================
+         CREATE MODULE
+         ===================================================== */
+
+      if (createModuleButton) {
+
+        createModuleButton.addEventListener(
+          "click",
+          function () {
+
+            const title =
+              newModuleTitle.value.trim();
+
+
+            const description =
+              newModuleDescription.value.trim();
+
+
+            if (!title) {
+
+              newModuleTitle.focus();
+
+              return;
+
+            }
+
+
+            createModule(
+              title,
+              description
+            );
+
+
+            closeModuleModal();
+
+          }
+        );
+
+      }
+
+
+      function createModule(
+        title,
+        description
+      ) {
+
+        moduleCount += 1;
+
+
+        if (curriculumEmpty) {
+
+          curriculumEmpty.remove();
+
+        }
+
+
+        const module =
+          document.createElement(
+            "article"
+          );
+
+
+        module.className =
+          "admin-curriculum-module";
+
+
+        module.dataset.moduleNumber =
+          moduleCount;
+
+
+        module.innerHTML = `
+
+          <div class="admin-module-header">
+
+            <div class="admin-module-main">
+
+              <button
+                type="button"
+                class="admin-module-toggle"
+                aria-label="Toggle module"
+              >
+                <svg viewBox="0 0 24 24">
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </button>
+
+
+              <span class="admin-module-number">
+                Module ${moduleCount}
+              </span>
+
+
+              <div class="admin-module-copy">
+
+                <h3>
+                  ${escapeHtml(title)}
+                </h3>
+
+                <p>
+                  ${escapeHtml(description) ||
+                    "No module description added."}
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div class="admin-module-actions">
+
+              <span class="admin-module-lesson-count">
+                0 Lessons
+              </span>
+
+
+              <button
+                type="button"
+                class="admin-icon-action admin-delete-module"
+                aria-label="Delete module"
+              >
+                ×
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="admin-module-content">
+
+
+            <div
+              class="admin-module-lessons"
+              data-module-lessons
+            >
+
+
+              <div class="admin-module-no-lessons">
+
+                No lessons have been added to this module.
+
+              </div>
+
+
+            </div>
+
+
+            <button
+              type="button"
+              class="admin-add-lesson-button"
+              data-add-lesson
+            >
+              + Add Lesson
+            </button>
+
+
+          </div>
+
+        `;
+
+
+        curriculumList.appendChild(
+          module
+        );
+
+
+        updateCourseChecklist();
+
+      }
+
+
+      /* =====================================================
+         CURRICULUM EVENTS
+         ===================================================== */
+
+      document.addEventListener(
+        "click",
+        function (event) {
+
+
+          const toggle =
+            event.target.closest(
+              ".admin-module-toggle"
+            );
+
+
+          if (toggle) {
+
+            const module =
+              toggle.closest(
+                ".admin-curriculum-module"
+              );
+
+
+            module.classList.toggle(
+              "collapsed"
+            );
+
+            return;
+
+          }
+
+
+          const addLesson =
+            event.target.closest(
+              "[data-add-lesson]"
+            );
+
+
+          if (addLesson) {
+
+            const module =
+              addLesson.closest(
+                ".admin-curriculum-module"
+              );
+
+
+            addLessonToModule(
+              module
+            );
+
+            return;
+
+          }
+
+
+          const deleteModule =
+            event.target.closest(
+              ".admin-delete-module"
+            );
+
+
+          if (deleteModule) {
+
+            const module =
+              deleteModule.closest(
+                ".admin-curriculum-module"
+              );
+
+
+            if (
+              confirm(
+                "Delete this module and all lessons inside it?"
+              )
+            ) {
+
+              module.remove();
+
+              renumberModules();
+              updateCourseChecklist();
+
+            }
+
+            return;
+
+          }
+
+
+          const removeLesson =
+            event.target.closest(
+              ".admin-remove-lesson"
+            );
+
+
+          if (removeLesson) {
+
+            const lesson =
+              removeLesson.closest(
+                ".admin-curriculum-lesson"
+              );
+
+
+            const module =
+              lesson.closest(
+                ".admin-curriculum-module"
+              );
+
+
+            lesson.remove();
+
+            updateModuleLessonCount(
+              module
+            );
+
+            updateCourseChecklist();
+
+          }
+
+
+        }
+      );
+
+
+      /* =====================================================
+         ADD LESSON
+         ===================================================== */
+
+      function addLessonToModule(
+        module
+      ) {
+
+        const lessonsContainer =
+          module.querySelector(
+            "[data-module-lessons]"
+          );
+
+
+        const emptyState =
+          lessonsContainer.querySelector(
+            ".admin-module-no-lessons"
+          );
+
+
+        if (emptyState) {
+
+          emptyState.remove();
+
+        }
+
+
+        const lessonNumber =
+          lessonsContainer.querySelectorAll(
+            ".admin-curriculum-lesson"
+          ).length + 1;
+
+
+        const lesson =
+          document.createElement(
+            "div"
+          );
+
+
+        lesson.className =
+          "admin-curriculum-lesson";
+
+
+        lesson.innerHTML = `
+
+          <div class="admin-lesson-top">
+
+            <div class="admin-lesson-heading">
+
+              <span class="admin-lesson-number">
+                ${lessonNumber}
+              </span>
+
+
+              <input
+                type="text"
+                class="admin-lesson-title-input"
+                placeholder="Lesson title"
+              >
+
+            </div>
+
+
+            <button
+              type="button"
+              class="admin-icon-action admin-remove-lesson"
+              aria-label="Remove lesson"
+            >
+              ×
+            </button>
+
+          </div>
+
+
+          <div class="admin-lesson-settings">
+
+
+            <div class="admin-lesson-field">
+
+              <label>
+                Lesson Type
+              </label>
+
+
+              <select
+                class="admin-lesson-type"
+              >
+
+                <option value="video">
+                  Video Lesson
+                </option>
+
+                <option value="text">
+                  Text Lesson
+                </option>
+
+                <option value="quiz">
+                  Quiz
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div
+              class="admin-cloudflare-video-panel"
+            >
+
+
+              <div
+                class="admin-cloudflare-video-header"
+              >
+
+                <div>
+
+                  <span
+                    class="admin-cloudflare-label"
+                  >
+                    CLOUDFLARE STREAM
+                  </span>
+
+
+                  <h4>
+                    Lesson Video
+                  </h4>
+
+                  <p>
+                    Upload and manage this lesson video
+                    through Cloudflare Stream.
+                  </p>
+
+                </div>
+
+
+                <span
+                  class="admin-video-status"
+                >
+                  No Video
+                </span>
+
+              </div>
+
+
+              <div
+                class="admin-cloudflare-video-empty"
+              >
+
+                <div
+                  class="admin-cloudflare-video-icon"
+                >
+
+                  <svg viewBox="0 0 24 24">
+                    <rect
+                      x="3"
+                      y="5"
+                      width="18"
+                      height="14"
+                      rx="2"
+                    ></rect>
+                    <path d="m10 9 5 3-5 3z"></path>
+                  </svg>
+
+                </div>
+
+
+                <div>
+
+                  <strong>
+                    No video connected
+                  </strong>
+
+                  <span>
+                    Cloudflare Stream video uploads will
+                    connect here when the data layer is wired.
+                  </span>
+
+                </div>
+
+
+                <button
+                  type="button"
+                  class="admin-secondary-btn admin-connect-video"
+                >
+                  Upload Video
+                </button>
+
+              </div>
+
+
+              <!--
+                CLOUDFARE DATA PLACEHOLDERS
+
+                cloudflare_video_id
+                cloudflare_playback_url
+                cloudflare_thumbnail
+                video_duration
+                video_status
+              -->
+
+            </div>
+
+
+          </div>
+
+        `;
+
+
+        lessonsContainer.appendChild(
+          lesson
+        );
+
+
+        updateModuleLessonCount(
+          module
+        );
+
+
+        updateCourseChecklist();
+
+      }
+
+
+      /* =====================================================
+         MODULE COUNT
+         ===================================================== */
+
+      function updateModuleLessonCount(
+        module
+      ) {
+
+        const lessons =
+          module.querySelectorAll(
+            ".admin-curriculum-lesson"
+          );
+
+
+        const count =
+          module.querySelector(
+            ".admin-module-lesson-count"
+          );
+
+
+        if (count) {
+
+          count.textContent =
+            lessons.length === 1
+              ? "1 Lesson"
+              : lessons.length + " Lessons";
+
+        }
+
+
+        lessons.forEach(
+          function (lesson, index) {
+
+            const number =
+              lesson.querySelector(
+                ".admin-lesson-number"
+              );
+
+
+            if (number) {
+
+              number.textContent =
+                index + 1;
+
+            }
+
+          }
+        );
+
+      }
+
+
+      function renumberModules() {
+
+        const modules =
+          document.querySelectorAll(
+            ".admin-curriculum-module"
+          );
+
+
+        modules.forEach(
+          function (
+            module,
+            index
+          ) {
+
+            const number =
+              module.querySelector(
+                ".admin-module-number"
+              );
+
+
+            if (number) {
+
+              number.textContent =
+                "Module " + (index + 1);
+
+            }
+
+          }
+        );
+
+
+        moduleCount =
+          modules.length;
+
+      }
+
+
+      /* =====================================================
+         OBJECTIVES
+         ===================================================== */
+
+      const objectivesList =
+        document.getElementById(
+          "learning-objectives-list"
+        );
+
+
+      document
+        .getElementById(
+          "add-learning-objective"
+        )
+        .addEventListener(
+          "click",
+          function () {
+
+            const count =
+              objectivesList.querySelectorAll(
+                ".admin-objective-row"
+              ).length + 1;
+
+
+            const row =
+              document.createElement(
+                "div"
+              );
+
+
+            row.className =
+              "admin-objective-row";
+
+
+            row.innerHTML = `
+
+              <span class="admin-objective-number">
+                ${count}
+              </span>
+
+              <input
+                type="text"
+                class="learning-objective-input"
+                placeholder="Enter learning objective"
+              >
+
+              <button
+                type="button"
+                class="admin-remove-objective"
+              >
+                ×
+              </button>
+
+            `;
+
+
+            objectivesList.appendChild(
+              row
+            );
+
+          }
+        );
+
+
+      document.addEventListener(
+        "click",
+        function (event) {
+
+          const remove =
+            event.target.closest(
+              ".admin-remove-objective"
+            );
+
+
+          if (!remove) {
+
+            return;
+
+          }
+
+
+          const row =
+            remove.closest(
+              ".admin-objective-row"
+            );
+
+
+          row.remove();
+
+
+          document.querySelectorAll(
+            ".admin-objective-row"
+          ).forEach(
+            function (
+              objective,
+              index
+            ) {
+
+              objective.querySelector(
+                ".admin-objective-number"
+              ).textContent =
+                index + 1;
+
+            }
+          );
+
+        }
+      );
+
+
+      /* =====================================================
+         IMAGE PREVIEW
+         ===================================================== */
+
+      const imageInput =
+        document.getElementById(
+          "course-image-input"
+        );
+
+
+      imageInput.addEventListener(
+        "change",
+        function () {
+
+          const file =
+            imageInput.files[0];
+
+
+          if (!file) {
+
+            return;
+
+          }
+
+
+          const reader =
+            new FileReader();
+
+
+          reader.onload =
+            function (event) {
+
+              const preview =
+                document.getElementById(
+                  "course-image-preview"
+                );
+
+
+              const learnerPreview =
+                document.getElementById(
+                  "course-preview-image"
+                );
+
+
+              preview.style.backgroundImage =
+                `url("${event.target.result}")`;
+
+
+              preview.classList.add(
+                "has-image"
+              );
+
+
+              document.getElementById(
+                "course-image-placeholder"
+              ).style.display =
+                "none";
+
+
+              learnerPreview.style.backgroundImage =
+                `url("${event.target.result}")`;
+
+
+              learnerPreview.innerHTML =
+                "";
+
+            };
+
+
+          reader.readAsDataURL(
+            file
+          );
+
+        }
+      );
+
+
+      /* =====================================================
+         LIVE PREVIEW
+         ===================================================== */
+
+      const titleInput =
+        document.getElementById(
+          "course-title"
+        );
+
+
+      const shortDescription =
+        document.getElementById(
+          "course-short-description"
+        );
+
+
+      const categoryInput =
+        document.getElementById(
+          "course-category"
+        );
+
+
+      const durationInput =
+        document.getElementById(
+          "course-duration"
+        );
+
+
+      function updatePreview() {
+
+        document.getElementById(
+          "course-preview-title"
+        ).textContent =
+          titleInput.value.trim() ||
+          "Course Title";
+
+
+        document.getElementById(
+          "course-preview-description"
+        ).textContent =
+          shortDescription.value.trim() ||
+          "Your short course description will appear here.";
+
+
+        document.getElementById(
+          "course-preview-duration"
+        ).textContent =
+          durationInput.value.trim() ||
+          "Duration";
+
+
+        const selected =
+          categoryInput.options[
+            categoryInput.selectedIndex
+          ];
+
+
+        document.getElementById(
+          "course-preview-category"
+        ).textContent =
+          categoryInput.value
+            ? selected.text
+            : "Training Course";
+
+
+        updateCourseChecklist();
+
+      }
+
+
+      [
+        titleInput,
+        shortDescription,
+        categoryInput,
+        durationInput
+      ].forEach(
+        function (element) {
+
+          element.addEventListener(
+            "input",
+            updatePreview
+          );
+
+
+          element.addEventListener(
+            "change",
+            updatePreview
+          );
+
+        }
+      );
+
+
+      /* =====================================================
+         CHECKLIST
+         ===================================================== */
+
+      function setChecklistItem(
+        id,
+        complete
+      ) {
+
+        const item =
+          document.getElementById(id);
+
+
+        item.classList.toggle(
+          "complete",
+          complete
+        );
+
+      }
+
+
+      function updateCourseChecklist() {
+
+        const description =
+          document.getElementById(
+            "course-description"
+          );
+
+
+        const checkout =
+          document.getElementById(
+            "course-checkout-service"
+          );
+
+
+        const modules =
+          document.querySelectorAll(
+            ".admin-curriculum-module"
+          );
+
+
+        setChecklistItem(
+          "check-course-title",
+          titleInput.value.trim().length > 0
+        );
+
+
+        setChecklistItem(
+          "check-course-description",
+          description.value.trim().length > 0
+        );
+
+
+        setChecklistItem(
+          "check-course-category",
+          categoryInput.value !== ""
+        );
+
+
+        setChecklistItem(
+          "check-course-modules",
+          modules.length > 0
+        );
+
+
+        setChecklistItem(
+          "check-course-checkout",
+          checkout.value !== ""
+        );
+
+      }
+
+
+      document.getElementById(
+        "course-description"
+      ).addEventListener(
+        "input",
+        updateCourseChecklist
+      );
+
+
+      document.getElementById(
+        "course-checkout-service"
+      ).addEventListener(
+        "change",
+        updateCourseChecklist
+      );
+
+
+      /* =====================================================
+         SAVE / PUBLISH
+         
+         DATA WIRING COMES LATER
+         ===================================================== */
+
+      function collectCourseData() {
+
+        const modules = [];
+
+
+        document.querySelectorAll(
+          ".admin-curriculum-module"
+        ).forEach(
+          function (
+            module,
+            moduleIndex
+          ) {
+
+            const moduleData = {
+
+              sort_order:
+                moduleIndex + 1,
+
+              title:
+                module.querySelector(
+                  ".admin-module-copy h3"
+                ).textContent.trim(),
+
+              lessons: []
+
+            };
+
+
+            module.querySelectorAll(
+              ".admin-curriculum-lesson"
+            ).forEach(
+              function (
+                lesson,
+                lessonIndex
+              ) {
+
+                moduleData.lessons.push({
+
+                  sort_order:
+                    lessonIndex + 1,
+
+                  title:
+                    lesson.querySelector(
+                      ".admin-lesson-title-input"
+                    ).value.trim(),
+
+                  lesson_type:
+                    lesson.querySelector(
+                      ".admin-lesson-type"
+                    ).value,
+
+                  /*
+                   * CLOUDFLARE STREAM
+                   * WIRED LATER
+                   */
+
+                  cloudflare_video_id:
+                    null,
+
+                  cloudflare_playback_url:
+                    null,
+
+                  cloudflare_thumbnail:
+                    null,
+
+                  video_duration:
+                    null,
+
+                  video_status:
+                    null
+
+                });
+
+              }
+            );
+
+
+            modules.push(
+              moduleData
+            );
+
+          }
+        );
+
+
+        return {
+
+          title:
+            titleInput.value.trim(),
+
+          short_description:
+            shortDescription.value.trim(),
+
+          description:
+            document.getElementById(
+              "course-description"
+            ).value.trim(),
+
+          category:
+            categoryInput.value,
+
+          duration:
+            durationInput.value.trim(),
+
+          checkout_service:
+            document.getElementById(
+              "course-checkout-service"
+            ).value,
+
+          access_type:
+            document.getElementById(
+              "course-access-type"
+            ).value,
+
+          price_display:
+            document.getElementById(
+              "course-price-display"
+            ).value.trim(),
+
+          status:
+            document.getElementById(
+              "course-status"
+            ).value,
+
+          modules:
+            modules
+
+        };
+
+      }
+
+
+      function saveCourse(
+        publish
+      ) {
+
+        const courseData =
+          collectCourseData();
+
+
+        if (publish) {
+
+          courseData.status =
+            "published";
+
+        }
+
+
+        /*
+         * WHEN WE WIRE:
+         *
+         * 1. Save course to Supabase
+         * 2. Get course_id
+         * 3. Save modules
+         * 4. Get module_ids
+         * 5. Save lessons
+         * 6. Preserve Cloudflare video IDs
+         */
+
+
+        console.log(
+          "COURSE DATA READY:",
+          courseData
+        );
+
+      }
+
+
+      document.querySelectorAll(
+        "#save-course-draft, #save-course-draft-bottom"
+      ).forEach(
+        function (button) {
+
+          button.addEventListener(
+            "click",
+            function () {
+
+              saveCourse(
+                false
+              );
+
+            }
+          );
+
+        }
+      );
+
+
+      document.querySelectorAll(
+        "#publish-course, #publish-course-bottom"
+      ).forEach(
+        function (button) {
+
+          button.addEventListener(
+            "click",
+            function () {
+
+              saveCourse(
+                true
+              );
+
+            }
+          );
+
+        }
+      );
+
+
+      /* =====================================================
+         HELPERS
+         ===================================================== */
+
+      function escapeHtml(
+        value
+      ) {
+
+        const div =
+          document.createElement(
+            "div"
+          );
+
+
+        div.textContent =
+          value;
+
+
+        return div.innerHTML;
+
+      }
+
+
+      updateCourseChecklist();
+
+
+    })();
+
+  </script>
+
+
+</body>
+</html>

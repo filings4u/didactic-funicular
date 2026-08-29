@@ -1,0 +1,2 @@
+/* ===== customer-auth-guard.js ===== */
+document.addEventListener("DOMContentLoaded",()=>window.S4UPortalGuard.protectPortal({role:"customer",loginPage:"customer-login.html",fallback:"customer-dashboard.html"}));

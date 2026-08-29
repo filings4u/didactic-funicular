@@ -1,0 +1,475 @@
+/* ============================================================
+   SCREENINGS4U — CUSTOMER DONOR PASS
+   ============================================================ */
+
+.customer-donor-pass-page {
+  background: #f5f7fb;
+}
+
+.customer-donor-pass-content {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.customer-donor-pass-intro {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.customer-donor-pass-eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #ff6b00;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .11em;
+}
+
+.customer-donor-pass-intro h1 {
+  margin: 0;
+  color: #24364f;
+  font-size: clamp(2rem, 3vw, 2.7rem);
+  font-weight: 780;
+}
+
+.customer-donor-pass-intro p {
+  max-width: 700px;
+  margin: 10px 0 0;
+  color: #69778b;
+  line-height: 1.65;
+}
+
+.customer-donor-pass-order-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  color: #325aa3;
+  font-size: .84rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.customer-donor-pass-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(290px, .65fr);
+  gap: 24px;
+}
+
+.customer-donor-pass-card {
+  overflow: hidden;
+  border-radius: 22px;
+  background: #325aa3;
+  color: #fff;
+  box-shadow: 0 18px 45px rgba(38, 69, 120, .16);
+}
+
+.customer-donor-pass-card-top,
+.customer-donor-pass-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 28px;
+}
+
+.customer-donor-pass-card-top {
+  border-bottom: 1px solid rgba(255,255,255,.16);
+}
+
+.customer-donor-pass-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.customer-donor-pass-logo-mark {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: #ff6b00;
+  font-size: .75rem;
+  font-weight: 900;
+}
+
+.customer-donor-pass-brand div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.customer-donor-pass-brand strong {
+  font-size: 1rem;
+}
+
+.customer-donor-pass-brand span {
+  opacity: .75;
+  font-size: .7rem;
+}
+
+.customer-donor-pass-status {
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.14);
+  font-size: .7rem;
+  font-weight: 800;
+}
+
+.customer-donor-pass-status.is-active {
+  background: rgba(51, 209, 139, .18);
+}
+
+.customer-donor-pass-card-body {
+  padding: 34px 28px;
+}
+
+.customer-donor-pass-id-block,
+.customer-donor-pass-person {
+  display: flex;
+  flex-direction: column;
+}
+
+.customer-donor-pass-id-block span,
+.customer-donor-pass-person span {
+  opacity: .68;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.customer-donor-pass-id-block strong {
+  margin-top: 8px;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  letter-spacing: .03em;
+}
+
+.customer-donor-pass-person {
+  margin-top: 28px;
+}
+
+.customer-donor-pass-person strong {
+  margin-top: 7px;
+  font-size: 1.05rem;
+}
+
+.customer-donor-pass-service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 34px;
+}
+
+.customer-donor-pass-detail {
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,.16);
+}
+
+.customer-donor-pass-detail span {
+  display: block;
+  opacity: .66;
+  font-size: .68rem;
+}
+
+.customer-donor-pass-detail strong {
+  display: block;
+  margin-top: 7px;
+  font-size: .85rem;
+}
+
+.customer-donor-pass-card-footer {
+  background: rgba(0,0,0,.08);
+}
+
+.customer-donor-pass-card-footer > div:first-child {
+  max-width: 390px;
+  opacity: .75;
+  font-size: .75rem;
+  line-height: 1.5;
+}
+
+.customer-donor-pass-qr-placeholder {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 9px;
+  background: #fff;
+  color: #325aa3;
+  font-size: .55rem;
+  font-weight: 900;
+}
+
+.customer-donor-pass-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.customer-donor-pass-location-card,
+.customer-donor-pass-help-card {
+  padding: 23px;
+  border: 1px solid #dce4ed;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 10px 25px rgba(31,55,92,.04);
+}
+
+.customer-donor-pass-side-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.customer-donor-pass-side-icon,
+.customer-donor-pass-help-icon,
+.customer-donor-pass-information-icon,
+.customer-donor-pass-empty-icon {
+  display: grid;
+  place-items: center;
+  color: #325aa3;
+  background: rgba(50,90,163,.09);
+}
+
+.customer-donor-pass-side-icon,
+.customer-donor-pass-help-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.customer-donor-pass-side-icon svg,
+.customer-donor-pass-help-icon svg,
+.customer-donor-pass-information-icon svg,
+.customer-donor-pass-empty-icon svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.customer-donor-pass-side-heading div:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.customer-donor-pass-side-heading span {
+  color: #94a0af;
+  font-size: .64rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.customer-donor-pass-side-heading strong {
+  margin-top: 4px;
+  color: #30435d;
+  font-size: .9rem;
+}
+
+.customer-donor-pass-location-body {
+  margin-top: 25px;
+}
+
+.customer-donor-pass-location-body strong,
+.customer-donor-pass-help-card strong {
+  color: #30435d;
+  font-size: .9rem;
+}
+
+.customer-donor-pass-location-body p,
+.customer-donor-pass-help-card p {
+  margin: 8px 0 0;
+  color: #748196;
+  font-size: .8rem;
+  line-height: 1.6;
+}
+
+.customer-donor-pass-directions,
+.customer-donor-pass-help-card a {
+  display: inline-flex;
+  margin-top: 18px;
+  color: #325aa3;
+  font-size: .78rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.customer-donor-pass-help-card a {
+  color: #ff6b00;
+}
+
+.customer-donor-pass-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.customer-donor-pass-primary,
+.customer-donor-pass-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 11px;
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.customer-donor-pass-primary {
+  border: 1px solid #ff6b00;
+  background: #ff6b00;
+  color: #fff;
+}
+
+.customer-donor-pass-secondary {
+  border: 1px solid #d7e0eb;
+  background: #fff;
+  color: #325aa3;
+}
+
+.customer-donor-pass-actions svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.customer-donor-pass-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 28px;
+  border: 1px solid #dce4ed;
+  border-radius: 18px;
+  background: #fff;
+  text-align: center;
+}
+
+.customer-donor-pass-empty-icon {
+  width: 58px;
+  height: 58px;
+  margin-bottom: 16px;
+  border-radius: 17px;
+}
+
+.customer-donor-pass-empty h2 {
+  margin: 0;
+  color: #30435d;
+  font-size: 1.1rem;
+}
+
+.customer-donor-pass-empty p {
+  max-width: 470px;
+  margin: 9px 0 20px;
+  color: #748196;
+  font-size: .85rem;
+  line-height: 1.6;
+}
+
+.customer-donor-pass-empty a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 43px;
+  padding: 0 17px;
+  border-radius: 10px;
+  background: #ff6b00;
+  color: #fff;
+  font-size: .8rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.customer-donor-pass-information {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 24px;
+  padding: 20px 22px;
+  border: 1px solid #dce4ed;
+  border-radius: 16px;
+  background: rgba(255,255,255,.8);
+}
+
+.customer-donor-pass-information-icon {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border-radius: 12px;
+}
+
+.customer-donor-pass-information strong {
+  color: #30435d;
+  font-size: .86rem;
+}
+
+.customer-donor-pass-information p {
+  margin: 5px 0 0;
+  color: #748196;
+  font-size: .78rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 950px) {
+  .customer-donor-pass-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-donor-pass-side {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .customer-donor-pass-content {
+    padding: 22px 18px;
+  }
+
+  .customer-donor-pass-intro {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .customer-donor-pass-side {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-donor-pass-service-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-donor-pass-card-top,
+  .customer-donor-pass-card-footer {
+    padding: 18px;
+  }
+
+  .customer-donor-pass-card-body {
+    padding: 26px 18px;
+  }
+
+  .customer-donor-pass-actions {
+    flex-direction: column;
+  }
+
+  .customer-donor-pass-primary,
+  .customer-donor-pass-secondary {
+    width: 100%;
+  }
+}

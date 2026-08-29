@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Certificates | Screenings4u</title>
+<link rel="stylesheet" href="assets/css/employee-portal.css">
+<link rel="stylesheet" href="assets/css/employee-certificates.css">
+</head><body>
+<div id="employee-portal-sidebar"></div>
+<main class="employee-portal-main"><div id="employee-portal-header"></div>
+<div class="cert-page">
+<section class="hero"><span>MY TRAINING</span><h1>Certificates</h1><p>View and access certificates you have earned from completed training.</p></section>
+<section class="stats">
+<article><small>CERTIFICATES EARNED</small><strong id="cert-total">0</strong><span>Available certificates</span></article>
+<article><small>RECENTLY EARNED</small><strong id="cert-recent">0</strong><span>Issued in the last 30 days</span></article>
+<article><small>COMPLETED TRAINING</small><strong id="training-completed">0</strong><span>Eligible completed courses</span></article>
+</section>
+<section class="panel">
+<div class="panel-head"><div><span>YOUR CREDENTIALS</span><h2>Training Certificates</h2></div><input id="cert-search" type="search" placeholder="Search certificates..."></div>
+<div id="cert-list" class="cert-grid"></div>
+<div id="cert-empty" class="empty" hidden><div class="empty-icon">✓</div><h2>No certificates found</h2><p>Certificates will appear here after you successfully complete eligible training and meet all course requirements.</p></div>
+</section>
+</div></main>
+<div class="modal" id="cert-modal" hidden><div class="modal-backdrop"></div><div class="modal-card"><h2 id="modal-title"></h2><p id="modal-message"></p><button id="modal-close" class="primary-btn" type="button">Done</button></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/core-auth.js"></script>
+<script src="assets/js/core-ui.js"></script>
+<script src="assets/js/portal-auth-guard.js"></script>
+<script src="assets/js/employee-auth-guard.js"></script>
+
+<script src="assets/js/employee-portal.js"></script>
+<script src="assets/js/employee-dashboard.js"></script>
+<script src="assets/js/employee-certificates.js"></script>
+</body></html>

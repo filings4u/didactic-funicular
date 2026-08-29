@@ -1,0 +1,2 @@
+/* ===== employee-auth-guard.js ===== */
+document.addEventListener("DOMContentLoaded",()=>window.S4UPortalGuard.protectPortal({role:"employee",loginPage:"employee-login.html",fallback:"employee-dashboard.html"}));

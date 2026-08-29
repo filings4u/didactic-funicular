@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment Management | Screenings4u Learning Center</title>
+<link rel="stylesheet" href="assets/css/admin-lms.css">
+<style>
+.assessment-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-bottom:24px}
+.stat-card{background:#fff;border:1px solid var(--admin-border);border-radius:var(--r-md);padding:20px;box-shadow:var(--shadow-soft)}
+.stat-card label{display:block;color:var(--admin-muted);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.stat-card strong{display:block;margin-top:8px;font-size:29px;letter-spacing:-.04em}.stat-card span{display:block;margin-top:6px;color:var(--admin-muted);font-size:11px}
+.assessment-card{background:#fff;border:1px solid var(--admin-border);border-radius:var(--r-md);box-shadow:var(--shadow-soft);overflow:hidden}
+.assessment-toolbar{padding:18px 20px;border-bottom:1px solid var(--admin-border);display:flex;gap:12px;align-items:center}
+.search-wrap{position:relative;flex:1}.search-wrap svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:18px;height:18px;fill:none;stroke:var(--admin-muted);stroke-width:1.8}
+.search-wrap input,.filter-select{height:44px;border:1px solid var(--admin-border);border-radius:11px;background:#fff;font:inherit;font-size:13px;outline:none}
+.search-wrap input{width:100%;padding:0 13px 0 42px}.filter-select{min-width:170px;padding:0 12px}
+.search-wrap input:focus,.filter-select:focus{border-color:var(--admin-blue);box-shadow:0 0 0 3px rgba(50,90,163,.09)}
+.assessment-row{display:grid;grid-template-columns:minmax(260px,1.55fr) minmax(180px,1fr) 110px 110px 130px;gap:18px;align-items:center;padding:19px 20px;border-bottom:1px solid var(--admin-border)}
+.assessment-row:last-child{border-bottom:0}.assessment-title{display:flex;gap:13px;align-items:flex-start}
+.assessment-icon{width:43px;height:43px;flex:0 0 43px;border-radius:11px;background:#fff0e5;color:var(--admin-orange);display:grid;place-items:center}.assessment-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8}
+.assessment-title strong{display:block;font-size:13px}.assessment-title span{display:block;margin-top:4px;color:var(--admin-muted);font-size:10px}
+.course-name strong{display:block;font-size:12px}.course-name span{display:block;margin-top:4px;color:var(--admin-muted);font-size:10px}
+.metric{text-align:center;font-size:12px;font-weight:900}.metric small{display:block;margin-top:3px;color:var(--admin-muted);font-size:10px;font-weight:500}
+.status{display:inline-flex;justify-content:center;padding:6px 9px;border-radius:999px;font-size:10px;font-weight:900}.published{background:#eef8f1;color:#2f7d4b}.draft{background:#fff0e5;color:var(--admin-orange)}
+.row-actions{display:flex;justify-content:flex-end;gap:8px}.row-action{height:36px;padding:0 11px;border:1px solid var(--admin-border);border-radius:9px;background:#fff;color:var(--admin-blue);font-size:11px;font-weight:800}
+.row-action:hover{border-color:var(--admin-blue);background:#f7f9fd}.empty-state{display:none;padding:55px 20px;text-align:center;color:var(--admin-muted);font-size:13px}
+.assessment-footer{padding:16px 20px;border-top:1px solid var(--admin-border);display:flex;justify-content:space-between;color:var(--admin-muted);font-size:12px}
+.final-info{margin-top:24px;background:#fff;border:1px solid var(--admin-border);border-radius:var(--r-md);box-shadow:var(--shadow-soft);padding:22px;display:grid;grid-template-columns:50px 1fr;gap:16px}
+.final-info-icon{width:46px;height:46px;border-radius:12px;background:#fff0e5;color:var(--admin-orange);display:grid;place-items:center;font-size:21px;font-weight:900}.final-info h2{margin:0;font-size:15px}.final-info p{margin:6px 0 0;color:var(--admin-muted);font-size:12px;line-height:1.6}.final-flow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.flow-pill{padding:7px 10px;border-radius:999px;background:#f6f8fc;border:1px solid var(--admin-border);font-size:10px;font-weight:800;color:var(--admin-blue)}
+@media(max-width:1050px){.assessment-stats{grid-template-columns:repeat(2,1fr)}.assessment-row{grid-template-columns:1fr 1fr 110px 110px}.row-actions{grid-column:1/-1;justify-content:flex-start}}@media(max-width:680px){.assessment-stats{grid-template-columns:1fr}.assessment-toolbar{flex-direction:column;align-items:stretch}.filter-select{min-width:0}.assessment-row{grid-template-columns:1fr;padding:17px}.metric{text-align:left}.row-actions{justify-content:flex-start}.assessment-footer{flex-direction:column;gap:8px}.final-info{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="admin-lms-app">
+<div id="admin-lms-sidebar-target"></div>
+<main class="admin-lms-main">
+<header class="admin-lms-topbar">
+<div class="admin-lms-topbar-left">
+<button type="button" class="admin-lms-menu-button" data-admin-menu-toggle aria-label="Toggle administration navigation"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+<div class="admin-lms-page-context"><small>Screenings4u Learning Center</small><strong>Assessment Management</strong></div>
+</div>
+<div class="admin-lms-topbar-right">
+<a href="admin-lms-notifications.html" class="admin-lms-icon-button" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a>
+<div class="admin-lms-user"><span class="admin-lms-avatar">AD</span><span class="admin-lms-user-copy"><span class="admin-lms-user-name">Administrator</span><span class="admin-lms-user-role">Learning Center Admin</span></span></div>
+</div>
+</header>
+
+<section class="admin-lms-content">
+<div class="admin-page-heading">
+<div><span class="admin-page-eyebrow">Final Certification Step</span><h1>Assessment Management</h1><p>Create and manage the final assessments learners complete before receiving a certificate.</p></div>
+<a href="admin-lms-assessment-builder.html" class="admin-primary-btn">Create Assessment</a>
+</div>
+
+<section class="assessment-stats">
+<article class="stat-card"><label>Total Assessments</label><strong>4</strong><span>One for each training path</span></article>
+<article class="stat-card"><label>Published</label><strong>3</strong><span>Ready for eligible learners</span></article>
+<article class="stat-card"><label>Drafts</label><strong>1</strong><span>Still under development</span></article>
+<article class="stat-card"><label>Questions</label><strong>120</strong><span>Across all final assessments</span></article>
+</section>
+
+<section class="assessment-card">
+<div class="assessment-toolbar">
+<div class="search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg><input id="assessmentSearch" type="search" placeholder="Search assessments..."></div>
+<select id="statusFilter" class="filter-select"><option value="all">All Statuses</option><option value="published">Published</option><option value="draft">Draft</option></select>
+</div>
+
+<div id="assessmentList">
+<article class="assessment-row" data-title="DOT Specimen Collector Final Assessment" data-status="published">
+<div class="assessment-title"><div class="assessment-icon"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 8h10"/><path d="M5 21h14"/><path d="M8 15h8"/></svg></div><div><strong>DOT Specimen Collector Final Assessment</strong><span>Required final module before certificate eligibility</span></div></div>
+<div class="course-name"><strong>DOT Specimen Collector Training</strong><span>Final course requirement</span></div>
+<div class="metric">40<small>Questions</small></div>
+<div><span class="status published">PUBLISHED</span></div>
+<div class="row-actions"><a href="admin-lms-assessment-builder.html?assessment=dot-final" class="row-action">Edit</a><button type="button" class="row-action preview-btn">Preview</button></div>
+</article>
+
+<article class="assessment-row" data-title="DOT Specimen Collector + Hair Final Assessment" data-status="published">
+<div class="assessment-title"><div class="assessment-icon"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 8h10"/><path d="M5 21h14"/><path d="M8 15h8"/></svg></div><div><strong>DOT Specimen Collector + Hair Final Assessment</strong><span>Final assessment for the combined training path</span></div></div>
+<div class="course-name"><strong>DOT Specimen Collector + Hair</strong><span>Final course requirement</span></div>
+<div class="metric">45<small>Questions</small></div>
+<div><span class="status published">PUBLISHED</span></div>
+<div class="row-actions"><a href="admin-lms-assessment-builder.html?assessment=dot-hair-final" class="row-action">Edit</a><button type="button" class="row-action preview-btn">Preview</button></div>
+</article>
+
+<article class="assessment-row" data-title="DOT Train the Trainer Final Assessment" data-status="published">
+<div class="assessment-title"><div class="assessment-icon"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 8h10"/><path d="M5 21h14"/><path d="M8 15h8"/></svg></div><div><strong>DOT Train the Trainer Final Assessment</strong><span>Final competency assessment before certification</span></div></div>
+<div class="course-name"><strong>DOT Train the Trainer</strong><span>Final course requirement</span></div>
+<div class="metric">35<small>Questions</small></div>
+<div><span class="status published">PUBLISHED</span></div>
+<div class="row-actions"><a href="admin-lms-assessment-builder.html?assessment=trainer-final" class="row-action">Edit</a><button type="button" class="row-action preview-btn">Preview</button></div>
+</article>
+
+<article class="assessment-row" data-title="DOT Train the Trainer + Hair Final Assessment" data-status="draft">
+<div class="assessment-title"><div class="assessment-icon"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 8h10"/><path d="M5 21h14"/><path d="M8 15h8"/></svg></div><div><strong>DOT Train the Trainer + Hair Final Assessment</strong><span>Final assessment currently being prepared</span></div></div>
+<div class="course-name"><strong>DOT Train the Trainer + Hair</strong><span>Final course requirement</span></div>
+<div class="metric">—<small>Questions pending</small></div>
+<div><span class="status draft">DRAFT</span></div>
+<div class="row-actions"><a href="admin-lms-assessment-builder.html?assessment=trainer-hair-final" class="row-action">Edit</a><button type="button" class="row-action preview-btn">Preview</button></div>
+</article>
+</div>
+
+<div id="emptyState" class="empty-state">No assessments match your current search or filter.</div>
+<div class="assessment-footer"><span id="assessmentCount">Showing 4 assessments</span><span>Final assessments are separate from module quizzes.</span></div>
+</section>
+
+<section class="final-info">
+<div class="final-info-icon">✓</div>
+<div><h2>Certification Flow</h2><p>An assessment becomes available after the learner completes the required course content and module quizzes. A successful final assessment is the last learning requirement before the certificate can be issued.</p>
+<div class="final-flow"><span class="flow-pill">Complete Modules</span><span class="flow-pill">Complete Module Quizzes</span><span class="flow-pill">Pass Final Assessment</span><span class="flow-pill">Certificate Eligible</span></div></div>
+</section>
+</section>
+</main>
+</div>
+
+<script src="assets/js/admin-lms-sidebar.js"></script>
+<script>
+(function(){
+"use strict";
+var search=document.getElementById("assessmentSearch");
+var status=document.getElementById("statusFilter");
+var rows=[].slice.call(document.querySelectorAll(".assessment-row"));
+var empty=document.getElementById("emptyState");
+var count=document.getElementById("assessmentCount");
+function filter(){
+var term=search.value.toLowerCase().trim(),visible=0;
+rows.forEach(function(row){
+var show=(!term||row.dataset.title.toLowerCase().indexOf(term)>-1)&&(status.value==="all"||row.dataset.status===status.value);
+row.style.display=show?"grid":"none";
+if(show)visible++;
+});
+empty.style.display=visible?"none":"block";
+count.textContent="Showing "+visible+" assessment"+(visible===1?"":"s");
+}
+search.addEventListener("input",filter);
+status.addEventListener("change",filter);
+document.querySelectorAll(".preview-btn").forEach(function(button){
+button.addEventListener("click",function(){
+var title=button.closest(".assessment-row").dataset.title;
+alert("Preview for “"+title+"” will open in the learner final assessment experience once live LMS data is wired.");
+});
+});
+filter();
+})();
+</script>
+</body>
+</html>

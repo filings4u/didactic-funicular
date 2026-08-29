@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposals | Screenings4u Employer Portal</title>
+  <link rel="stylesheet" href="assets/css/employer-portal.css">
+  <link rel="stylesheet" href="assets/css/employer-proposals.css">
+</head>
+<body class="employer-proposals-page"
+      data-page-title="Proposals"
+      data-page-subtitle="Review service proposals and track their status.">
+
+  <div id="employer-portal-sidebar"></div>
+
+  <main class="employer-portal-main">
+    <div id="employer-portal-header"></div>
+
+    <div class="employer-proposals-content">
+      <section class="proposals-hero">
+        <div>
+          <span class="proposal-eyebrow">SERVICE PROPOSALS</span>
+          <h1>Your Proposals</h1>
+          <p>Review proposals prepared for your organization, including services, pricing, and important activity.</p>
+        </div>
+        <button type="button" class="proposal-primary-btn" id="request-proposal-btn">Request a Proposal</button>
+      </section>
+
+      <section class="proposal-summary-grid">
+        <article class="proposal-summary-card">
+          <span>Active Proposals</span>
+          <strong id="proposal-stat-active">—</strong>
+          <small>Currently awaiting review or action</small>
+        </article>
+        <article class="proposal-summary-card">
+          <span>Accepted</span>
+          <strong id="proposal-stat-accepted">—</strong>
+          <small>Accepted proposals</small>
+        </article>
+        <article class="proposal-summary-card">
+          <span>Awaiting Response</span>
+          <strong id="proposal-stat-pending">—</strong>
+          <small>Proposals requiring your attention</small>
+        </article>
+        <article class="proposal-summary-card">
+          <span>Total Proposal Value</span>
+          <strong id="proposal-stat-value">—</strong>
+          <small>Based on visible proposal totals</small>
+        </article>
+      </section>
+
+      <section class="proposal-panel">
+        <div class="proposal-panel-header">
+          <div>
+            <span class="proposal-eyebrow">PROPOSAL HISTORY</span>
+            <h2>All Proposals</h2>
+          </div>
+
+          <div class="proposal-controls">
+            <div class="proposal-search">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="6"></circle>
+                <path d="m16 16 4 4"></path>
+              </svg>
+              <input id="proposal-search" type="search" placeholder="Search proposals..." autocomplete="off">
+            </div>
+
+            <select id="proposal-status-filter">
+              <option value="all">All Statuses</option>
+              <option value="draft">Draft</option>
+              <option value="sent">Sent</option>
+              <option value="viewed">Viewed</option>
+              <option value="accepted">Accepted</option>
+              <option value="declined">Declined</option>
+              <option value="expired">Expired</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="proposal-table-wrap">
+          <table class="proposal-table">
+            <thead>
+              <tr>
+                <th>Proposal</th>
+                <th>Created</th>
+                <th>Expires</th>
+                <th>Services</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="proposal-table-body">
+              <tr>
+                <td colspan="7">
+                  <div class="proposal-empty-state">
+                    <div class="proposal-empty-icon">▤</div>
+                    <h3>No proposals available</h3>
+                    <p>Proposals prepared for your organization will appear here.</p>
+                    <button type="button" class="proposal-secondary-btn" id="empty-request-proposal-btn">Request a Proposal</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="proposal-help-grid">
+        <article class="proposal-help-card">
+          <div class="proposal-help-icon">?</div>
+          <div>
+            <h3>Need a Custom Proposal?</h3>
+            <p>Tell us what your organization needs and our team can prepare a service proposal for review.</p>
+            <button type="button" class="proposal-text-btn" id="custom-proposal-btn">Request Proposal →</button>
+          </div>
+        </article>
+
+        <article class="proposal-help-card">
+          <div class="proposal-help-icon">✓</div>
+          <div>
+            <h3>After Acceptance</h3>
+            <p>Accepted proposals can move into the appropriate order, program, invoice, or service workflow based on the final proposal rules.</p>
+          </div>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <div class="proposal-modal" id="proposal-modal" hidden>
+    <div class="proposal-modal-backdrop" data-close-proposal-modal></div>
+    <div class="proposal-modal-card" role="dialog" aria-modal="true" aria-labelledby="proposal-modal-title">
+      <div class="proposal-modal-header">
+        <div>
+          <span class="proposal-eyebrow">PROPOSAL DETAILS</span>
+          <h2 id="proposal-modal-title">Proposal</h2>
+        </div>
+        <button type="button" class="proposal-modal-close" data-close-proposal-modal aria-label="Close">×</button>
+      </div>
+
+      <div id="proposal-modal-content"></div>
+
+      <div class="proposal-modal-actions" id="proposal-modal-actions"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/core-auth.js"></script>
+<script src="assets/js/core-ui.js"></script>
+<script src="assets/js/portal-auth-guard.js"></script>
+<script src="assets/js/employer-auth-guard.js"></script>
+
+<script src="assets/js/employer-portal.js"></script>
+<script src="assets/js/employer-dashboard.js"></script>
+  <script src="assets/js/employer-proposals.js"></script>
+</body>
+</html>

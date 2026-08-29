@@ -1,0 +1,2 @@
+/* ===== admin-auth-guard.js ===== */
+document.addEventListener("DOMContentLoaded",()=>window.S4UPortalGuard.protectPortal({role:"admin",loginPage:"admin-login.html",fallback:"admin-dashboard.html"}));

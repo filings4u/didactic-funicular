@@ -52,47 +52,27 @@
      ========================================================== */
 
   async function initializeCustomerDashboard() {
-    if (dashboardState.initialized) {
-      return;
-    }
-
+    if (dashboardState.initialized) return;
     dashboardState.initialized = true;
 
     try {
       showDashboardLoadingState();
-
-      /*
-       * Wait briefly for the shared portal shell to initialize.
-       *
-       * The shell is responsible for:
-       * - authentication
-       * - sidebar
-       * - user menu
-       * - shared notifications
-       */
       await waitForPortalShell();
 
-      /*
-       * Get authenticated user.
-       *
-       * We support either:
-       * 1. A shared portal state object
-       * 2. Direct Supabase access
-       */
-      dashboardState.user = await getAuthenticatedCustomer();
-
-      if (!dashboardState.user) {
-        handleMissingSession();
-        return;
+      if (!window.S4UAuth) {
+        throw new Error("core-auth.js is not loaded before customer-dashboard.js.");
       }
 
-      /*
-       * Load dashboard data.
-       *
-       * These functions are intentionally separated so we can
-       * wire each section independently as we verify the exact
-       * Supabase table columns.
-       */
+      const authState = await window.S4UAuth.requireAuth({
+        loginPage: "customer-login.html",
+        allowedRoles: ["customer"],
+        fallback: "customer-login.html"
+      });
+
+      if (!authState || !authState.user) return;
+
+      dashboardState.user = authState.user;
+
       await Promise.all([
         loadCustomerProfile(),
         loadCustomerOrders(),
@@ -103,15 +83,10 @@
       ]);
 
       renderCustomerDashboard();
-
       hideDashboardLoadingState();
 
     } catch (error) {
-      console.error(
-        "[Customer Dashboard] Initialization error:",
-        error
-      );
-
+      console.error("[Customer Dashboard] Initialization error:", error);
       handleDashboardError(error);
     }
   }
@@ -144,65 +119,8 @@
      ========================================================== */
 
   async function getAuthenticatedCustomer() {
-
-    /*
-     * Option 1:
-     * Shared portal application state.
-     *
-     * We do not assume this exists.
-     */
-    if (
-      window.portalState &&
-      window.portalState.user
-    ) {
-      return window.portalState.user;
-    }
-
-
-    /*
-     * Option 2:
-     * Shared authentication helper.
-     */
-    if (
-      window.PortalAuth &&
-      typeof window.PortalAuth.getCurrentUser === "function"
-    ) {
-      return await window.PortalAuth.getCurrentUser();
-    }
-
-
-    /*
-     * Option 3:
-     * Direct Supabase client.
-     *
-     * This supports the existing global Supabase pattern
-     * used throughout the platform.
-     */
-    const supabaseClient = getSupabaseClient();
-
-    if (!supabaseClient) {
-      console.warn(
-        "[Customer Dashboard] Supabase client not available."
-      );
-
-      return null;
-    }
-
-    const {
-      data,
-      error
-    } = await supabaseClient.auth.getUser();
-
-    if (error) {
-      console.error(
-        "[Customer Dashboard] Auth error:",
-        error
-      );
-
-      return null;
-    }
-
-    return data ? data.user : null;
+    const authState = await window.S4UAuth.initialize();
+    return authState && authState.user ? authState.user : null;
   }
 
 
@@ -211,36 +129,75 @@
      ========================================================== */
 
   function getSupabaseClient() {
-
-    /*
-     * Support common global client patterns.
-     *
-     * We are not creating a new client here because the
-     * portal shell should own the connection configuration.
-     */
-
-    if (window.supabaseClient) {
-      return window.supabaseClient;
+    if (!window.S4UAuth || typeof window.S4UAuth.getClient !== "function") {
+      throw new Error("S4UAuth.getClient() is unavailable.");
     }
 
-    if (window.supabase) {
+    return window.S4UAuth.getClient();
+  }
 
-      /*
-       * Some existing pages may expose a custom client.
-       */
-      if (
-        typeof window.supabase.from === "function"
-      ) {
-        return window.supabase;
+
+  /* ==========================================================
+     QUERY HELPERS
+     ========================================================== */
+
+  async function queryFirstAvailable(table, select, candidates, options) {
+    const client = getSupabaseClient();
+    const settings = options || {};
+    let lastError = null;
+
+    for (const candidate of candidates) {
+      let query = client.from(table).select(select);
+
+      if (candidate && candidate.column) {
+        query = query.eq(candidate.column, candidate.value);
       }
 
+      if (settings.orderColumn) {
+        query = query.order(settings.orderColumn, {
+          ascending: settings.ascending === true
+        });
+      }
+
+      if (settings.limit) {
+        query = query.limit(settings.limit);
+      }
+
+      const { data, error } = await query;
+
+      if (!error) {
+        return Array.isArray(data) ? data : (data ? [data] : []);
+      }
+
+      lastError = error;
     }
 
-    if (window.portalSupabase) {
-      return window.portalSupabase;
+    if (lastError) {
+      console.warn(
+        `[Customer Dashboard] Unable to query ${table}:`,
+        lastError.message || lastError
+      );
     }
 
-    return null;
+    return [];
+  }
+
+
+  function getCustomerIdentityCandidates() {
+    const userId = dashboardState.user && dashboardState.user.id;
+    const profileId = dashboardState.profile && dashboardState.profile.id;
+    const email = dashboardState.user && dashboardState.user.email;
+
+    return [
+      { column: "customer_id", value: profileId || userId },
+      { column: "customer_profile_id", value: profileId || userId },
+      { column: "user_id", value: userId },
+      { column: "auth_user_id", value: userId },
+      { column: "profile_id", value: profileId || userId },
+      { column: "customer_email", value: email }
+    ].filter(function (item) {
+      return Boolean(item.value);
+    });
   }
 
 
@@ -249,29 +206,21 @@
      ========================================================== */
 
   async function loadCustomerProfile() {
+    const client = getSupabaseClient();
+    const userId = dashboardState.user.id;
 
-    /*
-     * IMPORTANT:
-     *
-     * We know customer_profiles exists.
-     *
-     * We do NOT yet have the complete column list in the
-     * current verified schema context.
-     *
-     * We therefore do not guess whether the relationship
-     * uses:
-     *
-     * user_id
-     * auth_user_id
-     * profile_id
-     * customer_id
-     *
-     * This function remains ready for the exact query.
-     */
+    const { data, error } = await client
+      .from("customer_profiles")
+      .select("*")
+      .eq("id", userId)
+      .maybeSingle();
 
-    dashboardState.profile = null;
+    if (error) {
+      throw error;
+    }
 
-    return null;
+    dashboardState.profile = data || null;
+    return dashboardState.profile;
   }
 
 
@@ -280,22 +229,25 @@
      ========================================================== */
 
   async function loadCustomerOrders() {
+    const rows = await queryFirstAvailable(
+      "orders",
+      "*",
+      getCustomerIdentityCandidates(),
+      {
+        orderColumn: "created_at",
+        ascending: false
+      }
+    );
 
-    /*
-     * Verified table:
-     *
-     * public.orders
-     *
-     * However, before wiring the query we need the exact
-     * relationship between orders and the authenticated
-     * customer/customer_profiles table.
-     *
-     * This prevents incorrect queries.
-     */
+    dashboardState.orders = rows.map(function (order) {
+      return {
+        ...order,
+        status: order.order_status || order.status || order.fulfillment_status,
+        name: order.service_name || order.name || order.title
+      };
+    });
 
-    dashboardState.orders = [];
-
-    return [];
+    return dashboardState.orders;
   }
 
 
@@ -304,21 +256,45 @@
      ========================================================== */
 
   async function loadCustomerResults() {
+    const client = getSupabaseClient();
+    const identities = getCustomerIdentityCandidates();
+    const collected = [];
 
-    /*
-     * Results may be represented through:
-     *
-     * dot_test_results
-     * dot_tests
-     * documents
-     *
-     * We need to verify the relationship and customer-facing
-     * visibility rules before exposing any result data.
-     */
+    for (const table of ["dot_test_results"]) {
+      const rows = await queryFirstAvailable(
+        table,
+        "*",
+        identities,
+        {
+          orderColumn: "created_at",
+          ascending: false,
+          limit: CUSTOMER_DASHBOARD_CONFIG.recentResultsLimit
+        }
+      );
 
-    dashboardState.results = [];
+      if (rows.length) {
+        collected.push(...rows);
+      }
+    }
 
-    return [];
+    dashboardState.results = collected
+      .sort(function (a, b) {
+        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+      })
+      .slice(0, CUSTOMER_DASHBOARD_CONFIG.recentResultsLimit)
+      .map(function (result) {
+        return {
+          ...result,
+          name:
+            result.test_name ||
+            result.result_name ||
+            result.name ||
+            result.title ||
+            "Screening Result"
+        };
+      });
+
+    return dashboardState.results;
   }
 
 
@@ -327,17 +303,37 @@
      ========================================================== */
 
   async function loadCustomerDonorPasses() {
+    const client = getSupabaseClient();
+    const passes = [];
 
     /*
-     * The donor pass workflow needs to be mapped to the
-     * appropriate order/testing tables.
-     *
-     * We will wire this after verifying the existing schema.
+     * order_donor_locations is linked directly to orders.
+     * We first load locations for the customer's orders, which
+     * avoids exposing another customer's donor location.
      */
+    const orderIds = dashboardState.orders
+      .map(function (order) { return order.id; })
+      .filter(Boolean);
 
-    dashboardState.donorPasses = [];
+    if (orderIds.length) {
+      const { data, error } = await client
+        .from("order_donor_locations")
+        .select("*")
+        .in("order_id", orderIds)
+        .order("created_at", { ascending: false });
 
-    return [];
+      if (error) {
+        console.warn(
+          "[Customer Dashboard] Donor pass query failed:",
+          error.message || error
+        );
+      } else if (data) {
+        passes.push(...data);
+      }
+    }
+
+    dashboardState.donorPasses = passes;
+    return passes;
   }
 
 
@@ -346,19 +342,19 @@
      ========================================================== */
 
   async function loadCustomerDocuments() {
+    const rows = await queryFirstAvailable(
+      "documents",
+      "*",
+      getCustomerIdentityCandidates(),
+      {
+        orderColumn: "created_at",
+        ascending: false,
+        limit: CUSTOMER_DASHBOARD_CONFIG.recentDocumentsLimit
+      }
+    );
 
-    /*
-     * Verified table:
-     *
-     * public.documents
-     *
-     * We still need the exact ownership/linking columns before
-     * querying documents for the logged-in customer.
-     */
-
-    dashboardState.documents = [];
-
-    return [];
+    dashboardState.documents = rows;
+    return rows;
   }
 
 
@@ -367,19 +363,26 @@
      ========================================================== */
 
   async function loadCustomerNotifications() {
+    const rows = await queryFirstAvailable(
+      "notifications",
+      "*",
+      [
+        { column: "user_id", value: dashboardState.user.id },
+        { column: "recipient_user_id", value: dashboardState.user.id },
+        { column: "customer_id", value: dashboardState.profile && dashboardState.profile.id },
+        { column: "profile_id", value: dashboardState.profile && dashboardState.profile.id }
+      ].filter(function (item) {
+        return Boolean(item.value);
+      }),
+      {
+        orderColumn: "created_at",
+        ascending: false,
+        limit: CUSTOMER_DASHBOARD_CONFIG.recentNotificationsLimit
+      }
+    );
 
-    /*
-     * Verified table:
-     *
-     * public.notifications
-     *
-     * The dashboard notification section will eventually
-     * synchronize with the shared portal notification bell.
-     */
-
-    dashboardState.notifications = [];
-
-    return [];
+    dashboardState.notifications = rows;
+    return rows;
   }
 
 

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Management | Screenings4u Learning Center</title>
+<link rel="stylesheet" href="assets/css/admin-lms.css">
+<style>
+.quiz-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-bottom:24px}
+.quiz-stat{background:#fff;border:1px solid var(--admin-border);border-radius:var(--r-md);padding:20px;box-shadow:var(--shadow-soft)}
+.quiz-stat label{display:block;color:var(--admin-muted);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.quiz-stat strong{display:block;margin-top:8px;font-size:29px;letter-spacing:-.04em}
+.quiz-stat span{display:block;margin-top:6px;color:var(--admin-muted);font-size:11px}
+.quiz-card{background:#fff;border:1px solid var(--admin-border);border-radius:var(--r-md);box-shadow:var(--shadow-soft);overflow:hidden}
+.quiz-toolbar{padding:18px 20px;border-bottom:1px solid var(--admin-border);display:flex;gap:12px;align-items:center}
+.quiz-search{position:relative;flex:1}.quiz-search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:18px;height:18px;fill:none;stroke:var(--admin-muted);stroke-width:1.8}
+.quiz-search input,.quiz-filter{height:44px;border:1px solid var(--admin-border);border-radius:11px;background:#fff;font:inherit;font-size:13px;outline:none}
+.quiz-search input{width:100%;padding:0 13px 0 42px}.quiz-filter{min-width:170px;padding:0 12px}
+.quiz-search input:focus,.quiz-filter:focus{border-color:var(--admin-blue);box-shadow:0 0 0 3px rgba(50,90,163,.09)}
+.quiz-list{display:grid}
+.quiz-row{display:grid;grid-template-columns:minmax(260px,1.5fr) minmax(180px,1fr) 100px 110px 130px;gap:18px;align-items:center;padding:18px 20px;border-bottom:1px solid var(--admin-border)}
+.quiz-row:last-child{border-bottom:0}.quiz-title{display:flex;gap:13px;align-items:flex-start}
+.quiz-icon{width:42px;height:42px;flex:0 0 42px;border-radius:11px;background:#edf2fb;color:var(--admin-blue);display:grid;place-items:center}.quiz-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8}
+.quiz-title strong{display:block;font-size:13px}.quiz-title span{display:block;margin-top:4px;color:var(--admin-muted);font-size:10px}
+.quiz-course strong{font-size:12px;display:block}.quiz-course span{display:block;margin-top:4px;color:var(--admin-muted);font-size:10px}
+.quiz-number{text-align:center;font-size:12px;font-weight:800}.quiz-number small{display:block;margin-top:3px;color:var(--admin-muted);font-size:10px;font-weight:500}
+.quiz-status{display:inline-flex;align-items:center;justify-content:center;padding:6px 9px;border-radius:999px;font-size:10px;font-weight:900}.quiz-status.published{background:#eef8f1;color:#2f7d4b}.quiz-status.draft{background:#fff0e5;color:var(--admin-orange)}
+.quiz-actions{display:flex;justify-content:flex-end;gap:8px}.quiz-action{height:36px;padding:0 11px;border:1px solid var(--admin-border);border-radius:9px;background:#fff;color:var(--admin-blue);font-size:11px;font-weight:800}
+.quiz-action:hover{border-color:var(--admin-blue);background:#f7f9fd}.quiz-empty{display:none;padding:55px 20px;text-align:center;color:var(--admin-muted);font-size:13px}
+.quiz-footer{padding:16px 20px;border-top:1px solid var(--admin-border);display:flex;justify-content:space-between;color:var(--admin-muted);font-size:12px}
+.quiz-workflow{margin-top:24px;padding:20px;border:1px solid var(--admin-border);border-radius:var(--r-md);background:#fff;box-shadow:var(--shadow-soft)}
+.quiz-workflow h2{margin:0;font-size:15px}.quiz-workflow p{margin:6px 0 18px;color:var(--admin-muted);font-size:12px}
+.workflow-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.workflow-step{padding:15px;border:1px solid var(--admin-border);border-radius:12px}.workflow-step b{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;background:#edf2fb;color:var(--admin-blue);font-size:11px}.workflow-step strong{display:block;margin-top:11px;font-size:12px}.workflow-step span{display:block;margin-top:5px;color:var(--admin-muted);font-size:10px;line-height:1.5}
+@media(max-width:1050px){.quiz-stats{grid-template-columns:repeat(2,1fr)}.quiz-row{grid-template-columns:1fr 1fr 100px 110px}.quiz-actions{grid-column:1/-1;justify-content:flex-start}.workflow-steps{grid-template-columns:repeat(2,1fr)}}@media(max-width:680px){.quiz-stats,.workflow-steps{grid-template-columns:1fr}.quiz-toolbar{flex-direction:column;align-items:stretch}.quiz-filter{min-width:0}.quiz-row{grid-template-columns:1fr;padding:17px}.quiz-number{text-align:left}.quiz-actions{justify-content:flex-start}.quiz-footer{flex-direction:column;gap:8px}}
+</style>
+</head>
+<body>
+<div class="admin-lms-app">
+<div id="admin-lms-sidebar-target"></div>
+<main class="admin-lms-main">
+<header class="admin-lms-topbar">
+<div class="admin-lms-topbar-left">
+<button type="button" class="admin-lms-menu-button" data-admin-menu-toggle aria-label="Toggle administration navigation"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+<div class="admin-lms-page-context"><small>Screenings4u Learning Center</small><strong>Quiz Management</strong></div>
+</div>
+<div class="admin-lms-topbar-right">
+<a href="admin-lms-notifications.html" class="admin-lms-icon-button" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a>
+<div class="admin-lms-user"><span class="admin-lms-avatar">AD</span><span class="admin-lms-user-copy"><span class="admin-lms-user-name">Administrator</span><span class="admin-lms-user-role">Learning Center Admin</span></span></div>
+</div>
+</header>
+
+<section class="admin-lms-content">
+<div class="admin-page-heading">
+<div><span class="admin-page-eyebrow">Knowledge Checks</span><h1>Quiz Management</h1><p>Create and manage quizzes that appear after each learning module.</p></div>
+<a href="admin-lms-quiz-builder.html" class="admin-primary-btn">Create Quiz</a>
+</div>
+
+<section class="quiz-stats">
+<article class="quiz-stat"><label>Total Quizzes</label><strong>8</strong><span>Across all courses</span></article>
+<article class="quiz-stat"><label>Published</label><strong>6</strong><span>Available to learners</span></article>
+<article class="quiz-stat"><label>Drafts</label><strong>2</strong><span>Still being prepared</span></article>
+<article class="quiz-stat"><label>Questions</label><strong>74</strong><span>Total quiz questions</span></article>
+</section>
+
+<section class="quiz-card">
+<div class="quiz-toolbar">
+<div class="quiz-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg><input id="quizSearch" type="search" placeholder="Search quizzes..."></div>
+<select class="quiz-filter" id="courseFilter"><option value="all">All Courses</option><option value="dot">DOT Specimen Collector</option><option value="hair">Hair Collection</option><option value="trainer">Train the Trainer</option></select>
+<select class="quiz-filter" id="statusFilter"><option value="all">All Statuses</option><option value="published">Published</option><option value="draft">Draft</option></select>
+</div>
+
+<div class="quiz-list" id="quizList">
+<article class="quiz-row" data-title="Module 1 Knowledge Check" data-course="dot" data-status="published">
+<div class="quiz-title"><div class="quiz-icon"><svg viewBox="0 0 24 24"><path d="M9 9h.01M15 9h.01M9 15h.01M15 15h.01"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg></div><div><strong>Module 1 Knowledge Check</strong><span>Quiz after Module 1 · Getting Started</span></div></div>
+<div class="quiz-course"><strong>DOT Specimen Collector Training</strong><span>Module 1</span></div>
+<div class="quiz-number">10<small>Questions</small></div>
+<div><span class="quiz-status published">PUBLISHED</span></div>
+<div class="quiz-actions"><a href="admin-lms-quiz-builder.html?quiz=module-1" class="quiz-action">Edit</a><button class="quiz-action preview-btn">Preview</button></div>
+</article>
+
+<article class="quiz-row" data-title="DOT Requirements Quiz" data-course="dot" data-status="published">
+<div class="quiz-title"><div class="quiz-icon"><svg viewBox="0 0 24 24"><path d="M9 9h.01M15 9h.01M9 15h.01M15 15h.01"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg></div><div><strong>DOT Requirements Quiz</strong><span>Quiz after Module 2 · DOT Requirements</span></div></div>
+<div class="quiz-course"><strong>DOT Specimen Collector Training</strong><span>Module 2</span></div>
+<div class="quiz-number">12<small>Questions</small></div>
+<div><span class="quiz-status published">PUBLISHED</span></div>
+<div class="quiz-actions"><a href="admin-lms-quiz-builder.html?quiz=dot-requirements" class="quiz-action">Edit</a><button class="quiz-action preview-btn">Preview</button></div>
+</article>
+
+<article class="quiz-row" data-title="Collection Procedures Quiz" data-course="dot" data-status="published">
+<div class="quiz-title"><div class="quiz-icon"><svg viewBox="0 0 24 24"><path d="M9 9h.01M15 9h.01M9 15h.01M15 15h.01"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg></div><div><strong>Collection Procedures Quiz</strong><span>Quiz after Module 3 · Collection Procedures</span></div></div>
+<div class="quiz-course"><strong>DOT Specimen Collector Training</strong><span>Module 3</span></div>
+<div class="quiz-number">15<small>Questions</small></div>
+<div><span class="quiz-status published">PUBLISHED</span></div>
+<div class="quiz-actions"><a href="admin-lms-quiz-builder.html?quiz=collection-procedures" class="quiz-action">Edit</a><button class="quiz-action preview-btn">Preview</button></div>
+</article>
+
+<article class="quiz-row" data-title="Hair Collection Knowledge Check" data-course="hair" data-status="draft">
+<div class="quiz-title"><div class="quiz-icon"><svg viewBox="0 0 24 24"><path d="M9 9h.01M15 9h.01M9 15h.01M15 15h.01"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg></div><div><strong>Hair Collection Knowledge Check</strong><span>Quiz after Hair Collection Module</span></div></div>
+<div class="quiz-course"><strong>DOT Collector Training + Hair</strong><span>Module 4</span></div>
+<div class="quiz-number">10<small>Questions</small></div>
+<div><span class="quiz-status draft">DRAFT</span></div>
+<div class="quiz-actions"><a href="admin-lms-quiz-builder.html?quiz=hair-collection" class="quiz-action">Edit</a><button class="quiz-action preview-btn">Preview</button></div>
+</article>
+
+<article class="quiz-row" data-title="Trainer Preparation Quiz" data-course="trainer" data-status="draft">
+<div class="quiz-title"><div class="quiz-icon"><svg viewBox="0 0 24 24"><path d="M9 9h.01M15 9h.01M9 15h.01M15 15h.01"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg></div><div><strong>Trainer Preparation Quiz</strong><span>Quiz after Train the Trainer Module</span></div></div>
+<div class="quiz-course"><strong>DOT Train the Trainer</strong><span>Module 1</span></div>
+<div class="quiz-number">14<small>Questions</small></div>
+<div><span class="quiz-status draft">DRAFT</span></div>
+<div class="quiz-actions"><a href="admin-lms-quiz-builder.html?quiz=trainer-preparation" class="quiz-action">Edit</a><button class="quiz-action preview-btn">Preview</button></div>
+</article>
+</div>
+
+<div class="quiz-empty" id="quizEmpty">No quizzes match your current search or filters.</div>
+<div class="quiz-footer"><span id="quizCount">Showing 5 quizzes</span><span>Quizzes appear after course modules.</span></div>
+</section>
+
+<section class="quiz-workflow">
+<h2>Quiz Flow</h2>
+<p>Quizzes are knowledge checks that occur after each module. They are separate from the final assessment required before certificate completion.</p>
+<div class="workflow-steps">
+<div class="workflow-step"><b>1</b><strong>Learner completes module</strong><span>All required lesson content is completed.</span></div>
+<div class="workflow-step"><b>2</b><strong>Quiz becomes available</strong><span>The module knowledge check is presented.</span></div>
+<div class="workflow-step"><b>3</b><strong>Quiz attempt is recorded</strong><span>Progress and results are saved to the learner record.</span></div>
+<div class="workflow-step"><b>4</b><strong>Continue to next module</strong><span>Successful completion moves the learner forward.</span></div>
+</div>
+</section>
+</section>
+</main>
+</div>
+
+<script src="assets/js/admin-lms-sidebar.js"></script>
+<script>
+(function(){
+"use strict";
+var search=document.getElementById("quizSearch"),course=document.getElementById("courseFilter"),status=document.getElementById("statusFilter");
+var rows=[].slice.call(document.querySelectorAll(".quiz-row")),empty=document.getElementById("quizEmpty"),count=document.getElementById("quizCount");
+function filter(){
+var term=search.value.toLowerCase().trim(),visible=0;
+rows.forEach(function(row){
+var show=(!term||row.dataset.title.toLowerCase().indexOf(term)>-1)&&(course.value==="all"||row.dataset.course===course.value)&&(status.value==="all"||row.dataset.status===status.value);
+row.style.display=show?"grid":"none";if(show)visible++;
+});
+empty.style.display=visible?"none":"block";
+count.textContent="Showing "+visible+" quiz"+(visible===1?"":"zes");
+}
+[search,course,status].forEach(function(el){el.addEventListener("input",filter);el.addEventListener("change",filter);});
+document.querySelectorAll(".preview-btn").forEach(function(btn){
+btn.addEventListener("click",function(){
+var row=btn.closest(".quiz-row");
+alert("Preview for “"+row.dataset.title+"” will open in the learner quiz experience once live LMS data is wired.");
+});
+});
+filter();
+})();
+</script>
+</body>
+</html>

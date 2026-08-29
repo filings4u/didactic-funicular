@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Management | Screenings4u Learning Center</title>
+<link rel="stylesheet" href="assets/css/admin-lms.css">
+<style>
+.student-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:24px}.stat-card{background:#fff;border:1px solid var(--admin-border);border-radius:var(--r-md);padding:20px;box-shadow:var(--shadow-soft)}.stat-card label{display:block;color:var(--admin-muted);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.stat-card strong{display:block;margin-top:8px;font-size:29px;letter-spacing:-.04em}.stat-card span{display:block;margin-top:6px;color:var(--admin-muted);font-size:11px}
+.student-card{background:#fff;border:1px solid var(--admin-border);border-radius:var(--r-md);box-shadow:var(--shadow-soft);overflow:hidden}.toolbar{padding:18px 20px;border-bottom:1px solid var(--admin-border);display:flex;gap:12px;align-items:center}.search{position:relative;flex:1}.search input,.filter{height:44px;border:1px solid var(--admin-border);border-radius:10px;background:#fff;font:inherit;font-size:12px;outline:none}.search input{width:100%;padding:0 12px 0 40px}.search svg{position:absolute;left:13px;top:13px;width:17px;height:17px;fill:none;stroke:var(--admin-muted);stroke-width:2}.filter{min-width:160px;padding:0 10px}.student-row{display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(210px,1.25fr) 130px 125px 140px;gap:18px;align-items:center;padding:17px 20px;border-bottom:1px solid var(--admin-border)}.student-row:last-child{border:0}.student-person{display:flex;align-items:center;gap:12px}.avatar{width:42px;height:42px;border-radius:50%;background:#eef2f9;color:var(--admin-blue);display:grid;place-items:center;font-size:12px;font-weight:900}.student-person strong,.course strong{display:block;font-size:12px}.student-person span,.course span{display:block;margin-top:4px;color:var(--admin-muted);font-size:10px}.status{display:inline-flex;padding:6px 9px;border-radius:999px;font-size:10px;font-weight:900}.active{background:#eef8f1;color:#287348}.completed{background:#edf3ff;color:var(--admin-blue)}.pending{background:#fff0e5;color:var(--admin-orange)}.progress{font-size:12px;font-weight:900}.progress small{display:block;color:var(--admin-muted);font-size:10px;font-weight:500;margin-top:3px}.actions{display:flex;justify-content:flex-end;gap:7px}.action{height:35px;padding:0 10px;border:1px solid var(--admin-border);border-radius:8px;background:#fff;color:var(--admin-blue);font-size:11px;font-weight:800}.empty{display:none;padding:48px;text-align:center;color:var(--admin-muted);font-size:12px}.table-footer{padding:15px 20px;border-top:1px solid var(--admin-border);display:flex;justify-content:space-between;color:var(--admin-muted);font-size:11px}
+.detail-panel{margin-top:24px;background:#fff;border:1px solid var(--admin-border);border-radius:var(--r-md);box-shadow:var(--shadow-soft);padding:22px;display:none}.detail-panel.show{display:block}.detail-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.detail-head h2{margin:0;font-size:16px}.detail-head p{margin:6px 0 0;color:var(--admin-muted);font-size:12px}.close-detail{border:0;background:transparent;font-size:22px;color:var(--admin-muted)}.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}.detail-item{padding:15px;border:1px solid var(--admin-border);border-radius:11px}.detail-item label{display:block;font-size:10px;color:var(--admin-muted);text-transform:uppercase;font-weight:800}.detail-item strong{display:block;margin-top:7px;font-size:13px}.student-note{margin-top:18px;padding:14px;border-radius:10px;background:#f7f9fd;color:var(--admin-muted);font-size:11px;line-height:1.55}
+@media(max-width:1050px){.student-stats{grid-template-columns:repeat(2,1fr)}.student-row{grid-template-columns:1fr 1fr 120px}.actions{grid-column:1/-1;justify-content:flex-start}}@media(max-width:680px){.student-stats{grid-template-columns:1fr}.toolbar{flex-direction:column;align-items:stretch}.filter{min-width:0}.student-row{grid-template-columns:1fr;padding:17px}.actions{justify-content:flex-start}.detail-grid{grid-template-columns:1fr}.table-footer{flex-direction:column;gap:7px}}
+</style>
+</head>
+<body>
+<div class="admin-lms-app">
+<div id="admin-lms-sidebar-target"></div>
+<main class="admin-lms-main">
+<header class="admin-lms-topbar">
+<div class="admin-lms-topbar-left"><button type="button" class="admin-lms-menu-button" data-admin-menu-toggle aria-label="Toggle navigation"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div class="admin-lms-page-context"><small>Screenings4u Learning Center</small><strong>Student Management</strong></div></div>
+<div class="admin-lms-topbar-right"><a href="admin-lms-notifications.html" class="admin-lms-icon-button" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a><div class="admin-lms-user"><span class="admin-lms-avatar">AD</span><span class="admin-lms-user-copy"><span class="admin-lms-user-name">Administrator</span><span class="admin-lms-user-role">Learning Center Admin</span></span></div></div>
+</header>
+<section class="admin-lms-content">
+<div class="admin-page-heading"><div><span class="admin-page-eyebrow">Learner Directory</span><h1>Student Management</h1><p>View learners, their enrolled training, progress, and certification activity.</p></div><a href="admin-lms-enrollments.html" class="admin-primary-btn">Manage Enrollments</a></div>
+
+<section class="student-stats">
+<article class="stat-card"><label>Total Students</label><strong>248</strong><span>All learner accounts</span></article>
+<article class="stat-card"><label>Active Learners</label><strong>96</strong><span>Currently progressing</span></article>
+<article class="stat-card"><label>Completed Training</label><strong>127</strong><span>Course completion recorded</span></article>
+<article class="stat-card"><label>New This Month</label><strong>25</strong><span>Recently enrolled learners</span></article>
+</section>
+
+<section class="student-card">
+<div class="toolbar">
+<div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg><input id="studentSearch" type="search" placeholder="Search by learner name or email..."></div>
+<select id="courseFilter" class="filter"><option value="all">All Courses</option><option value="dot">DOT Specimen Collector</option><option value="hair">DOT + Hair Collection</option><option value="trainer">Train the Trainer</option></select>
+<select id="statusFilter" class="filter"><option value="all">All Statuses</option><option value="active">Active</option><option value="completed">Completed</option><option value="pending">Not Started</option></select>
+</div>
+
+<div id="studentList">
+<article class="student-row" data-name="Jordan Williams jordan.williams@example.com" data-course="dot" data-status="active" data-email="jordan.williams@example.com" data-title="DOT Specimen Collector Training" data-progress="72%" data-enrolled="August 14, 2026" data-cert="Not yet eligible">
+<div class="student-person"><div class="avatar">JW</div><div><strong>Jordan Williams</strong><span>jordan.williams@example.com</span></div></div><div class="course"><strong>DOT Specimen Collector Training</strong><span>Enrolled Aug 14, 2026</span></div><div class="progress">72%<small>In Progress</small></div><div><span class="status active">ACTIVE</span></div><div class="actions"><button class="action view-btn">View</button><a class="action" href="admin-lms-enrollments.html">Enrollment</a></div>
+</article>
+<article class="student-row" data-name="Taylor Johnson taylor.johnson@example.com" data-course="hair" data-status="completed" data-email="taylor.johnson@example.com" data-title="DOT Specimen Collector Training + Hair" data-progress="100%" data-enrolled="July 29, 2026" data-cert="Certificate issued">
+<div class="student-person"><div class="avatar">TJ</div><div><strong>Taylor Johnson</strong><span>taylor.johnson@example.com</span></div></div><div class="course"><strong>DOT Specimen Collector + Hair</strong><span>Completed Jul 29, 2026</span></div><div class="progress">100%<small>Completed</small></div><div><span class="status completed">COMPLETED</span></div><div class="actions"><button class="action view-btn">View</button><a class="action" href="admin-lms-certificates.html">Certificate</a></div>
+</article>
+<article class="student-row" data-name="Morgan Davis morgan.davis@example.com" data-course="trainer" data-status="active" data-email="morgan.davis@example.com" data-title="DOT Specimen Collector Train the Trainer" data-progress="46%" data-enrolled="August 8, 2026" data-cert="Not yet eligible">
+<div class="student-person"><div class="avatar">MD</div><div><strong>Morgan Davis</strong><span>morgan.davis@example.com</span></div></div><div class="course"><strong>DOT Train the Trainer</strong><span>Enrolled Aug 8, 2026</span></div><div class="progress">46%<small>In Progress</small></div><div><span class="status active">ACTIVE</span></div><div class="actions"><button class="action view-btn">View</button><a class="action" href="admin-lms-enrollments.html">Enrollment</a></div>
+</article>
+<article class="student-row" data-name="Casey Brown casey.brown@example.com" data-course="dot" data-status="pending" data-email="casey.brown@example.com" data-title="DOT Specimen Collector Training" data-progress="0%" data-enrolled="August 25, 2026" data-cert="Not yet eligible">
+<div class="student-person"><div class="avatar">CB</div><div><strong>Casey Brown</strong><span>casey.brown@example.com</span></div></div><div class="course"><strong>DOT Specimen Collector Training</strong><span>Enrolled Aug 25, 2026</span></div><div class="progress">0%<small>Not Started</small></div><div><span class="status pending">NOT STARTED</span></div><div class="actions"><button class="action view-btn">View</button><a class="action" href="admin-lms-enrollments.html">Enrollment</a></div>
+</article>
+</div>
+<div id="emptyState" class="empty">No students match your current search or filters.</div>
+<div class="table-footer"><span id="studentCount">Showing 4 students</span><span>Student records will populate from live LMS enrollment data when wired.</span></div>
+</section>
+
+<section id="detailPanel" class="detail-panel">
+<div class="detail-head"><div><h2 id="detailName">Student Details</h2><p id="detailEmail"></p></div><button id="closeDetail" class="close-detail" aria-label="Close">×</button></div>
+<div class="detail-grid">
+<div class="detail-item"><label>Current Course</label><strong id="detailCourse"></strong></div>
+<div class="detail-item"><label>Progress</label><strong id="detailProgress"></strong></div>
+<div class="detail-item"><label>Enrollment Date</label><strong id="detailEnrolled"></strong></div>
+<div class="detail-item"><label>Certificate Status</label><strong id="detailCertificate"></strong></div>
+<div class="detail-item"><label>Student Status</label><strong id="detailStatus"></strong></div>
+<div class="detail-item"><label>Next Action</label><strong>Review learner progress</strong></div>
+</div>
+<div class="student-note">When the LMS is wired to the live database, this panel can display complete enrollment history, lesson completion, quiz attempts, final assessment attempts, and certificate records.</div>
+</section>
+</section>
+</main>
+</div>
+<script src="assets/js/admin-lms-sidebar.js"></script>
+<script>
+(function(){
+var search=document.getElementById("studentSearch"),course=document.getElementById("courseFilter"),status=document.getElementById("statusFilter");
+var rows=[].slice.call(document.querySelectorAll(".student-row")),empty=document.getElementById("emptyState"),count=document.getElementById("studentCount");
+function filter(){var term=search.value.toLowerCase().trim(),visible=0;rows.forEach(function(row){var show=(!term||row.dataset.name.toLowerCase().includes(term))&&(course.value==="all"||row.dataset.course===course.value)&&(status.value==="all"||row.dataset.status===status.value);row.style.display=show?"grid":"none";if(show)visible++;});empty.style.display=visible?"none":"block";count.textContent="Showing "+visible+" student"+(visible===1?"":"s");}
+search.addEventListener("input",filter);course.addEventListener("change",filter);status.addEventListener("change",filter);
+var panel=document.getElementById("detailPanel");
+document.querySelectorAll(".view-btn").forEach(function(btn){btn.addEventListener("click",function(){var r=btn.closest(".student-row");document.getElementById("detailName").textContent=r.querySelector(".student-person strong").textContent;document.getElementById("detailEmail").textContent=r.dataset.email;document.getElementById("detailCourse").textContent=r.dataset.title;document.getElementById("detailProgress").textContent=r.dataset.progress;document.getElementById("detailEnrolled").textContent=r.dataset.enrolled;document.getElementById("detailCertificate").textContent=r.dataset.cert;document.getElementById("detailStatus").textContent=r.dataset.status.charAt(0).toUpperCase()+r.dataset.status.slice(1);panel.classList.add("show");panel.scrollIntoView({behavior:"smooth",block:"nearest"});});});
+document.getElementById("closeDetail").onclick=function(){panel.classList.remove("show");};filter();
+})();
+</script>
+</body>
+</html>

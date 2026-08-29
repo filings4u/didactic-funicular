@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Documents | Screenings4u Customer Portal</title>
+
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="assets/css/customer-portal.css">
+  <link rel="stylesheet" href="assets/css/customer-documents.css">
+</head>
+
+<body
+  class="customer-documents-page"
+  data-page-title="Documents"
+  data-page-subtitle="Access your available documents and securely download records."
+>
+
+  <div id="customer-portal-sidebar"></div>
+
+  <main class="customer-portal-main">
+    <div id="customer-portal-header"></div>
+
+    <div class="customer-documents-content">
+
+      <section class="customer-documents-intro">
+        <div>
+          <span class="customer-documents-eyebrow">DOCUMENT CENTER</span>
+          <h1>My Documents</h1>
+          <p>
+            Securely access documents associated with your orders,
+            services, and account.
+          </p>
+        </div>
+
+        <div class="customer-documents-summary">
+          <div class="customer-documents-summary-item">
+            <span id="documents-total-count">0</span>
+            <small>Total Documents</small>
+          </div>
+
+          <div class="customer-documents-summary-item">
+            <span id="documents-new-count">0</span>
+            <small>Recently Added</small>
+          </div>
+        </div>
+      </section>
+
+
+      <section class="customer-documents-toolbar">
+
+        <div class="customer-documents-search-wrap">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6"></circle>
+            <path d="m16 16 4 4"></path>
+          </svg>
+
+          <input
+            type="search"
+            id="documents-search"
+            placeholder="Search documents..."
+            autocomplete="off"
+          >
+        </div>
+
+
+        <div class="customer-documents-filter-wrap">
+
+          <select id="documents-type-filter" aria-label="Filter documents by type">
+            <option value="all">All Document Types</option>
+            <option value="receipt">Receipts</option>
+            <option value="authorization">Authorizations</option>
+            <option value="form">Forms</option>
+            <option value="other">Other Documents</option>
+          </select>
+
+          <select id="documents-sort" aria-label="Sort documents">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="name">Name A–Z</option>
+          </select>
+
+        </div>
+
+      </section>
+
+
+      <section class="customer-documents-panel">
+
+        <div class="customer-documents-panel-heading">
+          <div>
+            <h2>Available Documents</h2>
+            <p id="documents-result-count">
+              Checking your secure documents...
+            </p>
+          </div>
+
+          <button
+            type="button"
+            class="customer-documents-refresh"
+            id="documents-refresh"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 11a8 8 0 1 0 2 5"></path>
+              <path d="M20 4v7h-7"></path>
+            </svg>
+            Refresh
+          </button>
+        </div>
+
+
+        <div class="customer-documents-loading" id="documents-loading">
+
+          <div class="customer-documents-spinner"></div>
+
+          <div>
+            <strong>Loading your documents</strong>
+            <span>Please wait while we securely retrieve your records.</span>
+          </div>
+
+        </div>
+
+
+        <div class="customer-documents-list" id="documents-list" hidden></div>
+
+
+        <div class="customer-documents-empty" id="documents-empty" hidden>
+
+          <div class="customer-documents-empty-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 3h7l4 4v14H7z"></path>
+              <path d="M14 3v5h5"></path>
+              <path d="M9 13h6"></path>
+              <path d="M9 17h5"></path>
+            </svg>
+          </div>
+
+          <h3>No documents available</h3>
+
+          <p>
+            Documents related to your services and orders will appear here
+            when they become available.
+          </p>
+
+          <a href="customer-orders.html">
+            View My Orders
+          </a>
+
+        </div>
+
+      </section>
+
+
+      <section class="customer-documents-security">
+
+        <div class="customer-documents-security-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+            <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+          </svg>
+        </div>
+
+        <div>
+          <strong>Your documents are protected</strong>
+          <p>
+            Only documents associated with your authenticated account are
+            available through this portal.
+          </p>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/core-auth.js"></script>
+<script src="assets/js/core-ui.js"></script>
+<script src="assets/js/session-security.js"></script>
+<script src="assets/js/portal-auth-guard.js"></script>
+<script src="assets/js/customer-auth-guard.js"></script>
+
+<script src="assets/js/customer-portal.js"></script>
+<script src="assets/js/customer-dashboard.js"></script>
+  <script src="assets/js/customer-documents.js"></script>
+</body>
+</html>

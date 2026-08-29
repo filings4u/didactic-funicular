@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Billing & Receipts | Screenings4u Customer Portal</title>
+
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="assets/css/customer-portal.css">
+  <link rel="stylesheet" href="assets/css/customer-billing.css">
+</head>
+
+<body
+  class="customer-billing-page"
+  data-page-title="Billing & Receipts"
+  data-page-subtitle="Review your purchases, payments, and downloadable receipts."
+>
+
+  <div id="customer-portal-sidebar"></div>
+
+  <main class="customer-portal-main">
+    <div id="customer-portal-header"></div>
+
+    <div class="customer-billing-content">
+
+      <section class="customer-billing-hero">
+        <div>
+          <span class="customer-billing-eyebrow">ACCOUNT BILLING</span>
+          <h1>Billing &amp; Receipts</h1>
+          <p>
+            Keep track of your completed purchases and download receipts when you need them.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="customer-billing-help-btn"
+          id="billing-help-btn"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M9.5 9a2.5 2.5 0 1 1 4.2 1.8c-1.2 1.1-1.7 1.6-1.7 3.2"></path>
+            <path d="M12 17h.01"></path>
+          </svg>
+          Billing Help
+        </button>
+      </section>
+
+
+      <section class="customer-billing-summary">
+
+        <article class="customer-billing-stat">
+          <div class="customer-billing-stat-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 6h16v12H4z"></path>
+              <path d="M4 10h16"></path>
+            </svg>
+          </div>
+
+          <div>
+            <span>Total Paid</span>
+            <strong id="billing-total-paid">—</strong>
+          </div>
+        </article>
+
+
+        <article class="customer-billing-stat">
+          <div class="customer-billing-stat-icon is-blue">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 3h12v18H6z"></path>
+              <path d="M9 7h6"></path>
+              <path d="M9 11h6"></path>
+              <path d="M9 15h4"></path>
+            </svg>
+          </div>
+
+          <div>
+            <span>Completed Purchases</span>
+            <strong id="billing-purchase-count">—</strong>
+          </div>
+        </article>
+
+
+        <article class="customer-billing-stat">
+          <div class="customer-billing-stat-icon is-orange">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v18"></path>
+              <path d="M16 7.5c0-1.7-1.8-3-4-3s-4 1.3-4 3 1.8 3 4 3 4 1.3 4 3-1.8 3-4 3-4-1.3-4-3"></path>
+            </svg>
+          </div>
+
+          <div>
+            <span>Payment Methods</span>
+            <strong id="billing-payment-methods">—</strong>
+          </div>
+        </article>
+
+      </section>
+
+
+      <section class="customer-billing-panel">
+
+        <div class="customer-billing-panel-header">
+          <div>
+            <h2>Payment History</h2>
+            <p>
+              View completed payments and download receipts for your purchases.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            class="customer-billing-refresh"
+            id="billing-refresh"
+            aria-label="Refresh billing history"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 11a8 8 0 1 0 2 5"></path>
+              <path d="M20 4v7h-7"></path>
+            </svg>
+            Refresh
+          </button>
+        </div>
+
+
+        <div class="customer-billing-filters">
+
+          <div class="customer-billing-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="6"></circle>
+              <path d="m16 16 4 4"></path>
+            </svg>
+
+            <input
+              type="search"
+              id="billing-search"
+              placeholder="Search order or receipt..."
+              autocomplete="off"
+            >
+          </div>
+
+
+          <select
+            id="billing-status-filter"
+            aria-label="Filter billing history by status"
+          >
+            <option value="all">All Payments</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+            <option value="refunded">Refunded</option>
+          </select>
+
+        </div>
+
+
+        <div
+          class="customer-billing-loading"
+          id="billing-loading"
+        >
+          <div class="customer-billing-spinner"></div>
+
+          <div>
+            <strong>Loading billing history</strong>
+            <span>Retrieving your payment and receipt information.</span>
+          </div>
+        </div>
+
+
+        <div
+          class="customer-billing-table-wrap"
+          id="billing-table-wrap"
+          hidden
+        >
+          <table class="customer-billing-table">
+            <thead>
+              <tr>
+                <th>Purchase</th>
+                <th>Order</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th aria-label="Receipt"></th>
+              </tr>
+            </thead>
+
+            <tbody id="billing-table-body"></tbody>
+          </table>
+        </div>
+
+
+        <div
+          class="customer-billing-mobile-list"
+          id="billing-mobile-list"
+          hidden
+        ></div>
+
+
+        <div
+          class="customer-billing-empty"
+          id="billing-empty"
+          hidden
+        >
+          <div class="customer-billing-empty-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 3h12v18H6z"></path>
+              <path d="M9 7h6"></path>
+              <path d="M9 11h6"></path>
+              <path d="M9 15h4"></path>
+            </svg>
+          </div>
+
+          <h3>No billing records found</h3>
+
+          <p id="billing-empty-text">
+            Your completed purchases and receipts will appear here.
+          </p>
+        </div>
+
+      </section>
+
+
+      <section class="customer-billing-info">
+        <div class="customer-billing-info-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 21s7-3.5 7-10V5l-7-3-7 3v6c0 6.5 7 10 7 10z"></path>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+        </div>
+
+        <div>
+          <strong>Your payment information is secure</strong>
+          <p>
+            Screenings4u does not display full payment card details inside your customer portal.
+          </p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/core-auth.js"></script>
+<script src="assets/js/core-ui.js"></script>
+<script src="assets/js/session-security.js"></script>
+<script src="assets/js/portal-auth-guard.js"></script>
+<script src="assets/js/customer-auth-guard.js"></script>
+
+<script src="assets/js/customer-portal.js"></script>
+<script src="assets/js/customer-dashboard.js"></script>
+  <script src="assets/js/customer-billing.js"></script>
+</body>
+</html>

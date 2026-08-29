@@ -12,11 +12,10 @@ Notifications
 Service Catalog
 Billing & Receipts
 My Account
+
+
 Employer Portal
 
-Same shell, but employer-specific navigation:
-
-Dashboard
 Employees
 Programs
 Orders
@@ -24,10 +23,9 @@ Training Management
 Proposals
 Invoices
 Service Catalog
-Post-Accident Testing
-Onsite Testing
-Business Profile
-Employee Portal
+Post-Accident Testing Request
+Onsite Workplace Testing Request
+My Company / Account
 
 Simplified navigation:
 

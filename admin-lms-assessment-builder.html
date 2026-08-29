@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment Builder | Screenings4u Learning Center</title>
+<link rel="stylesheet" href="assets/css/admin-lms.css">
+<style>
+.builder-layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:24px;align-items:start}
+.builder-stack{display:grid;gap:20px}
+.card{background:#fff;border:1px solid var(--admin-border);border-radius:var(--r-md);box-shadow:var(--shadow-soft)}
+.card-head{padding:20px 22px;border-bottom:1px solid var(--admin-border)}.card-head h2{margin:0;font-size:16px}.card-head p{margin:6px 0 0;color:var(--admin-muted);font-size:12px;line-height:1.55}.card-body{padding:22px}
+.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}.field{display:flex;flex-direction:column;gap:8px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:800}.field label em{color:var(--admin-orange);font-style:normal}.field input,.field select,.field textarea{width:100%;border:1px solid var(--admin-border);border-radius:10px;font:inherit;color:var(--admin-text);outline:none}.field input,.field select{height:44px;padding:0 12px;font-size:13px}.field textarea{min-height:90px;padding:12px;font-size:13px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--admin-blue);box-shadow:0 0 0 3px rgba(50,90,163,.09)}
+.question-list{display:grid;gap:14px}.question-card{border:1px solid var(--admin-border);border-radius:13px;overflow:hidden}.question-card.dragging{opacity:.55}.question-head{display:flex;align-items:center;gap:12px;padding:13px 15px;background:#fafbfd;border-bottom:1px solid var(--admin-border)}.drag-handle{color:var(--admin-muted);font-size:18px;cursor:grab}.question-number{width:26px;height:26px;border-radius:8px;background:#fff0e5;color:var(--admin-orange);display:grid;place-items:center;font-size:11px;font-weight:900}.question-head strong{font-size:12px;flex:1}.remove-question{border:0;background:transparent;color:#b34b4b;font-size:18px}.question-body{padding:16px}.question-top{display:grid;grid-template-columns:1fr 165px;gap:12px}.question-input{height:43px;width:100%;border:1px solid var(--admin-border);border-radius:9px;padding:0 11px;font:inherit;font-size:12px;outline:none}.answer-options{display:grid;gap:8px;margin-top:13px}.answer-row{display:grid;grid-template-columns:30px 1fr 34px;gap:8px;align-items:center}.correct-radio{width:18px;height:18px;accent-color:var(--admin-orange);justify-self:center}.answer-row input[type=text]{height:40px;border:1px solid var(--admin-border);border-radius:9px;padding:0 10px;font:inherit;font-size:12px}.answer-delete{border:0;background:transparent;color:var(--admin-muted);font-size:17px}.add-answer{margin-top:10px;border:1px dashed #b9c6da;background:#fff;color:var(--admin-blue);height:38px;width:100%;border-radius:9px;font-size:11px;font-weight:800}.explanation{margin-top:13px;width:100%;min-height:65px;border:1px solid var(--admin-border);border-radius:9px;padding:10px;font:inherit;font-size:12px;resize:vertical}.add-question{width:100%;height:48px;border:1px dashed #e0b78f;background:#fffaf5;border-radius:11px;color:var(--admin-orange);font-size:12px;font-weight:900}
+.sidebar{position:sticky;top:20px}.side-section{padding:20px}.side-section+.side-section{border-top:1px solid var(--admin-border)}.side-section h2{margin:0 0 14px;font-size:13px}.status-choice{display:grid;gap:9px}.status-option{display:flex;gap:10px;padding:11px;border:1px solid var(--admin-border);border-radius:10px;cursor:pointer}.status-option input{margin-top:2px;accent-color:var(--admin-orange)}.status-option strong{display:block;font-size:12px}.status-option span{display:block;margin-top:3px;color:var(--admin-muted);font-size:10px;line-height:1.45}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;font-size:12px;font-weight:700}.setting-row input[type=number]{width:72px;height:39px;border:1px solid var(--admin-border);border-radius:9px;padding:0 10px;font:inherit}.toggle{width:42px;height:24px;border-radius:999px;background:#d7dee9;position:relative;border:0;cursor:pointer}.toggle:after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;left:3px;top:3px;transition:.2s}.toggle.active{background:var(--admin-orange)}.toggle.active:after{left:21px}.side-actions{display:grid;gap:10px}.side-actions>*{width:100%;justify-content:center;text-align:center}.preview-link{height:42px;border:1px solid var(--admin-border);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--admin-blue);font-size:12px;font-weight:800}.breadcrumb{display:flex;gap:8px;align-items:center;margin-bottom:12px;color:var(--admin-muted);font-size:12px}.breadcrumb a{color:var(--admin-blue);font-weight:700}.empty{padding:35px;text-align:center;border:1px dashed #e0b78f;border-radius:12px;color:var(--admin-muted);font-size:12px}.warning{margin-top:12px;padding:12px;border-radius:10px;background:#fff8ef;border:1px solid #f0d5b4;color:#79522b;font-size:10px;line-height:1.55}
+@media(max-width:1080px){.builder-layout{grid-template-columns:1fr}.sidebar{position:static}}@media(max-width:700px){.field-grid,.question-top{grid-template-columns:1fr}.card-body{padding:17px}.card-head{padding:17px}}
+</style>
+</head>
+<body>
+<div class="admin-lms-app">
+<div id="admin-lms-sidebar-target"></div>
+<main class="admin-lms-main">
+<header class="admin-lms-topbar">
+<div class="admin-lms-topbar-left"><button type="button" class="admin-lms-menu-button" data-admin-menu-toggle aria-label="Toggle navigation"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div class="admin-lms-page-context"><small>Screenings4u Learning Center</small><strong>Assessment Builder</strong></div></div>
+<div class="admin-lms-topbar-right"><a href="admin-lms-notifications.html" class="admin-lms-icon-button" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a><div class="admin-lms-user"><span class="admin-lms-avatar">AD</span><span class="admin-lms-user-copy"><span class="admin-lms-user-name">Administrator</span><span class="admin-lms-user-role">Learning Center Admin</span></span></div></div>
+</header>
+
+<section class="admin-lms-content">
+<div class="breadcrumb"><a href="admin-lms-assessments.html">Assessment Management</a><span>/</span><span id="crumb">Create Assessment</span></div>
+<div class="admin-page-heading"><div><span class="admin-page-eyebrow">Final Certification Step</span><h1 id="pageTitle">Create Final Assessment</h1><p id="pageDescription">Build the final assessment learners must pass before becoming certificate eligible.</p></div><a href="admin-lms-assessments.html" class="admin-secondary-btn">Back to Assessments</a></div>
+
+<form id="assessmentForm" class="builder-layout">
+<div class="builder-stack">
+<section class="card"><div class="card-head"><h2>Assessment Details</h2><p>This assessment is the final learning requirement for a completed course.</p></div><div class="card-body"><div class="field-grid">
+<div class="field full"><label>Assessment Title <em>*</em></label><input id="assessmentTitle" required placeholder="Enter final assessment title"></div>
+<div class="field full"><label>Course <em>*</em></label><select id="assessmentCourse" required><option value="">Select a course</option><option value="dot">DOT Specimen Collector Training</option><option value="hair">DOT Specimen Collector Training + Hair</option><option value="trainer">DOT Specimen Collector Train the Trainer</option><option value="trainer-hair">DOT Collector Train the Trainer + Hair</option></select></div>
+<div class="field full"><label>Instructions</label><textarea id="assessmentInstructions" placeholder="Explain the final assessment requirements to the learner."></textarea></div>
+</div></div></section>
+
+<section class="card"><div class="card-head"><h2>Assessment Questions</h2><p>Add the questions used to determine whether the learner has successfully completed the training.</p></div><div class="card-body"><div id="questionList" class="question-list"></div><div id="emptyQuestions" class="empty">No assessment questions have been added yet.</div><button type="button" class="add-question" id="addQuestionBtn">+ Add Assessment Question</button></div></section>
+</div>
+
+<aside class="card sidebar">
+<div class="side-section"><h2>Publishing</h2><div class="status-choice">
+<label class="status-option"><input type="radio" name="status" value="draft" checked><span><strong>Save as Draft</strong><span>Only administrators can access this assessment.</span></span></label>
+<label class="status-option"><input type="radio" name="status" value="published"><span><strong>Published</strong><span>Available to learners who meet completion requirements.</span></span></label>
+</div></div>
+<div class="side-section"><h2>Completion Settings</h2>
+<div class="setting-row"><span>Passing score</span><input id="passingScore" type="number" min="0" max="100" value="80"></div>
+<div class="setting-row"><span>Maximum attempts</span><input id="maxAttempts" type="number" min="0" value="3"></div>
+<div class="setting-row"><span>Randomize questions</span><button type="button" class="toggle active" id="randomToggle" aria-label="Toggle randomization"></button></div>
+<div class="setting-row"><span>Review answers after attempt</span><button type="button" class="toggle" id="reviewToggle" aria-label="Toggle answer review"></button></div>
+<div class="warning">Final assessment completion will later connect to learner progress and the certificate issuance workflow.</div>
+</div>
+<div class="side-section"><h2>Actions</h2><div class="side-actions"><button type="submit" class="admin-primary-btn" id="saveBtn">Save Assessment</button><a href="#" class="preview-link" id="previewBtn">Preview Assessment</a><a href="admin-lms-assessments.html" class="admin-secondary-btn">Cancel</a></div></div>
+</aside>
+</form>
+</section>
+</main>
+</div>
+
+<script src="assets/js/admin-lms-sidebar.js"></script>
+<script>
+(function(){
+"use strict";
+var list=document.getElementById("questionList"),empty=document.getElementById("emptyQuestions"),params=new URLSearchParams(location.search),assessmentId=params.get("assessment");
+var data={
+"dot-final":{title:"DOT Specimen Collector Final Assessment",course:"dot",instructions:"Complete the final assessment to demonstrate your understanding of the course material and become eligible for certification."},
+"dot-hair-final":{title:"DOT Specimen Collector + Hair Final Assessment",course:"hair",instructions:"Complete all questions covering DOT specimen collection and hair collection procedures."},
+"trainer-final":{title:"DOT Train the Trainer Final Assessment",course:"trainer",instructions:"Demonstrate your competency in the course material before certification."},
+"trainer-hair-final":{title:"DOT Train the Trainer + Hair Final Assessment",course:"trainer-hair",instructions:"Complete the final assessment covering trainer and hair collection requirements."}
+};
+function updateNumbers(){var cards=list.querySelectorAll(".question-card");cards.forEach(function(card,i){card.querySelector(".question-number").textContent=i+1;});empty.style.display=cards.length?"none":"block";}
+function makeAnswer(name,correct){var row=document.createElement("div");row.className="answer-row";row.innerHTML='<input class="correct-radio" type="radio" name="'+name+'" '+(correct?"checked":"")+' aria-label="Correct answer"><input type="text" placeholder="Answer option"><button type="button" class="answer-delete" aria-label="Remove answer">×</button>';return row;}
+function addQuestion(){
+var id="assessment_question_"+Date.now()+"_"+Math.floor(Math.random()*999);
+var card=document.createElement("article");card.className="question-card";card.draggable=true;
+card.innerHTML='<div class="question-head"><span class="drag-handle">⋮⋮</span><span class="question-number"></span><strong>Assessment Question</strong><button type="button" class="remove-question" aria-label="Remove question">×</button></div><div class="question-body"><div class="question-top"><input class="question-input" placeholder="Enter your question"><select class="question-type"><option value="multiple">Multiple Choice</option><option value="truefalse">True / False</option></select></div><div class="answer-options"></div><button type="button" class="add-answer">+ Add Answer Option</button><textarea class="explanation" placeholder="Optional feedback or explanation."></textarea></div>';
+var answers=card.querySelector(".answer-options");
+for(var i=0;i<4;i++)answers.appendChild(makeAnswer(id,i===0));
+card.querySelector(".add-answer").onclick=function(){answers.appendChild(makeAnswer(id,false));};
+card.querySelector(".remove-question").onclick=function(){card.remove();updateNumbers();};
+card.querySelector(".question-type").onchange=function(){if(this.value==="truefalse"){answers.innerHTML="";var a=makeAnswer(id,true),b=makeAnswer(id,false);a.querySelector("input[type=text]").value="True";b.querySelector("input[type=text]").value="False";answers.append(a,b);}};
+answers.addEventListener("click",function(e){if(e.target.classList.contains("answer-delete"))e.target.closest(".answer-row").remove();});
+card.addEventListener("dragstart",function(){card.classList.add("dragging");});
+card.addEventListener("dragend",function(){card.classList.remove("dragging");updateNumbers();});
+list.appendChild(card);updateNumbers();
+}
+list.addEventListener("dragover",function(e){e.preventDefault();var dragging=list.querySelector(".dragging");if(!dragging)return;var after=[].slice.call(list.querySelectorAll(".question-card:not(.dragging)")).find(function(el){var r=el.getBoundingClientRect();return e.clientY<r.top+r.height/2;});if(after)list.insertBefore(dragging,after);else list.appendChild(dragging);});
+document.getElementById("addQuestionBtn").onclick=addQuestion;
+["randomToggle","reviewToggle"].forEach(function(id){document.getElementById(id).onclick=function(){this.classList.toggle("active");};});
+
+if(assessmentId&&data[assessmentId]){
+var a=data[assessmentId];document.getElementById("pageTitle").textContent="Edit Final Assessment";document.getElementById("crumb").textContent="Edit Assessment";document.getElementById("pageDescription").textContent="Update assessment requirements, questions, and completion settings.";document.getElementById("assessmentTitle").value=a.title;document.getElementById("assessmentCourse").value=a.course;document.getElementById("assessmentInstructions").value=a.instructions;addQuestion();addQuestion();addQuestion();
+}
+document.getElementById("assessmentForm").addEventListener("submit",function(e){e.preventDefault();if(!this.reportValidity())return;if(!list.querySelector(".question-card")){alert("Add at least one assessment question before saving.");return;}var status=document.querySelector('input[name="status"]:checked').value;document.getElementById("saveBtn").textContent=status==="published"?"Assessment Published":"Draft Saved";setTimeout(function(){location.href="admin-lms-assessments.html";},650);});
+document.getElementById("previewBtn").onclick=function(e){e.preventDefault();if(!list.querySelector(".question-card")){alert("Add a question before previewing the assessment.");return;}alert("The final learner assessment preview will be connected during LMS wiring.");};
+})();
+</script>
+</body>
+</html>

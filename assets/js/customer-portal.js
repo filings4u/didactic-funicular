@@ -1283,41 +1283,69 @@
     };
 
 
-  /* ==========================================================
-     SIGN OUT
-     ========================================================== */
+function initializeSignOutButtons() {
+  const buttons =
+    document.querySelectorAll(
+      "[data-customer-sign-out]"
+    );
 
-  function initializeSignOutButtons() {
-    const buttons =
-      document.querySelectorAll(
-        "[data-customer-sign-out]"
-      );
+  buttons.forEach(function (button) {
 
-    buttons.forEach(function (button) {
+    button.addEventListener(
+      "click",
+      async function (event) {
 
-      button.addEventListener(
-        "click",
-        async function () {
+        event.preventDefault();
 
-          /*
-           ------------------------------------------------------
-           SUPABASE WIRING WILL GO HERE.
-
-           Example:
-
-           if (window.supabaseClient) {
-             await window.supabaseClient.auth.signOut();
-           }
-           ------------------------------------------------------
-          */
-
-          window.location.href =
-            "customer-login.html";
+        if (button.disabled) {
+          return;
         }
-      );
 
-    });
-  }
+        button.disabled = true;
+
+        try {
+
+          if (
+            window.S4UAuth &&
+            typeof window.S4UAuth.signOut === "function"
+          ) {
+
+            await window.S4UAuth.signOut({
+              redirectTo:
+                "customer-login.html"
+            });
+
+            return;
+          }
+
+          console.error(
+            "[Customer Portal] S4UAuth.signOut() is unavailable."
+          );
+
+          window.location.replace(
+            "customer-login.html"
+          );
+
+        } catch (error) {
+
+          console.error(
+            "[Customer Portal] Sign-out failed:",
+            error
+          );
+
+          button.disabled = false;
+
+          alert(
+            "We could not sign you out. Please try again."
+          );
+
+        }
+
+      }
+    );
+
+  });
+}
 
 
   /* ==========================================================

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programs | Screenings4u Employer Portal</title>
+  <link rel="stylesheet" href="assets/css/employer-portal.css">
+  <link rel="stylesheet" href="assets/css/employer-programs.css">
+</head>
+<body class="employer-programs-page" data-page-title="Programs" data-page-subtitle="Manage workplace compliance and testing programs.">
+
+  <div id="employer-portal-sidebar"></div>
+
+  <main class="employer-portal-main">
+    <div id="employer-portal-header"></div>
+
+    <div class="employer-programs-content">
+
+      <section class="programs-hero">
+        <div>
+          <span class="programs-eyebrow">COMPLIANCE MANAGEMENT</span>
+          <h1>Programs</h1>
+          <p>Manage your workplace testing and compliance programs from one central location.</p>
+        </div>
+
+        <button type="button" class="programs-primary-btn" id="create-program-btn">
+          <span>+</span> Create Program
+        </button>
+      </section>
+
+      <section class="program-summary-grid">
+        <article class="program-summary-card">
+          <span>Active Programs</span>
+          <strong id="stat-active-programs">—</strong>
+          <small>Currently active</small>
+        </article>
+
+        <article class="program-summary-card">
+          <span>Employees Enrolled</span>
+          <strong id="stat-enrolled-employees">—</strong>
+          <small>Across all programs</small>
+        </article>
+
+        <article class="program-summary-card">
+          <span>Current Year Selections</span>
+          <strong id="stat-year-selections">—</strong>
+          <small>Random selections</small>
+        </article>
+
+        <article class="program-summary-card">
+          <span>Programs Requiring Attention</span>
+          <strong id="stat-attention-programs">—</strong>
+          <small>Review recommended</small>
+        </article>
+      </section>
+
+      <section class="programs-toolbar-panel">
+        <div class="programs-toolbar">
+          <div class="program-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="6"></circle>
+              <path d="m16 16 4 4"></path>
+            </svg>
+            <input type="search" id="program-search" placeholder="Search programs..." autocomplete="off">
+          </div>
+
+          <select id="program-status-filter">
+            <option value="all">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="program-grid" id="program-grid">
+          <div class="program-empty-state">
+            <div class="program-empty-icon">▦</div>
+            <h3>Your programs will appear here</h3>
+            <p>Connect this page to your employer program data to begin managing workplace compliance programs.</p>
+            <button type="button" class="programs-secondary-btn" id="empty-create-program-btn">
+              Create Program
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="programs-info-section">
+        <div class="programs-info-card">
+          <div class="programs-info-icon">✓</div>
+          <div>
+            <h3>Centralized Program Management</h3>
+            <p>Programs connect your employees, testing requirements, random selections, and compliance activity in one place.</p>
+          </div>
+        </div>
+
+        <div class="programs-info-card">
+          <div class="programs-info-icon">!</div>
+          <div>
+            <h3>Program Access</h3>
+            <p>Only authorized members of your organization can manage your programs and employee participation.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <div class="program-modal" id="program-modal" hidden>
+    <div class="program-modal-backdrop" id="program-modal-backdrop"></div>
+
+    <div class="program-modal-card" role="dialog" aria-modal="true" aria-labelledby="program-modal-title">
+      <div class="program-modal-header">
+        <div>
+          <span class="programs-eyebrow">PROGRAM SETUP</span>
+          <h2 id="program-modal-title">Create Program</h2>
+          <p>Set up a program for your organization.</p>
+        </div>
+        <button type="button" class="program-modal-close" id="program-modal-close" aria-label="Close">×</button>
+      </div>
+
+      <form id="program-form" class="program-form">
+        <input type="hidden" id="program-id">
+
+        <label>
+          <span>Program Name <b>*</b></span>
+          <input type="text" id="program-name" required placeholder="Enter program name">
+        </label>
+
+        <label>
+          <span>Program Type <b>*</b></span>
+          <select id="program-type" required>
+            <option value="">Select a program type</option>
+            <option value="dot_random">DOT Random Program</option>
+            <option value="workplace_testing">Workplace Testing Program</option>
+            <option value="custom">Custom Program</option>
+          </select>
+        </label>
+
+        <div class="program-form-grid">
+          <label>
+            <span>Status</span>
+            <select id="program-status">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Program Year</span>
+            <input type="number" id="program-year" min="2020" max="2100">
+          </label>
+        </div>
+
+        <label>
+          <span>Notes</span>
+          <textarea id="program-notes" rows="4" placeholder="Optional program notes"></textarea>
+        </label>
+
+        <div class="program-form-note">
+          <strong>Program setup</strong>
+          <p>Additional program configuration, employee enrollment, selection rules, and compliance settings will be connected to the existing Supabase program tables during the wiring phase.</p>
+        </div>
+
+        <div class="program-modal-actions">
+          <button type="button" class="program-cancel-btn" id="program-modal-cancel">Cancel</button>
+          <button type="submit" class="program-save-btn">Save Program</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/core-auth.js"></script>
+<script src="assets/js/core-ui.js"></script>
+<script src="assets/js/portal-auth-guard.js"></script>
+<script src="assets/js/employer-auth-guard.js"></script>
+
+<script src="assets/js/employer-portal.js"></script>
+<script src="assets/js/employer-dashboard.js"></script>
+  <script src="assets/js/employer-programs.js"></script>
+</body>
+</html>

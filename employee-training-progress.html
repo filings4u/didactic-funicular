@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Training Progress | Screenings4u</title><link rel="stylesheet" href="assets/css/employee-portal.css"><link rel="stylesheet" href="assets/css/employee-training-progress.css"></head><body><div id="employee-portal-sidebar"></div><main class="employee-portal-main"><div id="employee-portal-header"></div><div class="progress-page"><section class="hero"><span>MY TRAINING</span><h1>Training Progress</h1><p>Track your progress across all training assigned to you.</p></section><section class="stats"><article><small>OVERALL PROGRESS</small><strong id="overall-progress">0%</strong><span>Across all assigned courses</span></article><article><small>COURSES COMPLETED</small><strong id="completed-count">0</strong><span>Training successfully finished</span></article><article><small>IN PROGRESS</small><strong id="active-count">0</strong><span>Courses currently underway</span></article></section><section class="panel"><div class="panel-head"><div><span>COURSE PROGRESS</span><h2>Your Learning Activity</h2></div><select id="progress-filter"><option value="all">All Courses</option><option value="in_progress">In Progress</option><option value="available">Not Started</option><option value="completed">Completed</option></select></div><div id="progress-list" class="progress-list"></div><div id="empty-state" class="empty" hidden><h2>No training found</h2><p>Your assigned course progress will appear here.</p></div></section></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/core-auth.js"></script>
+<script src="assets/js/core-ui.js"></script>
+<script src="assets/js/portal-auth-guard.js"></script>
+<script src="assets/js/employee-auth-guard.js"></script>
+
+<script src="assets/js/employee-portal.js"></script>
+<script src="assets/js/employee-dashboard.js"></script>
+<script src="assets/js/employee-training-progress.js"></script></body></html>
