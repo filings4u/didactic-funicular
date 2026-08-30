@@ -1,5 +1,5 @@
 /* ============================================================
-   screenings4u — CORE UI
+   screenings4u —UI
    Replaces browser alert()/confirm() for application actions.
    ============================================================ */
 

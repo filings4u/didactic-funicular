@@ -599,3 +599,164 @@
     text-align: left;
   }
 }
+
+/* ============================================================
+   LIVE ACCOUNT STATE / ACCESSIBILITY REFINEMENTS
+   Added for Supabase-wired customer-account.js
+   ============================================================ */
+
+.customer-account-page {
+  min-height: 100vh;
+}
+
+.customer-account-content,
+.customer-account-layout,
+.customer-account-panels,
+.customer-account-panel {
+  min-width: 0;
+}
+
+/* Keep native [hidden] behavior reliable even with flex/grid rules. */
+.customer-account-page [hidden] {
+  display: none !important;
+}
+
+/* Disabled form state */
+.customer-account-form input:disabled {
+  cursor: default;
+  opacity: 1;
+  -webkit-text-fill-color: #53647a;
+}
+
+.customer-account-form input[readonly],
+.customer-account-form input:disabled {
+  background: #f8fafc;
+}
+
+.customer-account-form button:disabled,
+.customer-account-secondary-btn:disabled,
+.customer-account-save-btn:disabled,
+.customer-account-support-btn:disabled {
+  cursor: not-allowed;
+  opacity: .62;
+}
+
+/* Notification switch editing states */
+.customer-account-switch input:not(:disabled) + span {
+  cursor: pointer;
+}
+
+.customer-account-switch input:disabled + span {
+  opacity: .72;
+}
+
+/* Account status states populated by live JS */
+.customer-account-active.is-inactive {
+  background: rgba(190, 52, 52, .09);
+  color: #b53434;
+}
+
+.customer-account-status-dot.is-inactive {
+  background: #c24a4a;
+}
+
+/* Better keyboard focus visibility */
+.customer-account-edit-btn:focus-visible,
+.customer-account-secondary-btn:focus-visible,
+.customer-account-cancel-btn:focus-visible,
+.customer-account-save-btn:focus-visible,
+.customer-account-support-btn:focus-visible,
+.customer-account-modal-close:focus-visible,
+.customer-account-switch input:focus-visible + span {
+  outline: 3px solid rgba(50, 90, 163, .18);
+  outline-offset: 2px;
+}
+
+/* Prevent long customer/account values from expanding the layout. */
+.customer-account-security-copy,
+.customer-account-toggle-row > div,
+.customer-account-panel-header > div {
+  min-width: 0;
+}
+
+.customer-account-security-copy span,
+.customer-account-toggle-row span,
+.customer-account-panel-header p,
+.customer-account-danger-panel p {
+  overflow-wrap: anywhere;
+}
+
+/* Modal must stay above portal header/sidebar overlays. */
+.customer-account-modal {
+  isolation: isolate;
+}
+
+.customer-account-modal-card {
+  z-index: 1;
+}
+
+/* Loading/disabled buttons should not visually jump. */
+.customer-account-save-btn,
+.customer-account-secondary-btn,
+.customer-account-edit-btn,
+.customer-account-support-btn {
+  transition:
+    background-color .18s ease,
+    border-color .18s ease,
+    color .18s ease,
+    opacity .18s ease,
+    transform .18s ease;
+}
+
+@media (hover: hover) {
+  .customer-account-edit-btn:hover,
+  .customer-account-secondary-btn:hover {
+    background: #f7f9fc;
+    border-color: #c8d5e4;
+  }
+
+  .customer-account-save-btn:hover:not(:disabled) {
+    background: #294f94;
+    border-color: #294f94;
+  }
+
+  .customer-account-support-btn:hover {
+    background: #fff7f1;
+    border-color: rgba(255,107,0,.48);
+  }
+}
+
+/* Small-screen button alignment correction */
+@media (max-width: 650px) {
+  .customer-account-secondary-btn {
+    margin-left: 0;
+  }
+
+  .customer-account-security-row .customer-account-secondary-btn {
+    margin-left: 55px;
+  }
+
+  .customer-account-form-actions,
+  .customer-account-notification-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 420px) {
+  .customer-account-security-row .customer-account-secondary-btn {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .customer-account-cancel-btn,
+  .customer-account-save-btn,
+  .customer-account-support-btn {
+    width: 100%;
+  }
+
+  .customer-account-form-actions,
+  .customer-account-notification-actions {
+    flex-direction: column-reverse;
+  }
+}

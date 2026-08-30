@@ -1,264 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Donor Pass | Screenings4u Customer Portal</title>
-
-  <link rel="icon" type="image/png" href="images/favicon.png">
-  <link rel="stylesheet" href="assets/css/customer-portal.css">
-  <link rel="stylesheet" href="assets/css/customer-donor-pass.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donor Passes | Screenings4u Customer Portal</title>
+<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="stylesheet" href="assets/css/customer-portal.css">
+<link rel="stylesheet" href="assets/css/customer-donor-pass.css?v=20260830-0830">
 </head>
-
-<body
-  class="customer-donor-pass-page"
-  data-page-title="Donor Pass"
-  data-page-subtitle="Access your testing authorization and collection information."
->
-
-  <div id="customer-portal-sidebar"></div>
-
-  <main class="customer-portal-main">
-    <div id="customer-portal-header"></div>
-
-    <div class="customer-donor-pass-content">
-
-      <section class="customer-donor-pass-intro">
-        <div>
-          <span class="customer-donor-pass-eyebrow">TESTING SERVICES</span>
-          <h1>Donor Pass</h1>
-          <p>
-            View and download your active donor pass before visiting your
-            assigned collection location.
-          </p>
-        </div>
-
-        <a href="customer-orders.html" class="customer-donor-pass-order-link">
-          <span>View My Orders</span>
-          <span aria-hidden="true">→</span>
-        </a>
-      </section>
-
-
-      <section class="customer-donor-pass-layout">
-
-        <article class="customer-donor-pass-card">
-
-          <div class="customer-donor-pass-card-top">
-            <div class="customer-donor-pass-brand">
-              <div class="customer-donor-pass-logo-mark">S4U</div>
-              <div>
-                <strong>screenings4u</strong>
-                <span>Testing Authorization</span>
-              </div>
-            </div>
-
-            <span class="customer-donor-pass-status" id="donor-pass-status">
-              Checking Status
-            </span>
-          </div>
-
-          <div class="customer-donor-pass-card-body">
-
-            <div class="customer-donor-pass-id-block">
-              <span>DONOR PASS</span>
-              <strong id="donor-pass-number">—</strong>
-            </div>
-
-            <div class="customer-donor-pass-person">
-              <span>AUTHORIZED FOR</span>
-              <strong id="donor-pass-customer-name">Loading...</strong>
-            </div>
-
-            <div class="customer-donor-pass-service-grid">
-
-              <div class="customer-donor-pass-detail">
-                <span>Service</span>
-                <strong id="donor-pass-service">—</strong>
-              </div>
-
-              <div class="customer-donor-pass-detail">
-                <span>Order Number</span>
-                <strong id="donor-pass-order">—</strong>
-              </div>
-
-              <div class="customer-donor-pass-detail">
-                <span>Valid Through</span>
-                <strong id="donor-pass-expiration">—</strong>
-              </div>
-
-              <div class="customer-donor-pass-detail">
-                <span>Collection Status</span>
-                <strong id="donor-pass-collection-status">—</strong>
-              </div>
-
-            </div>
-
-          </div>
-
-          <div class="customer-donor-pass-card-footer">
-            <div>
-              <span>Present this authorization at the collection site.</span>
-            </div>
-
-            <div class="customer-donor-pass-qr-placeholder" aria-label="Pass verification code">
-              <span>PASS</span>
-            </div>
-          </div>
-
-        </article>
-
-
-        <aside class="customer-donor-pass-side">
-
-          <div class="customer-donor-pass-location-card">
-
-            <div class="customer-donor-pass-side-heading">
-              <div class="customer-donor-pass-side-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 21s7-5.2 7-12a7 7 0 1 0-14 0c0 6.8 7 12 7 12Z"></path>
-                  <circle cx="12" cy="9" r="2.5"></circle>
-                </svg>
-              </div>
-
-              <div>
-                <span>COLLECTION LOCATION</span>
-                <strong>Your Assigned Site</strong>
-              </div>
-            </div>
-
-            <div class="customer-donor-pass-location-body">
-              <strong id="donor-pass-location-name">No location assigned</strong>
-              <p id="donor-pass-location-address">
-                Your collection location will appear here when your order is ready.
-              </p>
-            </div>
-
-            <a
-              href="#"
-              class="customer-donor-pass-directions"
-              id="donor-pass-directions"
-              hidden
-              target="_blank"
-              rel="noopener"
-            >
-              Get Directions
-              <span>↗</span>
-            </a>
-
-          </div>
-
-
-          <div class="customer-donor-pass-help-card">
-
-            <div class="customer-donor-pass-help-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="12" cy="12" r="9"></circle>
-                <path d="M9.5 9a2.7 2.7 0 1 1 4.5 2c-.9.7-2 1.3-2 2.7"></path>
-                <path d="M12 17h.01"></path>
-              </svg>
-            </div>
-
-            <strong>Need help with your pass?</strong>
-            <p>
-              Contact our support team if your information is incorrect or
-              you need assistance before your appointment.
-            </p>
-
-            <a href="mailto:support@screenings4u.com">
-              Contact Support
-            </a>
-
-          </div>
-
-        </aside>
-
-      </section>
-
-
-      <section class="customer-donor-pass-actions" id="donor-pass-actions" hidden>
-
-        <button type="button" class="customer-donor-pass-primary" id="download-donor-pass">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 3v12"></path>
-            <path d="m7 11 5 5 5-5"></path>
-            <path d="M5 21h14"></path>
-          </svg>
-          Download Donor Pass
-        </button>
-
-        <button type="button" class="customer-donor-pass-secondary" id="print-donor-pass">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 9V4h12v5"></path>
-            <rect x="4" y="9" width="16" height="8" rx="2"></rect>
-            <path d="M7 17h10v3H7z"></path>
-          </svg>
-          Print Pass
-        </button>
-
-      </section>
-
-
-      <section class="customer-donor-pass-empty" id="donor-pass-empty" hidden>
-
-        <div class="customer-donor-pass-empty-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="5" y="3" width="14" height="18" rx="2"></rect>
-            <path d="M9 8h6"></path>
-            <path d="M9 12h6"></path>
-            <path d="M9 16h4"></path>
-          </svg>
-        </div>
-
-        <h2>No active donor pass</h2>
-        <p>
-          You do not currently have an active donor pass available.
-          When a testing authorization is issued, it will appear here.
-        </p>
-
-        <a href="customer-catalog.html">
-          Purchase a Service
-        </a>
-
-      </section>
-
-
-      <section class="customer-donor-pass-information">
-
-        <div class="customer-donor-pass-information-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="12" r="9"></circle>
-            <path d="M12 11v5"></path>
-            <path d="M12 7h.01"></path>
-          </svg>
-        </div>
-
-        <div>
-          <strong>Before you arrive</strong>
-          <p>
-            Bring a valid government-issued photo ID and present your donor
-            pass at the collection location. Follow any instructions provided
-            with your order.
-          </p>
-        </div>
-
-      </section>
-
-    </div>
-  </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="assets/js/supabase-config.js"></script>
-<script src="assets/js/core-auth.js"></script>
-<script src="assets/js/core-ui.js"></script>
-<script src="assets/js/session-security.js"></script>
-<script src="assets/js/portal-auth-guard.js"></script>
-<script src="assets/js/customer-auth-guard.js"></script>
-
-<script src="assets/js/customer-portal.js"></script>
-<script src="assets/js/customer-dashboard.js"></script>
-  <script src="assets/js/customer-donor-pass.js"></script>
-</body>
-</html>
+<body class="customer-donor-pass-page" data-page-title="Donor Passes" data-page-subtitle="Access and download your testing authorizations.">
+<div id="customer-portal-sidebar"></div>
+<main class="customer-portal-main"><div id="customer-portal-header"></div>
+<div class="customer-donor-pass-content">
+<section class="customer-donor-pass-intro"><div><span class="customer-donor-pass-eyebrow">TESTING SERVICES</span><h1>My Donor Passes</h1><p>Access all donor passes issued for your testing orders, including active and previous authorizations.</p></div><a href="customer-orders.html" class="customer-donor-pass-order-link"><span>View My Orders</span><span>→</span></a></section>
+<section class="customer-donor-pass-summary">
+<article><strong id="donor-pass-total">--</strong><span>Total Passes</span></article>
+<article><strong id="donor-pass-active-count">--</strong><span>Active</span></article>
+<article><strong id="donor-pass-completed-count">--</strong><span>Completed</span></article>
+</section>
+<section class="customer-donor-pass-toolbar">
+<label class="customer-donor-pass-search"><span>Search</span><input id="donor-pass-search" type="search" placeholder="Search pass, order, service or location..." autocomplete="off"></label>
+<select id="donor-pass-filter" aria-label="Filter donor passes"><option value="all">All Passes</option><option value="active">Active</option><option value="completed">Completed</option><option value="expired">Expired</option></select>
+</section>
+<section class="customer-donor-pass-list" id="donor-pass-list" hidden></section>
+<section class="customer-donor-pass-loading" id="donor-pass-loading"><span class="customer-donor-pass-spinner"></span><p>Loading your donor passes...</p></section>
+<section class="customer-donor-pass-empty" id="donor-pass-empty" hidden><div class="customer-donor-pass-empty-icon"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 8h6M9 12h6M9 16h4"></path></svg></div><h2>No donor passes found</h2><p>When a testing authorization is issued for one of your orders, it will appear here.</p><a href="customer-catalog.html">Purchase a Service</a></section>
+<section class="customer-donor-pass-information"><div class="customer-donor-pass-information-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 7h.01"></path></svg></div><div><strong>Before you arrive</strong><p>Bring a valid government-issued photo ID and your donor pass to the assigned collection location.</p></div></section>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script><script src="assets/js/core-auth.js"></script><script src="assets/js/ui.js"></script><script src="assets/js/session-security.js"></script><script src="assets/js/portal-auth-guard.js"></script><script src="assets/js/customer-auth-guard.js"></script><script src="assets/js/customer-portal.js"></script><script src="assets/js/customer-donor-pass.js?v=20260830-0830"></script>
+</body></html>

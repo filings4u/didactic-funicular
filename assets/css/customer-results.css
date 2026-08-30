@@ -683,3 +683,10 @@
     width: 100%;
   }
 }
+
+
+/* Live result download states */
+.customer-results-page [hidden]{display:none!important}
+.customer-result-view{cursor:pointer}
+.customer-result-view:disabled{cursor:not-allowed;opacity:.55;background:#f7f9fb;color:#7d8999}
+.customer-result-view svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}

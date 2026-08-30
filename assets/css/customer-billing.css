@@ -540,3 +540,14 @@
     font-size: .65rem;
   }
 }
+
+
+/* Live billing document controls */
+.customer-billing-page [hidden]{display:none!important}
+.customer-billing-doc-cell{white-space:nowrap}
+.customer-billing-receipt{gap:7px;padding:0 10px;min-width:auto;font:inherit;font-size:.66rem;font-weight:750}
+.customer-billing-receipt span{white-space:nowrap}
+.customer-billing-receipt.is-disabled,.customer-billing-receipt:disabled{cursor:not-allowed;opacity:.5;background:#f7f9fb;color:#7d8999}
+.customer-billing-mobile-doc{display:flex;justify-content:flex-end}
+.customer-billing-page button:focus-visible,.customer-billing-page input:focus-visible,.customer-billing-page select:focus-visible{outline:3px solid rgba(50,90,163,.16);outline-offset:2px}
+@media(max-width:650px){.customer-billing-receipt{min-height:36px}}

@@ -1,578 +1,220 @@
 /* ============================================================
-   SCREENINGS4U
-   CUSTOMER MY ACCOUNT
-   customer-account.js
-
-   Ready for Supabase wiring.
-
-   Primary tables already identified:
-   - customer_profiles
-   - user_profiles
-
-   Authentication:
-   - Supabase Auth
+   SCREENINGS4U - CUSTOMER MY ACCOUNT
+   Live Supabase wiring
    ============================================================ */
-
-(function () {
+(() => {
   "use strict";
 
-  const state = {
-    profile: null,
-    originalProfile: null,
-    editing: false
-  };
+  const state = { db:null, user:null, profile:null, originalProfile:null, preferences:null, editing:false };
+  const $ = id => document.getElementById(id);
 
+  document.addEventListener("DOMContentLoaded", init);
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    initializeCustomerAccount
-  );
-
-
-  function initializeCustomerAccount() {
-    bindAccountControls();
-    loadCustomerAccount();
-  }
-
-
-  function bindAccountControls() {
-    const editButton =
-      document.getElementById(
-        "customer-edit-profile-btn"
-      );
-
-    const cancelButton =
-      document.getElementById(
-        "customer-cancel-profile-btn"
-      );
-
-    const profileForm =
-      document.getElementById(
-        "customer-profile-form"
-      );
-
-    const passwordButton =
-      document.getElementById(
-        "customer-password-btn"
-      );
-
-    const closePasswordModal =
-      document.getElementById(
-        "customer-password-modal-close"
-      );
-
-    const passwordDone =
-      document.getElementById(
-        "customer-password-modal-done"
-      );
-
-    const supportButton =
-      document.getElementById(
-        "customer-account-support-btn"
-      );
-
-
-    if (editButton) {
-      editButton.addEventListener(
-        "click",
-        function () {
-          setProfileEditing(true);
-        }
-      );
-    }
-
-
-    if (cancelButton) {
-      cancelButton.addEventListener(
-        "click",
-        function () {
-          restoreOriginalProfile();
-          setProfileEditing(false);
-        }
-      );
-    }
-
-
-    if (profileForm) {
-      profileForm.addEventListener(
-        "submit",
-        handleProfileSave
-      );
-    }
-
-
-    if (passwordButton) {
-      passwordButton.addEventListener(
-        "click",
-        openPasswordModal
-      );
-    }
-
-
-    if (closePasswordModal) {
-      closePasswordModal.addEventListener(
-        "click",
-        closePasswordModalHandler
-      );
-    }
-
-
-    if (passwordDone) {
-      passwordDone.addEventListener(
-        "click",
-        closePasswordModalHandler
-      );
-    }
-
-
-    if (supportButton) {
-      supportButton.addEventListener(
-        "click",
-        function () {
-          window.alert(
-            "Customer support will be connected to the Screenings4u support workflow during final portal wiring."
-          );
-        }
-      );
-    }
-  }
-
-
-  async function loadCustomerAccount() {
-    /*
-      FINAL SUPABASE WIRING
-
-      We will inspect the exact columns before writing the final query.
-
-      Intended secure flow:
-
-      1. Get authenticated Supabase user.
-      2. Resolve the matching customer_profiles record.
-      3. Load permitted profile information.
-      4. Populate the account screen.
-      5. Never allow a customer to retrieve another user's profile.
-
-      We should determine whether:
-      - customer_profiles.id = auth.uid()
-      - OR customer_profiles references user_profiles
-      - OR another ownership relationship is being used.
-
-      This will be verified before production wiring.
-    */
-
+  async function init() {
+    bind();
     try {
-      await wait(250);
-
-      state.profile = null;
-      state.originalProfile = null;
-
-      renderProfile();
-
-    } catch (error) {
-      console.error(
-        "Unable to load customer account:",
-        error
-      );
-
-      state.profile = null;
-      state.originalProfile = null;
-
-      renderProfile();
+      state.db = await getClient();
+      const { data:{ user }, error } = await state.db.auth.getUser();
+      if (error) throw error;
+      if (!user) return;
+      state.user = user;
+      await loadAccount();
+    } catch (e) {
+      console.error("customer-account:", e);
+      notify(e.message || "Unable to load your account.", true);
     }
   }
 
-
-  function renderProfile() {
-    const profile =
-      state.profile || {};
-
-
-    setValue(
-      "customer-first-name",
-      profile.first_name || ""
-    );
-
-    setValue(
-      "customer-last-name",
-      profile.last_name || ""
-    );
-
-    setValue(
-      "customer-email",
-      profile.email || ""
-    );
-
-    setValue(
-      "customer-phone",
-      profile.phone || ""
-    );
-
-
-    const fullName =
-      [
-        profile.first_name,
-        profile.last_name
-      ]
-        .filter(Boolean)
-        .join(" ") ||
-      "Your Name";
-
-
-    setText(
-      "customer-account-name",
-      fullName
-    );
-
-
-    setText(
-      "customer-account-email",
-      profile.email ||
-      "Account information will appear here."
-    );
-
-
-    setText(
-      "customer-member-since",
-      profile.created_at
-        ? formatDate(profile.created_at)
-        : "—"
-    );
-
-
-    setText(
-      "customer-account-id",
-      profile.id
-        ? shortenId(profile.id)
-        : "—"
-    );
-
-
-    setText(
-      "customer-account-avatar",
-      getInitials(
-        profile.first_name,
-        profile.last_name
-      )
-    );
-
-
-    const emailNotifications =
-      document.getElementById(
-        "customer-email-notifications"
-      );
-
-    const serviceNotifications =
-      document.getElementById(
-        "customer-service-notifications"
-      );
-
-
-    if (emailNotifications) {
-      emailNotifications.checked =
-        Boolean(
-          profile.email_notifications
-        );
-    }
-
-
-    if (serviceNotifications) {
-      serviceNotifications.checked =
-        Boolean(
-          profile.service_notifications
-        );
-    }
+  async function getClient() {
+    if (typeof window.getScreenings4uSupabase === "function") return await window.getScreenings4uSupabase();
+    if (window.screenings4uSupabase) return window.screenings4uSupabase;
+    throw new Error("Screenings4u Supabase client is unavailable.");
   }
 
-
-  function setProfileEditing(isEditing) {
-    state.editing =
-      Boolean(isEditing);
-
-
-    const editableInputs = [
-      document.getElementById(
-        "customer-first-name"
-      ),
-      document.getElementById(
-        "customer-last-name"
-      ),
-      document.getElementById(
-        "customer-phone"
-      )
-    ];
-
-
-    editableInputs.forEach(
-      function (input) {
-        if (input) {
-          input.disabled =
-            !state.editing;
-        }
-      }
-    );
-
-
-    const notificationInputs = [
-      document.getElementById(
-        "customer-email-notifications"
-      ),
-      document.getElementById(
-        "customer-service-notifications"
-      )
-    ];
-
-
-    notificationInputs.forEach(
-      function (input) {
-        if (input) {
-          input.disabled =
-            !state.editing;
-        }
-      }
-    );
-
-
-    const actions =
-      document.getElementById(
-        "customer-profile-actions"
-      );
-
-    const notificationActions =
-      document.getElementById(
-        "customer-notification-actions"
-      );
-
-    const editButton =
-      document.getElementById(
-        "customer-edit-profile-btn"
-      );
-
-
-    if (actions) {
-      actions.hidden =
-        !state.editing;
-    }
-
-
-    if (notificationActions) {
-      notificationActions.hidden =
-        !state.editing;
-    }
-
-
-    if (editButton) {
-      editButton.hidden =
-        state.editing;
-    }
-  }
-
-
-  async function handleProfileSave(event) {
-    event.preventDefault();
-
-
-    const updatedProfile = {
-      ...(state.profile || {}),
-      first_name:
-        getValue("customer-first-name"),
-      last_name:
-        getValue("customer-last-name"),
-      phone:
-        getValue("customer-phone"),
-      email_notifications:
-        getChecked(
-          "customer-email-notifications"
-        ),
-      service_notifications:
-        getChecked(
-          "customer-service-notifications"
-        )
-    };
-
-
-    /*
-      FINAL SUPABASE UPDATE
-
-      Once exact columns and ownership relationships are confirmed:
-
-      supabase
-        .from("customer_profiles")
-        .update({
-          first_name: updatedProfile.first_name,
-          last_name: updatedProfile.last_name,
-          phone: updatedProfile.phone,
-          ...
-        })
-        .eq("id", authenticatedCustomerId)
-
-      The RLS policy must enforce ownership.
-
-      Do not allow the browser to choose another customer's ID.
-    */
-
-
-    state.profile =
-      updatedProfile;
-
-    state.originalProfile =
-      clone(updatedProfile);
-
-
-    renderProfile();
-    setProfileEditing(false);
-
-
-    window.alert(
-      "Profile saving will be connected to Supabase during final portal wiring."
-    );
-  }
-
-
-  function restoreOriginalProfile() {
-    state.profile =
-      clone(
-        state.originalProfile
-      );
-
-    renderProfile();
-  }
-
-
-  function openPasswordModal() {
-    const modal =
-      document.getElementById(
-        "customer-password-modal"
-      );
-
-    if (modal) {
-      modal.hidden = false;
-    }
-  }
-
-
-  function closePasswordModalHandler() {
-    const modal =
-      document.getElementById(
-        "customer-password-modal"
-      );
-
-    if (modal) {
-      modal.hidden = true;
-    }
-  }
-
-
-  function getInitials(firstName, lastName) {
-    const initials = [
-      firstName,
-      lastName
-    ]
-      .filter(Boolean)
-      .map(function (value) {
-        return String(value)
-          .trim()
-          .charAt(0)
-          .toUpperCase();
-      })
-      .join("");
-
-
-    return initials || "CU";
-  }
-
-
-  function shortenId(id) {
-    const value =
-      String(id);
-
-    if (value.length <= 12) {
-      return value;
-    }
-
-    return (
-      value.slice(0, 8) +
-      "…" +
-      value.slice(-4)
-    );
-  }
-
-
-  function formatDate(value) {
-    const date =
-      new Date(value);
-
-    if (Number.isNaN(date.getTime())) {
-      return "—";
-    }
-
-    return new Intl.DateTimeFormat(
-      "en-US",
-      {
-        month: "short",
-        year: "numeric"
-      }
-    ).format(date);
-  }
-
-
-  function setText(id, value) {
-    const element =
-      document.getElementById(id);
-
-    if (element) {
-      element.textContent =
-        String(value || "");
-    }
-  }
-
-
-  function setValue(id, value) {
-    const element =
-      document.getElementById(id);
-
-    if (element) {
-      element.value =
-        String(value || "");
-    }
-  }
-
-
-  function getValue(id) {
-    const element =
-      document.getElementById(id);
-
-    return element
-      ? element.value.trim()
-      : "";
-  }
-
-
-  function getChecked(id) {
-    const element =
-      document.getElementById(id);
-
-    return Boolean(
-      element && element.checked
-    );
-  }
-
-
-  function clone(value) {
-    return value
-      ? JSON.parse(
-          JSON.stringify(value)
-        )
-      : null;
-  }
-
-
-  function wait(milliseconds) {
-    return new Promise(function (resolve) {
-      window.setTimeout(
-        resolve,
-        milliseconds
-      );
+  function bind() {
+    $("customer-edit-profile-btn")?.addEventListener("click", () => setEditing(true));
+    $("customer-cancel-profile-btn")?.addEventListener("click", () => {
+      state.profile = clone(state.originalProfile);
+      render();
+      setEditing(false);
+    });
+    $("customer-profile-form")?.addEventListener("submit", saveProfile);
+    $("customer-save-notifications")?.addEventListener("click", savePreferences);
+    $("customer-password-btn")?.addEventListener("click", openPasswordModal);
+    $("customer-password-modal-close")?.addEventListener("click", closePasswordModal);
+    $("customer-password-modal-done")?.addEventListener("click", sendPasswordReset);
+    document.querySelector(".customer-account-modal-backdrop")?.addEventListener("click", closePasswordModal);
+    $("customer-account-support-btn")?.addEventListener("click", () => {
+      window.location.href = "customer-support.html";
     });
   }
 
+  async function loadAccount() {
+    const uid = state.user.id;
+
+    const [profileResult, prefResult] = await Promise.all([
+      state.db.from("user_profiles")
+        .select("id,first_name,last_name,display_name,email,phone,is_active,created_at,updated_at,company_name,address_line_1,address_line_2,city,state,postal_code")
+        .eq("id", uid).maybeSingle(),
+      state.db.from("customer_account_preferences")
+        .select("*").eq("user_id", uid).maybeSingle()
+    ]);
+
+    if (profileResult.error) throw profileResult.error;
+
+    state.profile = profileResult.data || {
+      id: uid,
+      first_name: state.user.user_metadata?.first_name || "",
+      last_name: state.user.user_metadata?.last_name || "",
+      display_name: state.user.user_metadata?.display_name || "",
+      email: state.user.email || "",
+      phone: state.user.phone || "",
+      is_active: true,
+      created_at: state.user.created_at
+    };
+
+    // Auth email is authoritative for sign-in identity.
+    state.profile.email = state.user.email || state.profile.email || "";
+    state.originalProfile = clone(state.profile);
+
+    if (prefResult.error) {
+      console.warn("Unable to load notification preferences:", prefResult.error);
+    }
+
+    state.preferences = prefResult.data || {
+      user_id: uid,
+      email_notifications: true,
+      service_notifications: true
+    };
+
+    render();
+    setEditing(false);
+  }
+
+  function render() {
+    const p = state.profile || {};
+    const pref = state.preferences || {};
+
+    setValue("customer-first-name", p.first_name);
+    setValue("customer-last-name", p.last_name);
+    setValue("customer-email", p.email);
+    setValue("customer-phone", p.phone);
+
+    const fullName = [p.first_name,p.last_name].filter(Boolean).join(" ") || p.display_name || "Your Name";
+    setText("customer-account-name", fullName);
+    setText("customer-account-email", p.email || "—");
+    setText("customer-member-since", p.created_at ? formatDate(p.created_at) : "—");
+    setText("customer-account-id", p.id ? shortenId(p.id) : "—");
+    setText("customer-account-avatar", initials(p.first_name,p.last_name));
+
+    if ($("customer-email-notifications")) $("customer-email-notifications").checked = pref.email_notifications !== false;
+    if ($("customer-service-notifications")) $("customer-service-notifications").checked = pref.service_notifications !== false;
+
+    const activeBadge = document.querySelector(".customer-account-active");
+    if (activeBadge) activeBadge.textContent = p.is_active === false ? "Inactive Account" : "Active Account";
+  }
+
+  function setEditing(on) {
+    state.editing = !!on;
+    ["customer-first-name","customer-last-name","customer-phone",
+     "customer-email-notifications","customer-service-notifications"].forEach(id => {
+      const el=$(id); if(el) el.disabled=!state.editing;
+    });
+    if ($("customer-email")) $("customer-email").disabled = true;
+    if ($("customer-profile-actions")) $("customer-profile-actions").hidden = !state.editing;
+    if ($("customer-notification-actions")) $("customer-notification-actions").hidden = !state.editing;
+    if ($("customer-edit-profile-btn")) $("customer-edit-profile-btn").hidden = state.editing;
+  }
+
+  async function saveProfile(event) {
+    event.preventDefault();
+    if (!state.user) return;
+
+    const patch = {
+      first_name: value("customer-first-name"),
+      last_name: value("customer-last-name"),
+      phone: value("customer-phone") || null,
+      display_name: [value("customer-first-name"),value("customer-last-name")].filter(Boolean).join(" ") || null,
+      updated_at: new Date().toISOString()
+    };
+
+    const submit = event.submitter;
+    setBusy(submit,true,"Saving...");
+    try {
+      const { data,error } = await state.db.from("user_profiles")
+        .update(patch).eq("id",state.user.id)
+        .select("id,first_name,last_name,display_name,email,phone,is_active,created_at,updated_at,company_name,address_line_1,address_line_2,city,state,postal_code")
+        .single();
+      if(error) throw error;
+
+      state.profile = {...data,email:state.user.email || data.email};
+      state.originalProfile = clone(state.profile);
+      render();
+      setEditing(false);
+      notify("Account information updated.");
+    } catch(e) {
+      console.error(e);
+      notify(e.message || "Unable to save account information.",true);
+    } finally { setBusy(submit,false,"Save Changes"); }
+  }
+
+  async function savePreferences() {
+    if(!state.user) return;
+    const button=$("customer-save-notifications");
+    setBusy(button,true,"Saving...");
+    const record = {
+      user_id: state.user.id,
+      email_notifications: checked("customer-email-notifications"),
+      service_notifications: checked("customer-service-notifications"),
+      updated_at: new Date().toISOString()
+    };
+    try {
+      const {data,error}=await state.db.from("customer_account_preferences")
+        .upsert(record,{onConflict:"user_id"}).select().single();
+      if(error) throw error;
+      state.preferences=data;
+      notify("Notification preferences updated.");
+    } catch(e) {
+      console.error(e); notify(e.message || "Unable to save notification preferences.",true);
+    } finally { setBusy(button,false,"Save Preferences"); }
+  }
+
+  function openPasswordModal() {
+    const m=$("customer-password-modal"); if(m) m.hidden=false;
+    const copy=document.querySelector("#customer-password-modal p");
+    if(copy) copy.textContent="We will send a secure password-reset link to your account email. Your current password is never displayed.";
+    const done=$("customer-password-modal-done"); if(done) done.textContent="Send Reset Email";
+  }
+  function closePasswordModal(){const m=$("customer-password-modal");if(m)m.hidden=true;}
+
+  async function sendPasswordReset() {
+    const email=state.user?.email;
+    if(!email) return notify("No sign-in email is available for this account.",true);
+    const button=$("customer-password-modal-done");
+    setBusy(button,true,"Sending...");
+    try {
+      const redirectTo=new URL("reset-password.html",window.location.href).href;
+      const {error}=await state.db.auth.resetPasswordForEmail(email,{redirectTo});
+      if(error) throw error;
+      closePasswordModal();
+      notify("Password reset email sent.");
+    } catch(e) {
+      console.error(e); notify(e.message || "Unable to send password reset email.",true);
+    } finally { setBusy(button,false,"Send Reset Email"); }
+  }
+
+  function notify(message,error=false) {
+    if (window.Screenings4uUI?.toast) return window.Screenings4uUI.toast(message,{type:error?"error":"success"});
+    if (window.showToast) return window.showToast(message,error?"error":"success");
+    window.alert(message);
+  }
+  function setBusy(el,on,text){if(!el)return;if(!el.dataset.originalText)el.dataset.originalText=el.textContent;el.disabled=on;el.textContent=on?text:(el.dataset.originalText||text);}
+  function value(id){return $(id)?.value.trim()||""}
+  function checked(id){return !!$(id)?.checked}
+  function setValue(id,v){const e=$(id);if(e)e.value=v??""}
+  function setText(id,v){const e=$(id);if(e)e.textContent=String(v??"")}
+  function clone(v){return v?JSON.parse(JSON.stringify(v)):null}
+  function initials(a,b){return [a,b].filter(Boolean).map(v=>String(v).trim()[0]?.toUpperCase()).join("")||"CU"}
+  function shortenId(id){const v=String(id);return v.length<=12?v:`${v.slice(0,8)}…${v.slice(-4)}`}
+  function formatDate(v){const d=new Date(v);return Number.isNaN(d.getTime())?"—":new Intl.DateTimeFormat("en-US",{month:"short",year:"numeric"}).format(d)}
 })();
