@@ -255,28 +255,6 @@
                 </a>
 
 
-                <!-- DOCUMENTS -->
-
-                <a
-                  href="customer-documents.html"
-                  class="customer-nav-link"
-                  data-customer-page="customer-documents.html"
-                >
-                  <span class="customer-nav-icon">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <path d="M14 2v6h6"></path>
-                      <path d="M8 13h8"></path>
-                      <path d="M8 17h5"></path>
-                    </svg>
-                  </span>
-
-                  <span class="customer-nav-text">
-                    Documents
-                  </span>
-                </a>
-
-
                 <!-- NOTIFICATIONS -->
 
                 <a

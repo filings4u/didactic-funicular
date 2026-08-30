@@ -45,8 +45,9 @@
       dashboard: "customer-dashboard.html",
 
       allowedRoles: [
-        "customer",
-        "client"
+        "client_user",
+        "client_admin",
+        "client_manager"
       ]
     },
 
@@ -55,7 +56,11 @@
       dashboard: "employer-dashboard.html",
 
       allowedRoles: [
-        "employer"
+        "employer_user",
+        "employer_admin",
+        "employer_hr",
+        "employer_safety",
+        "employer_billing"
       ]
     },
 

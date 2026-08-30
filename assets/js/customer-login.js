@@ -1,169 +1,83 @@
-/* ============================================================
-   screenings4u — CUSTOMER LOGIN
-   Uses the shared authentication system:
-   - supabase-config.js
-   - core-auth.js
-   - core-ui.js (optional for toast/modal helpers)
-
-   This file does NOT create a second Supabase client.
-   ============================================================ */
-
+/* screenings4u — CUSTOMER LOGIN */
 (() => {
   "use strict";
 
   const DASHBOARD_PAGE = "customer-dashboard.html";
-  const LOGIN_FORM_SELECTOR = "#customerLoginForm";
-  const EMAIL_SELECTOR = "#email";
-  const PASSWORD_SELECTOR = "#password";
-  const LOGIN_BUTTON_SELECTOR = "#loginButton";
-  const STATUS_SELECTOR = "#loginStatus";
-  const PASSWORD_TOGGLE_SELECTOR = "#passwordToggle";
-  const FORGOT_PASSWORD_SELECTOR = "#forgotPasswordBtn";
-
-  function getElement(selector) {
-    return document.querySelector(selector);
-  }
+  const FORGOT_PASSWORD_PAGE = "forgot-password.html";
+  const $ = (selector) => document.querySelector(selector);
 
   function setStatus(message = "", type = "") {
-    const status = getElement(STATUS_SELECTOR);
-
+    const status = $("#loginStatus");
     if (!status) return;
-
     status.textContent = message;
     status.className = "login-status";
-
-    if (type) {
-      status.classList.add(`is-${type}`);
-    }
-
+    if (type) status.classList.add(type);
     status.hidden = !message;
   }
 
-  function setLoading(isLoading) {
-    const button = getElement(LOGIN_BUTTON_SELECTOR);
-
+  function setLoading(loading) {
+    const button = $("#loginButton");
     if (!button) return;
-
-    button.disabled = isLoading;
-    button.setAttribute("aria-busy", String(isLoading));
-
-    if (!button.dataset.originalText) {
-      button.dataset.originalText = button.innerHTML;
-    }
-
-    button.innerHTML = isLoading
+    if (!button.dataset.originalText) button.dataset.originalText = button.innerHTML;
+    button.disabled = loading;
+    button.setAttribute("aria-busy", String(loading));
+    button.innerHTML = loading
       ? '<span class="login-button-loading">Signing In...</span>'
       : button.dataset.originalText;
   }
 
   function showError(message) {
     setStatus(message, "error");
-
-    if (window.S4UUI?.toast) {
-      window.S4UUI.toast(message, "error");
-    }
-  }
-
-  function showSuccess(message) {
-    setStatus(message, "success");
+    window.S4UUI?.toast?.(message, "error");
   }
 
   async function redirectIfAuthenticated() {
     try {
-      const state = await window.S4UAuth.initialize();
+      const state = await window.S4UAuth.initialize({ force: true });
+      if (!state?.session || !state?.user) return;
 
-      if (!state?.session || !state?.user) {
-        return;
-      }
-
-      const access = await window.S4UAuth.verifyPortalAccess(
-        state.user.id,
-        "customer"
-      );
-
-      if (access.allowed) {
+      if (window.S4UAuth.userCanAccessPortal(state.roles || [], "customer")) {
         window.location.replace(DASHBOARD_PAGE);
         return;
       }
 
-      /*
-       * A signed-in user who is not an authorized customer should not
-       * remain authenticated on the customer login page.
-       */
-      await window.S4UAuth.signOut();
+      if (typeof window.S4UAuth.signOutSilently === "function") {
+        await window.S4UAuth.signOutSilently();
+      }
     } catch (error) {
-      console.error(
-        "[Customer Login] Existing session check failed:",
-        error
-      );
+      console.error("[Customer Login] Existing session check failed:", error);
     }
   }
 
   function bindPasswordToggle() {
-    const passwordInput = getElement(PASSWORD_SELECTOR);
-    const toggleButton = getElement(PASSWORD_TOGGLE_SELECTOR);
+    const input = $("#password");
+    const button = $("#passwordToggle");
+    if (!input || !button) return;
 
-    if (!passwordInput || !toggleButton) return;
-
-    toggleButton.addEventListener("click", () => {
-      const isPassword = passwordInput.type === "password";
-
-      passwordInput.type = isPassword ? "text" : "password";
-
-      toggleButton.setAttribute(
-        "aria-label",
-        isPassword ? "Hide password" : "Show password"
-      );
-
-      toggleButton.setAttribute(
-        "aria-pressed",
-        String(isPassword)
-      );
+    button.addEventListener("click", () => {
+      const hidden = input.type === "password";
+      input.type = hidden ? "text" : "password";
+      button.setAttribute("aria-label", hidden ? "Hide password" : "Show password");
+      button.setAttribute("aria-pressed", String(hidden));
     });
   }
 
-  function openForgotPassword() {
-    /*
-     * Preserve compatibility with the existing page.
-     *
-     * If the page already provides a custom modal, trigger its existing
-     * controls instead of replacing the UI.
-     */
-    const existingModalTrigger =
-      document.querySelector("[data-s4u-forgot-modal]") ||
-      document.querySelector("[data-modal-target='forgot-password']");
-
-    if (existingModalTrigger) {
-      existingModalTrigger.click();
-      return;
-    }
-
-    /*
-     * Minimal fallback message. Password reset submission can be wired
-     * to the existing modal/reset page without changing the login design.
-     */
-    setStatus(
-      "Please use the password recovery option provided by your administrator.",
-      "info"
-    );
-  }
-
   function bindForgotPassword() {
-    const button = getElement(FORGOT_PASSWORD_SELECTOR);
+    const control = $("#forgotPasswordBtn");
+    if (!control) return;
+    if (control.tagName === "A" && control.getAttribute("href")) return;
 
-    if (!button) return;
-
-    button.addEventListener("click", event => {
+    control.addEventListener("click", (event) => {
       event.preventDefault();
-      openForgotPassword();
+      window.location.href = FORGOT_PASSWORD_PAGE;
     });
   }
 
   async function handleLogin(event) {
     event.preventDefault();
 
-    const email = getElement(EMAIL_SELECTOR)?.value?.trim();
-    const password = getElement(PASSWORD_SELECTOR)?.value;
+    const email = $("#email")?.value?.trim();
+    const password = $("#password")?.value;
 
     if (!email || !password) {
       showError("Please enter your email and password.");
@@ -174,90 +88,35 @@
     setLoading(true);
 
     try {
-      await window.S4UAuth.signIn(email, password);
-
-      const state = await window.S4UAuth.initialize({
-        force: true
-      });
-
-      if (!state?.user) {
-        throw new Error(
-          "We could not verify your account. Please try again."
-        );
-      }
-
-      /*
-       * core-auth.js centrally checks:
-       * - customer profile existence
-       * - active/inactive account status
-       */
-      const access = await window.S4UAuth.verifyPortalAccess(
-        state.user.id,
-        "customer"
-      );
-
-      if (!access.allowed) {
-        await window.S4UAuth.signOut();
-
-        throw new Error(
-          access.reason ||
-          "This account does not have access to the Customer Portal."
-        );
-      }
-
-      showSuccess("Sign-in successful. Redirecting you now...");
-
+      await window.S4UAuth.signInToPortal("customer", email, password);
+      setStatus("Sign-in successful. Redirecting you now...", "success");
       window.location.replace(DASHBOARD_PAGE);
     } catch (error) {
       console.error("[Customer Login] Sign-in failed:", error);
-
-      const message =
-        error?.message ||
-        "Unable to sign in. Please check your credentials and try again.";
-
-      showError(message);
+      showError(error?.message || "Unable to sign in. Please check your credentials and try again.");
       setLoading(false);
     }
   }
 
-  function bindLoginForm() {
-    const form = getElement(LOGIN_FORM_SELECTOR);
-
-    if (!form) {
-      console.error(
-        "[Customer Login] #customerLoginForm was not found."
-      );
-      return;
-    }
-
-    form.addEventListener("submit", handleLogin);
-  }
-
   async function initializeCustomerLogin() {
+    const auth = window.S4UAuth;
+
     if (
-      !window.S4UAuth ||
-      typeof window.S4UAuth.signIn !== "function"
+      !auth ||
+      typeof auth.initialize !== "function" ||
+      typeof auth.signInToPortal !== "function" ||
+      typeof auth.userCanAccessPortal !== "function"
     ) {
-      console.error(
-        "[Customer Login] core-auth.js must load before customer-login.js."
-      );
-
-      showError(
-        "The secure login service is unavailable. Please refresh the page."
-      );
-
+      console.error("[Customer Login] Incompatible core-auth.js is loaded.");
+      showError("The secure login service is unavailable. Please refresh the page.");
       return;
     }
 
-    bindLoginForm();
+    $("#customerLoginForm")?.addEventListener("submit", handleLogin);
     bindPasswordToggle();
     bindForgotPassword();
-
     await redirectIfAuthenticated();
   }
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    initializeCustomerLogin
-  );
+  document.addEventListener("DOMContentLoaded", initializeCustomerLogin);
 })();
