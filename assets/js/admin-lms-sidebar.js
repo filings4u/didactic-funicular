@@ -202,7 +202,7 @@ bindUserDropdown();
         },
         {
           label: "Create Order",
-          href: "admin-order-create.html",
+          href: "admin-checkout.html",
           icon: "plus"
         },
         {
