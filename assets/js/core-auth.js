@@ -67,10 +67,13 @@
     employee: {
       login: "employee-login.html",
       dashboard: "employee-dashboard.html",
+      allowedRoles: ["employee"]
+    },
 
-      allowedRoles: [
-        "employee"
-      ]
+    training: {
+      login: "training-login.html",
+      dashboard: "lms-dashboard.html",
+      allowedRoles: []
     }
 
   });
@@ -508,16 +511,20 @@
     userId = null
   ) {
 
-    const requestedRole =
-      normalizeRole(role);
+    const requestedRole = normalizeRole(role);
+    if (!requestedRole) return false;
 
-    if (!requestedRole) {
-      return false;
+    if (requestedRole === "training") {
+      const client = getClient();
+      const { data, error } = await client.rpc("can_access_training_portal");
+      if (error) {
+        console.error("[S4UAuth] Training access check failed:", error);
+        return false;
+      }
+      return data === true;
     }
 
-
-    const userRoles =
-      await getRoles(userId);
+    const userRoles = await getRoles(userId);
 
 
     return userRoles.includes(
@@ -680,11 +687,9 @@
        STRICT PORTAL ACCESS
        ---------------------------------------------------------- */
 
-    const allowed =
-      userCanAccessPortal(
-        authState.roles,
-        portal
-      );
+    const allowed = portal === "training"
+      ? await hasRole("training", authState.user?.id)
+      : userCanAccessPortal(authState.roles, portal);
 
 
     if (!allowed) {
@@ -815,11 +820,9 @@
     }
 
 
-    const authorized =
-      userCanAccessPortal(
-        authState.roles,
-        portalName
-      );
+    const authorized = portalName === "training"
+      ? await hasRole("training", authState.user.id)
+      : userCanAccessPortal(authState.roles, portalName);
 
 
     if (!authorized) {

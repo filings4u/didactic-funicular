@@ -140,7 +140,7 @@
       background:transparent;color:#56708d;cursor:pointer;
       font-size:16px;
     }
-    .login-options{
+    .login-options{justify-content:flex-end;
       display:flex;align-items:center;justify-content:space-between;
       gap:12px;margin:2px 0 22px;
     }
@@ -151,7 +151,7 @@
     .remember input{accent-color:var(--s4u-blue)}
     .help-link{
       border:0;background:none;padding:0;
-      color:#17519b;font-size:11px;font-weight:800;cursor:pointer;text-decoration:none;
+      color:#17519b;font-size:11px;font-weight:800;cursor:pointer;
     }
     .login-button{
       width:100%;height:50px;border:1px solid var(--s4u-orange);
@@ -239,7 +239,7 @@
         </div>
 
         <div class="brand-kicker">SECURE CUSTOMER PORTAL</div>
-        <h1>Customer<br>Platform</h1>
+        <h1>Your<br>Screenings4u<br>Account</h1>
         <p>Secure access to your screenings, orders, documents, certificates, and online learning.</p>
       </div>
       <div class="brand-footer">© <span id="currentYear"></span> screenings4u. Authorized access only.</div>
@@ -268,11 +268,7 @@
           </div>
 
           <div class="login-options">
-            <label class="remember">
-              <input id="rememberMe" type="checkbox" checked>
-              <span>Keep me signed in</span>
-            </label>
-            <a class="help-link" id="forgotPasswordBtn" href="forgot-password.html">Forgot password?</a>
+            <button class="help-link" id="forgotPasswordBtn" type="button">Forgot password?</button>
           </div>
 
           <button id="loginButton" class="login-button" type="submit">SIGN IN TO CUSTOMER PORTAL</button>
@@ -296,8 +292,131 @@
     </div>
   </div>
 
-<script src="assets/js/core-auth.js"></script>
-<script src="assets/js/ui.js"></script>
-<script src="assets/js/customer-login.js"></script>
+  <script>
+    (() => {
+      "use strict";
+
+      const $ = (id) => document.getElementById(id);
+      const form = $("email").closest("form");
+      const loginButton = $("loginButton");
+      const loginStatus = $("loginStatus");
+
+      $("currentYear").textContent = new Date().getFullYear();
+
+      function showStatus(message, type = "") {
+        loginStatus.textContent = message || "";
+        loginStatus.className = "login-status" + (type ? " " + type : "");
+      }
+
+      function showModal(title, message, type = "info", callback = null) {
+        const modal = $("s4uModal");
+        const icon = $("modalIcon");
+        $("modalTitle").textContent = title;
+        $("modalMessage").textContent = message;
+        icon.textContent = type === "error" ? "!" : "✓";
+        icon.className = "modal-icon" + (type === "error" ? " error" : "");
+        $("modalButton").onclick = () => {
+          modal.classList.remove("is-open");
+          if (typeof callback === "function") callback();
+        };
+        modal.classList.add("is-open");
+      }
+
+      function getSupabaseClient() {
+        if (window.supabaseClient) return window.supabaseClient;
+        const url = window.SCREENINGS4U_SUPABASE_URL || window.SUPABASE_URL;
+        const key = window.SCREENINGS4U_SUPABASE_ANON_KEY || window.SUPABASE_ANON_KEY;
+        if (!window.supabase || !url || !key) throw new Error("Supabase client is not available. Check assets/js/supabase-config.js.");
+        window.supabaseClient = window.supabase.createClient(url, key);
+        return window.supabaseClient;
+      }
+
+      async function verifyPortalAccess(client, userId) {
+        const { data: profile, error } = await client
+          .from("customer_profiles")
+          .select("id, is_active")
+          .eq("id", userId)
+          .maybeSingle();
+        if (error) throw error;
+        if (!profile) return { allowed:false, reason:"This account is not registered for the customer portal." };
+        if (profile.is_active === false) return { allowed:false, reason:"This account is inactive. Please contact your administrator." };
+        return { allowed:true };
+      }
+
+      async function redirectIfAlreadySignedIn() {
+        try {
+          const client = getSupabaseClient();
+          const { data } = await client.auth.getSession();
+          if (!data?.session?.user) return;
+          const access = await verifyPortalAccess(client, data.session.user.id);
+          if (access.allowed) window.location.replace("customer-dashboard.html");
+          else await client.auth.signOut();
+        } catch (error) {
+          console.error("Portal session check failed:", error);
+        }
+      }
+
+      $("passwordToggle").addEventListener("click", () => {
+        const password = $("password");
+        const show = password.type === "password";
+        password.type = show ? "text" : "password";
+        $("passwordToggle").textContent = show ? "◉" : "◉";
+        $("passwordToggle").setAttribute("aria-label", show ? "Hide password" : "Show password");
+      });
+
+      $("forgotPasswordBtn").addEventListener("click", () => {
+        showModal(
+          "Password Assistance",
+          "Password recovery will be available through the Screenings4u account recovery process. Please contact support or your account administrator if you need immediate access."
+        );
+      });
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const email = $("email").value.trim();
+        const password = $("password").value;
+        if (!email || !password) {
+          showModal("Missing Information", "Enter your email and password before signing in.", "error");
+          return;
+        }
+        try {
+          loginButton.disabled = true;
+          loginButton.textContent = "SIGNING IN...";
+          showStatus("Authenticating your account...");
+          const client = getSupabaseClient();
+          const { data, error } = await client.auth.signInWithPassword({ email, password });
+          if (error) {
+            showStatus("");
+            showModal("Sign In Failed", error.message || "We could not sign you in. Please verify your credentials.", "error");
+            return;
+          }
+          if (!data.user) {
+            showStatus("");
+            showModal("Sign In Failed", "No authenticated user was returned. Please try again.", "error");
+            return;
+          }
+          showStatus("Verifying portal access...");
+          const access = await verifyPortalAccess(client, data.user.id);
+          if (!access.allowed) {
+            await client.auth.signOut();
+            showStatus("");
+            showModal("Access Denied", access.reason, "error");
+            return;
+          }
+          showStatus("Access verified. Opening your dashboard...", "success");
+          window.location.replace("customer-dashboard.html");
+        } catch (error) {
+          console.error("Portal login failed:", error);
+          showStatus("");
+          showModal("Connection Error", error.message || "The sign-in service could not be reached. Please try again.", "error");
+        } finally {
+          loginButton.disabled = false;
+          loginButton.textContent = "SIGN IN TO CUSTOMER PORTAL";
+        }
+      });
+
+      redirectIfAlreadySignedIn();
+    })();
+  </script>
 </body>
 </html>

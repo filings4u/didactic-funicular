@@ -140,7 +140,7 @@
       background:transparent;color:#56708d;cursor:pointer;
       font-size:16px;
     }
-    .login-options{
+    .login-options{justify-content:flex-end;
       display:flex;align-items:center;justify-content:space-between;
       gap:12px;margin:2px 0 22px;
     }
@@ -239,7 +239,7 @@
         </div>
 
         <div class="brand-kicker">SECURE EMPLOYER PORTAL</div>
-        <h1>Workforce<br>Platform</h1>
+        <h1>Manage Your<br>Workforce<br>With Confidence</h1>
         <p>Secure access for employers managing workplace screening, compliance, employees, and training.</p>
       </div>
       <div class="brand-footer">© <span id="currentYear"></span> screenings4u. Authorized access only.</div>
@@ -268,10 +268,6 @@
           </div>
 
           <div class="login-options">
-            <label class="remember">
-              <input id="rememberMe" type="checkbox" checked>
-              <span>Keep me signed in</span>
-            </label>
             <button class="help-link" id="forgotPasswordBtn" type="button">Forgot password?</button>
           </div>
 
@@ -336,84 +332,15 @@
       }
 
       async function verifyPortalAccess(client, userId) {
-        const employerRoles = [
-          "employer_admin",
-          "employer_hr",
-          "employer_safety",
-          "employer_billing",
-          "employer_user"
-        ];
-
-        // 1. Confirm this authenticated user has an employer portal role.
-        const { data: roleRows, error: roleError } = await client
-          .from("user_role_assignments")
-          .select("role, employer_id")
-          .eq("user_id", userId);
-
-        if (roleError) throw roleError;
-
-        const employerRole = (roleRows || []).find((row) =>
-          employerRoles.includes(row.role)
-        );
-
-        if (!employerRole) {
-          return {
-            allowed: false,
-            reason: "This account does not have employer portal access."
-          };
-        }
-
-        // 2. Resolve the company through the employer membership table.
-        const { data: memberships, error: membershipError } = await client
-          .from("employer_members")
-          .select("id, employer_id, status, is_primary")
-          .eq("user_id", userId)
-          .eq("status", "active");
-
-        if (membershipError) throw membershipError;
-
-        if (!memberships || memberships.length === 0) {
-          return {
-            allowed: false,
-            reason: "This account is not linked to an active employer organization."
-          };
-        }
-
-        const membership =
-          memberships.find((row) => row.is_primary === true) ||
-          memberships.find((row) => row.employer_id === employerRole.employer_id) ||
-          memberships[0];
-
-        // 3. Verify the employer organization itself is active.
-        // employer_profiles uses `status`; there is no `is_active` column.
-        const { data: employer, error: employerError } = await client
+        const { data: profile, error } = await client
           .from("employer_profiles")
-          .select("id, employer_name, status")
-          .eq("id", membership.employer_id)
+          .select("id, is_active")
+          .eq("id", userId)
           .maybeSingle();
-
-        if (employerError) throw employerError;
-
-        if (!employer) {
-          return {
-            allowed: false,
-            reason: "The employer organization for this account could not be found."
-          };
-        }
-
-        if (String(employer.status || "").toLowerCase() !== "active") {
-          return {
-            allowed: false,
-            reason: "This employer organization is inactive. Please contact Screenings4u support."
-          };
-        }
-
-        return {
-          allowed: true,
-          employerId: employer.id,
-          employerName: employer.employer_name,
-          role: employerRole.role
-        };
+        if (error) throw error;
+        if (!profile) return { allowed:false, reason:"This account is not registered for the employer portal." };
+        if (profile.is_active === false) return { allowed:false, reason:"This account is inactive. Please contact your administrator." };
+        return { allowed:true };
       }
 
       async function redirectIfAlreadySignedIn() {
