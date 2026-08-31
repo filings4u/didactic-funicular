@@ -65,8 +65,8 @@
     },
 
     employee: {
-      login: "lms-login.html",
-      dashboard: "lms-dashboard.html",
+      login: "employee-login.html",
+      dashboard: "employee-dashboard.html",
 
       allowedRoles: [
         "employee"
@@ -561,52 +561,24 @@
 
   function getDashboardForRole(role) {
 
-    const normalizedRole =
-      normalizeRole(role);
+    const normalizedRole = normalizeRole(role);
 
     if (!normalizedRole) {
       return null;
     }
 
-
-    if (
-      PORTALS.admin.allowedRoles.includes(
-        normalizedRole
-      )
-    ) {
-      return PORTALS.admin.dashboard;
+    /* Accept portal names as well as concrete database roles. */
+    if (PORTALS[normalizedRole]) {
+      return PORTALS[normalizedRole].dashboard;
     }
 
-
-    if (
-      PORTALS.customer.allowedRoles.includes(
-        normalizedRole
-      )
-    ) {
-      return PORTALS.customer.dashboard;
+    for (const portal of Object.values(PORTALS)) {
+      if (portal.allowedRoles.includes(normalizedRole)) {
+        return portal.dashboard;
+      }
     }
-
-
-    if (
-      PORTALS.employer.allowedRoles.includes(
-        normalizedRole
-      )
-    ) {
-      return PORTALS.employer.dashboard;
-    }
-
-
-    if (
-      PORTALS.employee.allowedRoles.includes(
-        normalizedRole
-      )
-    ) {
-      return PORTALS.employee.dashboard;
-    }
-
 
     return null;
-
   }
 
 
@@ -934,16 +906,15 @@
      SIGN OUT
      ============================================================ */
 
-  async function signOut(
-    loginPage = "admin-login.html"
-  ) {
+  async function signOut(loginPage = "admin-login.html") {
+
+    const destination =
+      typeof loginPage === "object" && loginPage !== null
+        ? loginPage.redirectTo || "admin-login.html"
+        : loginPage;
 
     await signOutSilently();
-
-    window.location.replace(
-      loginPage
-    );
-
+    window.location.replace(destination);
   }
 
 

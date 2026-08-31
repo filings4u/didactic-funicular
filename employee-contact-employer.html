@@ -1,11 +1,96 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Contact Employer | Screenings4u</title><link rel="stylesheet" href="assets/css/employee-portal.css"><link rel="stylesheet" href="assets/css/employee-contact-employer.css"></head><body><div id="employee-portal-sidebar"></div><main class="employee-portal-main"><div id="employee-portal-header"></div><div class="contact-page"><section class="contact-hero"><span>EMPLOYEE SUPPORT</span><h1>Contact Your Employer</h1><p>Your employer manages your course assignments and access. Send a message when you need assistance with your training.</p></section><div class="contact-grid"><section class="contact-card"><div class="card-head"><h2>Send a Message</h2><p>Your message will be routed to the appropriate employer contact when messaging is connected.</p></div><form id="employer-contact-form"><div class="form-grid"><label>Subject<select id="message-subject"><option value="">Select a topic</option><option value="course-access">Course Access</option><option value="technical-help">Technical Issue</option><option value="training-question">Training Question</option><option value="certificate">Certificate Question</option><option value="other">Other</option></select></label><label>Related Course (Optional)<select id="related-course"><option value="">Select a course</option></select></label><label class="full">Message<textarea id="message-body" rows="7" placeholder="Tell your employer how they can help..."></textarea></label></div><div class="form-actions"><button class="secondary-btn" type="button" id="clear-message">Clear</button><button class="primary-btn" type="submit">Send Message</button></div></form></section><aside class="contact-side"><section class="employer-info-card"><span>YOUR EMPLOYER</span><h2 id="contact-employer-name">Employer Information</h2><div class="contact-details"><div><small>EMAIL</small><strong id="contact-employer-email">Not available</strong></div><div><small>PHONE</small><strong id="contact-employer-phone">Not available</strong></div></div></section><section class="info-card"><h2>What your employer can help with</h2><ul><li>Course assignments and enrollment</li><li>Access to required training</li><li>Questions about workplace training requirements</li><li>Employer-specific training instructions</li></ul></section><section class="info-card muted"><h2>Training technical support</h2><p>For account or platform issues, your employer may direct you to the appropriate support contact.</p></section></aside></div></div></main><div class="contact-modal" id="contact-modal" hidden><div class="contact-modal-backdrop"></div><div class="contact-modal-card"><h2 id="contact-modal-title"></h2><p id="contact-modal-message"></p><button class="primary-btn" id="contact-modal-close" type="button">Done</button></div></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Contact Employer | Screenings4u</title>
+<link rel="stylesheet" href="assets/css/employee-portal.css">
+<link rel="stylesheet" href="assets/css/employee-contact-employer.css">
+</head>
+<body class="employee-contact-page" data-page-title="Contact Employer" data-page-subtitle="Contact your employer about training assignments and access.">
+<div id="employee-portal-sidebar"></div>
+<main class="employee-portal-main">
+<div id="employee-portal-header"></div>
+<div class="employee-contact-content">
 
+<section class="employee-contact-welcome-card">
+<div>
+<span class="employee-contact-eyebrow">EMPLOYEE SUPPORT</span>
+<h1>Contact Your Employer</h1>
+<p>Your employer manages your course assignments and access. Send a message when you need assistance with your training.</p>
+</div>
+<div class="employee-contact-welcome-actions">
+<a href="employee-courses.html" class="employee-contact-secondary-action">My Courses</a>
+</div>
+</section>
+
+<div class="employee-contact-grid">
+<section class="employee-contact-panel">
+<div class="employee-contact-panel-heading">
+<span class="employee-contact-eyebrow">SEND A MESSAGE</span>
+<h2>How can your employer help?</h2>
+<p>Your message will be sent through your employer communication record in Screenings4u.</p>
+</div>
+<form id="employer-contact-form">
+<div class="employee-contact-form-grid">
+<label>Subject
+<select id="message-subject" required>
+<option value="">Select a topic</option>
+<option value="course-access">Course Access</option>
+<option value="technical-help">Technical Issue</option>
+<option value="training-question">Training Question</option>
+<option value="certificate">Certificate Question</option>
+<option value="other">Other</option>
+</select></label>
+<label>Related Course (Optional)
+<select id="related-course"><option value="">Select a course</option></select>
+</label>
+<label class="full">Message
+<textarea id="message-body" rows="7" maxlength="5000" required placeholder="Tell your employer how they can help..."></textarea>
+</label>
+</div>
+<div class="employee-contact-form-actions">
+<button class="employee-contact-secondary-action" type="button" id="clear-message">Clear</button>
+<button class="employee-contact-primary-action" type="submit" id="send-message-btn">Send Message</button>
+</div>
+</form>
+</section>
+
+<aside class="employee-contact-side">
+<section class="employee-contact-side-card">
+<span class="employee-contact-eyebrow">YOUR EMPLOYER</span>
+<h2 id="contact-employer-name">Employer Information</h2>
+<div class="employee-contact-details">
+<div><small>EMAIL</small><strong id="contact-employer-email">Not available</strong></div>
+<div><small>PHONE</small><strong id="contact-employer-phone">Not available</strong></div>
+</div>
+</section>
+<section class="employee-contact-side-card">
+<h2>What your employer can help with</h2>
+<ul><li>Course assignments and enrollment</li><li>Access to required training</li><li>Questions about workplace training requirements</li><li>Employer-specific training instructions</li></ul>
+</section>
+<section class="employee-contact-side-card employee-contact-muted">
+<h2>Training technical support</h2>
+<p>For account or platform issues, your employer may direct you to the appropriate support contact.</p>
+</section>
+</aside>
+</div>
+</div>
+</main>
+
+<div class="employee-contact-modal" id="contact-modal" hidden>
+<div class="employee-contact-modal-backdrop"></div>
+<div class="employee-contact-modal-card">
+<h2 id="contact-modal-title"></h2><p id="contact-modal-message"></p>
+<button class="employee-contact-primary-action" id="contact-modal-close" type="button">Done</button>
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/core-auth.js"></script>
-<script src="assets/js/core-ui.js"></script>
+<script src="assets/js/ui.js"></script>
 <script src="assets/js/portal-auth-guard.js"></script>
 <script src="assets/js/employee-auth-guard.js"></script>
-
 <script src="assets/js/employee-portal.js"></script>
-<script src="assets/js/employee-dashboard.js"></script>
-<script src="assets/js/employee-contact-employer.js"></script></body></html>
+<script src="assets/js/employee-contact-employer.js"></script>
+</body></html>

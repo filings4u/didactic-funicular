@@ -4,6 +4,8 @@
   let db = null;
   let settings = [];
   let activeCategory = "all";
+  let trainingPackages = [];
+  let trainingCourses = [];
 
   const byId = (...ids) => {
     for (const id of ids) {
@@ -107,6 +109,8 @@
       });
 
       settings = Array.isArray(data.settings) ? data.settings : [];
+      trainingPackages = Array.isArray(data.training_packages) ? data.training_packages : [];
+      trainingCourses = Array.isArray(data.training_courses) ? data.training_courses : [];
 
       if (ui.count) {
         ui.count.textContent = String(settings.length);
@@ -208,9 +212,8 @@
       return;
     }
 
-    ui.settings.innerHTML = visible
-      .map(renderSetting)
-      .join("");
+    ui.settings.innerHTML = visible.map(renderSetting).join("") + renderTrainingCatalog();
+    bindTrainingCatalog();
   }
 
   function renderSetting(setting) {
@@ -347,6 +350,50 @@
     } finally {
       setBusy(false);
     }
+  }
+
+  function renderTrainingCatalog() {
+    if (activeCategory !== "training_credits") return "";
+    const packages = trainingPackages.map(p => `
+      <tr>
+        <td><input class="input" data-training-package="${escapeHtml(p.id)}" data-field="name" value="${escapeHtml(p.name)}"></td>
+        <td><input class="input" type="number" min="1" data-training-package="${escapeHtml(p.id)}" data-field="credits" value="${escapeHtml(p.credits)}"></td>
+        <td><input class="input" type="number" min="0" step="0.01" data-training-package="${escapeHtml(p.id)}" data-field="price" value="${escapeHtml(p.price)}"></td>
+        <td><input type="checkbox" class="switch" data-training-package="${escapeHtml(p.id)}" data-field="active" ${p.active?"checked":""}></td>
+      </tr>`).join("");
+    const courses = trainingCourses.map(c => `
+      <tr><td>${escapeHtml(c.title)}</td><td>${escapeHtml(humanize(c.status))}</td>
+      <td><input class="input" type="number" min="1" data-training-course="${escapeHtml(c.id)}" value="${escapeHtml(c.training_credit_cost||1)}"></td></tr>`).join("");
+    return `<div class="training-settings-extra">
+      <h3>Training Credit Packages</h3><p class="muted">Employer-only packages. These values do not use test-pricing.js.</p>
+      <div class="tablewrap"><table class="table"><thead><tr><th>Package</th><th>Credits</th><th>Price</th><th>Active</th></tr></thead><tbody>${packages||'<tr><td colspan="4">No packages configured.</td></tr>'}</tbody></table></div>
+      <h3 style="margin-top:24px">Course Credit Costs</h3><p class="muted">Set how many employer training credits are consumed when one person is assigned each LMS course.</p>
+      <div class="tablewrap"><table class="table"><thead><tr><th>Course</th><th>Status</th><th>Credits</th></tr></thead><tbody>${courses||'<tr><td colspan="3">No LMS courses found.</td></tr>'}</tbody></table></div>
+      <div class="actions"><button type="button" class="btn primary" id="save-training-catalog">Save Training Catalog</button></div>
+    </div>`;
+  }
+
+  function bindTrainingCatalog() {
+    document.getElementById("save-training-catalog")?.addEventListener("click", saveTrainingCatalog);
+  }
+
+  async function saveTrainingCatalog() {
+    try {
+      const packages = trainingPackages.map(p => {
+        const nodes = [...document.querySelectorAll(`[data-training-package="${p.id}"]`)];
+        const out = {id:p.id,name:p.name,credits:p.credits,price:p.price,active:p.active,sort_order:p.sort_order||0};
+        nodes.forEach(n => { const f=n.dataset.field; out[f]=f==="active"?n.checked:(["credits","price"].includes(f)?Number(n.value):n.value); });
+        return out;
+      });
+      const courses = trainingCourses.map(c => {
+        const n=document.querySelector(`[data-training-course="${c.id}"]`);
+        return {id:c.id,training_credit_cost:Math.max(1,Number(n?.value||c.training_credit_cost||1))};
+      });
+      setBusy(true);
+      await callFunction({scope:"settings",action:"save_training_catalog",packages,courses});
+      showMessage("Training credit packages and course costs saved.","ok");
+      await loadSettings();
+    } catch(error) { showError(error); } finally { setBusy(false); }
   }
 
   function setBusy(busy) {

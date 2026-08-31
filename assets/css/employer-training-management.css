@@ -570,3 +570,108 @@
 
   .training-modal-actions button { width: 100%; }
 }
+
+/* Desktop readability */
+@media (min-width:861px){
+  .training-eyebrow{font-size:12px}
+  .training-hero p{font-size:16px;color:#536174}
+  .training-primary-btn,.training-secondary-btn,.training-cancel-btn{font-size:15px;min-height:46px}
+  .training-summary-card span{font-size:14px;color:#667085}
+  .training-summary-card strong{font-size:26px}
+  .training-summary-card small{font-size:13px;color:#667085}
+  .training-action-card h3{font-size:17px!important}
+  .training-action-card p{font-size:14px!important;color:#536174!important}
+  .training-panel h2,.training-section h2{font-size:20px!important}
+  .training-panel p,.training-section p{font-size:15px!important;color:#536174!important}
+  .training-table th{font-size:13px!important;color:#536174!important}
+  .training-table td{font-size:15px!important;color:#283548!important}
+  .training-modal label,.training-form label{font-size:14px!important;color:#172033!important}
+  .training-modal input,.training-modal select,.training-modal textarea,
+  .training-form input,.training-form select,.training-form textarea{font-size:16px!important;color:#172033!important;min-height:46px}
+}
+
+/* ============================================================
+   TRAINING ACTION CARD BUTTONS — FIXED
+   These buttons are rendered inside .training-action-card without
+   the hero button classes, so style them directly.
+   ============================================================ */
+
+.training-action-card button {
+  margin-left: auto;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 132px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid #325aa3;
+  border-radius: 9px;
+  background: #325aa3;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+
+.training-action-card button:hover {
+  background: #25477f;
+  border-color: #25477f;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.training-action-card button:focus-visible {
+  outline: 3px solid rgba(50, 90, 163, .22);
+  outline-offset: 2px;
+}
+
+.training-action-card button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Purchase/View Training is the secondary action */
+.training-action-card:nth-child(2) button {
+  border-color: #d6dfe9;
+  background: #ffffff;
+  color: #325aa3;
+}
+
+.training-action-card:nth-child(2) button:hover {
+  border-color: #b9c9e4;
+  background: #f5f8fd;
+  color: #25477f;
+}
+
+/* Keep the action copy and button comfortably separated */
+.training-action-card > div:nth-child(2) {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+@media (min-width: 861px) {
+  .training-action-card button {
+    min-height: 46px;
+    min-width: 140px;
+    padding: 0 18px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 760px) {
+  .training-action-card button {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 12px;
+  }
+}

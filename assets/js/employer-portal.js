@@ -54,15 +54,15 @@
           <div class="employer-sidebar-brand">
             <a href="employer-dashboard.html" class="employer-sidebar-logo-link" aria-label="Screenings4u Employer Portal">
               <img src="images/logo.png" alt="screenings4u" class="employer-sidebar-logo" />
-              <div class="employer-sidebar-brand-copy">
-                <span class="employer-sidebar-brand-label">Employer Portal</span>
-              </div>
+              <div class="employer-sidebar-brand-copy"><span class="employer-sidebar-brand-label">Employer Portal</span></div>
             </a>
             <button type="button" class="employer-sidebar-collapse" id="employer-sidebar-collapse" aria-label="Collapse sidebar" title="Collapse sidebar">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
             </button>
           </div>
+
           <div class="employer-sidebar-scroll">
+
             <div class="employer-nav-group">
               <span class="employer-nav-label">Overview</span>
               <nav class="employer-nav">
@@ -70,45 +70,59 @@
                   <span class="employer-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg></span>
                   <span class="employer-nav-text">Dashboard</span>
                 </a>
+                <a href="employer-notifications.html" class="employer-nav-link" data-employer-page="employer-notifications.html">
+                  <span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg></span>
+                  <span class="employer-nav-text">Notifications</span><span class="employer-nav-badge" id="employer-notification-count" style="display:none;">0</span>
+                </a>
               </nav>
             </div>
+
             <div class="employer-nav-group">
               <span class="employer-nav-label">Workforce</span>
               <nav class="employer-nav">
-                <a href="employer-employees.html" class="employer-nav-link" data-employer-page="employer-employees.html">
-                  <span class="employer-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"></circle><circle cx="17" cy="9" r="2"></circle><path d="M3 21c.5-4 2.5-6 6-6s5.5 2 6 6"></path><path d="M15 15c3 0 5 1.5 6 4"></path></svg></span><span class="employer-nav-text">Employees</span>
-                </a>
-                <a href="employer-programs.html" class="employer-nav-link" data-employer-page="employer-programs.html">
-                  <span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"></path><path d="M8 9h8"></path><path d="M8 13h8"></path><path d="M8 17h5"></path></svg></span><span class="employer-nav-text">Programs</span>
-                </a>
-                <a href="employer-training.html" class="employer-nav-link" data-employer-page="employer-training.html">
-                  <span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 5h8a3 3 0 0 1 3 3v11a3 3 0 0 0-3-3H3z"></path><path d="M21 5h-8a3 3 0 0 0-3 3v11a3 3 0 0 1 3-3h8z"></path></svg></span><span class="employer-nav-text">Training Management</span>
-                </a>
+                <a href="employer-employees.html" class="employer-nav-link" data-employer-page="employer-employees.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"></circle><circle cx="17" cy="9" r="2"></circle><path d="M3 21c.5-4 2.5-6 6-6s5.5 2 6 6"></path><path d="M15 15c3 0 5 1.5 6 4"></path></svg></span><span class="employer-nav-text">Employees</span></a>
+                <a href="employer-programs.html" class="employer-nav-link" data-employer-page="employer-programs.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"></path><path d="M8 9h8"></path><path d="M8 13h8"></path><path d="M8 17h5"></path></svg></span><span class="employer-nav-text">Programs</span></a>
               </nav>
             </div>
+
             <div class="employer-nav-group">
-              <span class="employer-nav-label">Business</span>
+              <span class="employer-nav-label">Training</span>
+              <nav class="employer-nav">
+                <a href="employer-training-management.html" class="employer-nav-link" data-employer-page="employer-training-management.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 5h8a3 3 0 0 1 3 3v11a3 3 0 0 0-3-3H3z"></path><path d="M21 5h-8a3 3 0 0 0-3 3v11a3 3 0 0 1 3-3h8z"></path></svg></span><span class="employer-nav-text">Training Management</span></a>
+                <a href="employer-training-credits.html" class="employer-nav-link" data-employer-page="employer-training-credits.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9 9h6"></path><path d="M9 15h6"></path><path d="M12 7v10"></path></svg></span><span class="employer-nav-text">Training & Credits</span></a>
+              </nav>
+            </div>
+
+            <div class="employer-nav-group">
+              <span class="employer-nav-label">Orders & Billing</span>
               <nav class="employer-nav">
                 <a href="employer-orders.html" class="employer-nav-link" data-employer-page="employer-orders.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M6 3h12"></path><path d="M6 7h12"></path><path d="M6 11h12"></path><path d="M6 15h8"></path></svg></span><span class="employer-nav-text">Orders</span></a>
-                <a href="employer-proposals.html" class="employer-nav-link" data-employer-page="employer-proposals.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M8 13h8"></path></svg></span><span class="employer-nav-text">Proposals</span></a>
                 <a href="employer-invoices.html" class="employer-nav-link" data-employer-page="employer-invoices.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 10h18"></path><path d="M7 15h2"></path></svg></span><span class="employer-nav-text">Invoices</span></a>
+                <a href="employer-proposals.html" class="employer-nav-link" data-employer-page="employer-proposals.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M8 13h8"></path></svg></span><span class="employer-nav-text">Proposals</span></a>
               </nav>
             </div>
+
             <div class="employer-nav-group">
-              <span class="employer-nav-label">Purchase & Requests</span>
+              <span class="employer-nav-label">Services & Requests</span>
               <nav class="employer-nav">
                 <a href="employer-catalog.html" class="employer-nav-link" data-employer-page="employer-catalog.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1"></circle><circle cx="20" cy="20" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L22 6H6"></path></svg></span><span class="employer-nav-text">Service Catalog</span></a>
-                <a href="employer-post-accident.html" class="employer-nav-link" data-employer-page="employer-post-accident.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.3 3.9 2.6 18a2 2 0 0 0 1.8 3h15.2a2 2 0 0 0 1.8-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg></span><span class="employer-nav-text">Post-Accident Testing</span></a>
-                <a href="employer-onsite-testing.html" class="employer-nav-link" data-employer-page="employer-onsite-testing.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 21h18"></path><path d="M5 21V9l7-5 7 5v12"></path><path d="M9 21v-5h6v5"></path></svg></span><span class="employer-nav-text">Onsite Testing</span></a>
+                <a href="employer-request-post-accident.html" class="employer-nav-link" data-employer-page="employer-request-post-accident.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.3 3.9 2.6 18a2 2 0 0 0 1.8 3h15.2a2 2 0 0 0 1.8-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg></span><span class="employer-nav-text">Post-Accident Testing</span></a>
+                <a href="employer-request-onsite-testing.html" class="employer-nav-link" data-employer-page="employer-request-onsite-testing.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 21h18"></path><path d="M5 21V9l7-5 7 5v12"></path><path d="M9 21v-5h6v5"></path></svg></span><span class="employer-nav-text">Onsite Testing</span></a>
               </nav>
             </div>
+
             <div class="employer-nav-group">
-              <span class="employer-nav-label">Account</span>
+              <span class="employer-nav-label">Company & Account</span>
               <nav class="employer-nav">
-                <a href="employer-account.html" class="employer-nav-link" data-employer-page="employer-account.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 21V5a2 2 0 0 1 2-2h10v18"></path><path d="M15 8h6v13h-6"></path><path d="M7 7h4"></path><path d="M7 11h4"></path></svg></span><span class="employer-nav-text">My Company</span></a>
+                <a href="employer-profile.html" class="employer-nav-link" data-employer-page="employer-profile.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 21V5a2 2 0 0 1 2-2h10v18"></path><path d="M15 8h6v13h-6"></path><path d="M7 7h4"></path><path d="M7 11h4"></path></svg></span><span class="employer-nav-text">Company Profile</span></a>
+                <a href="employer-users.html" class="employer-nav-link" data-employer-page="employer-users.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"></circle><circle cx="17" cy="9" r="2"></circle><path d="M2 21c.5-4 2.5-6 6-6s5.5 2 6 6"></path><path d="M14 16c3 0 5 1.5 6 4"></path></svg></span><span class="employer-nav-text">Portal Users</span></a>
+                <a href="employer-account-settings.html" class="employer-nav-link" data-employer-page="employer-account-settings.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1z"></path></svg></span><span class="employer-nav-text">Account Settings</span></a>
+                <a href="employer-support.html" class="employer-nav-link" data-employer-page="employer-support.html"><span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v13H8l-4 4z"></path><path d="M8 9h8"></path><path d="M8 13h5"></path></svg></span><span class="employer-nav-text">Support</span></a>
               </nav>
             </div>
+
           </div>
+
           <div class="employer-sidebar-footer"><div class="employer-sidebar-footer-links">
             <a href="index.html" class="employer-footer-link"><span class="employer-footer-icon"><svg viewBox="0 0 24 24"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg></span><span class="employer-footer-text">Back to Screenings4u</span></a>
             <button type="button" class="employer-footer-link sign-out" data-employer-sign-out><span class="employer-footer-icon"><svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path><path d="M21 19V5a2 2 0 0 0-2-2h-6"></path></svg></span><span class="employer-footer-text">Sign Out</span></button>
@@ -118,7 +132,6 @@
       <div class="employer-sidebar-overlay" id="employer-sidebar-overlay" aria-hidden="true"></div>
     `;
   }
-
 
   /* ==========================================================
      HEADER
@@ -282,7 +295,7 @@
             <div class="employer-dropdown-links">
 
               <a
-                href="employer-account.html"
+                href="employer-profile.html"
                 class="employer-dropdown-link"
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -300,7 +313,7 @@
 
 
               <a
-                href="employer-billing.html"
+                href="employer-invoices.html"
                 class="employer-dropdown-link"
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true">

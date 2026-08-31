@@ -336,15 +336,84 @@
       }
 
       async function verifyPortalAccess(client, userId) {
-        const { data: profile, error } = await client
+        const employerRoles = [
+          "employer_admin",
+          "employer_hr",
+          "employer_safety",
+          "employer_billing",
+          "employer_user"
+        ];
+
+        // 1. Confirm this authenticated user has an employer portal role.
+        const { data: roleRows, error: roleError } = await client
+          .from("user_role_assignments")
+          .select("role, employer_id")
+          .eq("user_id", userId);
+
+        if (roleError) throw roleError;
+
+        const employerRole = (roleRows || []).find((row) =>
+          employerRoles.includes(row.role)
+        );
+
+        if (!employerRole) {
+          return {
+            allowed: false,
+            reason: "This account does not have employer portal access."
+          };
+        }
+
+        // 2. Resolve the company through the employer membership table.
+        const { data: memberships, error: membershipError } = await client
+          .from("employer_members")
+          .select("id, employer_id, status, is_primary")
+          .eq("user_id", userId)
+          .eq("status", "active");
+
+        if (membershipError) throw membershipError;
+
+        if (!memberships || memberships.length === 0) {
+          return {
+            allowed: false,
+            reason: "This account is not linked to an active employer organization."
+          };
+        }
+
+        const membership =
+          memberships.find((row) => row.is_primary === true) ||
+          memberships.find((row) => row.employer_id === employerRole.employer_id) ||
+          memberships[0];
+
+        // 3. Verify the employer organization itself is active.
+        // employer_profiles uses `status`; there is no `is_active` column.
+        const { data: employer, error: employerError } = await client
           .from("employer_profiles")
-          .select("id, is_active")
-          .eq("id", userId)
+          .select("id, employer_name, status")
+          .eq("id", membership.employer_id)
           .maybeSingle();
-        if (error) throw error;
-        if (!profile) return { allowed:false, reason:"This account is not registered for the employer portal." };
-        if (profile.is_active === false) return { allowed:false, reason:"This account is inactive. Please contact your administrator." };
-        return { allowed:true };
+
+        if (employerError) throw employerError;
+
+        if (!employer) {
+          return {
+            allowed: false,
+            reason: "The employer organization for this account could not be found."
+          };
+        }
+
+        if (String(employer.status || "").toLowerCase() !== "active") {
+          return {
+            allowed: false,
+            reason: "This employer organization is inactive. Please contact Screenings4u support."
+          };
+        }
+
+        return {
+          allowed: true,
+          employerId: employer.id,
+          employerName: employer.employer_name,
+          role: employerRole.role
+        };
       }
 
       async function redirectIfAlreadySignedIn() {

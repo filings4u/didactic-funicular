@@ -517,3 +517,54 @@
   .program-form-grid { grid-template-columns: 1fr; }
   .program-modal-card { padding: 20px; }
 }
+
+/* ============================================================
+   PROGRAM CARDS + DESKTOP READABILITY — CORRECTED
+   ============================================================ */
+@media (min-width:861px){
+  .programs-eyebrow{font-size:12px}
+  .programs-hero p{font-size:16px;color:#536174}
+  .programs-primary-btn,.programs-secondary-btn{font-size:15px;min-height:46px}
+  .program-summary-card{padding:22px}
+  .program-summary-card span{font-size:14px;color:#667085}
+  .program-summary-card strong{font-size:28px}
+  .program-summary-card small{font-size:13px;color:#667085}
+
+  .program-search{min-height:46px}
+  .program-search input{font-size:15px;color:#172033}
+  .programs-toolbar select,.program-form select{font-size:14px;min-height:46px;color:#172033}
+
+  /* Cards were too compressed at 3 columns with tiny text. */
+  .program-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:18px;
+    padding:22px;
+  }
+  .program-card{
+    min-width:0;
+    padding:22px;
+    border-radius:14px;
+  }
+  .program-card-top{align-items:flex-start}
+  .program-card-type{font-size:12px}
+  .program-card h3{font-size:18px;line-height:1.4}
+  .program-status{font-size:13px;min-height:28px;padding:0 10px}
+  .program-card-stats{gap:12px;margin-top:20px}
+  .program-card-stats div{padding:14px}
+  .program-card-stats span{font-size:13px;color:#667085}
+  .program-card-stats strong{font-size:17px;color:#34475f}
+  .program-card-footer{margin-top:18px;padding-top:16px}
+  .program-card-footer span{font-size:13px;color:#667085}
+  .program-card-action{font-size:14px}
+  .program-empty-state h3{font-size:18px}
+  .program-empty-state p{font-size:15px;color:#536174}
+  .programs-info-card h3{font-size:17px}
+  .programs-info-card p{font-size:14px;color:#536174}
+  .program-modal-header h2{font-size:22px}
+  .program-modal-header p{font-size:15px!important;color:#536174!important}
+  .program-form label{font-size:14px!important;color:#172033!important}
+  .program-form input,.program-form textarea{font-size:16px!important;color:#172033!important;min-height:46px}
+}
+@media (min-width:1400px){
+  .program-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}

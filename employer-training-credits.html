@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Training Credits | Screenings4u Employer Portal</title>
+
+  <link rel="stylesheet" href="assets/css/employer-portal.css?v=20260831-0610">
+  <link rel="stylesheet" href="assets/css/employer-training-credits.css?v=20260831-0610">
+</head>
+
+<body class="employer-training-credits-page"
+      data-page-title="Training & Credits"
+      data-page-subtitle="Manage training credits, course seats, and purchase history.">
+
+  <div id="employer-portal-sidebar"></div>
+
+  <main class="employer-portal-main">
+    <div id="employer-portal-header"></div>
+
+    <div class="employer-dashboard-content">
+
+      <section class="training-credits-hero">
+        <div>
+          <span class="training-credits-eyebrow">WORKFORCE LEARNING</span>
+          <h1>Training & Credits</h1>
+          <p>Manage training credit balance, available packages, course access, and purchase history.</p>
+        </div>
+
+        <div class="training-credits-hero-actions">
+          <a class="training-credits-secondary-btn" href="employer-training-management.html">Training Management</a>
+          <a class="training-credits-primary-btn" href="employer-catalog.html?category=training">Training Marketplace</a>
+        </div>
+      </section>
+
+      <div id="message"></div>
+
+      <section class="training-credits-summary-grid">
+        <article class="training-credits-summary-card">
+          <span>Available Credits</span>
+          <strong id="balance">0</strong>
+          <small>Ready for employee or staff assignments</small>
+        </article>
+
+        <article class="training-credits-summary-card">
+          <span>Lifetime Purchased</span>
+          <strong id="purchased">0</strong>
+          <small>Total credits added to your organization</small>
+        </article>
+
+        <article class="training-credits-summary-card">
+          <span>Credits Used</span>
+          <strong id="used">0</strong>
+          <small>Credits consumed by course assignments</small>
+        </article>
+
+        <article class="training-credits-summary-card">
+          <span>Course Seats</span>
+          <strong id="seats">0</strong>
+          <small>Available directly purchased course seats</small>
+        </article>
+      </section>
+
+      <section class="training-credits-panel">
+        <div class="training-credits-panel-header">
+          <span class="training-credits-eyebrow">CREDIT PACKAGES</span>
+          <h2>Training Credit Packages</h2>
+          <p>Review package details before continuing to secure checkout.</p>
+        </div>
+
+        <div id="packages" class="training-credits-package-grid"></div>
+      </section>
+
+      <section class="training-credits-panel">
+        <div class="training-credits-panel-header">
+          <span class="training-credits-eyebrow">DIRECT PURCHASES</span>
+          <h2>Course Access</h2>
+          <p>Directly purchased training seats available to your company.</p>
+        </div>
+
+        <div class="training-credits-table-wrap">
+          <table class="training-credits-table">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Purchased</th>
+                <th>Used</th>
+                <th>Available</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="access"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="training-credits-panel">
+        <div class="training-credits-panel-header">
+          <span class="training-credits-eyebrow">ACCOUNT ACTIVITY</span>
+          <h2>Credit Activity</h2>
+          <p>Your company's training-credit ledger.</p>
+        </div>
+
+        <div class="training-credits-table-wrap">
+          <table class="training-credits-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Activity</th>
+                <th>Credits</th>
+                <th>Balance</th>
+              </tr>
+            </thead>
+            <tbody id="transactions"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <div class="training-credit-modal" id="training-credit-modal" hidden>
+    <div class="training-credit-modal-backdrop" data-close-credit-modal></div>
+
+    <section class="training-credit-modal-card" role="dialog" aria-modal="true" aria-labelledby="credit-modal-title">
+      <div class="training-credit-modal-header">
+        <div>
+          <span class="training-credits-eyebrow">TRAINING CREDIT PACKAGE</span>
+          <h2 id="credit-modal-title">Package Details</h2>
+        </div>
+
+        <button type="button" class="training-credit-modal-close" data-close-credit-modal aria-label="Close">×</button>
+      </div>
+
+      <div class="training-credit-modal-body">
+        <div class="training-credit-modal-summary">
+          <div>
+            <span>Credits</span>
+            <strong id="credit-modal-credits">0</strong>
+          </div>
+          <div>
+            <span>Package Price</span>
+            <strong id="credit-modal-price">$0.00</strong>
+          </div>
+        </div>
+
+        <div class="training-credit-description" id="credit-modal-description"></div>
+
+        <div class="training-credit-info-box">
+          <strong>How training credits work</strong>
+          <p>
+            After successful payment, the credits are added to your employer training-credit balance.
+            They can then be used to assign eligible training courses to employees or staff.
+          </p>
+        </div>
+      </div>
+
+      <div class="training-credit-modal-actions">
+        <button type="button" class="training-credit-cancel-btn" data-close-credit-modal>Close</button>
+        <button type="button" class="training-credit-purchase-btn" id="credit-modal-purchase">Purchase This Package</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/core-auth.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/portal-auth-guard.js"></script>
+  <script src="assets/js/employer-auth-guard.js"></script>
+  <script src="assets/js/employer-portal.js"></script>
+  <script src="assets/js/employer-training-credits.js?v=20260831-0610"></script>
+</body>
+</html>

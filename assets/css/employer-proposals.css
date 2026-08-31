@@ -466,3 +466,38 @@
   .proposal-modal-actions { flex-direction: column-reverse; }
   .proposal-modal-actions button { width: 100%; }
 }
+
+
+
+/* Additions for live employer proposal response workflow */
+.proposal-response-overlay{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:24px}
+.proposal-response-backdrop{position:absolute;inset:0;background:rgba(11,31,58,.58);backdrop-filter:blur(3px)}
+.proposal-response-card{position:relative;width:min(680px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;box-shadow:0 28px 80px rgba(12,37,70,.28);padding:24px}
+.proposal-response-body{display:grid;gap:16px;color:#17304f}.proposal-response-body>p{margin:0;color:#6b7b90;line-height:1.6}
+.proposal-response-label{display:grid;gap:8px;font-weight:700;color:#173d78}.proposal-response-label textarea{width:100%;box-sizing:border-box;border:1px solid #dbe4ef;border-radius:12px;padding:13px 14px;font:inherit;resize:vertical;outline:none}.proposal-response-label textarea:focus{border-color:#2f5798;box-shadow:0 0 0 3px rgba(47,87,152,.1)}
+.proposal-change-original,.proposal-change-highlight{border-left:4px solid #f05a00;background:#fff7f0;border-radius:10px;padding:13px 15px;display:grid;gap:5px}.proposal-change-original span,.proposal-change-original small{color:#6b7b90}.proposal-change-history{margin-top:22px}.proposal-change-history h3{color:#173d78}.proposal-change-highlight{margin-top:10px}.proposal-change-highlight p{margin:5px 0;line-height:1.5}
+.proposal-item-row>div{display:grid;gap:3px}.proposal-item-row small{color:#6b7b90}.proposal-copy{margin-top:20px;padding:16px;background:#f7f9fc;border:1px solid #dbe4ef;border-radius:12px}.proposal-copy h3{margin:0 0 8px;color:#173d78}.proposal-copy p{margin:0;white-space:pre-wrap;line-height:1.6}
+.proposal-deny-btn,.proposal-deny-confirm{border-color:#c53b35!important;color:#a82e29!important}.proposal-deny-confirm{border:1px solid #c53b35;background:#fff;border-radius:10px;padding:11px 18px;font-weight:800;cursor:pointer}.proposal-response-error{padding:11px 13px;border-radius:10px;background:#fff0ef;color:#a82e29;font-weight:700}
+.proposal-status-changes_requested{background:#fff3e8;color:#b44b00}
+@media(max-width:640px){.proposal-response-overlay{padding:12px}.proposal-response-card{padding:18px}.proposal-modal-actions{flex-wrap:wrap}}
+
+/* Desktop readability */
+@media (min-width:861px){
+  .proposal-eyebrow{font-size:12px}
+  .proposals-hero p{font-size:16px;color:#536174}
+  .proposal-primary-btn,.proposal-secondary-btn{font-size:15px;min-height:46px}
+  .proposal-summary-card span{font-size:14px;color:#667085}
+  .proposal-summary-card strong{font-size:26px}
+  .proposal-summary-card small{font-size:13px;color:#667085}
+  .proposal-panel-header h2{font-size:20px}
+  .proposal-search{min-height:46px}
+  .proposal-search input{font-size:15px!important;color:#172033!important}
+  .proposal-controls select{font-size:14px!important;min-height:46px;color:#172033!important}
+  .proposal-table th{font-size:13px!important;color:#536174!important}
+  .proposal-table td{font-size:15px!important;color:#283548!important}
+  .proposal-table small{font-size:13px!important;color:#667085!important}
+  .proposal-status{font-size:13px!important}
+  .proposal-action{font-size:14px!important}
+  .proposal-modal label{font-size:14px!important;color:#172033!important}
+  .proposal-modal input,.proposal-modal select,.proposal-modal textarea{font-size:16px!important;color:#172033!important}
+}

@@ -1,29 +1,248 @@
-(function(){'use strict';
-const state={profile:null,preferences:{}};
-document.addEventListener('DOMContentLoaded',init);
-function init(){bind();loadAccount();}
+(()=>{"use strict";
+
+let db=null;
+let authUser=null;
+
+const $=id=>document.getElementById(id);
+
+document.addEventListener("DOMContentLoaded",init);
+
+async function init(){
+  bind();
+
+  try{
+    db=window.getScreenings4uSupabase
+      ? await window.getScreenings4uSupabase()
+      : window.screenings4uSupabase;
+
+    if(!db) throw new Error("Supabase client is unavailable.");
+
+    await loadAccount();
+  }catch(error){
+    console.error("[Employee Account]",error);
+    show("Account Unavailable",error?.message||"Unable to load your account.");
+  }
+}
+
 function bind(){
-document.querySelectorAll('.account-tab').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
-document.getElementById('profile-form')?.addEventListener('submit',saveProfile);
-document.getElementById('password-form')?.addEventListener('submit',updatePassword);
-document.getElementById('preferences-form')?.addEventListener('submit',savePreferences);
-document.getElementById('modal-close')?.addEventListener('click',closeModal);
+  document.querySelectorAll(".employee-account-tab").forEach(button=>{
+    button.addEventListener("click",()=>showTab(button.dataset.tab));
+  });
+
+  $("profile-form")?.addEventListener("submit",saveProfile);
+  $("password-form")?.addEventListener("submit",updatePassword);
+  $("preferences-form")?.addEventListener("submit",savePreferences);
+  $("modal-close")?.addEventListener("click",closeModal);
 }
+
 async function loadAccount(){
-/* SUPABASE WIRING:
-1. Resolve auth user with supabase.auth.getUser().
-2. Load the matching user_profiles row.
-3. Resolve employee relationship through employer_employees as needed.
-4. Populate only fields confirmed by the actual schema.
-5. Notification preference storage needs confirmation. The existing notifications table
-   may represent delivered notifications rather than user preference settings.
-*/
-populate();
+  const {data:{user},error:userError}=await db.auth.getUser();
+  if(userError) throw userError;
+  if(!user) throw new Error("Your employee session has expired. Please sign in again.");
+
+  authUser=user;
+
+  const [profileResult,preferenceResult]=await Promise.all([
+    db.from("user_profiles")
+      .select("id,first_name,last_name,display_name,email,phone")
+      .eq("id",user.id)
+      .maybeSingle(),
+
+    db.from("employee_account_preferences")
+      .select("training_updates,certificate_notifications,account_notifications")
+      .eq("user_id",user.id)
+      .maybeSingle()
+  ]);
+
+  if(profileResult.error) throw profileResult.error;
+  if(preferenceResult.error) throw preferenceResult.error;
+
+  const profile=profileResult.data||{};
+  const preferences=preferenceResult.data||{
+    training_updates:true,
+    certificate_notifications:true,
+    account_notifications:true
+  };
+
+  setVal("first-name",profile.first_name);
+  setVal("last-name",profile.last_name);
+  setVal("email",profile.email||user.email);
+  setVal("phone",profile.phone);
+
+  setCheck("pref-training",preferences.training_updates);
+  setCheck("pref-certificates",preferences.certificate_notifications);
+  setCheck("pref-account",preferences.account_notifications);
+
+  updatePortalUser(profile);
 }
-function populate(){if(!state.profile)return;setVal('first-name',state.profile.first_name);setVal('last-name',state.profile.last_name);setVal('email',state.profile.email);setVal('phone',state.profile.phone);setCheck('pref-training',!!state.preferences.training);setCheck('pref-certificates',!!state.preferences.certificates);setCheck('pref-account',!!state.preferences.account);}
-function showTab(tab){document.querySelectorAll('.account-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.querySelectorAll('.account-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===tab));}
-async function saveProfile(e){e.preventDefault();const payload={first_name:val('first-name'),last_name:val('last-name'),phone:val('phone')};/* Update confirmed editable profile columns here after schema-column verification. */show('Profile Ready','Your profile changes have been validated. The final Supabase update will be connected to the confirmed user profile columns.');}
-async function updatePassword(e){e.preventDefault();const current=val('current-password'),next=val('new-password'),confirm=val('confirm-password');if(!current||!next||!confirm){show('Password Required','Please complete all password fields.');return;}if(next!==confirm){show('Passwords Do Not Match','Your new password and confirmation must match.');return;}if(next.length<8){show('Choose a Stronger Password','Your new password must contain at least 8 characters.');return;}/* Re-authentication policy may be required before supabase.auth.updateUser({password: next}). */show('Password Update Ready','Your password request has been validated. The final authentication update will use Supabase Auth with the appropriate security checks.');e.target.reset();}
-async function savePreferences(e){e.preventDefault();state.preferences={training:checked('pref-training'),certificates:checked('pref-certificates'),account:checked('pref-account')};/* Connect to confirmed preference storage model. Do not insert these into notifications unless that table is explicitly designed for preferences. */show('Preferences Ready','Your notification preferences have been updated locally and are ready to connect to the approved account preferences data model.');}
-function val(id){return document.getElementById(id).value.trim();}function setVal(id,v){const e=document.getElementById(id);if(e)e.value=v||'';}function checked(id){return document.getElementById(id).checked;}function setCheck(id,v){const e=document.getElementById(id);if(e)e.checked=v;}function show(t,m){document.getElementById('modal-title').textContent=t;document.getElementById('modal-message').textContent=m;document.getElementById('account-modal').hidden=false;}function closeModal(){document.getElementById('account-modal').hidden=true;}
+
+function showTab(tab){
+  document.querySelectorAll(".employee-account-tab").forEach(button=>{
+    button.classList.toggle("active",button.dataset.tab===tab);
+  });
+
+  document.querySelectorAll(".employee-account-panel").forEach(panel=>{
+    panel.classList.toggle("active",panel.dataset.panel===tab);
+  });
+}
+
+async function saveProfile(event){
+  event.preventDefault();
+
+  const button=event.submitter;
+  setBusy(button,true,"Saving...");
+
+  try{
+    const payload={
+      first_name:val("first-name"),
+      last_name:val("last-name"),
+      phone:val("phone")||null
+    };
+
+    const {data,error}=await db
+      .from("user_profiles")
+      .update(payload)
+      .eq("id",authUser.id)
+      .select("id,first_name,last_name,display_name,email,phone")
+      .single();
+
+    if(error) throw error;
+
+    updatePortalUser(data);
+    show("Profile Updated","Your personal information has been saved.");
+  }catch(error){
+    console.error("[Employee Account] profile update",error);
+    show("Unable to Save Profile",error?.message||"Your profile could not be updated.");
+  }finally{
+    setBusy(button,false,"Save Changes");
+  }
+}
+
+async function updatePassword(event){
+  event.preventDefault();
+
+  const current=val("current-password");
+  const next=val("new-password");
+  const confirm=val("confirm-password");
+
+  if(!current||!next||!confirm){
+    show("Password Required","Please complete all password fields.");
+    return;
+  }
+
+  if(next!==confirm){
+    show("Passwords Do Not Match","Your new password and confirmation must match.");
+    return;
+  }
+
+  if(next.length<8){
+    show("Choose a Stronger Password","Your new password must contain at least 8 characters.");
+    return;
+  }
+
+  const button=event.submitter;
+  setBusy(button,true,"Updating...");
+
+  try{
+    if(!authUser?.email){
+      throw new Error("No email address is available for password verification.");
+    }
+
+    const {error:verifyError}=await db.auth.signInWithPassword({
+      email:authUser.email,
+      password:current
+    });
+
+    if(verifyError){
+      throw new Error("Your current password is incorrect.");
+    }
+
+    const {error:updateError}=await db.auth.updateUser({password:next});
+    if(updateError) throw updateError;
+
+    event.target.reset();
+    show("Password Updated","Your password has been changed successfully.");
+  }catch(error){
+    console.error("[Employee Account] password update",error);
+    show("Unable to Update Password",error?.message||"Your password could not be updated.");
+  }finally{
+    setBusy(button,false,"Update Password");
+  }
+}
+
+async function savePreferences(event){
+  event.preventDefault();
+
+  const button=event.submitter;
+  setBusy(button,true,"Saving...");
+
+  try{
+    const payload={
+      user_id:authUser.id,
+      training_updates:checked("pref-training"),
+      certificate_notifications:checked("pref-certificates"),
+      account_notifications:checked("pref-account")
+    };
+
+    const {error}=await db
+      .from("employee_account_preferences")
+      .upsert(payload,{onConflict:"user_id"});
+
+    if(error) throw error;
+
+    show("Preferences Updated","Your employee notification preferences have been saved.");
+  }catch(error){
+    console.error("[Employee Account] preferences update",error);
+    show("Unable to Save Preferences",error?.message||"Your preferences could not be saved.");
+  }finally{
+    setBusy(button,false,"Save Preferences");
+  }
+}
+
+function updatePortalUser(profile){
+  const fullName=
+    profile?.display_name ||
+    [profile?.first_name,profile?.last_name].filter(Boolean).join(" ") ||
+    "Employee";
+
+  window.updateEmployeePortalUser?.({
+    fullName,
+    email:profile?.email||authUser?.email||""
+  });
+}
+
+function val(id){
+  return $(id)?.value?.trim()||"";
+}
+
+function setVal(id,value){
+  const el=$(id);
+  if(el) el.value=value||"";
+}
+
+function checked(id){
+  return !!$(id)?.checked;
+}
+
+function setCheck(id,value){
+  const el=$(id);
+  if(el) el.checked=!!value;
+}
+
+function setBusy(button,busy,label){
+  if(!button) return;
+  button.disabled=busy;
+  button.textContent=label;
+}
+
+function show(title,message){
+  $("modal-title").textContent=title;
+  $("modal-message").textContent=message;
+  $("account-modal").hidden=false;
+}
+
+function closeModal(){
+  $("account-modal").hidden=true;
+}
+
 })();

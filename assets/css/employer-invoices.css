@@ -118,3 +118,22 @@
   .invoice-modal-actions { flex-direction:column-reverse; }
   .invoice-modal-actions button { width:100%; }
 }
+
+/* Desktop readability */
+@media (min-width:861px){
+  .invoice-eyebrow{font-size:12px}
+  .invoices-hero p{font-size:16px;color:#536174}
+  .invoice-primary-btn,.invoice-secondary-btn{font-size:15px;min-height:46px}
+  .invoice-summary-card span{font-size:14px;color:#667085}
+  .invoice-summary-card strong{font-size:26px}
+  .invoice-summary-card small{font-size:13px;color:#667085}
+  .invoice-panel-header h2,.payment-panel-header h2{font-size:20px}
+  .invoice-search{min-height:46px}
+  .invoice-search input{font-size:15px;color:#172033}
+  .invoice-controls select{font-size:14px;min-height:46px;color:#172033}
+  .invoice-table th{font-size:13px;color:#536174}
+  .invoice-table td{font-size:15px;color:#283548}
+  .invoice-description{font-size:13px;color:#667085}
+  .invoice-status{font-size:13px}
+  .invoice-action,.payment-action{font-size:14px!important}
+}

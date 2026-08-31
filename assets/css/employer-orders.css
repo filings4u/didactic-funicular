@@ -504,3 +504,21 @@
 
   .order-detail-card { padding: 20px; }
 }
+
+/* Desktop readability */
+@media (min-width:861px){
+  .orders-eyebrow{font-size:12px}
+  .orders-hero p{font-size:16px;color:#536174}
+  .orders-primary-btn,.orders-secondary-btn{font-size:15px;min-height:46px}
+  .order-summary-card span{font-size:14px;color:#667085}
+  .order-summary-card strong{font-size:26px}
+  .order-summary-card small{font-size:13px;color:#667085}
+  .order-search{min-height:46px}
+  .order-search input{font-size:15px;color:#172033}
+  .orders-toolbar select,.order-filter{font-size:14px!important;min-height:46px;color:#172033}
+  .orders-table th,.order-table th{font-size:13px!important;color:#536174!important}
+  .orders-table td,.order-table td{font-size:15px!important;color:#283548!important}
+  .orders-table small,.order-table small{font-size:13px!important;color:#667085!important}
+  .order-status,.payment-status,.fulfillment-status{font-size:13px!important}
+  .order-action,.order-action-btn{font-size:14px!important}
+}

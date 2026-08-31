@@ -213,6 +213,19 @@
     }
     .modal-button:hover{background:#102f60}
 
+    @media(min-width:901px){
+      .portal-label{font-size:12px}
+      .login-card-header p{font-size:15px}
+      .field label{font-size:13px}
+      .field input{font-size:16px}
+      .remember,.help-link{font-size:13px}
+      .login-button{font-size:14px}
+      .login-status{font-size:13px}
+      .security-note{font-size:12px}
+      .s4u-modal-card p{font-size:15px}
+      .modal-button{font-size:14px}
+    }
+
     @media(max-width:900px){
       .login-shell{grid-template-columns:1fr}
       .login-brand{min-height:280px;padding:38px 9vw}
@@ -326,30 +339,61 @@
         modal.classList.add("is-open");
       }
 
-      function getSupabaseClient() {
+      async function getSupabaseClient() {
+        if (window.getScreenings4uSupabase) {
+          const client = await window.getScreenings4uSupabase();
+          if (client) return client;
+        }
+        if (window.screenings4uSupabase) return window.screenings4uSupabase;
         if (window.supabaseClient) return window.supabaseClient;
+
         const url = window.SCREENINGS4U_SUPABASE_URL || window.SUPABASE_URL;
         const key = window.SCREENINGS4U_SUPABASE_ANON_KEY || window.SUPABASE_ANON_KEY;
-        if (!window.supabase || !url || !key) throw new Error("Supabase client is not available. Check assets/js/supabase-config.js.");
+
+        if (!window.supabase || !url || !key) {
+          throw new Error("Supabase client is not available. Check assets/js/supabase-config.js.");
+        }
+
         window.supabaseClient = window.supabase.createClient(url, key);
         return window.supabaseClient;
       }
 
       async function verifyPortalAccess(client, userId) {
-        const { data: profile, error } = await client
-          .from("employee_profiles")
-          .select("id, is_active")
-          .eq("id", userId)
+        const { data: roles, error: roleError } = await client
+          .from("user_role_assignments")
+          .select("role")
+          .eq("user_id", userId);
+        if (roleError) throw roleError;
+
+        const hasEmployeeRole = Array.isArray(roles) &&
+          roles.some((row) => row.role === "employee");
+
+        if (!hasEmployeeRole) {
+          return { allowed:false, reason:"This account does not have employee portal access." };
+        }
+
+        const { data: employee, error: employeeError } = await client
+          .from("employer_employees")
+          .select("id, employer_id, employment_status")
+          .eq("user_id", userId)
           .maybeSingle();
-        if (error) throw error;
-        if (!profile) return { allowed:false, reason:"This account is not registered for the employee portal." };
-        if (profile.is_active === false) return { allowed:false, reason:"This account is inactive. Please contact your administrator." };
-        return { allowed:true };
+        if (employeeError) throw employeeError;
+
+        if (!employee) {
+          return { allowed:false, reason:"This account is not linked to an employer employee record." };
+        }
+
+        const status = String(employee.employment_status || "").toLowerCase();
+        if (!["active", "employed"].includes(status)) {
+          return { allowed:false, reason:"This employee account is inactive. Please contact your employer administrator." };
+        }
+
+        return { allowed:true, employeeId:employee.id, employerId:employee.employer_id };
       }
 
       async function redirectIfAlreadySignedIn() {
         try {
-          const client = getSupabaseClient();
+          const client = await getSupabaseClient();
           const { data } = await client.auth.getSession();
           if (!data?.session?.user) return;
           const access = await verifyPortalAccess(client, data.session.user.id);
@@ -364,15 +408,30 @@
         const password = $("password");
         const show = password.type === "password";
         password.type = show ? "text" : "password";
-        $("passwordToggle").textContent = show ? "◉" : "◉";
+        $("passwordToggle").textContent = show ? "×" : "◉";
         $("passwordToggle").setAttribute("aria-label", show ? "Hide password" : "Show password");
       });
 
-      $("forgotPasswordBtn").addEventListener("click", () => {
-        showModal(
-          "Password Assistance",
-          "Password recovery will be available through the Screenings4u account recovery process. Please contact support or your account administrator if you need immediate access."
-        );
+      $("forgotPasswordBtn").addEventListener("click", async () => {
+        const email = $("email").value.trim();
+
+        if (!email) {
+          showModal("Enter Your Email", "Enter your employee email address first, then select Forgot password.", "error");
+          $("email").focus();
+          return;
+        }
+
+        try {
+          const client = await getSupabaseClient();
+          const redirectTo = new URL("employee-login.html", window.location.href).href;
+          const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo });
+          if (error) throw error;
+
+          showModal("Check Your Email", "If an account exists for this email address, a password recovery link has been sent.");
+        } catch (error) {
+          console.error("Password recovery failed:", error);
+          showModal("Password Recovery Error", error?.message || "We could not start password recovery. Please try again.", "error");
+        }
       });
 
       form.addEventListener("submit", async (event) => {
@@ -387,7 +446,7 @@
           loginButton.disabled = true;
           loginButton.textContent = "SIGNING IN...";
           showStatus("Authenticating your account...");
-          const client = getSupabaseClient();
+          const client = await getSupabaseClient();
           const { data, error } = await client.auth.signInWithPassword({ email, password });
           if (error) {
             showStatus("");

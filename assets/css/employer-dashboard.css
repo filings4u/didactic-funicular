@@ -59,3 +59,19 @@
 @media(max-width:1100px){.employer-stat-grid{grid-template-columns:repeat(2,1fr)}.employer-quick-actions{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:800px){.employer-welcome-card{flex-direction:column;align-items:flex-start}.employer-dashboard-grid{grid-template-columns:1fr}.employer-dashboard-panel-wide{grid-column:auto}.employer-dashboard-content{padding:22px 18px;}}
 @media(max-width:560px){.employer-stat-grid,.employer-quick-actions{grid-template-columns:1fr}.employer-training-summary{align-items:flex-start;flex-direction:column}.employer-welcome-actions{width:100%}.employer-primary-action,.employer-secondary-action{flex:1;}.employer-welcome-card{padding:22px;}}
+
+/* Desktop readability */
+@media (min-width:861px){
+  .employer-welcome-card p{font-size:16px;color:#536174}
+  .employer-primary-action,.employer-secondary-action{font-size:15px;min-height:46px}
+  .employer-stat-card span{font-size:14px;color:#667085}
+  .employer-stat-card strong{font-size:26px}
+  .employer-stat-card small{font-size:13px;color:#667085}
+  .employer-panel-heading h2{font-size:20px}
+  .employer-panel-heading p{font-size:15px;color:#536174;line-height:1.55}
+  .employer-panel-link{font-size:14px}
+  .employer-quick-action strong{font-size:15px}
+  .employer-quick-action small{font-size:13px;color:#667085}
+  .employer-empty-state{font-size:15px;color:#667085}
+  .employer-activity-item,.employer-activity-item p,.employer-activity-item span,.employer-activity-item small{font-size:14px;color:#536174}
+}

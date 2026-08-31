@@ -1,74 +1,138 @@
 /* ============================================================
    SCREENINGS4U — EMPLOYER DASHBOARD
-   Ready for Supabase wiring.
+   Live employer-scoped Supabase dashboard.
    ============================================================ */
-
 (function () {
   "use strict";
 
   document.addEventListener("DOMContentLoaded", init);
 
   async function init() {
-    await loadEmployerDashboard();
+    renderLoading();
+    try {
+      const client = getClient();
+      if (!client) throw new Error("Supabase client is unavailable.");
+
+      const { data: authData, error: authError } = await client.auth.getUser();
+      if (authError) throw authError;
+      if (!authData?.user) throw new Error("Your employer session has expired.");
+
+      const { data, error } = await client.rpc("employer_dashboard_summary");
+      if (error) throw error;
+
+      renderDashboard(data || {});
+    } catch (error) {
+      console.error("[Employer Dashboard]", error);
+      renderError(error);
+    }
   }
 
-  async function loadEmployerDashboard() {
-    /*
-      FINAL SUPABASE WIRING PLAN
-
-      1. Get authenticated user from Supabase Auth.
-      2. Resolve the user's employer organization.
-      3. Load employer-scoped data only.
-
-      Primary tables already identified:
-      - employer_profiles
-      - employer_members
-      - employer_employees
-      - orders
-      - invoices
-      - lms_enrollments
-      - lms_courses
-      - dot_random_programs
-      - notifications
-
-      IMPORTANT:
-      We will inspect exact columns and relationships before writing
-      production queries. Employer RLS must prevent cross-company access.
-    */
-
-    renderEmptyDashboard();
+  function getClient() {
+    if (window.getScreenings4uSupabase) return window.getScreenings4uSupabase();
+    return window.screenings4uSupabase || window.supabaseClient || null;
   }
 
-  function renderEmptyDashboard() {
+  function renderLoading() {
     setText("employer-welcome-name", "Welcome back");
-
-    setText("stat-total-employees", "—");
-    setText("stat-active-employees", "Employee records will load here");
-    setText("stat-training-progress", "—");
-    setText("stat-active-programs", "—");
-    setText("stat-open-orders", "—");
-
-    setText("training-completion-rate", "—");
-    setText("training-assigned-count", "—");
-    setText("training-completed-count", "—");
-    setText("training-attention-count", "—");
+    ["stat-total-employees","stat-training-progress","stat-active-programs","stat-open-orders",
+     "training-completion-rate","training-assigned-count","training-completed-count",
+     "training-attention-count"].forEach(id => setText(id, "—"));
+    setText("stat-active-employees", "Loading organization data...");
   }
 
-  /*
-    After schema verification, dashboard queries will be separated into
-    focused functions such as:
+  function renderDashboard(data) {
+    const employees = data.employees || {};
+    const training = data.training || {};
 
-    loadEmployerProfile()
-    loadEmployeeMetrics()
-    loadTrainingMetrics()
-    loadProgramMetrics()
-    loadOrderMetrics()
-    loadRecentActivity()
-    loadOpenItems()
+    setText("employer-welcome-name",
+      data.employer_name ? `Welcome back, ${data.employer_name}` : "Welcome back");
 
-    This prevents one failed query from breaking the entire dashboard.
-  */
+    setText("stat-total-employees", number(employees.total));
+    setText("stat-active-employees", `${number(employees.active)} active employee${Number(employees.active) === 1 ? "" : "s"}`);
+    setText("stat-training-progress", number(training.in_progress));
+    setText("stat-active-programs", number(data.active_programs));
+    setText("stat-open-orders", number(data.open_orders));
 
+    setText("training-completion-rate", `${number(training.completion_rate)}%`);
+    setText("training-assigned-count", number(training.assigned));
+    setText("training-completed-count", number(training.completed));
+    setText("training-attention-count", number(training.attention));
+
+    renderActivity(data.recent_activity || []);
+    renderOpenItems(data.open_items || []);
+  }
+
+  function renderActivity(items) {
+    const root = document.getElementById("employer-recent-activity");
+    if (!root) return;
+    if (!items.length) {
+      root.innerHTML = '<div class="employer-empty-state">No recent organization activity yet.</div>';
+      return;
+    }
+    root.innerHTML = items.slice(0, 6).map(item => `
+      <a class="employer-activity-item" href="${safeHref(item.href)}">
+        <div class="employer-activity-icon">${activityIcon(item.type)}</div>
+        <div class="employer-activity-copy">
+          <strong>${esc(item.title || "Organization activity")}</strong>
+          <span>${esc(item.detail || "")}</span>
+          <small>${formatDate(item.occurred_at)}</small>
+        </div>
+      </a>`).join("");
+  }
+
+  function renderOpenItems(items) {
+    const root = document.getElementById("employer-open-items");
+    if (!root) return;
+    if (!items.length) {
+      root.innerHTML = '<div class="employer-empty-state">No open orders or invoices require attention.</div>';
+      return;
+    }
+    root.innerHTML = items.slice(0, 8).map(item => `
+      <a class="employer-open-item" href="${safeHref(item.href)}">
+        <div>
+          <strong>${esc(item.title || "Open item")}</strong>
+          <span>${esc(item.detail || "")}</span>
+        </div>
+        <span class="employer-open-item-status">${esc(pretty(item.status))}</span>
+      </a>`).join("");
+  }
+
+  function renderError(error) {
+    setText("stat-active-employees", "Unable to load employer data");
+    const message = esc(error?.message || "Unable to load the employer dashboard.");
+    const activity = document.getElementById("employer-recent-activity");
+    const open = document.getElementById("employer-open-items");
+    if (activity) activity.innerHTML = `<div class="employer-empty-state">${message}</div>`;
+    if (open) open.innerHTML = '<div class="employer-empty-state">Dashboard data is currently unavailable.</div>';
+  }
+
+  function activityIcon(type) {
+    if (type === "invoice") return "$";
+    if (type === "notification") return "!";
+    return "▣";
+  }
+  function number(value) {
+    const n = Number(value || 0);
+    return Number.isFinite(n) ? n.toLocaleString() : "0";
+  }
+  function pretty(value) {
+    return String(value || "").replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  }
+  function formatDate(value) {
+    if (!value) return "";
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return "";
+    return d.toLocaleDateString(undefined, { month:"short", day:"numeric", year:"numeric" });
+  }
+  function safeHref(value) {
+    const href = String(value || "#");
+    return /^[a-z0-9._?=&%-]+$/i.test(href) ? href : "#";
+  }
+  function esc(value) {
+    return String(value ?? "").replace(/[&<>'"]/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
+    }[c]));
+  }
   function setText(id, value) {
     const element = document.getElementById(id);
     if (element) element.textContent = value;

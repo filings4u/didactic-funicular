@@ -538,3 +538,23 @@
     padding: 20px;
   }
 }
+
+/* Desktop readability */
+@media (min-width:861px){
+  .employer-eyebrow{font-size:12px}
+  .employer-employees-hero p{font-size:16px;color:#536174}
+  .employer-add-employee-btn{font-size:15px;min-height:46px}
+  .employer-employee-stat-card span{font-size:14px;color:#667085}
+  .employer-employee-stat-card strong{font-size:26px}
+  .employer-employee-stat-card small{font-size:13px;color:#667085}
+  .employer-employee-search{min-height:46px}
+  .employer-employee-search input{font-size:15px;color:#172033}
+  .employer-employees-toolbar select{font-size:14px;min-height:46px;color:#172033}
+  .employer-employee-table th{font-size:13px;color:#536174}
+  .employer-employee-table td{font-size:15px;color:#283548}
+  .employer-employee-table small{font-size:13px;color:#667085}
+  .employee-status,.employee-action-btn{font-size:13px}
+  .employee-modal label,.employer-employee-modal label{font-size:14px!important;color:#172033!important}
+  .employee-modal input,.employee-modal select,.employee-modal textarea,
+  .employer-employee-modal input,.employer-employee-modal select,.employer-employee-modal textarea{font-size:16px!important;color:#172033!important}
+}

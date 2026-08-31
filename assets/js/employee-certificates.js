@@ -1,34 +1,296 @@
-(function(){'use strict';
-const state={certificates:[],completedCourses:[]};
-document.addEventListener('DOMContentLoaded',init);
-function init(){document.getElementById('cert-search')?.addEventListener('input',render);document.getElementById('modal-close')?.addEventListener('click',closeModal);loadCertificates();}
+(()=>{"use strict";
+
+const state={
+  db:null,
+  user:null,
+  certificates:[],
+  completedCourses:[],
+  mediaById:new Map()
+};
+
+const $=id=>document.getElementById(id);
+
+document.addEventListener("DOMContentLoaded",init);
+
+async function init(){
+  $("cert-search")?.addEventListener("input",render);
+  $("modal-close")?.addEventListener("click",closeModal);
+
+  try{
+    state.db=window.getScreenings4uSupabase
+      ? await window.getScreenings4uSupabase()
+      : window.screenings4uSupabase;
+
+    if(!state.db) throw new Error("Supabase client is unavailable.");
+
+    await loadCertificates();
+  }catch(error){
+    console.error("[Employee Certificates]",error);
+    showModal("Certificates Unavailable",error?.message||"Unable to load your certificates.");
+  }
+}
+
 async function loadCertificates(){
-/* SUPABASE WIRING:
-1. Resolve authenticated employee identity.
-2. Load lms_enrollments belonging to that employee.
-3. Load lms_certificates joined to lms_enrollments and, where applicable, lms_courses.
-4. Join lms_media through certificate_media_id for the actual certificate file.
-5. Load completed eligible enrollments separately for the completed-training metric.
-Important: certificate availability must be based on lms_certificates records and course completion rules, not simply a front-end percentage.
-*/
-render();
+  const {data:{user},error:userError}=await state.db.auth.getUser();
+  if(userError) throw userError;
+  if(!user) throw new Error("Your employee session has expired. Please sign in again.");
+
+  state.user=user;
+
+  const {data:enrollments,error:enrollmentError}=await state.db
+    .from("lms_enrollments")
+    .select("id,course_id,status,progress_percent,completed_at")
+    .eq("user_id",user.id);
+
+  if(enrollmentError) throw enrollmentError;
+
+  const enrollmentRows=enrollments||[];
+  const enrollmentIds=enrollmentRows.map(row=>row.id);
+  const courseIds=[...new Set(enrollmentRows.map(row=>row.course_id).filter(Boolean))];
+
+  let coursesById=new Map();
+
+  if(courseIds.length){
+    const {data:courses,error:courseError}=await state.db
+      .from("lms_courses")
+      .select("id,title,slug,certificate_enabled,status")
+      .in("id",courseIds);
+
+    if(courseError) throw courseError;
+    coursesById=new Map((courses||[]).map(course=>[course.id,course]));
+  }
+
+  state.completedCourses=enrollmentRows.filter(row=>{
+    const course=coursesById.get(row.course_id);
+    const completed=
+      !!row.completed_at ||
+      Number(row.progress_percent||0)>=100 ||
+      String(row.status||"").toLowerCase()==="completed";
+
+    return completed && course?.certificate_enabled===true;
+  });
+
+  if(!enrollmentIds.length){
+    state.certificates=[];
+    render();
+    return;
+  }
+
+  const {data:certificates,error:certError}=await state.db
+    .from("lms_certificates")
+    .select("id,enrollment_id,certificate_number,status,issued_at,revoked_at,certificate_media_id,metadata,created_at")
+    .in("enrollment_id",enrollmentIds)
+    .order("issued_at",{ascending:false,nullsFirst:false});
+
+  if(certError) throw certError;
+
+  const certRows=(certificates||[]).filter(row=>{
+    return !row.revoked_at && String(row.status||"").toLowerCase()!=="revoked";
+  });
+
+  const mediaIds=[...new Set(certRows.map(row=>row.certificate_media_id).filter(Boolean))];
+
+  if(mediaIds.length){
+    const {data:mediaRows,error:mediaError}=await state.db
+      .from("lms_media")
+      .select("id,storage_bucket,storage_path,original_filename,mime_type,title")
+      .in("id",mediaIds);
+
+    if(mediaError) throw mediaError;
+    state.mediaById=new Map((mediaRows||[]).map(row=>[row.id,row]));
+  }else{
+    state.mediaById=new Map();
+  }
+
+  const enrollmentById=new Map(enrollmentRows.map(row=>[row.id,row]));
+
+  state.certificates=certRows.map(cert=>{
+    const enrollment=enrollmentById.get(cert.enrollment_id)||{};
+    const course=coursesById.get(enrollment.course_id)||{};
+    const media=state.mediaById.get(cert.certificate_media_id)||null;
+
+    return {
+      id:cert.id,
+      certificate_number:cert.certificate_number||"",
+      issued_at:cert.issued_at||cert.created_at||null,
+      course_title:course.title||"Training Certificate",
+      course_slug:course.slug||"",
+      media
+    };
+  });
+
+  render();
 }
+
 function render(){
-const q=(document.getElementById('cert-search')?.value||'').toLowerCase();
-const list=state.certificates.filter(c=>((c.course_title||'')+' '+(c.certificate_number||'')).toLowerCase().includes(q));
-const recent=state.certificates.filter(c=>c.issued_at&&Date.now()-new Date(c.issued_at).getTime()<=30*86400000).length;
-setText('cert-total',state.certificates.length);setText('cert-recent',recent);setText('training-completed',state.completedCourses.length);
-const grid=document.getElementById('cert-list'),empty=document.getElementById('cert-empty');
-grid.innerHTML=list.map(card).join('');grid.hidden=!list.length;empty.hidden=!!list.length;
-grid.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>openCertificate(b.dataset.view)));
-grid.querySelectorAll('[data-download]').forEach(b=>b.addEventListener('click',()=>downloadCertificate(b.dataset.download)));
+  const query=($("cert-search")?.value||"").trim().toLowerCase();
+
+  const filtered=state.certificates.filter(cert=>{
+    const haystack=`${cert.course_title} ${cert.certificate_number}`.toLowerCase();
+    return haystack.includes(query);
+  });
+
+  const recent=state.certificates.filter(cert=>{
+    if(!cert.issued_at) return false;
+    const issued=new Date(cert.issued_at).getTime();
+    return Number.isFinite(issued) && Date.now()-issued<=30*86400000;
+  }).length;
+
+  setText("cert-total",state.certificates.length);
+  setText("cert-recent",recent);
+  setText("training-completed",state.completedCourses.length);
+
+  const grid=$("cert-list");
+  const empty=$("cert-empty");
+
+  grid.innerHTML=filtered.map(card).join("");
+  grid.hidden=!filtered.length;
+  empty.hidden=!!filtered.length;
+
+  grid.querySelectorAll("[data-view]").forEach(button=>{
+    button.addEventListener("click",()=>openCertificate(button.dataset.view));
+  });
+
+  grid.querySelectorAll("[data-download]").forEach(button=>{
+    button.addEventListener("click",()=>downloadCertificate(button.dataset.download));
+  });
 }
-function card(c){return '<article class="cert-card"><div class="cert-top"><div class="cert-icon">✓</div><div class="cert-title"><h3>'+esc(c.course_title||'Training Certificate')+'</h3><p>Successfully completed training</p></div></div><div class="cert-meta"><div><small>ISSUED</small><strong>'+esc(formatDate(c.issued_at))+'</strong></div><div><small>CERTIFICATE ID</small><strong>'+esc(c.certificate_number||'Available in record')+'</strong></div></div><div class="cert-actions"><button class="primary-btn" data-view="'+esc(c.id||'')+'" type="button">View Certificate</button><button class="secondary-btn" data-download="'+esc(c.id||'')+'" type="button">Download</button></div></article>';}
-function openCertificate(id){const c=state.certificates.find(x=>String(x.id)===String(id));if(!c){showModal('Certificate Access','Certificate viewing will be available after the LMS certificate media records are connected.');return;}if(c.media_url){window.open(c.media_url,'_blank','noopener');return;}showModal('Certificate Ready','This certificate is recorded in your account. The certificate document link will be connected through lms_media.');}
-function downloadCertificate(id){const c=state.certificates.find(x=>String(x.id)===String(id));if(c?.download_url){window.location.href=c.download_url;return;}showModal('Download Certificate','The secure certificate download will be connected to the certificate media record.');}
-function formatDate(v){if(!v)return 'Not available';const d=new Date(v);return Number.isNaN(d.getTime())?'Not available':d.toLocaleDateString();}
-function setText(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
-function esc(v){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
-function showModal(t,m){document.getElementById('modal-title').textContent=t;document.getElementById('modal-message').textContent=m;document.getElementById('cert-modal').hidden=false;}
-function closeModal(){document.getElementById('cert-modal').hidden=true;}
+
+function card(cert){
+  return `
+    <article class="employee-certificate-card">
+      <div class="employee-certificate-card-top">
+        <div class="employee-certificate-card-icon">✓</div>
+        <div class="employee-certificate-card-title">
+          <h3>${esc(cert.course_title)}</h3>
+          <p>Successfully completed training</p>
+        </div>
+      </div>
+
+      <div class="employee-certificate-meta">
+        <div>
+          <small>Issued</small>
+          <strong>${esc(formatDate(cert.issued_at))}</strong>
+        </div>
+
+        <div>
+          <small>Certificate ID</small>
+          <strong>${esc(cert.certificate_number||"Available in record")}</strong>
+        </div>
+      </div>
+
+      <div class="employee-certificate-actions">
+        <button class="employee-certificate-view"
+                data-view="${esc(cert.id)}"
+                type="button">
+          View Certificate
+        </button>
+
+        <button class="employee-certificate-download"
+                data-download="${esc(cert.id)}"
+                type="button">
+          Download
+        </button>
+      </div>
+    </article>
+  `;
+}
+
+async function getSignedCertificateUrl(cert){
+  if(!cert?.media?.storage_bucket || !cert?.media?.storage_path){
+    return null;
+  }
+
+  const {data,error}=await state.db.storage
+    .from(cert.media.storage_bucket)
+    .createSignedUrl(cert.media.storage_path,300);
+
+  if(error) throw error;
+  return data?.signedUrl||null;
+}
+
+async function openCertificate(id){
+  const cert=state.certificates.find(item=>String(item.id)===String(id));
+
+  if(!cert){
+    showModal("Certificate Access","This certificate could not be found.");
+    return;
+  }
+
+  try{
+    const url=await getSignedCertificateUrl(cert);
+
+    if(!url){
+      showModal("Certificate Recorded","This certificate is recorded in your account, but no certificate file is attached yet.");
+      return;
+    }
+
+    window.open(url,"_blank","noopener");
+  }catch(error){
+    console.error("[Employee Certificates] open",error);
+    showModal("Unable to Open Certificate",error?.message||"The certificate file could not be opened.");
+  }
+}
+
+async function downloadCertificate(id){
+  const cert=state.certificates.find(item=>String(item.id)===String(id));
+
+  if(!cert){
+    showModal("Certificate Download","This certificate could not be found.");
+    return;
+  }
+
+  try{
+    const url=await getSignedCertificateUrl(cert);
+
+    if(!url){
+      showModal("Certificate Recorded","This certificate is recorded in your account, but no downloadable file is attached yet.");
+      return;
+    }
+
+    const anchor=document.createElement("a");
+    anchor.href=url;
+    anchor.download=cert.media?.original_filename||`${cert.course_title||"certificate"}.pdf`;
+    anchor.target="_blank";
+    anchor.rel="noopener";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+  }catch(error){
+    console.error("[Employee Certificates] download",error);
+    showModal("Unable to Download Certificate",error?.message||"The certificate file could not be downloaded.");
+  }
+}
+
+function formatDate(value){
+  if(!value) return "Not available";
+  const date=new Date(value);
+  return Number.isNaN(date.getTime()) ? "Not available" : date.toLocaleDateString();
+}
+
+function setText(id,value){
+  const el=$(id);
+  if(el) el.textContent=String(value);
+}
+
+function esc(value){
+  return String(value??"").replace(/[&<>"']/g,char=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[char]));
+}
+
+function showModal(title,message){
+  setText("modal-title",title);
+  setText("modal-message",message);
+  $("cert-modal").hidden=false;
+}
+
+function closeModal(){
+  $("cert-modal").hidden=true;
+}
+
 })();

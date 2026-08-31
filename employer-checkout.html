@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | Screenings4u Employer Portal</title>
+  <link rel="stylesheet" href="assets/css/employer-portal.css">
+  <link rel="stylesheet" href="assets/css/employer-checkout.css">
+</head>
+<body class="employer-checkout-page" data-page-title="Checkout" data-page-subtitle="Securely complete your organization purchase.">
+
+  <div id="employer-portal-sidebar"></div>
+
+  <main class="employer-portal-main">
+    <div id="employer-portal-header"></div>
+
+    <div class="employer-checkout-content">
+      <a href="employer-catalog.html" class="checkout-back">← Back to Service Catalog</a>
+
+      <section class="employer-checkout-layout">
+        <div class="employer-checkout-card">
+          <span class="checkout-eyebrow">SECURE CHECKOUT</span>
+          <h1>Complete your purchase</h1>
+          <p>Your order will be linked to your employer organization after payment is confirmed.</p>
+
+          <div id="checkout-error" class="checkout-error" hidden></div>
+
+          <div class="payment-heading">
+            <strong>Payment Information</strong>
+            <span>Payments are securely processed by Stripe.</span>
+          </div>
+
+          <div id="payment-element" class="payment-element"></div>
+
+          <button id="pay-button" class="checkout-pay-button" type="button" disabled>
+            Preparing payment...
+          </button>
+
+          <div id="checkout-success" class="checkout-success" hidden>
+            <strong>Payment submitted successfully.</strong>
+            <p>Your employer order is being confirmed.</p>
+            <a href="employer-orders.html">View Employer Orders →</a>
+          </div>
+        </div>
+
+        <aside class="employer-summary-card">
+          <span class="checkout-eyebrow">ORDER SUMMARY</span>
+          <div id="checkout-items" class="checkout-items"></div>
+          <div class="checkout-total">
+            <span>Total</span>
+            <strong id="checkout-total">$0.00</strong>
+          </div>
+          <div class="checkout-security-note">
+            This purchase will be recorded under your current employer organization.
+          </div>
+        </aside>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/core-auth.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/portal-auth-guard.js"></script>
+  <script src="assets/js/employer-auth-guard.js"></script>
+  <script src="assets/js/employer-portal.js"></script>
+  <script src="assets/js/employer-checkout.js"></script>
+</body>
+</html>
