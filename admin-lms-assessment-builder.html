@@ -20,6 +20,31 @@
 @media(max-width:1080px){.ab-layout{grid-template-columns:1fr}.ab-side{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.ab-page{padding:18px}.ab-heading,.ab-card-head,.ab-footer{flex-direction:column;align-items:stretch}.ab-heading h1{font-size:31px}.ab-grid,.ab-question-top,.ab-side{grid-template-columns:1fr}.ab-field.full{grid-column:auto}.ab-btn{width:100%}}
 </style>
+
+<style>
+@media (min-width: 901px){
+  .ab-heading p,.ab-card-head p{font-size:15px}
+  .ab-kicker{font-size:12px}
+  .ab-btn{font-size:13px}
+  .ab-message{font-size:12px}
+  .ab-card-head h2,.ab-card-head h3{font-size:19px}
+  .ab-step{font-size:11px}
+  .ab-field label{font-size:11px}
+  .ab-field input,.ab-field textarea,.ab-field select{font-size:13px}
+  .ab-help{font-size:11px}
+  .ab-number{font-size:11px}
+  .ab-question-head strong{font-size:13px}
+  .ab-question-top input,.ab-question-top select,.ab-points{font-size:12px}
+  .ab-option input[type=text]{font-size:12px}
+  .ab-add-option,.ab-add-question{font-size:12px}
+  .ab-explanation{font-size:12px}
+  .ab-required,.ab-check{font-size:12px}
+  .ab-empty{font-size:12px}
+  .ab-summary-row span{font-size:11px}
+  .ab-summary-row strong{font-size:12px}
+}
+</style>
+
 </head>
 <body class="admin-lms-assessment-builder-page">
 <div class="admin-lms-app">
@@ -47,7 +72,7 @@
 <section class="ab-page">
 <header class="ab-heading">
 <div><span class="ab-kicker">LEARNING ASSESSMENTS</span><h1 id="abHeading">Create Assessment</h1><p>Build quizzes, knowledge checks, and final assessments using the live LMS assessment, question, and answer-option tables.</p></div>
-<div class="ab-actions"><a class="ab-btn" href="admin-lms-courses.html">All Courses</a><a class="ab-btn" id="abCourseManager" href="admin-lms-course-manager.html">Course Manager</a></div>
+<div class="ab-actions"><a class="ab-btn" href="admin-lms-assessments.html">Assessments</a><a class="ab-btn" id="abCourseManager" href="admin-lms-course-builder.html">Content Builder</a><a class="ab-btn orange" id="abCreateLesson" href="admin-lms-lesson-builder.html" hidden>Create Lesson</a></div>
 </header>
 
 <div class="ab-message" id="abMessage"></div>
@@ -60,7 +85,8 @@
 <div class="ab-body"><div class="ab-grid">
 <div class="ab-field full"><label for="abTitle">Assessment Title</label><input id="abTitle" required type="text" placeholder="Enter assessment title"></div>
 <div class="ab-field"><label for="abCourse">Course</label><select id="abCourse" required><option value="">Select course</option></select></div>
-<div class="ab-field"><label for="abLesson">Lesson</label><select id="abLesson" required><option value="">Select lesson</option></select></div>
+<div class="ab-field"><label for="abSection">Section</label><select id="abSection" required><option value="">Select section</option></select></div>
+<div class="ab-field full"><label for="abLesson">Lesson</label><select id="abLesson" required><option value="">Select lesson</option></select><span class="ab-help" id="abLessonHelp">Select a course and section to load lessons.</span></div>
 <div class="ab-field"><label for="abType">Assessment Type</label><select id="abType"><option value="quiz">Quiz</option><option value="knowledge_check">Knowledge Check</option><option value="final">Final Assessment</option></select></div>
 <div class="ab-field"><label for="abStatus">Status</label><select id="abStatus"><option value="draft">Draft</option><option value="published">Published</option><option value="archived">Archived</option></select></div>
 <div class="ab-field full"><label for="abDescription">Instructions / Description</label><textarea id="abDescription" rows="5" placeholder="Explain the assessment requirements to the learner..."></textarea></div>
@@ -99,28 +125,28 @@
 
 <section class="ab-card"><header class="ab-card-head"><div><span class="ab-kicker">ACTIONS</span><h3>Assessment Actions</h3></div></header><div class="ab-body" style="display:grid;gap:8px">
 <button class="ab-btn primary" id="abSave" type="submit">Save Assessment</button>
-<a class="ab-btn" id="abBackCourse" href="admin-lms-course-builder.html">Back to Course</a>
+<a class="ab-btn" id="abBackCourse" href="admin-lms-course-builder.html">Open Content Builder</a>
 <button class="ab-btn danger" id="abDelete" type="button" disabled>Delete Assessment</button>
 </div></section>
 </aside>
 </form>
 
 <div class="ab-footer">
-<a class="ab-btn" href="admin-lms-courses.html">Cancel</a>
+<a class="ab-btn" href="admin-lms-assessments.html">Cancel</a>
 <div class="ab-actions"><button class="ab-btn primary" id="abSaveBottom" type="button">Save Assessment</button><button class="ab-btn orange" id="abPublishBottom" type="button">Save & Publish</button></div>
 </div>
 </section>
 </main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/js/supabase-config.js"></script>
-<script src="assets/js/core-auth.js"></script>
-<script src="assets/js/ui.js"></script>
-<script src="assets/js/session-security.js"></script>
-<script src="assets/js/portal-auth-guard.js"></script>
-<script src="assets/js/admin-auth-guard.js"></script>
-<script src="assets/js/admin-lms-sidebar.js"></script>
-<script src="assets/js/admin-lms-assessment-builder.js?v=20260829-2350"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/core-auth.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/session-security.js"></script>
+    <script src="assets/js/portal-auth-guard.js"></script>
+    <script src="assets/js/admin-auth-guard.js"></script>
+    <script src="assets/js/admin-lms-sidebar.js"></script>
+<script src="assets/js/admin-lms-assessment-builder.js?v=20260831-1446"></script>
 </body>
 </html>

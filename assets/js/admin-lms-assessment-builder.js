@@ -2,7 +2,7 @@
 (() => {
 "use strict";
 
-let client=null, assessmentId="", courseId="", lessonId="", assessment=null;
+let client=null, assessmentId="", courseId="", sectionId="", lessonId="", assessment=null;
 let courses=[], sections=[], lessons=[], questions=[], options=[];
 const el={};
 
@@ -18,18 +18,45 @@ async function init(){
         const params=new URLSearchParams(location.search);
         assessmentId=params.get("assessment")||"";
         courseId=params.get("course")||"";
+        sectionId=params.get("section")||"";
         lessonId=params.get("lesson")||"";
 
         await loadReferenceData();
+        updateLinks();
 
         if(assessmentId)await loadAssessment();
         else{
-            if(courseId)el.abCourse.value=courseId;
-            fillLessons(courseId);
-            if(lessonId)el.abLesson.value=lessonId;
+            if(courseId&&courses.some(c=>c.id===courseId)){
+                el.abCourse.value=courseId;
+                fillSections(courseId);
+            }else if(courses.length===1){
+                courseId=courses[0].id;
+                el.abCourse.value=courseId;
+                fillSections(courseId);
+            }else{
+                fillSections("");
+            }
+
+            if(sectionId&&sections.some(s=>s.id===sectionId&&s.course_id===courseId)){
+                el.abSection.value=sectionId;
+            }else{
+                const courseSections=sections.filter(s=>s.course_id===courseId);
+                if(courseSections.length===1){
+                    sectionId=courseSections[0].id;
+                    el.abSection.value=sectionId;
+                }
+            }
+
+            fillLessons(sectionId);
+
+            if(lessonId&&lessons.some(l=>l.id===lessonId&&l.section_id===sectionId)){
+                el.abLesson.value=lessonId;
+            }
+
             addQuestion();
             renderSummary();
             updateLinks();
+            updateAvailability();
         }
     }catch(error){
         console.error(error);show(error.message||"Unable to load assessment builder.","error");
@@ -37,15 +64,34 @@ async function init(){
 }
 
 function cache(){
-    ["abHeading","abMessage","abForm","abTitle","abCourse","abLesson","abType","abStatus","abDescription","abQuestionList","abEmpty","abAddQuestion",
+    ["abHeading","abMessage","abForm","abTitle","abCourse","abSection","abLesson","abLessonHelp","abType","abStatus","abDescription","abQuestionList","abEmpty","abAddQuestion",
      "abPassingScore","abMaxAttempts","abTimeLimit","abRandomQuestions","abRandomOptions","abShowAnswers","abRequirePass",
      "abSummaryMode","abSummaryStatus","abSummaryQuestions","abSummaryPoints","abSummarySaved","abSave","abSaveBottom","abPublishBottom",
-     "abDelete","abCourseManager","abBackCourse"].forEach(id=>el[id]=document.getElementById(id));
+     "abDelete","abCourseManager","abBackCourse","abCreateLesson"].forEach(id=>el[id]=document.getElementById(id));
 }
 
 function bind(){
-    el.abCourse.addEventListener("change",()=>{courseId=el.abCourse.value;fillLessons(courseId);updateLinks();});
-    el.abLesson.addEventListener("change",()=>{lessonId=el.abLesson.value;});
+    el.abCourse.addEventListener("change",()=>{
+        courseId=el.abCourse.value;
+        sectionId="";
+        lessonId="";
+        fillSections(courseId);
+        fillLessons("");
+        updateLinks();
+        updateAvailability();
+    });
+    el.abSection.addEventListener("change",()=>{
+        sectionId=el.abSection.value;
+        lessonId="";
+        fillLessons(sectionId);
+        updateLinks();
+        updateAvailability();
+    });
+    el.abLesson.addEventListener("change",()=>{
+        lessonId=el.abLesson.value;
+        updateLinks();
+        updateAvailability();
+    });
     el.abStatus.addEventListener("change",renderSummary);
     el.abAddQuestion.addEventListener("click",()=>addQuestion());
     el.abForm.addEventListener("submit",e=>{e.preventDefault();saveAssessment(false);});
@@ -105,11 +151,32 @@ async function loadReferenceData(){
     el.abCourse.innerHTML='<option value="">Select course</option>'+courses.map(x=>`<option value="${esc(x.id)}">${esc(x.title||"Untitled Course")}</option>`).join("");
 }
 
-function fillLessons(id){
-    const sectionIds=new Set(sections.filter(s=>s.course_id===id).map(s=>s.id));
-    const list=lessons.filter(l=>sectionIds.has(l.section_id));
-    el.abLesson.innerHTML='<option value="">Select lesson</option>'+list.map(l=>`<option value="${esc(l.id)}">${esc(l.title||"Untitled Lesson")}</option>`).join("");
-    if(lessonId&&list.some(l=>l.id===lessonId))el.abLesson.value=lessonId;
+function fillSections(course){
+    const list=sections.filter(s=>s.course_id===course);
+    el.abSection.innerHTML='<option value="">Select section</option>'+list.map(s=>`<option value="${esc(s.id)}">${esc(s.title||"Untitled Section")}</option>`).join("");
+    el.abSection.disabled=!course||!list.length;
+
+    if(sectionId&&list.some(s=>s.id===sectionId)){
+        el.abSection.value=sectionId;
+    }
+}
+
+function fillLessons(section){
+    const list=lessons.filter(l=>l.section_id===section);
+    el.abLesson.innerHTML='<option value="">Select lesson</option>'+list.map(l=>`<option value="${esc(l.id)}">${esc(l.title||"Untitled Lesson")} · ${esc(human(l.status||"draft"))}</option>`).join("");
+    el.abLesson.disabled=!section||!list.length;
+
+    if(lessonId&&list.some(l=>l.id===lessonId)){
+        el.abLesson.value=lessonId;
+    }
+
+    if(!section){
+        el.abLessonHelp.textContent="Select a section to load lessons.";
+    }else if(!list.length){
+        el.abLessonHelp.textContent="This section has no lessons. Create a lesson before creating an assessment.";
+    }else{
+        el.abLessonHelp.textContent=`${list.length} lesson${list.length===1?"":"s"} available in this section.`;
+    }
 }
 
 async function loadAssessment(){
@@ -117,11 +184,14 @@ async function loadAssessment(){
     if(ae)throw ae;
     assessment=a;lessonId=a.lesson_id;
     const lesson=lessons.find(l=>l.id===lessonId);
-    const section=sections.find(s=>s.id===lesson?.section_id);
+    sectionId=lesson?.section_id||"";
+    const section=sections.find(s=>s.id===sectionId);
     courseId=section?.course_id||"";
 
     el.abCourse.value=courseId;
-    fillLessons(courseId);
+    fillSections(courseId);
+    el.abSection.value=sectionId;
+    fillLessons(sectionId);
     el.abLesson.value=lessonId;
     el.abHeading.textContent="Edit Assessment";
     el.abTitle.value=a.title||"";
@@ -138,7 +208,7 @@ async function loadAssessment(){
     el.abDelete.disabled=false;
 
     await loadQuestions();
-    renderSummary();updateLinks();
+    renderSummary();updateLinks();updateAvailability();
 }
 
 async function loadQuestions(){
@@ -251,6 +321,9 @@ function collectQuestions(){
 
 async function saveAssessment(publish){
     if(!el.abForm.reportValidity())return;
+    if(!el.abCourse.value)return show("Select a course.","error");
+    if(!el.abSection.value)return show("Select a section.","error");
+    if(!el.abLesson.value)return show("Create or select a lesson before saving an assessment.","error");
     let questionPayload;
     try{questionPayload=collectQuestions();}catch(error){return show(error.message,"error");}
 
@@ -282,9 +355,16 @@ async function saveAssessment(publish){
         assessment=result.data;assessmentId=assessment.id;lessonId=assessment.lesson_id;
         await replaceQuestions(questionPayload);
 
-        const lesson=lessons.find(l=>l.id===lessonId),section=sections.find(s=>s.id===lesson?.section_id);
+        const lesson=lessons.find(l=>l.id===lessonId);
+        sectionId=lesson?.section_id||sectionId;
+        const section=sections.find(s=>s.id===sectionId);
         courseId=section?.course_id||courseId;
-        const url=new URL(location.href);url.searchParams.set("assessment",assessmentId);url.searchParams.set("course",courseId);url.searchParams.set("lesson",lessonId);history.replaceState({},"",url);
+        const url=new URL(location.href);
+        url.searchParams.set("assessment",assessmentId);
+        url.searchParams.set("course",courseId);
+        url.searchParams.set("section",sectionId);
+        url.searchParams.set("lesson",lessonId);
+        history.replaceState({},"",url);
 
         el.abHeading.textContent="Edit Assessment";el.abStatus.value=assessment.status;el.abDelete.disabled=false;
         await loadQuestions();renderSummary();updateLinks();
@@ -317,16 +397,47 @@ async function deleteAssessment(){
     try{
         const {error}=await client.from("lms_assessments").delete().eq("id",assessmentId);
         if(error)throw error;
-        location.href=courseId?`admin-lms-course-manager.html?course=${encodeURIComponent(courseId)}`:"admin-lms-courses.html";
+        location.href="admin-lms-assessments.html";
     }catch(error){show(error.message||"Unable to delete assessment.","error");}
 }
 
 function updateLinks(){
     const c=courseId||el.abCourse.value;
+    const s=sectionId||el.abSection.value;
+
+    el.abCourseManager.href="admin-lms-course-builder.html";
+    el.abBackCourse.href="admin-lms-course-builder.html";
+    el.abCreateLesson.href="admin-lms-lesson-builder.html";
+
     if(c){
-        const e=encodeURIComponent(c);
-        el.abCourseManager.href=`admin-lms-course-manager.html?course=${e}`;
-        el.abBackCourse.href=`admin-lms-course-builder.html?course=${e}#curriculum`;
+        const ce=encodeURIComponent(c);
+        el.abCourseManager.href=`admin-lms-course-builder.html?course=${ce}`;
+        el.abBackCourse.href=`admin-lms-course-builder.html?course=${ce}#curriculum`;
+
+        if(s){
+            el.abCreateLesson.href=`admin-lms-lesson-builder.html?course=${ce}&section=${encodeURIComponent(s)}`;
+        }else{
+            el.abCreateLesson.href=`admin-lms-lesson-builder.html?course=${ce}`;
+        }
+    }
+}
+
+function updateAvailability(){
+    const course=el.abCourse.value;
+    const section=el.abSection.value;
+    const lesson=el.abLesson.value;
+    const sectionLessons=lessons.filter(l=>l.section_id===section);
+
+    el.abCreateLesson.hidden=!course;
+    el.abCreateLesson.textContent=section&&sectionLessons.length===0?"Create First Lesson":"Create Lesson";
+
+    const canSave=Boolean(course&&section&&lesson);
+    [el.abSave,el.abSaveBottom,el.abPublishBottom].forEach(button=>{
+        if(button)button.disabled=!canSave;
+    });
+
+    if(course&&section&&!sectionLessons.length){
+        show("This section has no lessons yet. Create a lesson first, then return here to build its assessment.","error");
     }
 }
 

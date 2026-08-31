@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson Editor | screenings4u Management Portal</title>
+  <link rel="stylesheet" href="assets/css/admin-lms.css">
+  <link rel="stylesheet" href="assets/css/admin-lms-lesson-editor.css?v=20260831-1">
+</head>
+<body class="admin-lms-lesson-editor-page">
+  <div class="admin-lms-app">
+    <div id="admin-lms-sidebar-target"></div>
+    <main class="admin-lms-main">
+      <header class="admin-lms-topbar">
+        <div class="admin-lms-topbar-left">
+          <button type="button" class="admin-lms-sidebar-collapse" data-admin-sidebar-collapse aria-label="Collapse sidebar" aria-expanded="true">
+            <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"></path></svg>
+          </button>
+          <div class="admin-lms-page-context"><small>Training</small><strong>Lesson Editor</strong></div>
+        </div>
+      </header>
+
+      <section class="lesson-editor-shell">
+        <nav class="lesson-breadcrumbs">
+          <a href="admin-lms-courses.html">Programs</a>
+          <span>›</span>
+          <a id="lessonCourseLink" href="admin-lms-course-builder.html">Course</a>
+          <span>›</span>
+          <span id="lessonBreadcrumbTitle">Lesson</span>
+        </nav>
+
+        <header class="lesson-editor-header">
+          <div>
+            <div class="lesson-title-row">
+              <a id="lessonBackLink" href="admin-lms-course-builder.html">‹</a>
+              <h1 id="lessonPageTitle">Lesson</h1>
+            </div>
+          </div>
+
+          <div class="lesson-editor-actions">
+            <button class="lesson-circle-btn" id="lessonMoreButton" type="button">•••</button>
+            <a class="lesson-btn secondary" id="lessonCancelButton" href="admin-lms-course-builder.html">Cancel</a>
+            <button class="lesson-btn primary" id="lessonSaveButton" type="button">Save</button>
+          </div>
+        </header>
+
+        <div class="lesson-editor-toast" id="lessonEditorToast"></div>
+
+        <section class="lesson-card">
+          <header><h2>Basic info</h2></header>
+          <div class="lesson-card-body lesson-basic-grid">
+            <label>
+              <span>Step name *</span>
+              <input id="lessonTitle" type="text" maxlength="160">
+            </label>
+            <label>
+              <span>Section *</span>
+              <select id="lessonSection"></select>
+            </label>
+          </div>
+        </section>
+
+        <section class="lesson-card">
+          <header><h2>Content</h2></header>
+          <div class="lesson-card-body">
+            <div class="lesson-content-toolbar">
+              <button type="button" data-insert="heading">H</button>
+              <button type="button" data-insert="paragraph">¶</button>
+              <button type="button" data-insert="image">Image</button>
+              <button type="button" data-insert="video">Video</button>
+              <button type="button" data-insert="file">File</button>
+              <button type="button" data-insert="quiz">Quiz</button>
+              <button type="button" data-insert="embed">Embed</button>
+            </div>
+
+            <label class="lesson-content-field">
+              <span>Lesson content</span>
+              <textarea id="lessonContent" rows="18" placeholder="Write lesson content here..."></textarea>
+            </label>
+
+            <div class="lesson-media-grid">
+              <label>
+                <span>Video URL</span>
+                <input id="lessonVideoUrl" type="url" placeholder="https://...">
+              </label>
+              <label>
+                <span>Video duration (seconds)</span>
+                <input id="lessonVideoDuration" type="number" min="0">
+              </label>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/core-auth.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/session-security.js"></script>
+  <script src="assets/js/portal-auth-guard.js"></script>
+  <script src="assets/js/admin-auth-guard.js"></script>
+  <script src="assets/js/admin-lms-sidebar.js"></script>
+  <script src="assets/js/admin-lms-lesson-editor.js?v=20260831-1"></script>
+</body>
+</html>

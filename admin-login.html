@@ -359,7 +359,7 @@
         const [{ data: profile, error: profileError }, { data: assignments, error: roleError }] =
           await Promise.all([
             client
-              .from("admin_profiles")
+              .from("user_profiles")
               .select("id, email, first_name, last_name, is_active")
               .eq("id", userId)
               .maybeSingle(),
@@ -374,14 +374,14 @@
         if (roleError) throw roleError;
 
         if (!profile) {
-          return { allowed: false, reason: "This account is not registered for the screenings4u admin portal." };
+          return { allowed: false, reason: "This account does not have a user profile." };
         }
 
-        if (profile.is_active !== true) {
+        if (profile.is_active === false) {
           return { allowed: false, reason: "This administrator account is inactive. Please contact a system administrator." };
         }
 
-        const roles = (assignments || []).map(item => item.role);
+        const roles = (assignments || []).map(item => String(item.role || "").toLowerCase());
         const allowedRole = roles.find(role => ADMIN_ROLES.includes(role));
 
         if (!allowedRole) {
@@ -407,7 +407,7 @@
             return;
           }
 
-          await client.auth.signOut();
+          await client.auth.signOut({ scope: "local" });
         } catch (error) {
           console.error("Admin login session check failed:", error);
         }
@@ -468,7 +468,7 @@
           const access = await getAdminAccess(client, data.user.id);
 
           if (!access.allowed) {
-            await client.auth.signOut();
+            await client.auth.signOut({ scope: "local" });
             showStatus("");
             showModal("Access Denied", access.reason, "error");
             return;

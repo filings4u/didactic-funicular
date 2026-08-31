@@ -1,381 +1,853 @@
-/* screenings4u — admin-lms-course-builder.js */
-(() => {
-"use strict";
+/* ============================================================
+   SCREENINGS4U — ADMIN LMS COURSE BUILDER
+   Course workspace + draggable curriculum
+   ============================================================ */
 
-let client=null, courseId="", course=null, sections=[], lessons=[], media=[];
-let editingSectionId="";
-const el={};
+(function () {
+  "use strict";
 
-document.addEventListener("DOMContentLoaded",init);
+  const TABLES = Object.freeze({
+    courses: "lms_courses",
+    sections: "lms_sections",
+    lessons: "lms_lessons"
+  });
 
-async function init(){
-    cache(); bind();
-    try{
-        client=await waitForClient();
-        if(!client)throw new Error("Supabase client was not found.");
-        await requireSession();
-        courseId=new URLSearchParams(location.search).get("course")||"";
-        await loadMedia();
-        if(courseId)await loadCourse();
-        else renderSummary();
-    }catch(error){
-        console.error(error); show(error.message||"Unable to load course builder.","error");
-    }
-}
+  const state = {
+    courseId: "",
+    course: null,
+    sections: [],
+    activeSectionId: "",
+    editingSectionId: "",
+    pendingLessonType: "article",
+    dragging: null
+  };
 
-function cache(){
-    ["cbHeading","cbMessage","cbTitle","cbSlug","cbStatus","cbShortDescription","cbDescription","cbThumbnail","cbMediaPreview","cbUploadZone","cbImageUpload","cbUploadProgress","cbUploadStatus",
-     "cbPassingScore","cbNavigationMode","cbVideoPercent","cbCertificate","cbRequireLessons","cbRequireAssessments","cbDownloads","cbPreview",
-     "cbAddSection","cbCurriculum","cbSummaryMode","cbSummaryStatus","cbSummarySections","cbSummaryLessons","cbSummarySaved",
-     "cbCourseManagerLink","cbLessonBuilderLink","cbSaveDraft","cbPublish","cbSaveDraftBottom","cbPublishBottom",
-     "cbSectionModal","cbSectionModalTitle","cbSectionTitle","cbSectionDescription","cbSectionOrder","cbSectionPublished","cbSaveSection"
-    ].forEach(id=>el[id]=document.getElementById(id));
-}
+  const $ = (id) => document.getElementById(id);
 
-function bind(){
-    let slugTouched=false;
-    el.cbTitle.addEventListener("input",()=>{if(!slugTouched)el.cbSlug.value=slugify(el.cbTitle.value);renderSummary();});
-    el.cbSlug.addEventListener("input",()=>{slugTouched=true;});
-    el.cbStatus.addEventListener("change",renderSummary);
-    [el.cbSaveDraft,el.cbSaveDraftBottom].forEach(b=>b.addEventListener("click",()=>saveCourse(false)));
-    [el.cbPublish,el.cbPublishBottom].forEach(b=>b.addEventListener("click",()=>saveCourse(true)));
-    el.cbThumbnail.addEventListener("change",renderMediaPreview);
-    el.cbImageUpload?.addEventListener("change",event=>{
-        const file=event.target.files?.[0];
-        if(file)uploadCourseImage(file);
-    });
-    ["dragenter","dragover"].forEach(type=>el.cbUploadZone?.addEventListener(type,event=>{
-        event.preventDefault();event.stopPropagation();el.cbUploadZone.classList.add("dragover");
-    }));
-    ["dragleave","drop"].forEach(type=>el.cbUploadZone?.addEventListener(type,event=>{
-        event.preventDefault();event.stopPropagation();el.cbUploadZone.classList.remove("dragover");
-    }));
-    el.cbUploadZone?.addEventListener("drop",event=>{
-        const file=event.dataTransfer?.files?.[0];
-        if(file)uploadCourseImage(file);
-    });
-    el.cbAddSection.addEventListener("click",()=>openSectionModal());
-    el.cbSaveSection.addEventListener("click",saveSection);
-    document.querySelectorAll("[data-cb-close]").forEach(x=>x.addEventListener("click",closeSectionModal));
-    el.cbSectionModal.addEventListener("click",e=>{if(e.target===el.cbSectionModal)closeSectionModal();});
-    el.cbCurriculum.addEventListener("click",async e=>{
-        const edit=e.target.closest("[data-edit-section]");
-        if(edit)return openSectionModal(edit.dataset.editSection);
-        const del=e.target.closest("[data-delete-section]");
-        if(del)return deleteSection(del.dataset.deleteSection);
-        const addLesson=e.target.closest("[data-add-lesson]");
-        if(addLesson){
-            location.href=`admin-lms-lesson-builder.html?course=${encodeURIComponent(courseId)}&section=${encodeURIComponent(addLesson.dataset.addLesson)}`;
-        }
-    });
-}
+  document.addEventListener("DOMContentLoaded", initialize);
 
-async function waitForClient(timeout=3500){
-    const start=Date.now();
-    while(Date.now()-start<timeout){const c=await getClient();if(c?.from)return c;await new Promise(r=>setTimeout(r,75));}
-    return null;
-}
-async function getClient(){
-    try{if(typeof window.getScreenings4uSupabase==="function"){const c=await window.getScreenings4uSupabase();if(c?.from)return c;}}catch(_){}
-    if(window.screenings4uSupabase?.from)return window.screenings4uSupabase;
-    if(window.supabaseClient?.from)return window.supabaseClient;
-    if(window.supabase?.createClient&&window.SCREENINGS4U_SUPABASE_URL&&window.SCREENINGS4U_SUPABASE_ANON_KEY){
-        window.supabaseClient=window.supabase.createClient(window.SCREENINGS4U_SUPABASE_URL,window.SCREENINGS4U_SUPABASE_ANON_KEY);return window.supabaseClient;
-    }
-    return null;
-}
-async function requireSession(){
-    if(window.S4UAuth?.requireSession){const s=await window.S4UAuth.requireSession("admin-login.html");if(!s)throw new Error("Authentication required.");return;}
-    const {data,error}=await client.auth.getSession();if(error)throw error;if(!data?.session?.user){location.replace("admin-login.html");throw new Error("Authentication required.");}
-}
+  async function initialize() {
+    try {
+      bindStaticUi();
 
-async function loadMedia(){
-    const {data,error}=await client.from("lms_media").select("id,media_type,original_filename,title,storage_bucket,storage_path,thumbnail_url,playback_url,mime_type,file_size_bytes,created_at").order("created_at",{ascending:false});
-    if(error)throw error;
-    media=data||[];
-    refreshMediaSelect();
-    if(el.cbUploadStatus && !el.cbUploadStatus.textContent.trim()) el.cbUploadStatus.textContent="Ready to upload a course image.";
-}
+      const params = new URLSearchParams(window.location.search);
+      state.courseId =
+        params.get("course") ||
+        params.get("course_id") ||
+        params.get("id") ||
+        "";
 
-async function loadCourse(){
-    const [{data:c,error:ce},{data:s,error:se},{data:l,error:le}]=await Promise.all([
-        client.from("lms_courses").select("*").eq("id",courseId).single(),
-        client.from("lms_sections").select("*").eq("course_id",courseId).order("sort_order",{ascending:true}),
-        client.from("lms_lessons").select("*").order("sort_order",{ascending:true})
-    ]);
-    if(ce)throw ce;if(se)throw se;if(le)throw le;
-    course=c;sections=s||[];const ids=new Set(sections.map(x=>x.id));lessons=(l||[]).filter(x=>ids.has(x.section_id));
-    fillCourse();renderCurriculum();renderSummary();
-}
-
-function fillCourse(){
-    el.cbHeading.textContent="Edit Course";
-    el.cbTitle.value=course.title||"";
-    el.cbSlug.value=course.slug||"";
-    el.cbStatus.value=course.status||"draft";
-    el.cbShortDescription.value=course.short_description||"";
-    el.cbDescription.value=course.description||"";
-    el.cbThumbnail.value=course.thumbnail_media_id||"";
-    el.cbPassingScore.value=course.passing_score??80;
-    el.cbNavigationMode.value=course.navigation_mode||"free";
-    el.cbVideoPercent.value=course.video_completion_percent??90;
-    el.cbCertificate.checked=!!course.certificate_enabled;
-    el.cbRequireLessons.checked=course.require_all_required_lessons!==false;
-    el.cbRequireAssessments.checked=course.require_required_assessments!==false;
-    el.cbDownloads.checked=!!course.allow_student_downloads;
-    el.cbPreview.checked=!!course.preview_enabled;
-    renderMediaPreview();
-}
-
-function collect(publish){
-    const title=el.cbTitle.value.trim();
-    if(!title)throw new Error("Course title is required.");
-    const slug=el.cbSlug.value.trim()||slugify(title);
-    if(!slug)throw new Error("Course slug is required.");
-    const status=publish?"published":el.cbStatus.value;
-    return {
-        slug,title,
-        short_description:el.cbShortDescription.value.trim()||null,
-        description:el.cbDescription.value.trim()||null,
-        thumbnail_media_id:el.cbThumbnail.value||null,
-        status,
-        certificate_enabled:el.cbCertificate.checked,
-        passing_score:numOrNull(el.cbPassingScore.value),
-        navigation_mode:el.cbNavigationMode.value||null,
-        video_completion_percent:numOrNull(el.cbVideoPercent.value),
-        require_all_required_lessons:el.cbRequireLessons.checked,
-        require_required_assessments:el.cbRequireAssessments.checked,
-        allow_student_downloads:el.cbDownloads.checked,
-        preview_enabled:el.cbPreview.checked,
-        published_at:status==="published"?(course?.published_at||new Date().toISOString()):course?.published_at||null,
-        updated_at:new Date().toISOString()
-    };
-}
-
-async function saveCourse(publish){
-    const buttons=[el.cbSaveDraft,el.cbPublish,el.cbSaveDraftBottom,el.cbPublishBottom];
-    buttons.forEach(b=>b.disabled=true);
-    try{
-        const payload=collect(publish);
-        let result;
-        if(courseId){
-            result=await client.from("lms_courses").update(payload).eq("id",courseId).select("*").single();
-        }else{
-            payload.created_at=new Date().toISOString();
-            result=await client.from("lms_courses").insert(payload).select("*").single();
-        }
-        if(result.error)throw result.error;
-        course=result.data;courseId=course.id;
-        const url=new URL(location.href);url.searchParams.set("course",courseId);history.replaceState({},"",url);
-        el.cbStatus.value=course.status;
-        el.cbHeading.textContent="Edit Course";
-        updateLinks();
-        renderSummary();
-        renderCurriculum();
-        show(publish?"Course published successfully.":"Course saved successfully.","ok");
-    }catch(error){
-        console.error(error);show(error.message||"Unable to save course.","error");
-    }finally{buttons.forEach(b=>b.disabled=false);}
-}
-
-function updateLinks(){
-    if(!courseId)return;
-    const id=encodeURIComponent(courseId);
-    el.cbCourseManagerLink.href=`admin-lms-course-manager.html?course=${id}`;
-    el.cbLessonBuilderLink.href=`admin-lms-lesson-builder.html?course=${id}`;
-}
-
-async function renderMediaPreview(){
-    const id=el.cbThumbnail.value;
-    const item=media.find(m=>m.id===id);
-    if(!item){
-        el.cbMediaPreview.innerHTML="No course image selected.";
+      if (!state.courseId) {
+        showToast("Open this builder from a course record so a course ID is available.", "error");
+        setLoading(false);
         return;
+      }
+
+      await loadCourse();
+      render();
+    } catch (error) {
+      console.error("[Course Builder]", error);
+      showToast(error?.message || "Unable to load course builder.", "error");
+      setLoading(false);
+    }
+  }
+
+  function db() {
+    const candidates = [
+      window.supabaseClient,
+      window.supabaseAdmin,
+      window.supabase
+    ];
+
+    const client = candidates.find(
+      (value) => value && typeof value.from === "function"
+    );
+
+    if (!client) {
+      throw new Error("Supabase client is unavailable.");
     }
 
-    let src=item.thumbnail_url||item.playback_url||"";
-    if(!src&&item.storage_bucket&&item.storage_path){
-        const {data,error}=await client.storage.from(item.storage_bucket).createSignedUrl(item.storage_path,3600);
-        if(!error)src=data?.signedUrl||"";
+    return client;
+  }
+
+  function bindStaticUi() {
+    $("addContentButton")?.addEventListener("click", function (event) {
+      event.stopPropagation();
+      toggleMenu("addContentMenu", "addContentButton");
+    });
+
+    $("courseMoreButton")?.addEventListener("click", function (event) {
+      event.stopPropagation();
+      toggleMenu("courseMoreMenu", "courseMoreButton");
+    });
+
+    document.addEventListener("click", function () {
+      closeMenu("addContentMenu", "addContentButton");
+      closeMenu("courseMoreMenu", "courseMoreButton");
+    });
+
+    $("addContentMenu")?.addEventListener("click", function (event) {
+      event.stopPropagation();
+
+      const button = event.target.closest("[data-add-kind]");
+      if (!button) return;
+
+      const kind = button.dataset.addKind || "";
+      closeMenu("addContentMenu", "addContentButton");
+
+      if (kind === "section") {
+        openSectionModal();
+        return;
+      }
+
+      if (kind === "import") {
+        showToast("Import UI is ready for the next wiring pass.", "success");
+        return;
+      }
+
+      openLessonModal(kind);
+    });
+
+    $("emptyAddSectionButton")?.addEventListener("click", openSectionModal);
+
+    document.querySelectorAll("[data-close-modal]").forEach(function (button) {
+      button.addEventListener("click", closeModals);
+    });
+
+    $("saveSectionButton")?.addEventListener("click", saveSection);
+    $("saveLessonButton")?.addEventListener("click", saveLesson);
+
+    $("sectionModal")?.addEventListener("click", function (event) {
+      if (event.target === event.currentTarget) closeModals();
+    });
+
+    $("lessonModal")?.addEventListener("click", function (event) {
+      if (event.target === event.currentTarget) closeModals();
+    });
+
+    document.querySelectorAll("[data-course-tab]").forEach(function (tab) {
+      tab.addEventListener("click", function (event) {
+        event.preventDefault();
+        const target = tab.dataset.courseTab;
+
+        const destinations = {
+          overview: "admin-lms-course-overview.html",
+          content: "admin-lms-course-builder.html",
+          participants: "admin-lms-course-participants.html",
+          settings: "admin-lms-course-settings.html",
+          engagement: "admin-lms-course-engagement.html"
+        };
+
+        const page = destinations[target];
+        if (!page) return;
+
+        window.location.href =
+          `${page}?course=${encodeURIComponent(state.courseId)}`;
+      });
+    });
+
+    $("participantsButton")?.addEventListener("click", function (event) {
+      event.preventDefault();
+      window.location.href =
+        `admin-lms-course-participants.html?course=${encodeURIComponent(state.courseId)}`;
+    });
+
+    $("previewCourseButton")?.addEventListener("click", function (event) {
+      event.preventDefault();
+      window.location.href =
+        `admin-lms-course-preview.html?course=${encodeURIComponent(state.courseId)}`;
+    });
+
+    $("archiveCourseButton")?.addEventListener("click", archiveCourse);
+    $("duplicateCourseButton")?.addEventListener("click", duplicateCoursePlaceholder);
+
+    $("createWithAiButton")?.addEventListener("click", aiPlaceholder);
+    $("aiTutorButton")?.addEventListener("click", aiPlaceholder);
+  }
+
+  function toggleMenu(menuId, triggerId) {
+    const menu = $(menuId);
+    const trigger = $(triggerId);
+    if (!menu || !trigger) return;
+
+    const opening = menu.hidden;
+    menu.hidden = !opening;
+    trigger.setAttribute("aria-expanded", opening ? "true" : "false");
+  }
+
+  function closeMenu(menuId, triggerId) {
+    const menu = $(menuId);
+    const trigger = $(triggerId);
+
+    if (menu) menu.hidden = true;
+    if (trigger) trigger.setAttribute("aria-expanded", "false");
+  }
+
+  async function loadCourse() {
+    setLoading(true);
+
+    const { data: course, error: courseError } = await db()
+      .from(TABLES.courses)
+      .select("*")
+      .eq("id", state.courseId)
+      .single();
+
+    if (courseError) throw courseError;
+
+    const { data: sections, error: sectionError } = await db()
+      .from(TABLES.sections)
+      .select(`
+        *,
+        lms_lessons (
+          *
+        )
+      `)
+      .eq("course_id", state.courseId)
+      .order("sort_order", { ascending: true });
+
+    if (sectionError) throw sectionError;
+
+    state.course = course;
+    state.sections = (sections || []).map(function (section) {
+      return {
+        ...section,
+        lms_lessons: (section.lms_lessons || []).sort(function (a, b) {
+          return number(a.sort_order) - number(b.sort_order);
+        })
+      };
+    });
+
+    state.activeSectionId =
+      state.activeSectionId ||
+      state.sections[0]?.id ||
+      "";
+
+    setLoading(false);
+  }
+
+  function render() {
+    renderCourseHeader();
+    renderCurriculum();
+    populateSectionSelect();
+  }
+
+  function renderCourseHeader() {
+    const course = state.course || {};
+    const title = course.title || "Course";
+    const status = String(course.status || "draft");
+
+    setText("courseTitle", title);
+    setText("courseBreadcrumb", title);
+    setText(
+      "courseStatusBadge",
+      status.charAt(0).toUpperCase() + status.slice(1)
+    );
+
+    const statusBadge = $("courseStatusBadge");
+    if (statusBadge) {
+      statusBadge.classList.toggle("live", status === "published");
+    }
+  }
+
+  function renderCurriculum() {
+    const target = $("courseCurriculum");
+    const empty = $("courseEmpty");
+    if (!target || !empty) return;
+
+    if (!state.sections.length) {
+      target.hidden = true;
+      empty.hidden = false;
+      return;
     }
 
-    el.cbMediaPreview.innerHTML=src
-        ?`<img src="${esc(src)}" alt="${esc(item.title||item.original_filename||"Course image")}">`
-        :"Image uploaded, but a preview URL could not be generated.";
-}
+    empty.hidden = true;
+    target.hidden = false;
 
-async function uploadCourseImage(file){
-    clearUploadStatus();
+    target.innerHTML = state.sections
+      .map(sectionTemplate)
+      .join("");
 
-    const allowed=["image/jpeg","image/png","image/webp"];
-    if(!allowed.includes(file.type)){
-        return uploadStatus("Please choose a JPG, PNG, or WebP image.","error");
+    bindCurriculumUi();
+  }
+
+  function sectionTemplate(section, sectionIndex) {
+    const lessons = section.lms_lessons || [];
+    const selected = state.activeSectionId === section.id;
+
+    return `
+      <article
+        class="curriculum-section${selected ? " selected" : ""}"
+        data-section-id="${esc(section.id)}"
+        draggable="true"
+      >
+        <header class="curriculum-section-header">
+          <span class="drag-handle" aria-hidden="true">⋮⋮</span>
+
+          <div class="curriculum-section-copy">
+            <div class="curriculum-section-title">
+              ${esc(section.title || `Section ${sectionIndex + 1}`)}
+            </div>
+            <div class="curriculum-section-meta">
+              ${lessons.length} step${lessons.length === 1 ? "" : "s"}
+            </div>
+          </div>
+
+          <div class="curriculum-section-actions">
+            ${selected ? `<button type="button" class="curriculum-action primary" data-edit-section="${esc(section.id)}">Edit</button>` : ""}
+            <button type="button" class="curriculum-icon-action" data-section-more="${esc(section.id)}" aria-label="Section actions">•••</button>
+            <button type="button" class="curriculum-icon-action" data-toggle-section="${esc(section.id)}" aria-label="Toggle section">⌃</button>
+          </div>
+        </header>
+
+        <div class="curriculum-lessons" data-lessons-for="${esc(section.id)}">
+          ${lessons.map(lessonTemplate).join("")}
+        </div>
+
+        <div class="section-add-row">
+          <button type="button" data-add-lesson="${esc(section.id)}">＋ Add Step</button>
+          <button type="button" data-import-lesson="${esc(section.id)}">⇩ Import Step</button>
+        </div>
+      </article>
+    `;
+  }
+
+  function lessonTemplate(lesson) {
+    const type = normalizeLessonType(lesson.lesson_type);
+
+    return `
+      <article
+        class="curriculum-lesson"
+        data-lesson-id="${esc(lesson.id)}"
+        data-section-id="${esc(lesson.section_id)}"
+        draggable="true"
+      >
+        <span class="drag-handle" aria-hidden="true">⋮⋮</span>
+
+        <div class="curriculum-lesson-copy">
+          <div class="curriculum-lesson-title">
+            ${esc(lesson.title || "Untitled step")}
+            <span class="lesson-type-badge">${esc(typeLabel(type))}</span>
+          </div>
+
+          <div class="curriculum-lesson-meta">
+            ${lesson.is_published === false ? "Draft" : "Published"}
+            ${lesson.is_required ? " · Required" : ""}
+          </div>
+        </div>
+
+        <div class="curriculum-lesson-actions">
+          <button type="button" class="curriculum-action" data-open-lesson="${esc(lesson.id)}">
+            Edit
+          </button>
+          <button type="button" class="curriculum-icon-action" data-lesson-more="${esc(lesson.id)}" aria-label="Lesson actions">•••</button>
+        </div>
+      </article>
+    `;
+  }
+
+  function bindCurriculumUi() {
+    document.querySelectorAll("[data-section-id].curriculum-section").forEach(function (section) {
+      section.addEventListener("click", function (event) {
+        if (event.target.closest("button")) return;
+        state.activeSectionId = section.dataset.sectionId || "";
+        renderCurriculum();
+      });
+
+      section.addEventListener("dragstart", beginSectionDrag);
+      section.addEventListener("dragover", overSectionDrag);
+      section.addEventListener("dragleave", clearDragTarget);
+      section.addEventListener("drop", dropSection);
+      section.addEventListener("dragend", endDrag);
+    });
+
+    document.querySelectorAll("[data-lesson-id].curriculum-lesson").forEach(function (lesson) {
+      lesson.addEventListener("dragstart", beginLessonDrag);
+      lesson.addEventListener("dragover", overLessonDrag);
+      lesson.addEventListener("dragleave", clearDragTarget);
+      lesson.addEventListener("drop", dropLesson);
+      lesson.addEventListener("dragend", endDrag);
+    });
+
+    document.querySelectorAll("[data-add-lesson]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        state.activeSectionId = button.dataset.addLesson || "";
+        openLessonModal("article");
+      });
+    });
+
+    document.querySelectorAll("[data-edit-section]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        openSectionModal(button.dataset.editSection || "");
+      });
+    });
+
+    document.querySelectorAll("[data-open-lesson]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const lessonId = button.dataset.openLesson || "";
+        window.location.href =
+          `admin-lms-lesson-editor.html?course=${encodeURIComponent(state.courseId)}&lesson=${encodeURIComponent(lessonId)}`;
+      });
+    });
+
+    document.querySelectorAll("[data-toggle-section]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const id = button.dataset.toggleSection || "";
+        const container = document.querySelector(`[data-lessons-for="${cssEsc(id)}"]`);
+        if (container) container.hidden = !container.hidden;
+      });
+    });
+
+    document.querySelectorAll("[data-import-lesson]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        showToast("Import Step is ready for the next wiring pass.", "success");
+      });
+    });
+
+    document.querySelectorAll("[data-section-more], [data-lesson-more]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        showToast("Duplicate, move, delete, prerequisite, and drip controls belong in this action menu.", "success");
+      });
+    });
+  }
+
+  function beginSectionDrag(event) {
+    if (event.target.closest(".curriculum-lesson")) {
+      event.preventDefault();
+      return;
     }
 
-    const maxBytes=15*1024*1024;
-    if(file.size>maxBytes){
-        return uploadStatus("The course image must be 15 MB or smaller.","error");
+    const section = event.currentTarget;
+    state.dragging = {
+      kind: "section",
+      id: section.dataset.sectionId
+    };
+
+    section.classList.add("dragging");
+    event.dataTransfer.effectAllowed = "move";
+  }
+
+  function overSectionDrag(event) {
+    if (state.dragging?.kind !== "section") return;
+    event.preventDefault();
+    event.currentTarget.classList.add("drag-target");
+  }
+
+  async function dropSection(event) {
+    if (state.dragging?.kind !== "section") return;
+
+    event.preventDefault();
+    const targetId = event.currentTarget.dataset.sectionId;
+    const sourceId = state.dragging.id;
+
+    if (!sourceId || !targetId || sourceId === targetId) {
+      endDrag();
+      return;
     }
 
-    el.cbUploadProgress?.classList.add("show");
-    if(el.cbImageUpload)el.cbImageUpload.disabled=true;
+    reorderArray(state.sections, sourceId, targetId);
+    renderCurriculum();
 
-    let uploadedPath="";
-    try{
-        const {data:userData,error:userError}=await client.auth.getUser();
-        if(userError)throw userError;
-        const user=userData?.user;
-        if(!user)throw new Error("You must be signed in to upload an image.");
-
-        const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
-        const safeBase=(file.name.replace(/\.[^.]+$/,"")||"course-image")
-            .toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,70)||"course-image";
-        const folder=courseId?`course-images/${courseId}`:`course-images/unassigned/${user.id}`;
-        uploadedPath=`${folder}/${Date.now()}-${crypto.randomUUID()}-${safeBase}.${ext}`;
-
-        uploadStatus("Uploading image to storage...","success");
-
-        const {error:uploadError}=await client.storage
-            .from("lms-media")
-            .upload(uploadedPath,file,{cacheControl:"3600",upsert:false,contentType:file.type});
-        if(uploadError)throw uploadError;
-
-        const {data:mediaRow,error:mediaError}=await client.from("lms_media").insert({
-            uploaded_by:user.id,
-            media_type:"image",
-            original_filename:file.name,
-            storage_bucket:"lms-media",
-            storage_path:uploadedPath,
-            mime_type:file.type,
-            file_size_bytes:file.size,
-            title:file.name.replace(/\.[^.]+$/,""),
-            provider:"supabase_storage",
-            metadata:{source:"course_builder",course_id:courseId||null}
-        }).select("id,media_type,original_filename,title,storage_bucket,storage_path,thumbnail_url,playback_url,mime_type,file_size_bytes,created_at").single();
-        if(mediaError)throw mediaError;
-
-        media.unshift(mediaRow);
-        refreshMediaSelect(mediaRow.id);
-
-        if(courseId){
-            const {data:updated,error:updateError}=await client.from("lms_courses")
-                .update({thumbnail_media_id:mediaRow.id,updated_at:new Date().toISOString()})
-                .eq("id",courseId)
-                .select("*")
-                .single();
-            if(updateError)throw updateError;
-            course=updated;
-        }
-
-        await renderMediaPreview();
-        renderSummary();
-        uploadStatus(`Image uploaded successfully: ${file.name}`,"success");
-        show("Course image uploaded successfully.","ok");
-    }catch(error){
-        console.error("Course image upload failed:",error);
-        if(uploadedPath){
-            try{await client.storage.from("lms-media").remove([uploadedPath]);}catch(_){}
-        }
-        uploadStatus(error.message||"Unable to upload the course image.","error");
-    }finally{
-        el.cbUploadProgress?.classList.remove("show");
-        if(el.cbImageUpload){
-            el.cbImageUpload.disabled=false;
-            el.cbImageUpload.value="";
-        }
+    try {
+      await persistSectionOrder();
+      showToast("Section order saved.", "success");
+    } catch (error) {
+      console.error(error);
+      await loadCourse();
+      render();
+      showToast("Section order could not be saved.", "error");
+    } finally {
+      endDrag();
     }
-}
+  }
 
-function refreshMediaSelect(selectedId=""){
-    const images=media.filter(m=>String(m.media_type||"").toLowerCase()==="image"||String(m.mime_type||"").startsWith("image/"));
-    el.cbThumbnail.innerHTML='<option value="">No thumbnail</option>'+images.map(m=>`<option value="${esc(m.id)}">${esc(m.title||m.original_filename||"Image")}</option>`).join("");
-    if(selectedId)el.cbThumbnail.value=selectedId;
-}
+  function beginLessonDrag(event) {
+    event.stopPropagation();
 
-function uploadStatus(text,type){
-    if(!el.cbUploadStatus)return;
-    el.cbUploadStatus.textContent=text;
-    el.cbUploadStatus.className=`cb-upload-status show ${type||""}`.trim();
-}
-function clearUploadStatus(){
-    if(!el.cbUploadStatus)return;
-    el.cbUploadStatus.textContent="Ready to upload a course image.";
-    el.cbUploadStatus.className="cb-upload-status";
-}
+    const lesson = event.currentTarget;
 
-function renderCurriculum(){
-    updateLinks();
-    if(!courseId){
-        el.cbCurriculum.innerHTML='<div class="cb-empty">Save the course first, then add sections and lessons.</div>';
-        el.cbAddSection.disabled=true;return;
+    state.dragging = {
+      kind: "lesson",
+      id: lesson.dataset.lessonId,
+      sectionId: lesson.dataset.sectionId
+    };
+
+    lesson.classList.add("dragging");
+    event.dataTransfer.effectAllowed = "move";
+  }
+
+  function overLessonDrag(event) {
+    if (state.dragging?.kind !== "lesson") return;
+
+    const target = event.currentTarget;
+    if (target.dataset.sectionId !== state.dragging.sectionId) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    target.classList.add("drag-target");
+  }
+
+  async function dropLesson(event) {
+    if (state.dragging?.kind !== "lesson") return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const targetId = event.currentTarget.dataset.lessonId;
+    const sectionId = event.currentTarget.dataset.sectionId;
+    const sourceId = state.dragging.id;
+
+    if (
+      !sourceId ||
+      !targetId ||
+      sourceId === targetId ||
+      sectionId !== state.dragging.sectionId
+    ) {
+      endDrag();
+      return;
     }
-    el.cbAddSection.disabled=false;
-    if(!sections.length){
-        el.cbCurriculum.innerHTML='<div class="cb-empty">No sections yet. Click <strong>Add Section</strong> to begin building the curriculum.</div>';return;
+
+    const section = state.sections.find((item) => item.id === sectionId);
+    if (!section) return;
+
+    reorderArray(section.lms_lessons, sourceId, targetId);
+    renderCurriculum();
+
+    try {
+      await persistLessonOrder(section);
+      showToast("Lesson order saved.", "success");
+    } catch (error) {
+      console.error(error);
+      await loadCourse();
+      render();
+      showToast("Lesson order could not be saved.", "error");
+    } finally {
+      endDrag();
     }
-    el.cbCurriculum.innerHTML=sections.map((s,i)=>{
-        const ls=lessons.filter(l=>l.section_id===s.id);
-        return `<section class="cb-section">
-        <header class="cb-section-head"><span class="cb-section-num">${String(i+1).padStart(2,"0")}</span><div class="cb-section-copy"><strong>${esc(s.title||"Untitled Section")}</strong><small>${ls.length} lesson${ls.length===1?"":"s"} · ${s.is_published?"Published":"Not published"}</small></div>
-        <button class="cb-btn cb-mini" type="button" data-edit-section="${esc(s.id)}">Edit</button><button class="cb-btn cb-mini danger" type="button" data-delete-section="${esc(s.id)}">Delete</button></header>
-        <div class="cb-lessons">${ls.length?ls.map(l=>`<div class="cb-lesson"><div class="cb-lesson-copy"><strong>${esc(l.title||"Untitled Lesson")}</strong><small>${esc(human(l.status))}${l.estimated_minutes?` · ${l.estimated_minutes} min`:""}</small></div><a class="cb-btn cb-mini" href="admin-lms-lesson-builder.html?lesson=${encodeURIComponent(l.id)}&course=${encodeURIComponent(courseId)}">Edit Lesson</a></div>`).join(""):'<div class="cb-empty" style="padding:12px 0">No lessons in this section.</div>'}
-        <div style="padding-top:7px"><button class="cb-btn cb-mini primary" type="button" data-add-lesson="${esc(s.id)}">+ Add Lesson</button></div></div></section>`;
+  }
+
+  function clearDragTarget(event) {
+    event.currentTarget.classList.remove("drag-target");
+  }
+
+  function endDrag() {
+    document.querySelectorAll(".dragging, .drag-target").forEach(function (node) {
+      node.classList.remove("dragging", "drag-target");
+    });
+
+    state.dragging = null;
+  }
+
+  function reorderArray(items, sourceId, targetId) {
+    const from = items.findIndex((item) => item.id === sourceId);
+    const to = items.findIndex((item) => item.id === targetId);
+
+    if (from < 0 || to < 0) return;
+
+    const [moved] = items.splice(from, 1);
+    items.splice(to, 0, moved);
+  }
+
+  async function persistSectionOrder() {
+    for (let index = 0; index < state.sections.length; index += 1) {
+      const section = state.sections[index];
+      const { error } = await db()
+        .from(TABLES.sections)
+        .update({ sort_order: index + 1 })
+        .eq("id", section.id);
+
+      if (error) throw error;
+      section.sort_order = index + 1;
+    }
+  }
+
+  async function persistLessonOrder(section) {
+    const lessons = section.lms_lessons || [];
+
+    for (let index = 0; index < lessons.length; index += 1) {
+      const lesson = lessons[index];
+      const { error } = await db()
+        .from(TABLES.lessons)
+        .update({ sort_order: index + 1 })
+        .eq("id", lesson.id);
+
+      if (error) throw error;
+      lesson.sort_order = index + 1;
+    }
+  }
+
+  function openSectionModal(sectionId = "") {
+    state.editingSectionId = sectionId;
+
+    const section = state.sections.find((item) => item.id === sectionId);
+
+    setText(
+      "sectionModalTitle",
+      section ? "Edit section" : "Add section"
+    );
+
+    $("sectionTitleInput").value = section?.title || "";
+    $("sectionDescriptionInput").value = section?.description || "";
+
+    $("sectionModal").hidden = false;
+    setTimeout(() => $("sectionTitleInput")?.focus(), 0);
+  }
+
+  function openLessonModal(kind = "article") {
+    if (!state.sections.length) {
+      showToast("Add a section before creating a lesson.", "error");
+      openSectionModal();
+      return;
+    }
+
+    state.pendingLessonType = normalizeLessonType(kind);
+
+    populateSectionSelect();
+
+    $("lessonTitleInput").value = "";
+    $("lessonTypeSelect").value = state.pendingLessonType;
+    $("lessonRequiredInput").checked = true;
+
+    if (state.activeSectionId) {
+      $("lessonSectionSelect").value = state.activeSectionId;
+    }
+
+    $("lessonModal").hidden = false;
+    setTimeout(() => $("lessonTitleInput")?.focus(), 0);
+  }
+
+  function closeModals() {
+    $("sectionModal").hidden = true;
+    $("lessonModal").hidden = true;
+  }
+
+  async function saveSection() {
+    const title = $("sectionTitleInput").value.trim();
+    const description = $("sectionDescriptionInput").value.trim();
+
+    if (!title) {
+      showToast("Enter a section name.", "error");
+      return;
+    }
+
+    const button = $("saveSectionButton");
+    button.disabled = true;
+
+    try {
+      let result;
+
+      if (state.editingSectionId) {
+        result = await db()
+          .from(TABLES.sections)
+          .update({
+            title,
+            description: description || null
+          })
+          .eq("id", state.editingSectionId)
+          .select("*")
+          .single();
+      } else {
+        result = await db()
+          .from(TABLES.sections)
+          .insert({
+            course_id: state.courseId,
+            title,
+            description: description || null,
+            sort_order: state.sections.length + 1,
+            is_published: true
+          })
+          .select("*")
+          .single();
+      }
+
+      if (result.error) throw result.error;
+
+      closeModals();
+      await loadCourse();
+      state.activeSectionId = result.data.id;
+      render();
+
+      showToast(
+        state.editingSectionId ? "Section updated." : "Section added.",
+        "success"
+      );
+
+      state.editingSectionId = "";
+    } catch (error) {
+      console.error(error);
+      showToast(error?.message || "Unable to save section.", "error");
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  async function saveLesson() {
+    const title = $("lessonTitleInput").value.trim();
+    const sectionId = $("lessonSectionSelect").value;
+    const lessonType = normalizeLessonType($("lessonTypeSelect").value);
+    const required = $("lessonRequiredInput").checked;
+
+    if (!title) {
+      showToast("Enter a step name.", "error");
+      return;
+    }
+
+    const section = state.sections.find((item) => item.id === sectionId);
+
+    if (!section) {
+      showToast("Choose a section.", "error");
+      return;
+    }
+
+    const button = $("saveLessonButton");
+    button.disabled = true;
+
+    try {
+      const { data, error } = await db()
+        .from(TABLES.lessons)
+        .insert({
+          course_id: state.courseId,
+          section_id: sectionId,
+          title,
+          lesson_type: lessonType,
+          sort_order: (section.lms_lessons || []).length + 1,
+          is_required: required,
+          is_published: false
+        })
+        .select("*")
+        .single();
+
+      if (error) throw error;
+
+      closeModals();
+      await loadCourse();
+      state.activeSectionId = sectionId;
+      render();
+
+      showToast("Step created. Opening the lesson editor...", "success");
+
+      window.setTimeout(function () {
+        window.location.href =
+          `admin-lms-lesson-editor.html?course=${encodeURIComponent(state.courseId)}&lesson=${encodeURIComponent(data.id)}`;
+      }, 350);
+    } catch (error) {
+      console.error(error);
+      showToast(error?.message || "Unable to create lesson.", "error");
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  function populateSectionSelect() {
+    const select = $("lessonSectionSelect");
+    if (!select) return;
+
+    select.innerHTML = state.sections.map(function (section) {
+      return `<option value="${esc(section.id)}">${esc(section.title || "Section")}</option>`;
     }).join("");
-}
+  }
 
-function openSectionModal(id=""){
-    if(!courseId){show("Save the course before adding sections.","error");return;}
-    editingSectionId=id;
-    const s=sections.find(x=>x.id===id);
-    el.cbSectionModalTitle.textContent=s?"Edit Section":"Add Section";
-    el.cbSectionTitle.value=s?.title||"";
-    el.cbSectionDescription.value=s?.description||"";
-    el.cbSectionOrder.value=s?.sort_order??sections.length+1;
-    el.cbSectionPublished.checked=s?.is_published!==false;
-    el.cbSectionModal.classList.add("open");
-    setTimeout(()=>el.cbSectionTitle.focus(),50);
-}
-function closeSectionModal(){el.cbSectionModal.classList.remove("open");editingSectionId="";}
+  async function archiveCourse() {
+    if (!state.courseId) return;
 
-async function saveSection(){
-    const title=el.cbSectionTitle.value.trim();
-    if(!title){el.cbSectionTitle.focus();return;}
-    const payload={course_id:courseId,title,description:el.cbSectionDescription.value.trim()||null,sort_order:Number(el.cbSectionOrder.value)||1,is_published:el.cbSectionPublished.checked,updated_at:new Date().toISOString()};
-    try{
-        let result;
-        if(editingSectionId)result=await client.from("lms_sections").update(payload).eq("id",editingSectionId).select("*").single();
-        else{payload.created_at=new Date().toISOString();result=await client.from("lms_sections").insert(payload).select("*").single();}
-        if(result.error)throw result.error;
-        const idx=sections.findIndex(x=>x.id===result.data.id);
-        if(idx>=0)sections[idx]=result.data;else sections.push(result.data);
-        sections.sort((a,b)=>Number(a.sort_order||0)-Number(b.sort_order||0));
-        closeSectionModal();renderCurriculum();renderSummary();show("Section saved.","ok");
-    }catch(error){console.error(error);show(error.message||"Unable to save section.","error");}
-}
+    const confirmed = window.confirm(
+      "Archive this course? Learners should no longer see it as an active published course."
+    );
 
-async function deleteSection(id){
-    const s=sections.find(x=>x.id===id);if(!s)return;
-    const linked=lessons.filter(l=>l.section_id===id);
-    if(linked.length){show("This section still contains lessons. Remove or move the lessons before deleting the section.","error");return;}
-    if(!confirm(`Delete "${s.title}"?`))return;
-    const {error}=await client.from("lms_sections").delete().eq("id",id);
-    if(error){show(error.message,"error");return;}
-    sections=sections.filter(x=>x.id!==id);renderCurriculum();renderSummary();show("Section deleted.","ok");
-}
+    if (!confirmed) return;
 
-function renderSummary(){
-    el.cbSummaryMode.textContent=courseId?"Editing Existing Course":"New Course";
-    el.cbSummaryStatus.textContent=human(el.cbStatus.value||course?.status||"draft");
-    el.cbSummarySections.textContent=sections.length.toLocaleString();
-    el.cbSummaryLessons.textContent=lessons.length.toLocaleString();
-    el.cbSummarySaved.textContent=course?.updated_at?dateTime(course.updated_at):"Not saved";
-    updateLinks();
-}
+    try {
+      const { error } = await db()
+        .from(TABLES.courses)
+        .update({ status: "archived" })
+        .eq("id", state.courseId);
 
-function show(text,type="ok"){el.cbMessage.textContent=text;el.cbMessage.className=`cb-message show ${type}`;clearTimeout(show.timer);show.timer=setTimeout(()=>el.cbMessage.className="cb-message",5000);}
-function slugify(v){return String(v||"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");}
-function numOrNull(v){if(v===""||v==null)return null;const n=Number(v);return Number.isFinite(n)?n:null;}
-function human(v){return String(v||"—").replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase());}
-function dateTime(v){if(!v)return"—";const d=new Date(v);return Number.isNaN(d.getTime())?"—":d.toLocaleString(undefined,{year:"numeric",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});}
-function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
+      if (error) throw error;
+
+      state.course.status = "archived";
+      renderCourseHeader();
+      closeMenu("courseMoreMenu", "courseMoreButton");
+      showToast("Course archived.", "success");
+    } catch (error) {
+      console.error(error);
+      showToast(error?.message || "Unable to archive course.", "error");
+    }
+  }
+
+  function duplicateCoursePlaceholder() {
+    closeMenu("courseMoreMenu", "courseMoreButton");
+    showToast("Duplicate Course will copy the course, sections, lessons, assets and quizzes in the next data pass.", "success");
+  }
+
+  function aiPlaceholder() {
+    showToast("AI authoring is positioned in the UI; connect it after the core curriculum workflow is finalized.", "success");
+  }
+
+  function normalizeLessonType(value) {
+    const type = String(value || "article").toLowerCase();
+
+    const aliases = {
+      text: "article",
+      document: "article",
+      download: "file"
+    };
+
+    return aliases[type] || type;
+  }
+
+  function typeLabel(type) {
+    const labels = {
+      article: "Article",
+      video: "Video",
+      quiz: "Quiz",
+      file: "File",
+      embed: "Embed"
+    };
+
+    return labels[type] || "Lesson";
+  }
+
+  function setLoading(show) {
+    const loading = $("courseLoading");
+    if (loading) loading.hidden = !show;
+  }
+
+  function showToast(message, type) {
+    const toast = $("courseToast");
+    if (!toast) return;
+
+    toast.textContent = message;
+    toast.className = `course-toast show ${type || "success"}`;
+
+    window.clearTimeout(showToast.timer);
+    showToast.timer = window.setTimeout(function () {
+      toast.classList.remove("show");
+    }, 3600);
+  }
+
+  function setText(id, value) {
+    const node = $(id);
+    if (node) node.textContent = value ?? "";
+  }
+
+  function number(value) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  function esc(value) {
+    return String(value ?? "").replace(/[&<>"']/g, function (character) {
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[character];
+    });
+  }
+
+  function cssEsc(value) {
+    if (window.CSS?.escape) return window.CSS.escape(String(value));
+    return String(value).replace(/["\\]/g, "\\$&");
+  }
 })();

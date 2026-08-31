@@ -331,15 +331,32 @@
         return window.supabaseClient;
       }
 
+      const CUSTOMER_ROLES = ["client_user", "client_admin", "client_manager"];
+
       async function verifyPortalAccess(client, userId) {
-        const { data: profile, error } = await client
-          .from("customer_profiles")
-          .select("id, is_active")
-          .eq("id", userId)
-          .maybeSingle();
-        if (error) throw error;
-        if (!profile) return { allowed:false, reason:"This account is not registered for the customer portal." };
+        const [{ data: profile, error: profileError }, { data: assignments, error: roleError }] =
+          await Promise.all([
+            client
+              .from("user_profiles")
+              .select("id, is_active")
+              .eq("id", userId)
+              .maybeSingle(),
+            client
+              .from("user_role_assignments")
+              .select("role")
+              .eq("user_id", userId)
+          ]);
+
+        if (profileError) throw profileError;
+        if (roleError) throw roleError;
+        if (!profile) return { allowed:false, reason:"This account does not have a user profile." };
         if (profile.is_active === false) return { allowed:false, reason:"This account is inactive. Please contact your administrator." };
+
+        const roles = (assignments || []).map(item => String(item.role || "").toLowerCase());
+        if (!roles.some(role => CUSTOMER_ROLES.includes(role))) {
+          return { allowed:false, reason:"This account does not have access to the customer portal." };
+        }
+
         return { allowed:true };
       }
 
@@ -350,7 +367,7 @@
           if (!data?.session?.user) return;
           const access = await verifyPortalAccess(client, data.session.user.id);
           if (access.allowed) window.location.replace("customer-dashboard.html");
-          else await client.auth.signOut();
+          else await client.auth.signOut({ scope: "local" });
         } catch (error) {
           console.error("Portal session check failed:", error);
         }
@@ -398,7 +415,7 @@
           showStatus("Verifying portal access...");
           const access = await verifyPortalAccess(client, data.user.id);
           if (!access.allowed) {
-            await client.auth.signOut();
+            await client.auth.signOut({ scope: "local" });
             showStatus("");
             showModal("Access Denied", access.reason, "error");
             return;
