@@ -9,7 +9,8 @@
     courses: "lms_courses",
     sections: "lms_sections",
     lessons: "lms_lessons",
-    enrollments: "lms_enrollments"
+    enrollments: "lms_enrollments",
+    media: "lms_media"
   });
 
   const state = {
@@ -17,7 +18,9 @@
     course: null,
     sections: [],
     lessons: [],
-    enrollments: []
+    enrollments: [],
+    thumbnailMedia: null,
+    thumbnailUrl: ""
   };
 
   const $ = (id) => document.getElementById(id);
@@ -121,6 +124,8 @@
     state.course =
       courseResult.data;
 
+    await loadCourseThumbnail();
+
 
     const sectionResult =
       await db()
@@ -141,26 +146,36 @@
 
 
     /*
-     * Existing LMS builder code associates lessons to the course
-     * and section. Read by course_id first because that relationship
-     * is already used by the current LMS builder.
+     * lms_lessons belongs to a course through:
+     * lms_lessons.section_id -> lms_sections.course_id
      */
-    const lessonResult =
-      await db()
-        .from(TABLES.lessons)
-        .select("*")
-        .eq("course_id", state.courseId)
-        .order(
-          "sort_order",
-          { ascending: true }
-        );
+    const sectionIds =
+      state.sections
+        .map(function (section) {
+          return section.id;
+        })
+        .filter(Boolean);
 
-    if (lessonResult.error) {
-      throw lessonResult.error;
+    if (!sectionIds.length) {
+      state.lessons = [];
+    } else {
+      const lessonResult =
+        await db()
+          .from(TABLES.lessons)
+          .select("*")
+          .in("section_id", sectionIds)
+          .order(
+            "sort_order",
+            { ascending: true }
+          );
+
+      if (lessonResult.error) {
+        throw lessonResult.error;
+      }
+
+      state.lessons =
+        lessonResult.data || [];
     }
-
-    state.lessons =
-      lessonResult.data || [];
 
 
     /*
@@ -188,6 +203,117 @@
     }
 
     setLoading(false);
+  }
+
+
+  /* ============================================================
+     COURSE THUMBNAIL
+     Source of truth:
+     lms_courses.thumbnail_media_id -> lms_media -> Storage
+     ============================================================ */
+
+  async function loadCourseThumbnail() {
+    state.thumbnailMedia = null;
+    state.thumbnailUrl = "";
+
+    const mediaId =
+      state.course?.thumbnail_media_id || "";
+
+    if (!mediaId) {
+      return;
+    }
+
+    try {
+      if (window.S4UCourseImage?.resolveMedia) {
+        const resolved =
+          await window.S4UCourseImage.resolveMedia(mediaId);
+
+        state.thumbnailMedia =
+          resolved?.media || null;
+
+        state.thumbnailUrl =
+          resolved?.url || "";
+
+        if (state.thumbnailUrl) {
+          return;
+        }
+      }
+
+      const mediaResult =
+        await db()
+          .from(TABLES.media)
+          .select(
+            "id,storage_bucket,storage_path,thumbnail_url,provider,provider_status,mime_type,title"
+          )
+          .eq("id", mediaId)
+          .single();
+
+      if (mediaResult.error) {
+        throw mediaResult.error;
+      }
+
+      state.thumbnailMedia =
+        mediaResult.data || null;
+
+      state.thumbnailUrl =
+        await resolveThumbnailUrl(
+          state.thumbnailMedia
+        );
+
+    } catch (error) {
+      console.warn(
+        "[Course Overview] Course thumbnail unavailable:",
+        error
+      );
+
+      state.thumbnailMedia = null;
+      state.thumbnailUrl = "";
+    }
+  }
+
+  async function resolveThumbnailUrl(media) {
+    if (!media) {
+      return "";
+    }
+
+    if (window.S4UCourseImage?.resolveMedia) {
+      try {
+        const resolved =
+          await window.S4UCourseImage.resolveMedia(media);
+
+        if (resolved?.url) {
+          return resolved.url;
+        }
+      } catch (_) {}
+    }
+
+    if (
+      media.thumbnail_url &&
+      /^https?:\/\//i.test(media.thumbnail_url)
+    ) {
+      return media.thumbnail_url;
+    }
+
+    if (
+      !media.storage_bucket ||
+      !media.storage_path
+    ) {
+      return "";
+    }
+
+    const signedResult =
+      await db().storage
+        .from(media.storage_bucket)
+        .createSignedUrl(
+          media.storage_path,
+          3600
+        );
+
+    if (signedResult.error) {
+      throw signedResult.error;
+    }
+
+    return signedResult.data?.signedUrl || "";
   }
 
 
@@ -316,23 +442,26 @@
     );
 
 
-    const imageUrl =
-      firstString(
-        course.thumbnail_url,
-        course.cover_image_url,
-        course.image_url,
-        course.thumbnail
-      );
+    const thumbnail =
+      $("overviewThumbnail");
 
-    if (imageUrl) {
-      const thumbnail =
-        $("overviewThumbnail");
-
-      if (thumbnail) {
+    if (thumbnail) {
+      if (state.thumbnailUrl) {
         thumbnail.innerHTML =
           '<img src="' +
-          escapeAttribute(imageUrl) +
-          '" alt="">';
+          escapeAttribute(state.thumbnailUrl) +
+          '" alt="' +
+          escapeAttribute(
+            course.title
+              ? course.title + " course image"
+              : "Course image"
+          ) +
+          '">';
+      } else {
+        thumbnail.innerHTML =
+          '<span id="overviewThumbnailInitials">' +
+          escapeHtml(initials) +
+          '</span>';
       }
     }
   }
@@ -682,11 +811,23 @@
           closeMoreMenu();
 
           showToast(
-            "Course duplication will be wired after the core course pages are complete.",
-            "success"
+            "Course duplication is not available from Overview yet.",
+            "error"
           );
         }
       );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (
+          event.key === "Escape" &&
+          !$("s4uOverviewDialogBackdrop")?.hidden
+        ) {
+          closeOverviewDialog(false);
+        }
+      }
+    );
   }
 
 
@@ -749,9 +890,14 @@
     }
 
     const confirmed =
-      window.confirm(
-        "Archive this course?"
-      );
+      await overviewConfirm({
+        eyebrow: "COURSE MANAGEMENT",
+        title: "Archive course?",
+        message:
+          "Archive this course? Learners should no longer see it as an active published course.",
+        confirmLabel: "Archive Course",
+        danger: true
+      });
 
     if (!confirmed) {
       return;
@@ -801,6 +947,206 @@
         "error"
       );
     }
+  }
+
+
+  function ensureOverviewDialog() {
+    let backdrop =
+      $("s4uOverviewDialogBackdrop");
+
+    if (backdrop) {
+      return backdrop;
+    }
+
+    backdrop =
+      document.createElement("div");
+
+    backdrop.id =
+      "s4uOverviewDialogBackdrop";
+
+    backdrop.className =
+      "s4u-overview-dialog-backdrop";
+
+    backdrop.hidden = true;
+
+    backdrop.innerHTML = `
+      <section
+        class="s4u-overview-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="s4uOverviewDialogTitle"
+      >
+        <header>
+          <div>
+            <span
+              class="s4u-overview-dialog-kicker"
+              id="s4uOverviewDialogEyebrow"
+            >COURSE OVERVIEW</span>
+
+            <h2 id="s4uOverviewDialogTitle">
+              Confirm
+            </h2>
+
+            <p id="s4uOverviewDialogMessage"></p>
+          </div>
+
+          <button
+            type="button"
+            class="s4u-overview-dialog-close"
+            data-overview-dialog-cancel
+            aria-label="Close"
+          >×</button>
+        </header>
+
+        <div
+          class="s4u-overview-dialog-body"
+          id="s4uOverviewDialogBody"
+        ></div>
+
+        <footer>
+          <button
+            type="button"
+            class="s4u-overview-dialog-btn secondary"
+            data-overview-dialog-cancel
+          >Cancel</button>
+
+          <button
+            type="button"
+            class="s4u-overview-dialog-btn primary"
+            id="s4uOverviewDialogConfirm"
+          >Continue</button>
+        </footer>
+      </section>
+    `;
+
+    document.body.appendChild(backdrop);
+
+    backdrop
+      .querySelectorAll(
+        "[data-overview-dialog-cancel]"
+      )
+      .forEach(function (button) {
+        button.addEventListener(
+          "click",
+          function () {
+            closeOverviewDialog(false);
+          }
+        );
+      });
+
+    backdrop.addEventListener(
+      "click",
+      function (event) {
+        if (event.target === backdrop) {
+          closeOverviewDialog(false);
+        }
+      }
+    );
+
+    return backdrop;
+  }
+
+
+  function closeOverviewDialog(value) {
+    const backdrop =
+      $("s4uOverviewDialogBackdrop");
+
+    if (!backdrop) {
+      return;
+    }
+
+    const resolver =
+      backdrop._resolver;
+
+    backdrop._resolver = null;
+    backdrop.hidden = true;
+
+    document.body.style.overflow =
+      backdrop.dataset.previousOverflow || "";
+
+    backdrop.dataset.previousOverflow = "";
+
+    if (resolver) {
+      resolver(Boolean(value));
+    }
+  }
+
+
+  function overviewConfirm({
+    eyebrow = "COURSE MANAGEMENT",
+    title = "Confirm",
+    message = "",
+    confirmLabel = "Continue",
+    danger = false
+  }) {
+    const backdrop =
+      ensureOverviewDialog();
+
+    setText(
+      "s4uOverviewDialogEyebrow",
+      eyebrow
+    );
+
+    setText(
+      "s4uOverviewDialogTitle",
+      title
+    );
+
+    setText(
+      "s4uOverviewDialogMessage",
+      message
+    );
+
+    const body =
+      $("s4uOverviewDialogBody");
+
+    if (body) {
+      body.innerHTML =
+        '<div class="s4u-overview-dialog-copy">' +
+        escapeHtml(message) +
+        "</div>";
+    }
+
+    const confirm =
+      $("s4uOverviewDialogConfirm");
+
+    if (confirm) {
+      confirm.textContent =
+        confirmLabel;
+
+      confirm.classList.toggle(
+        "danger",
+        Boolean(danger)
+      );
+    }
+
+    backdrop.hidden = false;
+
+    backdrop.dataset.previousOverflow =
+      document.body.style.overflow || "";
+
+    document.body.style.overflow =
+      "hidden";
+
+    return new Promise(function (resolve) {
+      backdrop._resolver = resolve;
+
+      if (confirm) {
+        confirm.onclick = function () {
+          closeOverviewDialog(true);
+        };
+      }
+    });
+  }
+
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
 

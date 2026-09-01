@@ -120,6 +120,14 @@
   async function loadAll() {
     setLoading(true);
 
+    // Reset optional datasets before each reload so stale analytics never survive a refresh.
+    state.profiles = [];
+    state.profileMap = new Map();
+    state.lessonProgress = [];
+    state.blockProgress = [];
+    state.quizAttempts = [];
+    state.assessmentAttempts = [];
+
     const courseResult =
       await db()
         .from(TABLES.courses)
@@ -168,7 +176,7 @@
         await db()
           .from(TABLES.profiles)
           .select(
-            "id,first_name,last_name,display_name,email,avatar_url"
+            "id,first_name,last_name,display_name,email,avatar_path,company_name,last_seen_at,is_active"
           )
           .in(
             "id",
@@ -933,7 +941,8 @@
         "click",
         function () {
           window.location.href =
-            "admin-notifications.html";
+            "admin-notifications.html?course=" +
+            encodeURIComponent(state.courseId);
         }
       );
 

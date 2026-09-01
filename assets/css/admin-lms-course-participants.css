@@ -1136,3 +1136,292 @@
   .participants-copy-link-row,
   .participants-copy-link-row button { font-size: 14px; }
 }
+
+/* ============================================================
+   COURSE BUILDER VISUAL SYSTEM — PARTICIPANTS PAGE
+   Matches admin-lms-course-builder.html design language.
+   ============================================================ */
+
+:root {
+  --pt-blue: var(--admin-blue, #325aa3);
+  --pt-blue-dark: var(--admin-blue-dark, #24467f);
+  --pt-blue-soft: rgba(50, 90, 163, 0.08);
+  --pt-green: #16a34a;
+  --pt-orange: var(--admin-orange, #ff6b00);
+  --pt-orange-hover: var(--admin-orange-hover, #e66000);
+  --pt-red: #dc2626;
+  --pt-ink: var(--admin-text, #172033);
+  --pt-text: #334155;
+  --pt-muted: var(--admin-muted, #687386);
+  --pt-line: var(--admin-border, #dfe5ec);
+  --pt-bg: var(--admin-bg, #f5f7fa);
+  --pt-card: var(--admin-card, #ffffff);
+  --pt-shadow: 0 8px 24px rgba(23, 32, 51, 0.06);
+}
+
+.admin-lms-course-participants-page {
+  background: var(--pt-bg);
+}
+
+.participants-workspace {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 22px 26px 50px;
+  color: var(--pt-text);
+}
+
+.participants-breadcrumbs {
+  margin-bottom: 8px;
+  font-size: 11px;
+}
+
+.participants-breadcrumbs a {
+  color: var(--pt-ink);
+}
+
+.participants-course-header {
+  gap: 20px;
+  padding: 6px 0 10px;
+}
+
+.participants-course-header h1 {
+  max-width: 760px;
+  color: var(--pt-blue-dark);
+  font-size: clamp(1.65rem, 2.1vw, 2rem);
+  line-height: 1.12;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+.participants-back {
+  color: var(--pt-blue);
+}
+
+.participants-circle-button {
+  border: 1px solid #e0e6ee;
+  background: #fff;
+  color: var(--pt-blue);
+}
+
+.participants-pill-button {
+  min-height: 38px;
+  padding: 0 17px;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.participants-pill-button.primary {
+  background: var(--pt-orange);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(255, 107, 0, 0.16);
+}
+
+.participants-pill-button.primary:hover {
+  background: var(--pt-orange-hover);
+}
+
+.participants-pill-button.secondary {
+  border: 1px solid #e0e6ee;
+  background: #fff;
+  color: var(--pt-blue);
+}
+
+#courseManagementSelect {
+  min-width: 250px;
+  height: 38px;
+  padding: 0 34px 0 11px;
+  border: 1px solid #e0e6ee;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--pt-ink);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  outline: none;
+}
+
+#courseManagementSelect:focus {
+  border-color: var(--pt-blue);
+  box-shadow: 0 0 0 3px var(--pt-blue-soft);
+}
+
+.participants-course-tabs {
+  margin-top: 8px;
+  border-bottom: 1px solid var(--pt-line);
+}
+
+.participants-course-tabs a {
+  padding: 13px 18px;
+  color: #1f2937;
+  font-size: 11px;
+}
+
+.participants-course-tabs a.active {
+  color: var(--pt-blue);
+}
+
+.participants-course-tabs a.active::after {
+  left: 14px;
+  right: 14px;
+  bottom: -1px;
+  height: 2px;
+  background: var(--pt-blue);
+}
+
+.participants-panel {
+  margin-top: 18px;
+  overflow: visible;
+  border: 1px solid var(--pt-line);
+  border-radius: 18px;
+  background: var(--pt-card);
+  box-shadow: var(--pt-shadow);
+}
+
+.participants-panel-header {
+  min-height: 64px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--pt-line);
+}
+
+.participants-panel-header h2 {
+  color: #0b1529;
+  font-size: 17px;
+}
+
+.participants-toolbar-button {
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid #bcd3fb;
+  border-radius: 999px;
+  color: var(--pt-blue);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.participants-toolbar-button.icon-only {
+  width: 36px;
+}
+
+.participants-search {
+  min-width: 250px;
+  height: 36px;
+  border: 1px solid #d7e0eb;
+  border-radius: 999px;
+}
+
+.participants-search:focus-within {
+  border-color: var(--pt-blue);
+  box-shadow: 0 0 0 3px var(--pt-blue-soft);
+}
+
+.participants-table thead th {
+  background: #f8fafc;
+  color: #667085;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .025em;
+  text-transform: uppercase;
+}
+
+.participants-table tbody td {
+  border-top: 1px solid #edf1f5;
+  color: var(--pt-text);
+}
+
+.participants-table tbody tr:hover {
+  background: #fbfcfe;
+}
+
+.participant-avatar {
+  background: var(--pt-blue-soft);
+  color: var(--pt-blue-dark);
+}
+
+.participant-name-copy strong {
+  color: var(--pt-ink);
+}
+
+.participant-row-action {
+  color: var(--pt-blue);
+}
+
+.participants-filter-menu,
+.participants-action-menu,
+.participant-row-menu {
+  border: 1px solid #e1e7ef;
+  border-radius: 10px;
+  box-shadow: var(--pt-shadow);
+}
+
+.participants-modal-backdrop {
+  background: rgba(23, 32, 51, 0.56);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.participants-modal {
+  border: 1px solid var(--pt-line);
+  border-radius: 16px;
+  box-shadow: 0 30px 75px rgba(23, 32, 51, 0.25);
+}
+
+.participants-modal::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(90deg, var(--pt-blue-dark) 0 72%, var(--pt-orange) 72% 100%);
+}
+
+.participants-modal > header h2,
+.participants-choice-header h2 {
+  color: var(--pt-blue-dark);
+}
+
+.participants-modal-kicker {
+  color: var(--pt-orange);
+}
+
+.participants-choice-button {
+  border-color: #bcd3fb;
+  color: var(--pt-blue);
+}
+
+.participants-choice-button:hover {
+  background: var(--pt-blue-soft);
+}
+
+.participants-field input:focus,
+.participants-field select:focus,
+.participants-field textarea:focus {
+  border-color: var(--pt-blue);
+  box-shadow: 0 0 0 3px var(--pt-blue-soft);
+}
+
+@media (min-width: 901px) {
+  .participants-breadcrumbs,
+  .participants-course-tabs a,
+  .participants-pill-button { font-size: 13px; }
+  .participants-status-badge { font-size: 10px; }
+  .participants-panel-header h2 { font-size: 17px; }
+  .participants-toolbar-button,
+  .participants-search input { font-size: 12px; }
+  .participant-name-copy strong { font-size: 13px; }
+  .participants-table tbody td { font-size: 12px; }
+}
+
+@media (max-width: 900px) {
+  .participants-workspace { padding: 18px 16px 40px; }
+  .participants-course-header { flex-direction: column; }
+  .participants-header-actions { flex-wrap: wrap; }
+  #courseManagementSelect { width: 100%; min-width: 0; }
+  .participants-course-tabs { overflow-x: auto; }
+  .participants-panel-header { align-items: flex-start; padding-top: 14px; padding-bottom: 14px; }
+  .participants-toolbar { flex-wrap: wrap; }
+  .participants-search { min-width: 210px; flex: 1 1 210px; }
+}
+

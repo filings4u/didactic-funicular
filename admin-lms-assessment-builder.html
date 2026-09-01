@@ -1,152 +1,493 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="s4u-auth-pending">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Assessment Builder | screenings4u Management Portal</title>
-<link rel="stylesheet" href="assets/css/admin-lms.css">
-<style>
-:root{--ab-blue:#173d78;--ab-orange:#ff6b00;--ab-text:#263246;--ab-muted:#6d7888;--ab-line:#dfe5ec;--ab-bg:#f5f7fa;--ab-ok:#18794e;--ab-warn:#a15c00;--ab-bad:#b42318}
-*{box-sizing:border-box}.ab-page{padding:28px;background:var(--ab-bg);min-height:calc(100vh - 72px);color:var(--ab-text)}
-.ab-heading,.ab-card-head,.ab-actions,.ab-footer{display:flex;align-items:center}.ab-heading{justify-content:space-between;gap:22px;margin-bottom:18px}.ab-heading h1{margin:4px 0 6px;color:var(--ab-blue);font-size:36px;line-height:1.05}.ab-heading p,.ab-card-head p{margin:0;color:var(--ab-muted);font-size:13px;line-height:1.55;max-width:790px}.ab-kicker{display:block;color:var(--ab-orange);font-size:10px;font-weight:900;letter-spacing:.12em}.ab-actions{gap:8px;flex-wrap:wrap}
-.ab-btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 14px;border:1px solid #cfd7e2;border-radius:7px;background:#fff;color:var(--ab-blue);font:800 11px/1 Arial,sans-serif;text-decoration:none;cursor:pointer}.ab-btn.primary{background:var(--ab-blue);border-color:var(--ab-blue);color:#fff}.ab-btn.orange{background:var(--ab-orange);border-color:var(--ab-orange);color:#fff}.ab-btn.danger{color:var(--ab-bad);border-color:#efcaca}.ab-btn:disabled{opacity:.45;cursor:not-allowed}
-.ab-message{display:none;margin-bottom:14px;padding:10px 12px;border-radius:7px;font-size:10px;font-weight:800}.ab-message.show{display:block}.ab-message.ok{background:#edf8f2;border:1px solid #cce8d9;color:var(--ab-ok)}.ab-message.error{background:#fff5f5;border:1px solid #fed7d7;color:var(--ab-bad)}
-.ab-layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start}.ab-main,.ab-side{display:grid;gap:18px}.ab-card{background:#fff;border:1px solid var(--ab-line);border-radius:9px;overflow:hidden;box-shadow:0 2px 10px rgba(23,61,120,.035)}.ab-card-head{justify-content:space-between;gap:16px;padding:17px 18px;border-bottom:1px solid var(--ab-line)}.ab-card-head h2,.ab-card-head h3{margin:3px 0 4px;color:var(--ab-blue);font-size:17px}.ab-title-wrap{display:flex;align-items:flex-start;gap:11px}.ab-step{width:31px;height:31px;border-radius:50%;background:#eef4fb;color:var(--ab-blue);display:grid;place-items:center;font-size:9px;font-weight:900;flex:0 0 auto}.ab-body{padding:18px}
-.ab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.ab-field{display:grid;gap:6px}.ab-field.full{grid-column:1/-1}.ab-field label{color:var(--ab-blue);font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.035em}.ab-field input,.ab-field textarea,.ab-field select{width:100%;border:1px solid #d4dce6;border-radius:7px;background:#fff;color:var(--ab-text);font:11px Arial,sans-serif;outline:none}.ab-field input,.ab-field select{height:40px;padding:0 10px}.ab-field textarea{padding:10px;resize:vertical;line-height:1.5}.ab-field input:focus,.ab-field textarea:focus,.ab-field select:focus{border-color:#8aa7cb;box-shadow:0 0 0 3px rgba(23,61,120,.07)}.ab-help{color:var(--ab-muted);font-size:8px;line-height:1.45}
-.ab-question-list{display:grid;gap:12px}.ab-question{border:1px solid #e2e7ed;border-radius:8px;overflow:hidden}.ab-question.dragging{opacity:.55}.ab-question-head{display:flex;align-items:center;gap:10px;padding:11px 12px;background:#fbfcfe;border-bottom:1px solid #edf0f4}.ab-drag{cursor:grab;color:#97a2b0;font-size:16px}.ab-number{width:29px;height:29px;border-radius:50%;background:#fff2e8;color:#b44b00;display:grid;place-items:center;font-size:9px;font-weight:900}.ab-question-head strong{flex:1;color:var(--ab-blue);font-size:10px}.ab-question-body{padding:13px}.ab-question-top{display:grid;grid-template-columns:minmax(0,1fr) 160px 95px;gap:9px}.ab-question-top input,.ab-question-top select,.ab-points{height:38px;border:1px solid #d4dce6;border-radius:7px;padding:0 9px;font-size:10px}.ab-options{display:grid;gap:7px;margin-top:11px}.ab-option{display:grid;grid-template-columns:30px minmax(0,1fr) 34px;gap:7px;align-items:center}.ab-option input[type=radio]{width:17px;height:17px;accent-color:var(--ab-orange);justify-self:center}.ab-option input[type=text]{height:36px;border:1px solid #d4dce6;border-radius:7px;padding:0 9px;font-size:10px}.ab-icon-btn{border:0;background:transparent;color:var(--ab-bad);font-size:17px;cursor:pointer}.ab-add-option{width:100%;height:36px;margin-top:8px;border:1px dashed #a9bad0;border-radius:7px;background:#f9fbfe;color:var(--ab-blue);font-size:9px;font-weight:900;cursor:pointer}.ab-explanation{width:100%;min-height:64px;margin-top:10px;border:1px solid #d4dce6;border-radius:7px;padding:9px;font-size:10px;resize:vertical}.ab-required{display:flex;align-items:center;gap:7px;margin-top:9px;color:var(--ab-muted);font-size:9px}.ab-required input{accent-color:var(--ab-orange)}
-.ab-empty{padding:30px;text-align:center;color:var(--ab-muted);font-size:10px;border:1px dashed #d8e0e9;border-radius:8px}.ab-add-question{width:100%;min-height:45px;margin-top:12px;border:1px dashed #e0b78f;border-radius:8px;background:#fffaf5;color:var(--ab-orange);font-size:10px;font-weight:900;cursor:pointer}
-.ab-check{display:flex;align-items:center;gap:8px;padding:9px 0;color:var(--ab-text);font-size:10px}.ab-check input{width:17px;height:17px;accent-color:var(--ab-orange)}
-.ab-summary-row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #edf0f4}.ab-summary-row:last-child{border-bottom:0}.ab-summary-row span{color:var(--ab-muted);font-size:9px}.ab-summary-row strong{color:var(--ab-blue);font-size:10px;text-align:right}.ab-side{position:sticky;top:18px}.ab-footer{justify-content:space-between;gap:12px;margin-top:18px;padding:16px 18px;background:#fff;border:1px solid var(--ab-line);border-radius:9px}
-@media(max-width:1080px){.ab-layout{grid-template-columns:1fr}.ab-side{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.ab-page{padding:18px}.ab-heading,.ab-card-head,.ab-footer{flex-direction:column;align-items:stretch}.ab-heading h1{font-size:31px}.ab-grid,.ab-question-top,.ab-side{grid-template-columns:1fr}.ab-field.full{grid-column:auto}.ab-btn{width:100%}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assessment Builder | screenings4u Management Portal</title>
 
-<style>
-@media (min-width: 901px){
-  .ab-heading p,.ab-card-head p{font-size:15px}
-  .ab-kicker{font-size:12px}
-  .ab-btn{font-size:13px}
-  .ab-message{font-size:12px}
-  .ab-card-head h2,.ab-card-head h3{font-size:19px}
-  .ab-step{font-size:11px}
-  .ab-field label{font-size:11px}
-  .ab-field input,.ab-field textarea,.ab-field select{font-size:13px}
-  .ab-help{font-size:11px}
-  .ab-number{font-size:11px}
-  .ab-question-head strong{font-size:13px}
-  .ab-question-top input,.ab-question-top select,.ab-points{font-size:12px}
-  .ab-option input[type=text]{font-size:12px}
-  .ab-add-option,.ab-add-question{font-size:12px}
-  .ab-explanation{font-size:12px}
-  .ab-required,.ab-check{font-size:12px}
-  .ab-empty{font-size:12px}
-  .ab-summary-row span{font-size:11px}
-  .ab-summary-row strong{font-size:12px}
-}
-</style>
-
+  <link rel="stylesheet" href="assets/css/admin-lms.css">
+  <link rel="stylesheet" href="assets/css/admin-lms-assessment-builder.css?v=20260901-2">
 </head>
+
 <body class="admin-lms-assessment-builder-page">
-<div class="admin-lms-app">
-<div id="admin-lms-sidebar-target"></div>
-<main class="admin-lms-main">
-<header class="admin-lms-topbar">
-<div class="admin-lms-topbar-left">
-<button type="button" class="admin-lms-sidebar-collapse" data-admin-sidebar-collapse aria-label="Collapse sidebar" aria-expanded="true"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"></path></svg></button>
-<div class="admin-lms-page-context"><small>Training</small><strong>Assessment Builder</strong></div>
-</div>
-<div class="admin-lms-topbar-right">
-<a href="admin-notifications.html" class="admin-lms-icon-button" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg></a>
-<div class="admin-user-dropdown">
-<button type="button" class="admin-user-dropdown-toggle" data-admin-user-menu-toggle aria-expanded="false"><span class="admin-lms-avatar">AD</span><span class="admin-lms-user-copy"><span class="admin-lms-user-name">Administrator</span><span class="admin-lms-user-role">System Administrator</span></span><span class="admin-user-dropdown-chevron"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span></button>
-<div class="admin-user-dropdown-menu" data-admin-user-menu>
-<div class="admin-user-dropdown-header"><strong>Administrator</strong><span>System Administrator</span></div>
-<a href="../index.html" class="admin-user-dropdown-item"><span>Visit Main Website</span></a>
-<a href="admin-account-access.html" class="admin-user-dropdown-item"><span>Account Access</span></a>
-<a href="admin-accounts.html" class="admin-user-dropdown-item"><span>My Account</span></a>
-<div class="admin-user-dropdown-divider"></div>
-<button type="button" class="admin-user-dropdown-item admin-user-logout" data-admin-logout><span>Logout</span></button>
-</div></div></div>
-</header>
+  <div class="admin-lms-app">
+    <div id="admin-lms-sidebar-target"></div>
 
-<section class="ab-page">
-<header class="ab-heading">
-<div><span class="ab-kicker">LEARNING ASSESSMENTS</span><h1 id="abHeading">Create Assessment</h1><p>Build quizzes, knowledge checks, and final assessments using the live LMS assessment, question, and answer-option tables.</p></div>
-<div class="ab-actions"><a class="ab-btn" href="admin-lms-assessments.html">Assessments</a><a class="ab-btn" id="abCourseManager" href="admin-lms-course-builder.html">Content Builder</a><a class="ab-btn orange" id="abCreateLesson" href="admin-lms-lesson-builder.html" hidden>Create Lesson</a></div>
-</header>
+    <main class="admin-lms-main">
+      <header class="admin-lms-topbar">
+        <div class="admin-lms-topbar-left">
+          <button
+            type="button"
+            class="admin-lms-sidebar-collapse"
+            data-admin-sidebar-collapse
+            aria-label="Collapse sidebar"
+            aria-expanded="true"
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+          </button>
 
-<div class="ab-message" id="abMessage"></div>
+          <div class="admin-lms-page-context">
+            <small>Training</small>
+            <strong>Assessment Builder</strong>
+          </div>
+        </div>
 
-<form id="abForm" class="ab-layout">
-<div class="ab-main">
+        <div class="admin-lms-topbar-right">
+          <a
+            href="admin-notifications.html"
+            class="admin-lms-icon-button"
+            aria-label="Notifications"
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+              <path d="M10 21h4"></path>
+            </svg>
+          </a>
 
-<section class="ab-card">
-<header class="ab-card-head"><div class="ab-title-wrap"><span class="ab-step">01</span><div><span class="ab-kicker">ASSESSMENT DETAILS</span><h2>Assessment Information</h2><p>Assessments are attached to a lesson in the selected course.</p></div></div></header>
-<div class="ab-body"><div class="ab-grid">
-<div class="ab-field full"><label for="abTitle">Assessment Title</label><input id="abTitle" required type="text" placeholder="Enter assessment title"></div>
-<div class="ab-field"><label for="abCourse">Course</label><select id="abCourse" required><option value="">Select course</option></select></div>
-<div class="ab-field"><label for="abSection">Section</label><select id="abSection" required><option value="">Select section</option></select></div>
-<div class="ab-field full"><label for="abLesson">Lesson</label><select id="abLesson" required><option value="">Select lesson</option></select><span class="ab-help" id="abLessonHelp">Select a course and section to load lessons.</span></div>
-<div class="ab-field"><label for="abType">Assessment Type</label><select id="abType"><option value="quiz">Quiz</option><option value="knowledge_check">Knowledge Check</option><option value="final">Final Assessment</option></select></div>
-<div class="ab-field"><label for="abStatus">Status</label><select id="abStatus"><option value="draft">Draft</option><option value="published">Published</option><option value="archived">Archived</option></select></div>
-<div class="ab-field full"><label for="abDescription">Instructions / Description</label><textarea id="abDescription" rows="5" placeholder="Explain the assessment requirements to the learner..."></textarea></div>
-</div></div>
-</section>
+          <div class="admin-user-dropdown">
+            <button
+              type="button"
+              class="admin-user-dropdown-toggle"
+              data-admin-user-menu-toggle
+              aria-expanded="false"
+            >
+              <span class="admin-lms-avatar">AD</span>
 
-<section class="ab-card">
-<header class="ab-card-head"><div class="ab-title-wrap"><span class="ab-step">02</span><div><span class="ab-kicker">QUESTIONS</span><h2>Assessment Questions</h2><p>Add multiple-choice or true/false questions, choose the correct answer, and set point values.</p></div></div></header>
-<div class="ab-body">
-<div id="abQuestionList" class="ab-question-list"></div>
-<div id="abEmpty" class="ab-empty">No assessment questions have been added yet.</div>
-<button class="ab-add-question" id="abAddQuestion" type="button">+ Add Assessment Question</button>
-</div>
-</section>
+              <span class="admin-lms-user-copy">
+                <span class="admin-lms-user-name">Administrator</span>
+                <span class="admin-lms-user-role">System Administrator</span>
+              </span>
 
-</div>
+              <span class="admin-user-dropdown-chevron">
+                <svg viewBox="0 0 24 24">
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </span>
+            </button>
 
-<aside class="ab-side">
-<section class="ab-card"><header class="ab-card-head"><div><span class="ab-kicker">COMPLETION</span><h3>Assessment Settings</h3></div></header><div class="ab-body">
-<div class="ab-field"><label for="abPassingScore">Passing Score (%)</label><input id="abPassingScore" type="number" min="0" max="100" step="0.01" value="80"></div>
-<div class="ab-field" style="margin-top:12px"><label for="abMaxAttempts">Maximum Attempts</label><input id="abMaxAttempts" type="number" min="0" value="0"><span class="ab-help">0 means unlimited attempts.</span></div>
-<div class="ab-field" style="margin-top:12px"><label for="abTimeLimit">Time Limit (Minutes)</label><input id="abTimeLimit" type="number" min="0" value="0"><span class="ab-help">0 means no time limit.</span></div>
-<label class="ab-check"><input id="abRandomQuestions" type="checkbox"> Randomize questions</label>
-<label class="ab-check"><input id="abRandomOptions" type="checkbox"> Randomize answer options</label>
-<label class="ab-check"><input id="abShowAnswers" type="checkbox" checked> Show correct answers</label>
-<label class="ab-check"><input id="abRequirePass" type="checkbox" checked> Require passing score</label>
-</div></section>
+            <div class="admin-user-dropdown-menu" data-admin-user-menu>
+              <div class="admin-user-dropdown-header">
+                <strong>Administrator</strong>
+                <span>System Administrator</span>
+              </div>
 
-<section class="ab-card"><header class="ab-card-head"><div><span class="ab-kicker">SUMMARY</span><h3>Assessment Record</h3></div></header><div class="ab-body">
-<div class="ab-summary-row"><span>Mode</span><strong id="abSummaryMode">New Assessment</strong></div>
-<div class="ab-summary-row"><span>Status</span><strong id="abSummaryStatus">Draft</strong></div>
-<div class="ab-summary-row"><span>Questions</span><strong id="abSummaryQuestions">0</strong></div>
-<div class="ab-summary-row"><span>Total Points</span><strong id="abSummaryPoints">0</strong></div>
-<div class="ab-summary-row"><span>Last Saved</span><strong id="abSummarySaved">Not saved</strong></div>
-</div></section>
+              <a href="../index.html" class="admin-user-dropdown-item">
+                <span>Visit Main Website</span>
+              </a>
 
-<section class="ab-card"><header class="ab-card-head"><div><span class="ab-kicker">ACTIONS</span><h3>Assessment Actions</h3></div></header><div class="ab-body" style="display:grid;gap:8px">
-<button class="ab-btn primary" id="abSave" type="submit">Save Assessment</button>
-<a class="ab-btn" id="abBackCourse" href="admin-lms-course-builder.html">Open Content Builder</a>
-<button class="ab-btn danger" id="abDelete" type="button" disabled>Delete Assessment</button>
-</div></section>
-</aside>
-</form>
+              <a href="admin-account-access.html" class="admin-user-dropdown-item">
+                <span>Account Access</span>
+              </a>
 
-<div class="ab-footer">
-<a class="ab-btn" href="admin-lms-assessments.html">Cancel</a>
-<div class="ab-actions"><button class="ab-btn primary" id="abSaveBottom" type="button">Save Assessment</button><button class="ab-btn orange" id="abPublishBottom" type="button">Save & Publish</button></div>
-</div>
-</section>
-</main>
-</div>
+              <a href="admin-accounts.html" class="admin-user-dropdown-item">
+                <span>My Account</span>
+              </a>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="assets/js/supabase-config.js"></script>
-    <script src="assets/js/core-auth.js"></script>
-    <script src="assets/js/ui.js"></script>
-    <script src="assets/js/session-security.js"></script>
-    <script src="assets/js/portal-auth-guard.js"></script>
-    <script src="assets/js/admin-auth-guard.js"></script>
-    <script src="assets/js/admin-lms-sidebar.js"></script>
-<script src="assets/js/admin-lms-assessment-builder.js?v=20260831-1446"></script>
+              <div class="admin-user-dropdown-divider"></div>
+
+              <button
+                type="button"
+                class="admin-user-dropdown-item admin-user-logout"
+                data-admin-logout
+              >
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+
+      <section class="assessment-builder-shell">
+
+        <nav class="assessment-breadcrumbs" aria-label="Breadcrumb">
+          <a href="admin-lms-assessments.html">Assessments</a>
+          <span>›</span>
+          <a id="abCourseManager" href="admin-lms-course-builder.html">Course Content</a>
+          <span>›</span>
+          <span id="assessmentBreadcrumbTitle">Assessment Builder</span>
+        </nav>
+
+
+        <header class="assessment-page-header">
+          <div>
+            <span class="assessment-page-eyebrow">LEARNING ASSESSMENTS</span>
+
+            <h1 id="abHeading">Create Assessment</h1>
+
+            <p>
+              Build quizzes, knowledge checks, and final assessments using the
+              live LMS assessment, question, and answer-option records.
+            </p>
+          </div>
+
+          <div class="assessment-page-actions">
+            <a
+              class="assessment-button secondary"
+              href="admin-lms-assessments.html"
+            >
+              Assessments
+            </a>
+
+            <a
+              class="assessment-button secondary"
+              id="abBackCourse"
+              href="admin-lms-course-builder.html"
+            >
+              Content Builder
+            </a>
+
+            <a
+              class="assessment-button primary"
+              id="abCreateLesson"
+              href="admin-lms-lesson-builder.html"
+              hidden
+            >
+              Create Lesson
+            </a>
+          </div>
+        </header>
+
+
+        <div
+          class="ab-message"
+          id="abMessage"
+          role="status"
+          aria-live="polite"
+        ></div>
+
+
+        <form id="abForm" class="assessment-builder-layout">
+
+          <div class="assessment-builder-main">
+
+            <section class="assessment-card">
+              <header class="assessment-card-head">
+                <div class="assessment-title-wrap">
+                  <span class="assessment-step">01</span>
+
+                  <div>
+                    <span class="assessment-kicker">ASSESSMENT DETAILS</span>
+                    <h2>Assessment Information</h2>
+                    <p>
+                      Attach the assessment to a lesson and configure how it
+                      behaves for learners.
+                    </p>
+                  </div>
+                </div>
+              </header>
+
+              <div class="assessment-card-body">
+                <div class="assessment-grid">
+
+                  <label class="assessment-field full">
+                    <span>Assessment Title</span>
+                    <input
+                      id="abTitle"
+                      required
+                      type="text"
+                      maxlength="180"
+                      placeholder="Enter assessment title"
+                    >
+                  </label>
+
+                  <label class="assessment-field">
+                    <span>Course</span>
+                    <select id="abCourse" required>
+                      <option value="">Select course</option>
+                    </select>
+                  </label>
+
+                  <label class="assessment-field">
+                    <span>Section</span>
+                    <select id="abSection" required>
+                      <option value="">Select section</option>
+                    </select>
+                  </label>
+
+                  <label class="assessment-field full">
+                    <span>Lesson</span>
+
+                    <select id="abLesson" required>
+                      <option value="">Select lesson</option>
+                    </select>
+
+                    <small id="abLessonHelp">
+                      Select a course and section to load lessons.
+                    </small>
+                  </label>
+
+                  <label class="assessment-field">
+                    <span>Assessment Type</span>
+
+                    <select id="abType">
+                      <option value="quiz">Quiz</option>
+                      <option value="knowledge_check">Knowledge Check</option>
+                      <option value="final">Final Assessment</option>
+                    </select>
+                  </label>
+
+                  <label class="assessment-field">
+                    <span>Status</span>
+
+                    <select id="abStatus">
+                      <option value="draft">Draft</option>
+                      <option value="published">Published</option>
+                      <option value="archived">Archived</option>
+                    </select>
+                  </label>
+
+                  <label class="assessment-field full">
+                    <span>Instructions / Description</span>
+
+                    <textarea
+                      id="abDescription"
+                      rows="5"
+                      placeholder="Explain the assessment requirements to the learner..."
+                    ></textarea>
+                  </label>
+
+                </div>
+              </div>
+            </section>
+
+
+            <section class="assessment-card">
+              <header class="assessment-card-head assessment-question-heading">
+                <div class="assessment-title-wrap">
+                  <span class="assessment-step">02</span>
+
+                  <div>
+                    <span class="assessment-kicker">QUESTIONS</span>
+                    <h2>Assessment Questions</h2>
+                    <p>
+                      Add multiple-choice or True / False questions, choose the
+                      correct answer, and assign point values.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  class="assessment-button outline"
+                  id="abAddQuestion"
+                  type="button"
+                >
+                  + Add Question
+                </button>
+              </header>
+
+              <div class="assessment-card-body">
+                <div
+                  id="abQuestionList"
+                  class="ab-question-list"
+                ></div>
+
+                <div id="abEmpty" class="ab-empty">
+                  <strong>No assessment questions yet</strong>
+                  <span>
+                    Add the first question to begin building this assessment.
+                  </span>
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+
+          <aside class="assessment-builder-side">
+
+            <section class="assessment-card">
+              <header class="assessment-card-head">
+                <div>
+                  <span class="assessment-kicker">COMPLETION</span>
+                  <h3>Assessment Settings</h3>
+                </div>
+              </header>
+
+              <div class="assessment-card-body assessment-settings-stack">
+
+                <label class="assessment-field">
+                  <span>Passing Score (%)</span>
+                  <input
+                    id="abPassingScore"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    value="80"
+                  >
+                </label>
+
+                <label class="assessment-field">
+                  <span>Maximum Attempts</span>
+                  <input
+                    id="abMaxAttempts"
+                    type="number"
+                    min="0"
+                    value="0"
+                  >
+                  <small>0 means unlimited attempts.</small>
+                </label>
+
+                <label class="assessment-field">
+                  <span>Time Limit (Minutes)</span>
+                  <input
+                    id="abTimeLimit"
+                    type="number"
+                    min="0"
+                    value="0"
+                  >
+                  <small>0 means no time limit.</small>
+                </label>
+
+                <div class="assessment-toggle-list">
+                  <label class="assessment-check">
+                    <span>
+                      <strong>Randomize questions</strong>
+                      <small>Shuffle question order for each attempt.</small>
+                    </span>
+                    <input id="abRandomQuestions" type="checkbox">
+                  </label>
+
+                  <label class="assessment-check">
+                    <span>
+                      <strong>Randomize answer options</strong>
+                      <small>Shuffle choices within questions.</small>
+                    </span>
+                    <input id="abRandomOptions" type="checkbox">
+                  </label>
+
+                  <label class="assessment-check">
+                    <span>
+                      <strong>Show correct answers</strong>
+                      <small>Reveal correct answers after the attempt.</small>
+                    </span>
+                    <input id="abShowAnswers" type="checkbox" checked>
+                  </label>
+
+                  <label class="assessment-check">
+                    <span>
+                      <strong>Require passing score</strong>
+                      <small>Learner must meet the passing score.</small>
+                    </span>
+                    <input id="abRequirePass" type="checkbox" checked>
+                  </label>
+                </div>
+              </div>
+            </section>
+
+
+            <section class="assessment-card">
+              <header class="assessment-card-head">
+                <div>
+                  <span class="assessment-kicker">SUMMARY</span>
+                  <h3>Assessment Record</h3>
+                </div>
+              </header>
+
+              <div class="assessment-card-body">
+                <div class="ab-summary-row">
+                  <span>Mode</span>
+                  <strong id="abSummaryMode">New Assessment</strong>
+                </div>
+
+                <div class="ab-summary-row">
+                  <span>Status</span>
+                  <strong id="abSummaryStatus">Draft</strong>
+                </div>
+
+                <div class="ab-summary-row">
+                  <span>Questions</span>
+                  <strong id="abSummaryQuestions">0</strong>
+                </div>
+
+                <div class="ab-summary-row">
+                  <span>Total Points</span>
+                  <strong id="abSummaryPoints">0</strong>
+                </div>
+
+                <div class="ab-summary-row">
+                  <span>Last Saved</span>
+                  <strong id="abSummarySaved">Not saved</strong>
+                </div>
+              </div>
+            </section>
+
+
+            <section class="assessment-card">
+              <header class="assessment-card-head">
+                <div>
+                  <span class="assessment-kicker">ACTIONS</span>
+                  <h3>Assessment Actions</h3>
+                </div>
+              </header>
+
+              <div class="assessment-card-body assessment-side-actions">
+                <button
+                  class="assessment-button primary full"
+                  id="abSave"
+                  type="submit"
+                >
+                  Save Assessment
+                </button>
+
+                <button
+                  class="assessment-button danger full"
+                  id="abDelete"
+                  type="button"
+                  disabled
+                >
+                  Delete Assessment
+                </button>
+              </div>
+            </section>
+
+          </aside>
+        </form>
+
+
+        <footer class="assessment-footer">
+          <a
+            class="assessment-button secondary"
+            href="admin-lms-assessments.html"
+          >
+            Cancel
+          </a>
+
+          <div class="assessment-page-actions">
+            <button
+              class="assessment-button secondary"
+              id="abSaveBottom"
+              type="button"
+            >
+              Save Assessment
+            </button>
+
+            <button
+              class="assessment-button primary"
+              id="abPublishBottom"
+              type="button"
+            >
+              Save & Publish
+            </button>
+          </div>
+        </footer>
+
+      </section>
+    </main>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/core-auth.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/session-security.js"></script>
+  <script src="assets/js/portal-auth-guard.js"></script>
+  <script src="assets/js/admin-auth-guard.js"></script>
+  <script src="assets/js/admin-lms-sidebar.js"></script>
+  <script src="assets/js/admin-lms-assessment-builder.js?v=20260901-2"></script>
 </body>
 </html>

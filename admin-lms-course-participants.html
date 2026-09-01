@@ -6,7 +6,7 @@
   <title>Course Participants | screenings4u Management Portal</title>
 
   <link rel="stylesheet" href="assets/css/admin-lms.css">
-  <link rel="stylesheet" href="assets/css/admin-lms-course-participants.css?v=20260831-1">
+  <link rel="stylesheet" href="assets/css/admin-lms-course-participants.css?v=20260901-1">
 </head>
 
 <body class="admin-lms-course-participants-page">
@@ -233,7 +233,7 @@
             <div>
               <h2>
                 <span id="participantCountHeading">0</span>
-                Active Participants
+                Participants
               </h2>
             </div>
 
@@ -264,7 +264,8 @@
                       <option value="">All statuses</option>
                       <option value="active">Active</option>
                       <option value="completed">Completed</option>
-                      <option value="expired">Expired</option>
+                      <option value="suspended">Suspended</option>
+                      <option value="cancelled">Cancelled</option>
                     </select>
                   </label>
 
@@ -507,13 +508,13 @@
           <textarea id="participantInviteEmails" rows="5" placeholder="name@example.com&#10;another@example.com"></textarea>
         </label>
         <div class="participants-selected-user">
-          Email invitation delivery is visually prepared. Connect this action to your notification/email workflow before sending production invitations.
+          Existing Screenings4u users will be enrolled immediately. Email addresses without an account will be saved as pending account invitations for this course.
         </div>
       </div>
 
       <footer>
         <button type="button" class="participants-pill-button secondary" data-close-email-modal>Cancel</button>
-        <button type="button" class="participants-pill-button primary" id="sendParticipantInvites">Prepare Invitations</button>
+        <button type="button" class="participants-pill-button primary" id="sendParticipantInvites">Create Invitations</button>
       </footer>
     </section>
   </div>
@@ -549,6 +550,18 @@
 
     <div class="participant-menu-divider"></div>
 
+    <button type="button" data-row-action="complete" id="participantCompleteAction">
+      <span class="participant-menu-icon">✓</span>
+      Mark completed
+    </button>
+
+    <button type="button" data-row-action="toggle-suspend" id="participantSuspendAction">
+      <span class="participant-menu-icon">Ⅱ</span>
+      Suspend participant
+    </button>
+
+    <div class="participant-menu-divider"></div>
+
     <button
       type="button"
       data-row-action="remove"
@@ -574,6 +587,6 @@
   <script src="assets/js/portal-auth-guard.js"></script>
   <script src="assets/js/admin-auth-guard.js"></script>
   <script src="assets/js/admin-lms-sidebar.js"></script>
-  <script src="assets/js/admin-lms-course-participants.js?v=20260831-1"></script>
+  <script src="assets/js/admin-lms-course-participants.js?v=20260901-1"></script>
 </body>
 </html>

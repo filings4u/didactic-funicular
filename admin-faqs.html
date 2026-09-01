@@ -1,18 +1,403 @@
+<!doctype html>
+<html lang="en" class="s4u-auth-pending">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FAQ Management | screenings4u Management Portal</title>
 
-<style>
-:root{--nav:#092f36;--teal:#0d6b70;--bg:#f4f7f8;--line:#dbe4e7;--text:#17323a;--muted:#698087}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,Arial,sans-serif;color:var(--text)}
-.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}.side{background:var(--nav);color:#fff;padding:26px 18px}.brand{font-size:22px;font-weight:800;margin-bottom:30px}.side a{display:block;color:#d9eaec;text-decoration:none;padding:11px 12px;border-radius:8px;margin:4px 0}.side a:hover{background:#12454d}
-main{padding:28px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.top h1{margin:0;font-size:28px}.sub{color:var(--muted);margin-top:5px}.btn{border:1px solid #c9d7da;background:#fff;padding:9px 13px;border-radius:8px;cursor:pointer;font-weight:700}.btn.primary{background:var(--teal);color:#fff;border-color:var(--teal)}.btn.danger{color:#a42828}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}.num{font-size:27px;font-weight:800}.label{color:var(--muted);font-size:13px}.toolbar{display:flex;gap:10px;margin:15px 0}.input,select,textarea{width:100%;border:1px solid #cbd9dc;border-radius:8px;padding:10px;background:#fff}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:12px;border-bottom:1px solid #e6edef;vertical-align:top}.table th{font-size:12px;text-transform:uppercase;color:#647a81}.pill{display:inline-block;padding:4px 8px;border-radius:99px;background:#e8f2f3;font-size:12px;font-weight:700}.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:25px;z-index:20}.modal.open{display:flex}.modalbox{background:#fff;width:min(1050px,96vw);max-height:92vh;overflow:auto;border-radius:14px;padding:22px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:12px}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:6px}.editorbar{display:flex;gap:5px;flex-wrap:wrap;border:1px solid #ccd9dc;border-bottom:0;padding:8px;border-radius:8px 8px 0 0;background:#f7fafb}.editorbar button,.editorbar select{width:auto;padding:6px}.editor{min-height:320px;border:1px solid #ccd9dc;padding:16px;border-radius:0 0 8px 8px;outline:none;overflow:auto}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:15px}.hide{display:none!important}@media(max-width:900px){.app{grid-template-columns:1fr}.side{display:none}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
-</style>
-</head><body data-kind="faq"><div class="app"><aside class="side"><div class="brand">screenings4u</div><a href="admin-dashboard.html">Dashboard</a><a href="admin-documents.html">Documents</a><a href="admin-support-tickets.html">Support Tickets</a><a href="admin-knowledge-base.html">Knowledge Base</a><a href="admin-faqs.html">FAQs</a><a href="admin-blog.html">Blog</a></aside><main><div class="top"><div><h1>FAQs</h1><div class="sub">Create, edit and publish faqs across the website, customer portal and employer portal.</div></div></div><div class="cards"><div class="card"><div class="num" id="total">0</div><div class="label">Total</div></div><div class="card"><div class="num" id="published">0</div><div class="label">Published</div></div><div class="card"><div class="num" id="draft">0</div><div class="label">Draft</div></div><div class="card"><div class="num" id="featured">0</div><div class="label">Featured</div></div></div>
-<div class="panel"><div class="toolbar"><input class="input" id="search" placeholder="Search content..."><button class="btn primary" id="newBtn">+ New</button></div><table class="table"><thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Destinations</th><th>Updated</th><th></th></tr></thead><tbody id="body"></tbody></table></div>
-<div class="modal" id="modal"><div class="modalbox"><h2 id="modalTitle">Editor</h2><div class="grid2"><div class="field"><label id="titleLabel">Title</label><input id="title" class="input"></div><div class="field"><label>Slug</label><input id="slug" class="input"></div><div class="field"><label>Category</label><input id="category" class="input"></div><div class="field"><label>Tags (comma separated)</label><input id="tags" class="input"></div><div class="field"><label>Status</label><select id="status"><option>draft</option><option>review</option><option>published</option><option>archived</option></select></div><div class="field"><label>Featured</label><select id="featured"><option value="false">No</option><option value="true">Yes</option></select></div></div><div class="field" id="excerptWrap"><label>Excerpt</label><textarea id="excerpt" rows="3"></textarea></div><div class="field"><label>Content</label><div class="editorbar">
-<select onchange="document.execCommand('fontName',false,this.value)"><option>Arial</option><option>Georgia</option><option>Times New Roman</option><option>Verdana</option><option>Courier New</option></select>
-<select onchange="document.execCommand('fontSize',false,this.value)"><option value="3">Normal</option><option value="1">Small</option><option value="5">Large</option><option value="7">Huge</option></select>
-<button type="button" onclick="document.execCommand('bold')"><b>B</b></button><button type="button" onclick="document.execCommand('italic')"><i>I</i></button><button type="button" onclick="document.execCommand('underline')"><u>U</u></button>
-<button type="button" onclick="document.execCommand('formatBlock',false,'H2')">H2</button><button type="button" onclick="document.execCommand('formatBlock',false,'H3')">H3</button>
-<button type="button" onclick="document.execCommand('insertUnorderedList')">• List</button><button type="button" onclick="document.execCommand('insertOrderedList')">1. List</button>
-<button type="button" onclick="document.execCommand('justifyLeft')">Left</button><button type="button" onclick="document.execCommand('justifyCenter')">Center</button><button type="button" onclick="document.execCommand('justifyRight')">Right</button>
-<button type="button" onclick="let u=prompt('Link URL');if(u)document.execCommand('createLink',false,u)">Link</button><button type="button" onclick="document.execCommand('removeFormat')">Clear</button>
-</div><div id="editor" class="editor" contenteditable="true"></div></div><div class="grid2"><div class="field"><label>SEO Title</label><input id="seoTitle" class="input"></div><div class="field"><label>SEO Description</label><textarea id="seoDescription"></textarea></div></div><div class="field"><label>Publish to</label><label><input type="checkbox" id="web" checked> Main Website</label> &nbsp; <label><input type="checkbox" id="customer" checked> Customer Portal</label> &nbsp; <label><input type="checkbox" id="employer" checked> Employer Portal</label></div><div class="actions"><button class="btn" id="cancel">Cancel</button><button class="btn primary" id="save">Save</button></div></div></div></main></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/js/supabase-config.js"></script><script src="assets/js/core-auth.js"></script><script src="assets/js/admin-auth-guard.js"></script><script src="assets/js/admin-faqs.js?v=20260830-0014"></script></body></html>
+  <link rel="stylesheet" href="assets/css/admin-lms.css">
+  <link rel="stylesheet" href="assets/css/admin-faqs.css?v=20260901-1">
+</head>
+
+<body class="admin-faqs-page" data-kind="faq">
+  <div class="admin-lms-app">
+    <div id="admin-lms-sidebar-target"></div>
+
+    <main class="admin-lms-main">
+      <header class="admin-lms-topbar">
+        <div class="admin-lms-topbar-left">
+          <button
+            type="button"
+            class="admin-lms-sidebar-collapse"
+            data-admin-sidebar-collapse
+            aria-label="Collapse sidebar"
+            aria-expanded="true"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+          </button>
+
+          <div class="admin-lms-page-context">
+            <small>Website Content</small>
+            <strong>FAQ Management</strong>
+          </div>
+        </div>
+      </header>
+
+      <section class="faq-shell">
+        <nav class="faq-breadcrumbs">
+          <span>Website Content</span>
+          <span>›</span>
+          <span>FAQs</span>
+        </nav>
+
+        <header class="faq-page-header">
+          <div>
+            <span class="faq-eyebrow">CONTENT MANAGEMENT</span>
+            <h1>FAQ Management</h1>
+            <p>
+              Create, organize, optimize, preview, and publish frequently asked
+              questions for the screenings4u website.
+            </p>
+          </div>
+
+          <div class="faq-header-actions">
+            <button id="refreshBtn" class="faq-button secondary" type="button">
+              Refresh
+            </button>
+            <button id="newBtn" class="faq-button primary" type="button">
+              + New FAQ
+            </button>
+          </div>
+        </header>
+
+        <div id="message" class="faq-message"></div>
+
+        <section class="faq-stats">
+          <article class="faq-stat">
+            <span>Total FAQs</span>
+            <strong id="total">0</strong>
+            <small>All FAQ records</small>
+          </article>
+
+          <article class="faq-stat">
+            <span>Published</span>
+            <strong id="published">0</strong>
+            <small>Visible to users</small>
+          </article>
+
+          <article class="faq-stat">
+            <span>Drafts</span>
+            <strong id="draft">0</strong>
+            <small>Still in progress</small>
+          </article>
+
+          <article class="faq-stat">
+            <span>Featured</span>
+            <strong id="featuredCount">0</strong>
+            <small>Highlighted questions</small>
+          </article>
+        </section>
+
+        <section class="faq-card">
+          <header class="faq-card-head">
+            <div>
+              <span class="faq-eyebrow">FAQ LIBRARY</span>
+              <h2>Frequently Asked Questions</h2>
+              <p>Manage all FAQ entries from one place.</p>
+            </div>
+
+            <div class="faq-toolbar">
+              <input
+                id="search"
+                class="faq-search"
+                type="search"
+                placeholder="Search question, category, tags, slug, or status"
+                autocomplete="off"
+              >
+
+              <select id="statusFilter" class="faq-filter">
+                <option value="">All statuses</option>
+                <option value="draft">Draft</option>
+                <option value="review">Review</option>
+                <option value="published">Published</option>
+                <option value="archived">Archived</option>
+              </select>
+
+              <select id="categoryFilter" class="faq-filter">
+                <option value="">All categories</option>
+              </select>
+            </div>
+          </header>
+
+          <div class="faq-table-wrap">
+            <table class="faq-table">
+              <thead>
+                <tr>
+                  <th>Question</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Featured</th>
+                  <th>Website</th>
+                  <th>Updated</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="faqBody"></tbody>
+            </table>
+          </div>
+
+          <div id="emptyState" class="faq-empty" hidden>
+            <strong>No FAQs found</strong>
+            <span>Create your first FAQ or adjust the current filters.</span>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="editorModal" class="faq-modal" hidden aria-hidden="true">
+    <div class="faq-modal-backdrop" data-close-editor></div>
+
+    <section class="faq-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="editorModalTitle">
+      <header class="faq-modal-head">
+        <div>
+          <span class="faq-eyebrow">FAQ EDITOR</span>
+          <h2 id="editorModalTitle">New FAQ</h2>
+          <p id="editorModalSubtitle">Create a clear, helpful answer for your website visitors.</p>
+        </div>
+
+        <button
+          class="faq-icon-button"
+          type="button"
+          aria-label="Close"
+          data-close-editor
+        >
+          ×
+        </button>
+      </header>
+
+      <div class="faq-editor-layout">
+        <section class="faq-editor-main">
+          <div class="faq-section">
+            <div class="faq-section-head">
+              <div>
+                <span class="faq-eyebrow">CONTENT</span>
+                <h3>FAQ Details</h3>
+              </div>
+            </div>
+
+            <div class="faq-grid-2">
+              <label class="faq-field faq-field-span-2">
+                <span>Question</span>
+                <input id="question" maxlength="260" placeholder="Enter the frequently asked question">
+              </label>
+
+              <label class="faq-field">
+                <span>Slug</span>
+                <input id="slug" placeholder="auto-generated-from-question">
+              </label>
+
+              <label class="faq-field">
+                <span>Category</span>
+                <input id="category" placeholder="e.g. Background Checks">
+              </label>
+
+              <label class="faq-field faq-field-span-2">
+                <span>Tags</span>
+                <input id="tags" placeholder="screening, compliance, onboarding">
+                <small>Separate tags with commas.</small>
+              </label>
+            </div>
+          </div>
+
+          <div class="faq-section">
+            <div class="faq-section-head">
+              <div>
+                <span class="faq-eyebrow">ANSWER</span>
+                <h3>Answer Content</h3>
+              </div>
+
+              <div class="faq-section-actions">
+                <button id="previewBtn" class="faq-button secondary" type="button">
+                  Preview
+                </button>
+              </div>
+            </div>
+
+            <div id="editorToolbar" class="faq-editor-toolbar">
+              <select id="blockFormat" title="Text style">
+                <option value="P">Paragraph</option>
+                <option value="H3">Heading 3</option>
+                <option value="H4">Heading 4</option>
+                <option value="BLOCKQUOTE">Quote</option>
+              </select>
+
+              <button type="button" data-command="bold"><strong>B</strong></button>
+              <button type="button" data-command="italic"><em>I</em></button>
+              <button type="button" data-command="underline"><u>U</u></button>
+              <button type="button" data-command="insertUnorderedList">• List</button>
+              <button type="button" data-command="insertOrderedList">1. List</button>
+              <button id="linkBtn" type="button">Link</button>
+              <button id="clearFormatBtn" type="button">Clear</button>
+            </div>
+
+            <div
+              id="editor"
+              class="faq-rich-editor"
+              contenteditable="true"
+              data-placeholder="Write the FAQ answer here..."
+            ></div>
+          </div>
+
+          <div class="faq-section">
+            <div class="faq-section-head">
+              <div>
+                <span class="faq-eyebrow">SEARCH</span>
+                <h3>SEO</h3>
+              </div>
+            </div>
+
+            <div class="faq-grid-2">
+              <label class="faq-field">
+                <span>SEO Title</span>
+                <input id="seoTitle" maxlength="70" placeholder="Search result title">
+                <small><span id="seoTitleCount">0</span>/70 characters</small>
+              </label>
+
+              <label class="faq-field">
+                <span>SEO Description</span>
+                <textarea id="seoDescription" rows="4" maxlength="180" placeholder="Search result description"></textarea>
+                <small><span id="seoDescriptionCount">0</span>/180 characters</small>
+              </label>
+            </div>
+
+            <div class="faq-seo-preview">
+              <span class="faq-seo-url">screenings4u.com/faqs/<span id="seoSlugPreview">your-question</span></span>
+              <strong id="seoTitlePreview">Your FAQ question</strong>
+              <p id="seoDescriptionPreview">Your FAQ SEO description will appear here.</p>
+            </div>
+          </div>
+        </section>
+
+        <aside class="faq-editor-side">
+          <section class="faq-side-card">
+            <span class="faq-eyebrow">PUBLISHING</span>
+            <h3>Publish Settings</h3>
+
+            <label class="faq-field">
+              <span>Status</span>
+              <select id="status">
+                <option value="draft">Draft</option>
+                <option value="review">Review</option>
+                <option value="published">Published</option>
+                <option value="archived">Archived</option>
+              </select>
+            </label>
+
+            <label class="faq-field">
+              <span>Featured FAQ</span>
+              <select id="featured">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+              </select>
+            </label>
+
+            <label class="faq-field">
+              <span>Sort Order</span>
+              <input id="sortOrder" type="number" min="0" step="1" value="0">
+            </label>
+
+            <div class="faq-publish-destinations">
+              <strong>Publish to</strong>
+
+              <label>
+                <input id="web" type="checkbox" checked>
+                Main Website
+              </label>
+
+              <label>
+                <input id="customer" type="checkbox">
+                Customer Portal
+              </label>
+
+              <label>
+                <input id="employer" type="checkbox">
+                Employer Portal
+              </label>
+            </div>
+          </section>
+
+          <section class="faq-side-card">
+            <span class="faq-eyebrow">FAQ SNAPSHOT</span>
+            <h3>Entry Summary</h3>
+
+            <div class="faq-summary-row">
+              <span>Status</span>
+              <strong id="summaryStatus">Draft</strong>
+            </div>
+
+            <div class="faq-summary-row">
+              <span>Category</span>
+              <strong id="summaryCategory">Uncategorized</strong>
+            </div>
+
+            <div class="faq-summary-row">
+              <span>Answer Words</span>
+              <strong id="summaryWords">0</strong>
+            </div>
+
+            <div class="faq-summary-row">
+              <span>Sort Order</span>
+              <strong id="summarySortOrder">0</strong>
+            </div>
+
+            <div class="faq-summary-row">
+              <span>Last Updated</span>
+              <strong id="summaryUpdated">Not saved</strong>
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <footer class="faq-modal-foot">
+        <button class="faq-button secondary" type="button" data-close-editor>
+          Cancel
+        </button>
+
+        <button id="saveDraftBtn" class="faq-button secondary" type="button">
+          Save Draft
+        </button>
+
+        <button id="saveBtn" class="faq-button primary" type="button">
+          Save FAQ
+        </button>
+      </footer>
+    </section>
+  </div>
+
+  <div id="previewModal" class="faq-modal faq-preview-modal" hidden aria-hidden="true">
+    <div class="faq-modal-backdrop" data-close-preview></div>
+
+    <section class="faq-preview-dialog" role="dialog" aria-modal="true" aria-labelledby="previewTitle">
+      <header class="faq-preview-head">
+        <div>
+          <span class="faq-eyebrow">WEBSITE PREVIEW</span>
+          <h2 id="previewTitle">FAQ Preview</h2>
+        </div>
+
+        <button class="faq-icon-button" type="button" aria-label="Close" data-close-preview>
+          ×
+        </button>
+      </header>
+
+      <article class="faq-preview-card">
+        <span id="previewCategory" class="faq-preview-category">Category</span>
+        <h1 id="previewQuestion">FAQ Question</h1>
+        <div id="previewAnswer" class="faq-preview-answer"></div>
+      </article>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/core-auth.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/session-security.js"></script>
+  <script src="assets/js/portal-auth-guard.js"></script>
+  <script src="assets/js/admin-auth-guard.js"></script>
+  <script src="assets/js/admin-lms-sidebar.js"></script>
+  <script src="assets/js/admin-faqs.js?v=20260901-1"></script>
+</body>
+</html>

@@ -136,31 +136,35 @@ bindUserDropdown();
       id: "training",
       label: "Training",
       items: [
+          {
+          label: "Create Course",
+          href: "admin-lms-creation.html",
+          icon: "course"
+        },
+ 
         {
           label: "Courses",
           href: "admin-lms-courses.html",
           icon: "book"
         },
-        {
-          label: "Course Manager",
-          href: "admin-lms-course-manager.html",
-          icon: "manage"
+
+              {
+          label: "Quizzes",
+          href: "admin-lms-quizzes.html",
+          icon: "quiz"
         },
-        {
-          label: "Course Builder",
-          href: "admin-lms-course-builder.html",
-          icon: "build"
-        },
-        {
-          label: "Lesson Builder",
-          href: "admin-lms-lesson-builder.html",
-          icon: "lesson"
-        },
-        {
-          label: "Assessment Builder",
+
+              {
+          label: "Assessments",
           href: "admin-lms-assessment-builder.html",
           icon: "assessment"
-        }
+        },
+
+        {
+          label: "Video Library",
+          href: "admin-lms-video.html",
+          icon: "video"
+        },
       ]
     },
 

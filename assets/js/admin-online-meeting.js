@@ -1,18 +1,1385 @@
-(()=>{"use strict";let db=null,current=null,employers=[],profiles=[],attendees=[];const E={};document.addEventListener("DOMContentLoaded",init);
-async function client(){for(let i=0;i<40;i++){try{if(typeof window.getScreenings4uSupabase==="function"){const c=await window.getScreenings4uSupabase();if(c?.functions)return c}if(window.screenings4uSupabase?.functions)return window.screenings4uSupabase}catch(_){}await new Promise(r=>setTimeout(r,75))}return null}
-async function call(body,fn="scheduling-actions"){const{data,error}=await db.functions.invoke(fn,{body});if(error){let m=error.message||"Action failed.";try{const j=await error.context?.clone?.().json();if(j?.error)m=j.error}catch(_){}throw Error(m)}if(data?.error)throw Error(data.error);return data}
-function cache(){["message","pageTitle","title","status","startAt","endAt","timezone","description","recipientType","recipient","attendeeName","attendeeEmail","attendeePhone","meetingUrl","meetingId","meetingProvider","createTeams","joinMeeting","locationName","locationAddress","phoneNumber","phoneExtension","hostName","hostEmail","agenda","internalNotes","addAttendee","attendees","tracking","cancelAppointment","save"].forEach(id=>E[id]=document.getElementById(id))}
-async function init(){cache();bind();try{db=await client();if(!db)throw Error("Supabase client not found.");const type=document.querySelector("[data-schedule-type]").dataset.scheduleType,d=await call({action:"list",appointment_type:type});employers=d.employers||[];profiles=d.profiles||[];recipients();const id=new URLSearchParams(location.search).get("id");if(id){current=(d.appointments||[]).find(x=>x.id===id);if(!current)throw Error("Appointment not found.");fill(current)}else defaults()}catch(e){msg(e.message||"Unable to load appointment.","error")}}
-function bind(){E.recipientType?.addEventListener("change",recipients);E.recipient?.addEventListener("change",recipientChanged);E.addAttendee?.addEventListener("click",()=>{attendees.push({name:"",email:"",phone:"",attendee_role:"required"});drawAttendees()});E.attendees?.addEventListener("input",attendeeInput);E.attendees?.addEventListener("change",attendeeInput);E.attendees?.addEventListener("click",attendeeClick);E.save?.addEventListener("click",save);E.cancelAppointment?.addEventListener("click",cancel);E.createTeams?.addEventListener("click",createTeams)}
-function defaults(){const s=new Date(Date.now()+3600000);s.setMinutes(Math.ceil(s.getMinutes()/15)*15,0,0);const e=new Date(s.getTime()+1800000);E.startAt.value=local(s);E.endAt.value=local(e);drawAttendees()}
-function recipients(){if(!E.recipient)return;E.recipient.innerHTML=E.recipientType.value==="employer"?'<option value="">Select employer...</option>'+employers.map(x=>`<option value="${x.id}">${esc(x.employer_name)}</option>`).join(""):'<option value="">Manual / new customer</option>'+profiles.filter(x=>x.email&&x.is_active!==false).map(x=>`<option value="${x.id}">${esc(x.display_name||[x.first_name,x.last_name].filter(Boolean).join(" ")||x.email)}</option>`).join("")}
-function recipientChanged(){const emp=E.recipientType.value==="employer",x=emp?employers.find(v=>v.id===E.recipient.value):profiles.find(v=>v.id===E.recipient.value);if(!x)return;E.attendeeName.value=emp?x.employer_name:(x.display_name||[x.first_name,x.last_name].filter(Boolean).join(" "));E.attendeeEmail.value=emp?(x.billing_email||x.email||""):(x.email||"");E.attendeePhone.value=x.phone||""}
-function fill(x){E.pageTitle.textContent=`${x.tracking_number} — ${x.title}`;E.tracking.textContent=x.tracking_number;["title","status","timezone","description","attendeeName","attendeeEmail","attendeePhone","meetingUrl","meetingId","meetingProvider","locationName","locationAddress","phoneNumber","phoneExtension","hostName","hostEmail","agenda","internalNotes"].forEach(id=>{if(E[id])E[id].value=x[camelToSnake(id)]??x[id]??""});E.startAt.value=local(new Date(x.start_at));E.endAt.value=local(new Date(x.end_at));E.recipientType.value=x.employer_id?"employer":"customer";recipients();E.recipient.value=x.employer_id||x.customer_user_id||"";attendees=(x.attendees||[]).map(a=>({...a}));drawAttendees();E.cancelAppointment.hidden=x.status==="cancelled";if(E.joinMeeting&&x.meeting_url){E.joinMeeting.href=x.meeting_url;E.joinMeeting.hidden=false}}
-function drawAttendees(){if(!E.attendees)return;E.attendees.innerHTML=attendees.map((x,i)=>`<div class="attendee"><input data-i="${i}" data-k="name" placeholder="Name" value="${esc(x.name||"")}"><input data-i="${i}" data-k="email" placeholder="Email" value="${esc(x.email||"")}"><input data-i="${i}" data-k="phone" placeholder="Phone" value="${esc(x.phone||"")}"><select data-i="${i}" data-k="attendee_role"><option ${x.attendee_role==="required"?"selected":""}>required</option><option ${x.attendee_role==="optional"?"selected":""}>optional</option><option ${x.attendee_role==="host"?"selected":""}>host</option></select><button class="btn danger" type="button" data-remove="${i}">Remove</button></div>`).join("")}
-function attendeeInput(e){const i=+e.target.dataset.i,k=e.target.dataset.k;if(attendees[i]&&k)attendees[i][k]=e.target.value}function attendeeClick(e){const b=e.target.closest("[data-remove]");if(b){attendees.splice(+b.dataset.remove,1);drawAttendees()}}
-function payload(){const type=document.querySelector("[data-schedule-type]").dataset.scheduleType;return{action:current?"update":"create",id:current?.id,appointment_type:type,title:E.title.value.trim(),status:E.status.value,start_at:new Date(E.startAt.value).toISOString(),end_at:new Date(E.endAt.value).toISOString(),timezone:E.timezone.value,description:E.description.value,customer_user_id:E.recipientType.value==="customer"?E.recipient.value||null:null,employer_id:E.recipientType.value==="employer"?E.recipient.value||null:null,attendee_name:E.attendeeName.value,attendee_email:E.attendeeEmail.value,attendee_phone:E.attendeePhone.value,meeting_url:E.meetingUrl?.value||null,meeting_id:E.meetingId?.value||null,meeting_provider:E.meetingProvider?.value||null,location_name:E.locationName?.value||null,location_address:E.locationAddress?.value||null,phone_number:E.phoneNumber?.value||null,phone_extension:E.phoneExtension?.value||null,host_name:E.hostName.value,host_email:E.hostEmail.value,agenda:E.agenda.value,internal_notes:E.internalNotes.value,attendees}}
-async function save(){if(!E.title.value.trim()||!E.startAt.value||!E.endAt.value){msg("Title, start and end are required.","error");return}try{E.save.disabled=true;const d=await call(payload());current=d.appointment;history.replaceState(null,"",`${location.pathname.split("/").pop()}?id=${encodeURIComponent(current.id)}`);fill(current);msg(`${current.tracking_number} saved.`,"ok")}catch(e){msg(e.message||"Unable to save appointment.","error")}finally{E.save.disabled=false}}
-async function cancel(){if(!current||!confirm("Cancel this appointment?"))return;try{const d=await call({action:"status",id:current.id,status:"cancelled"});current=d.appointment;fill(current);msg("Appointment cancelled.","ok")}catch(e){msg(e.message,"error")}}
-async function createTeams(){if(!E.title.value.trim()||!E.startAt.value||!E.endAt.value){msg("Enter title, start and end before creating Teams meeting.","error");return}try{E.createTeams.disabled=true;const d=await call({action:"create",title:E.title.value,start_at:new Date(E.startAt.value).toISOString(),end_at:new Date(E.endAt.value).toISOString()},"teams-meeting-actions");E.meetingUrl.value=d.meeting_url||"";E.meetingId.value=d.meeting_id||"";E.meetingProvider.value="microsoft_teams";if(E.joinMeeting&&d.meeting_url){E.joinMeeting.href=d.meeting_url;E.joinMeeting.hidden=false}msg("Microsoft Teams meeting created. Save the appointment to store it.","ok")}catch(e){msg(e.message||"Teams API is not configured. You can paste a Teams URL manually.","error")}finally{E.createTeams.disabled=false}}
-function camelToSnake(v){return v.replace(/[A-Z]/g,m=>"_"+m.toLowerCase())}function local(d){const p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`}function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}function msg(t,type="ok"){E.message.textContent=t;E.message.className=`message show ${type}`}
+/* ============================================================
+   SCREENINGS4U — ONLINE MEETING APPOINTMENT BUILDER
+
+   Backend:
+   - scheduling-actions
+
+   Supports external video providers by storing:
+   meeting_url
+   meeting_id
+   meeting_provider
+   ============================================================ */
+
+(() => {
+  "use strict";
+
+  let db = null;
+  let current = null;
+  let employers = [];
+  let profiles = [];
+  let attendees = [];
+
+  const E = {};
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    init
+  );
+
+
+  async function client() {
+    for (let i = 0; i < 40; i += 1) {
+      try {
+        if (
+          typeof window
+            .getScreenings4uSupabase ===
+          "function"
+        ) {
+          const c =
+            await window
+              .getScreenings4uSupabase();
+
+          if (c?.functions) {
+            return c;
+          }
+        }
+
+        if (
+          window
+            .screenings4uSupabase
+            ?.functions
+        ) {
+          return window
+            .screenings4uSupabase;
+        }
+
+        if (
+          window
+            .supabaseClient
+            ?.functions
+        ) {
+          return window
+            .supabaseClient;
+        }
+
+      } catch (_) {}
+
+      await delay(75);
+    }
+
+    return null;
+  }
+
+
+  async function call(
+    body
+  ) {
+    const {
+      data,
+      error
+    } = await db.functions
+      .invoke(
+        "scheduling-actions",
+        {
+          body
+        }
+      );
+
+    if (error) {
+      let message =
+        error.message ||
+        "Action failed.";
+
+      try {
+        const json =
+          await error.context
+            ?.clone?.()
+            .json();
+
+        if (json?.error) {
+          message =
+            json.error;
+        }
+      } catch (_) {}
+
+      throw new Error(
+        message
+      );
+    }
+
+    if (data?.error) {
+      throw new Error(
+        data.error
+      );
+    }
+
+    return data || {};
+  }
+
+
+  function cache() {
+    [
+      "message",
+      "pageTitle",
+
+      "title",
+      "status",
+      "startAt",
+      "endAt",
+      "timezone",
+      "description",
+
+      "recipientType",
+      "recipient",
+      "attendeeName",
+      "attendeeEmail",
+      "attendeePhone",
+
+      "meetingUrl",
+      "meetingId",
+      "meetingProvider",
+      "joinMeeting",
+
+      "hostName",
+      "hostEmail",
+      "agenda",
+      "internalNotes",
+
+      "addAttendee",
+      "attendees",
+
+      "tracking",
+      "cancelAppointment",
+      "save",
+      "saveBottom",
+
+      "summaryType",
+      "summaryStatus",
+      "summaryRecipient",
+      "summaryWhen"
+    ].forEach(
+      (id) => {
+        E[id] =
+          document.getElementById(
+            id
+          );
+      }
+    );
+  }
+
+
+  async function init() {
+    cache();
+    bind();
+
+    try {
+      db =
+        await client();
+
+      if (!db) {
+        throw new Error(
+          "Supabase client not found."
+        );
+      }
+
+      const data =
+        await call({
+          action:
+            "list",
+
+          appointment_type:
+            "online"
+        });
+
+      employers =
+        data.employers ||
+        [];
+
+      profiles =
+        data.profiles ||
+        [];
+
+      recipients();
+
+      const id =
+        new URLSearchParams(
+          window.location.search
+        ).get("id");
+
+      if (id) {
+        current =
+          (
+            data.appointments ||
+            []
+          ).find(
+            (appointment) =>
+              appointment.id ===
+              id
+          );
+
+        if (!current) {
+          throw new Error(
+            "Appointment not found."
+          );
+        }
+
+        fill(
+          current
+        );
+
+      } else {
+        defaults();
+      }
+
+      updateSummary();
+
+    } catch (error) {
+      console.error(
+        "[Online Meeting]",
+        error
+      );
+
+      msg(
+        error?.message ||
+        "Unable to load appointment.",
+        "error"
+      );
+    }
+  }
+
+
+  function bind() {
+    E.recipientType
+      ?.addEventListener(
+        "change",
+        () => {
+          recipients();
+          updateSummary();
+        }
+      );
+
+    E.recipient
+      ?.addEventListener(
+        "change",
+        recipientChanged
+      );
+
+    E.status
+      ?.addEventListener(
+        "change",
+        updateSummary
+      );
+
+    E.startAt
+      ?.addEventListener(
+        "change",
+        updateSummary
+      );
+
+    E.endAt
+      ?.addEventListener(
+        "change",
+        updateSummary
+      );
+
+    E.attendeeName
+      ?.addEventListener(
+        "input",
+        updateSummary
+      );
+
+    E.meetingUrl
+      ?.addEventListener(
+        "input",
+        syncJoinButton
+      );
+
+    E.meetingProvider
+      ?.addEventListener(
+        "change",
+        updateProviderUi
+      );
+
+    E.addAttendee
+      ?.addEventListener(
+        "click",
+        () => {
+          attendees.push({
+            name: "",
+            email: "",
+            phone: "",
+            attendee_role:
+              "required"
+          });
+
+          drawAttendees();
+        }
+      );
+
+    E.attendees
+      ?.addEventListener(
+        "input",
+        attendeeInput
+      );
+
+    E.attendees
+      ?.addEventListener(
+        "change",
+        attendeeInput
+      );
+
+    E.attendees
+      ?.addEventListener(
+        "click",
+        attendeeClick
+      );
+
+    E.save
+      ?.addEventListener(
+        "click",
+        save
+      );
+
+    E.saveBottom
+      ?.addEventListener(
+        "click",
+        save
+      );
+
+    E.cancelAppointment
+      ?.addEventListener(
+        "click",
+        cancel
+      );
+  }
+
+
+  function defaults() {
+    const start =
+      new Date(
+        Date.now() +
+        3600000
+      );
+
+    start.setMinutes(
+      Math.ceil(
+        start.getMinutes() /
+        15
+      ) * 15,
+      0,
+      0
+    );
+
+    const end =
+      new Date(
+        start.getTime() +
+        1800000
+      );
+
+    E.startAt.value =
+      local(start);
+
+    E.endAt.value =
+      local(end);
+
+    E.status.value =
+      "scheduled";
+
+    if (
+      E.meetingProvider
+    ) {
+      E.meetingProvider.value =
+        "external";
+    }
+
+    attendees =
+      [];
+
+    drawAttendees();
+    syncJoinButton();
+    updateProviderUi();
+    updateSummary();
+  }
+
+
+  function recipients() {
+    if (!E.recipient) {
+      return;
+    }
+
+    if (
+      E.recipientType.value ===
+      "employer"
+    ) {
+      E.recipient.innerHTML =
+        '<option value="">Select employer...</option>' +
+        employers
+          .map(
+            (item) =>
+              `<option value="${esc(item.id)}">${esc(item.employer_name || "Employer")}</option>`
+          )
+          .join("");
+
+      return;
+    }
+
+    E.recipient.innerHTML =
+      '<option value="">Manual / new customer</option>' +
+      profiles
+        .filter(
+          (item) =>
+            item.email &&
+            item.is_active !==
+              false
+        )
+        .map(
+          (item) => {
+            const label =
+              item.display_name ||
+              [
+                item.first_name,
+                item.last_name
+              ]
+                .filter(Boolean)
+                .join(" ") ||
+              item.email;
+
+            return `<option value="${esc(item.id)}">${esc(label)}</option>`;
+          }
+        )
+        .join("");
+  }
+
+
+  function recipientChanged() {
+    const employer =
+      E.recipientType.value ===
+      "employer";
+
+    const item =
+      employer
+        ? employers.find(
+            (value) =>
+              value.id ===
+              E.recipient.value
+          )
+        : profiles.find(
+            (value) =>
+              value.id ===
+              E.recipient.value
+          );
+
+    if (!item) {
+      updateSummary();
+      return;
+    }
+
+    E.attendeeName.value =
+      employer
+        ? item.employer_name ||
+          ""
+        : item.display_name ||
+          [
+            item.first_name,
+            item.last_name
+          ]
+            .filter(Boolean)
+            .join(" ");
+
+    E.attendeeEmail.value =
+      employer
+        ? item.billing_email ||
+          item.email ||
+          ""
+        : item.email ||
+          "";
+
+    E.attendeePhone.value =
+      item.phone ||
+      "";
+
+    updateSummary();
+  }
+
+
+  function fill(
+    appointment
+  ) {
+    if (E.pageTitle) {
+      E.pageTitle.textContent =
+        `${appointment.tracking_number || "Appointment"} — ${appointment.title || "Online Meeting"}`;
+    }
+
+    if (E.tracking) {
+      E.tracking.textContent =
+        appointment
+          .tracking_number ||
+        "APPOINTMENT";
+    }
+
+    const mapping = {
+      title:
+        "title",
+
+      status:
+        "status",
+
+      timezone:
+        "timezone",
+
+      description:
+        "description",
+
+      attendeeName:
+        "attendee_name",
+
+      attendeeEmail:
+        "attendee_email",
+
+      attendeePhone:
+        "attendee_phone",
+
+      meetingUrl:
+        "meeting_url",
+
+      meetingId:
+        "meeting_id",
+
+      meetingProvider:
+        "meeting_provider",
+
+      hostName:
+        "host_name",
+
+      hostEmail:
+        "host_email",
+
+      agenda:
+        "agenda",
+
+      internalNotes:
+        "internal_notes"
+    };
+
+    Object.entries(
+      mapping
+    ).forEach(
+      ([elementId, field]) => {
+        if (E[elementId]) {
+          E[elementId].value =
+            appointment[field] ??
+            "";
+        }
+      }
+    );
+
+    if (
+      E.meetingProvider &&
+      !E.meetingProvider.value
+    ) {
+      E.meetingProvider.value =
+        "external";
+    }
+
+    if (
+      E.startAt &&
+      appointment.start_at
+    ) {
+      E.startAt.value =
+        local(
+          new Date(
+            appointment.start_at
+          )
+        );
+    }
+
+    if (
+      E.endAt &&
+      appointment.end_at
+    ) {
+      E.endAt.value =
+        local(
+          new Date(
+            appointment.end_at
+          )
+        );
+    }
+
+    E.recipientType.value =
+      appointment.employer_id
+        ? "employer"
+        : "customer";
+
+    recipients();
+
+    E.recipient.value =
+      appointment.employer_id ||
+      appointment.customer_user_id ||
+      "";
+
+    attendees =
+      (
+        appointment.attendees ||
+        []
+      ).map(
+        (item) => ({
+          ...item
+        })
+      );
+
+    drawAttendees();
+
+    if (
+      E.cancelAppointment
+    ) {
+      E.cancelAppointment.hidden =
+        appointment.status ===
+        "cancelled";
+    }
+
+    syncJoinButton();
+    updateProviderUi();
+    updateSummary();
+  }
+
+
+  function drawAttendees() {
+    if (!E.attendees) {
+      return;
+    }
+
+    if (!attendees.length) {
+      E.attendees.innerHTML =
+        '<div class="scheduling-empty">No additional attendees added.</div>';
+
+      return;
+    }
+
+    E.attendees.innerHTML =
+      attendees
+        .map(
+          (item, index) => `
+            <div class="scheduling-attendee">
+              <input
+                data-i="${index}"
+                data-k="name"
+                placeholder="Name"
+                value="${esc(item.name || "")}"
+              >
+
+              <input
+                data-i="${index}"
+                data-k="email"
+                type="email"
+                placeholder="Email"
+                value="${esc(item.email || "")}"
+              >
+
+              <input
+                data-i="${index}"
+                data-k="phone"
+                placeholder="Phone"
+                value="${esc(item.phone || "")}"
+              >
+
+              <select
+                data-i="${index}"
+                data-k="attendee_role"
+              >
+                <option
+                  value="required"
+                  ${item.attendee_role === "required" ? "selected" : ""}
+                >
+                  Required
+                </option>
+
+                <option
+                  value="optional"
+                  ${item.attendee_role === "optional" ? "selected" : ""}
+                >
+                  Optional
+                </option>
+
+                <option
+                  value="host"
+                  ${item.attendee_role === "host" ? "selected" : ""}
+                >
+                  Host
+                </option>
+              </select>
+
+              <button
+                class="scheduling-button danger"
+                type="button"
+                data-remove="${index}"
+              >
+                Remove
+              </button>
+            </div>
+          `
+        )
+        .join("");
+  }
+
+
+  function attendeeInput(
+    event
+  ) {
+    const index =
+      Number(
+        event.target.dataset.i
+      );
+
+    const key =
+      event.target.dataset.k;
+
+    if (
+      attendees[index] &&
+      key
+    ) {
+      attendees[index][key] =
+        event.target.value;
+    }
+  }
+
+
+  function attendeeClick(
+    event
+  ) {
+    const button =
+      event.target.closest(
+        "[data-remove]"
+      );
+
+    if (!button) {
+      return;
+    }
+
+    attendees.splice(
+      Number(
+        button.dataset.remove
+      ),
+      1
+    );
+
+    drawAttendees();
+  }
+
+
+  function validate() {
+    if (
+      !E.title.value.trim()
+    ) {
+      return "Title is required.";
+    }
+
+    if (
+      !E.startAt.value ||
+      !E.endAt.value
+    ) {
+      return "Start and end are required.";
+    }
+
+    const start =
+      new Date(
+        E.startAt.value
+      );
+
+    const end =
+      new Date(
+        E.endAt.value
+      );
+
+    if (
+      Number.isNaN(
+        start.getTime()
+      ) ||
+      Number.isNaN(
+        end.getTime()
+      )
+    ) {
+      return "Enter a valid start and end time.";
+    }
+
+    if (!(end > start)) {
+      return "End time must be after the start time.";
+    }
+
+    const meetingUrl =
+      E.meetingUrl
+        ?.value
+        .trim() ||
+      "";
+
+    if (
+      meetingUrl &&
+      !validHttpUrl(
+        meetingUrl
+      )
+    ) {
+      return "Enter a valid meeting URL.";
+    }
+
+    return "";
+  }
+
+
+  function payload() {
+    return {
+      action:
+        current
+          ? "update"
+          : "create",
+
+      id:
+        current?.id,
+
+      appointment_type:
+        "online",
+
+      title:
+        E.title.value.trim(),
+
+      status:
+        E.status.value,
+
+      start_at:
+        new Date(
+          E.startAt.value
+        ).toISOString(),
+
+      end_at:
+        new Date(
+          E.endAt.value
+        ).toISOString(),
+
+      timezone:
+        E.timezone.value,
+
+      description:
+        E.description.value
+          .trim() ||
+        null,
+
+      customer_user_id:
+        E.recipientType.value ===
+        "customer"
+          ? E.recipient.value ||
+            null
+          : null,
+
+      employer_id:
+        E.recipientType.value ===
+        "employer"
+          ? E.recipient.value ||
+            null
+          : null,
+
+      attendee_name:
+        E.attendeeName.value
+          .trim() ||
+        null,
+
+      attendee_email:
+        E.attendeeEmail.value
+          .trim() ||
+        null,
+
+      attendee_phone:
+        E.attendeePhone.value
+          .trim() ||
+        null,
+
+      meeting_url:
+        E.meetingUrl
+          ?.value
+          .trim() ||
+        null,
+
+      meeting_id:
+        E.meetingId
+          ?.value
+          .trim() ||
+        null,
+
+      meeting_provider:
+        E.meetingProvider
+          ?.value ||
+        "external",
+
+      location_name:
+        null,
+
+      location_address:
+        null,
+
+      phone_number:
+        null,
+
+      phone_extension:
+        null,
+
+      host_name:
+        E.hostName.value
+          .trim() ||
+        null,
+
+      host_email:
+        E.hostEmail.value
+          .trim() ||
+        null,
+
+      agenda:
+        E.agenda.value
+          .trim() ||
+        null,
+
+      internal_notes:
+        E.internalNotes.value
+          .trim() ||
+        null,
+
+      attendees:
+        attendees
+          .map(
+            (item) => ({
+              name:
+                String(
+                  item.name ||
+                  ""
+                ).trim(),
+
+              email:
+                String(
+                  item.email ||
+                  ""
+                ).trim(),
+
+              phone:
+                String(
+                  item.phone ||
+                  ""
+                ).trim(),
+
+              attendee_role:
+                item.attendee_role ||
+                "required"
+            })
+          )
+          .filter(
+            (item) =>
+              item.name ||
+              item.email ||
+              item.phone
+          )
+    };
+  }
+
+
+  async function save() {
+    const problem =
+      validate();
+
+    if (problem) {
+      msg(
+        problem,
+        "error"
+      );
+
+      return;
+    }
+
+    setSaveBusy(
+      true
+    );
+
+    try {
+      const data =
+        await call(
+          payload()
+        );
+
+      if (!data.appointment) {
+        throw new Error(
+          "Scheduling service did not return the saved appointment."
+        );
+      }
+
+      current =
+        data.appointment;
+
+      window.history
+        .replaceState(
+          null,
+          "",
+          `${window.location.pathname.split("/").pop()}?id=${encodeURIComponent(current.id)}`
+        );
+
+      fill(
+        current
+      );
+
+      msg(
+        `${current.tracking_number || "Appointment"} saved.`,
+        "ok"
+      );
+
+    } catch (error) {
+      console.error(
+        "[Save Online Meeting]",
+        error
+      );
+
+      msg(
+        error?.message ||
+        "Unable to save appointment.",
+        "error"
+      );
+
+    } finally {
+      setSaveBusy(
+        false
+      );
+    }
+  }
+
+
+  async function cancel() {
+    if (!current) {
+      return;
+    }
+
+    if (
+      !window.confirm(
+        "Cancel this appointment?"
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const data =
+        await call({
+          action:
+            "status",
+
+          id:
+            current.id,
+
+          status:
+            "cancelled"
+        });
+
+      current =
+        data.appointment ||
+        {
+          ...current,
+          status:
+            "cancelled"
+        };
+
+      fill(
+        current
+      );
+
+      msg(
+        "Appointment cancelled.",
+        "ok"
+      );
+
+    } catch (error) {
+      console.error(
+        "[Cancel Online Meeting]",
+        error
+      );
+
+      msg(
+        error?.message ||
+        "Unable to cancel appointment.",
+        "error"
+      );
+    }
+  }
+
+
+  function syncJoinButton() {
+    if (!E.joinMeeting) {
+      return;
+    }
+
+    const url =
+      E.meetingUrl
+        ?.value
+        .trim() ||
+      "";
+
+    if (
+      url &&
+      validHttpUrl(url)
+    ) {
+      E.joinMeeting.href =
+        url;
+
+      E.joinMeeting.hidden =
+        false;
+
+      return;
+    }
+
+    E.joinMeeting
+      .removeAttribute(
+        "href"
+      );
+
+    E.joinMeeting.hidden =
+      true;
+  }
+
+
+  function updateProviderUi() {
+    if (!E.meetingProvider) {
+      return;
+    }
+
+    const provider =
+      E.meetingProvider.value ||
+      "external";
+
+    const labels = {
+      external:
+        "External / Other",
+
+      zoom:
+        "Zoom",
+
+      google_meet:
+        "Google Meet",
+
+      webex:
+        "Webex",
+
+      microsoft_teams:
+        "Microsoft Teams"
+    };
+
+    E.meetingProvider.title =
+      labels[provider] ||
+      provider;
+  }
+
+
+  function updateSummary() {
+    if (E.summaryType) {
+      E.summaryType.textContent =
+        "Online Meeting";
+    }
+
+    if (E.summaryStatus) {
+      E.summaryStatus.textContent =
+        human(
+          E.status?.value ||
+          "scheduled"
+        );
+    }
+
+    if (E.summaryRecipient) {
+      E.summaryRecipient.textContent =
+        E.attendeeName
+          ?.value
+          .trim() ||
+        "Not selected";
+    }
+
+    if (E.summaryWhen) {
+      if (
+        E.startAt?.value
+      ) {
+        const date =
+          new Date(
+            E.startAt.value
+          );
+
+        E.summaryWhen.textContent =
+          Number.isNaN(
+            date.getTime()
+          )
+            ? "Not scheduled"
+            : date.toLocaleString(
+                [],
+                {
+                  dateStyle:
+                    "medium",
+
+                  timeStyle:
+                    "short"
+                }
+              );
+
+      } else {
+        E.summaryWhen.textContent =
+          "Not scheduled";
+      }
+    }
+  }
+
+
+  function setSaveBusy(
+    busy
+  ) {
+    [
+      E.save,
+      E.saveBottom
+    ]
+      .filter(Boolean)
+      .forEach(
+        (button) => {
+          button.disabled =
+            busy;
+
+          button.textContent =
+            busy
+              ? "Saving..."
+              : "Save Appointment";
+        }
+      );
+  }
+
+
+  function validHttpUrl(
+    value
+  ) {
+    try {
+      const url =
+        new URL(
+          value
+        );
+
+      return (
+        url.protocol ===
+          "https:" ||
+        url.protocol ===
+          "http:"
+      );
+
+    } catch (_) {
+      return false;
+    }
+  }
+
+
+  function local(
+    date
+  ) {
+    const pad =
+      (number) =>
+        String(
+          number
+        ).padStart(
+          2,
+          "0"
+        );
+
+    return (
+      `${date.getFullYear()}-` +
+      `${pad(date.getMonth() + 1)}-` +
+      `${pad(date.getDate())}T` +
+      `${pad(date.getHours())}:` +
+      `${pad(date.getMinutes())}`
+    );
+  }
+
+
+  function human(
+    value
+  ) {
+    return String(
+      value ||
+      ""
+    )
+      .replace(
+        /_/g,
+        " "
+      )
+      .replace(
+        /\b\w/g,
+        (letter) =>
+          letter.toUpperCase()
+      );
+  }
+
+
+  function esc(
+    value
+  ) {
+    return String(
+      value ??
+      ""
+    )
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+  }
+
+
+  function msg(
+    text,
+    type = "ok"
+  ) {
+    if (!E.message) {
+      return;
+    }
+
+    E.message.textContent =
+      text;
+
+    E.message.className =
+      `scheduling-message show ${type}`;
+
+    window.clearTimeout(
+      msg.timer
+    );
+
+    msg.timer =
+      window.setTimeout(
+        () => {
+          E.message
+            ?.classList
+            .remove(
+              "show"
+            );
+        },
+        5000
+      );
+  }
+
+
+  function delay(
+    milliseconds
+  ) {
+    return new Promise(
+      (resolve) =>
+        window.setTimeout(
+          resolve,
+          milliseconds
+        )
+    );
+  }
+
 })();

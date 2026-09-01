@@ -7,6 +7,29 @@
 
   <link rel="stylesheet" href="assets/css/admin-lms.css">
   <link rel="stylesheet" href="assets/css/admin-lms-course-builder.css?v=20260831-1">
+
+  <style>
+    .course-quiz-modal{width:min(640px,calc(100vw - 32px))}
+    .course-quiz-modal-copy{margin:0 0 16px;color:var(--course-muted,#687386);font-size:12px;line-height:1.55}
+    .course-quiz-settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .course-field small{color:var(--course-muted,#687386);font-size:10px}
+    @media(max-width:680px){.course-quiz-settings-grid{grid-template-columns:1fr}}
+  
+    .course-button.publish{
+      background:var(--course-orange,#ff6b00);
+      border-color:var(--course-orange,#ff6b00);
+      color:#fff;
+    }
+    .course-button.publish:hover{
+      filter:brightness(.97);
+    }
+    .course-button.publish:disabled{
+      opacity:.65;
+      cursor:not-allowed;
+    }
+
+  </style>
+
 </head>
 
 <body class="admin-lms-course-builder-page">
@@ -101,7 +124,15 @@
             <button type="button" class="course-icon-button" id="courseMoreButton" aria-label="More course actions" aria-expanded="false">
               <span>•••</span>
             </button>
-            <a class="course-button secondary" id="previewCourseButton" href="admin-lms-course-preview.html">Preview</a>
+
+            <button
+              type="button"
+              class="course-button publish"
+              id="publishCourseButton"
+            >
+              Publish Course
+            </button>
+                        <a class="course-button secondary" id="previewCourseButton" href="admin-lms-course-preview.html">Preview</a>
             <a class="course-button primary" id="participantsButton" href="admin-lms-course-participants.html">Invite Participants</a>
 
             <div class="course-action-menu" id="courseMoreMenu" hidden>
@@ -120,23 +151,12 @@
         </nav>
 
         <div class="course-toast" id="courseToast" role="status" aria-live="polite"></div>
-
-        <section class="course-ai-banner">
-          <div>
-            <strong>AI Tutor & course assistant</strong>
-            <span>Generate lesson outlines, quiz questions, summaries, and knowledge checks from your course content.</span>
-          </div>
-          <button type="button" class="course-button ghost" id="aiTutorButton">Open Assistant</button>
-        </section>
-
-        <section class="course-panel">
+<section class="course-panel">
           <header class="course-panel-header">
             <h2>Content</h2>
 
             <div class="course-panel-actions">
-              <button type="button" class="course-link-button" id="createWithAiButton">✦ Create with AI</button>
-
-              <div class="course-add-wrap">
+<div class="course-add-wrap">
                 <button type="button" class="course-button outline" id="addContentButton" aria-expanded="false">
                   <span>＋</span> Add
                 </button>
@@ -273,6 +293,111 @@
     </section>
   </div>
 
+
+  <!-- ==========================================================
+       CREATE QUIZ
+       ========================================================== -->
+  <div class="course-modal-backdrop" id="quizModal" hidden>
+    <section
+      class="course-modal course-quiz-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="quizModalTitle"
+    >
+      <header>
+        <div>
+          <span class="modal-kicker">QUIZ</span>
+          <h2 id="quizModalTitle">Create Quiz</h2>
+        </div>
+        <button
+          type="button"
+          class="course-icon-button"
+          data-close-modal
+          aria-label="Close"
+        >×</button>
+      </header>
+
+      <div class="course-modal-body">
+        <p class="course-quiz-modal-copy">
+          Create the quiz record now, then build its questions and answers in the Quiz Builder.
+        </p>
+
+        <label class="course-field">
+          <span>Quiz title</span>
+          <input
+            type="text"
+            id="quizTitleInput"
+            maxlength="180"
+            placeholder="e.g. Module 1 Knowledge Check"
+          >
+        </label>
+
+        <label class="course-field">
+          <span>Section</span>
+          <select id="quizSectionSelect"></select>
+        </label>
+
+        <label class="course-field">
+          <span>Instructions</span>
+          <textarea
+            id="quizDescriptionInput"
+            rows="4"
+            placeholder="Optional instructions learners see before starting."
+          ></textarea>
+        </label>
+
+        <div class="course-quiz-settings-grid">
+          <label class="course-field">
+            <span>Passing score (%)</span>
+            <input
+              type="number"
+              id="quizPassingScoreInput"
+              min="0"
+              max="100"
+              step="1"
+              value="80"
+            >
+          </label>
+
+          <label class="course-field">
+            <span>Maximum attempts</span>
+            <input
+              type="number"
+              id="quizAttemptLimitInput"
+              min="0"
+              step="1"
+              value="0"
+            >
+            <small>0 = unlimited</small>
+          </label>
+        </div>
+
+        <label class="course-check">
+          <input type="checkbox" id="quizRequiredInput" checked>
+          <span>Required for course completion</span>
+        </label>
+      </div>
+
+      <footer>
+        <button
+          type="button"
+          class="course-button secondary"
+          data-close-modal
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="course-button primary"
+          id="createQuizButton"
+        >
+          Create Quiz
+        </button>
+      </footer>
+    </section>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/supabase-config.js"></script>
   <script src="assets/js/core-auth.js"></script>
@@ -281,6 +406,6 @@
   <script src="assets/js/portal-auth-guard.js"></script>
   <script src="assets/js/admin-auth-guard.js"></script>
   <script src="assets/js/admin-lms-sidebar.js"></script>
-  <script src="assets/js/admin-lms-course-builder.js?v=20260831-1"></script>
+  <script src="assets/js/admin-lms-course-builder.js?v=20260901-PUBLISH-DEEPCOPY2"></script>
 </body>
 </html>

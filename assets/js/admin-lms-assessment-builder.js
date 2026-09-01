@@ -1,4 +1,7 @@
-/* screenings4u — admin-lms-assessment-builder.js */
+/* ============================================================
+   SCREENINGS4U — ADMIN LMS ASSESSMENT BUILDER
+   Live assessment, question, and answer-option management
+   ============================================================ */
 (() => {
 "use strict";
 
@@ -451,7 +454,7 @@ function renderSummary(){
     el.abSummarySaved.textContent=assessment?.updated_at?dateTime(assessment.updated_at):"Not saved";
 }
 
-function show(text,type="ok"){el.abMessage.textContent=text;el.abMessage.className=`ab-message show ${type}`;clearTimeout(show.timer);show.timer=setTimeout(()=>el.abMessage.className="ab-message",5500);}
+function show(text,type="ok"){el.abMessage.textContent=text;el.abMessage.className=`ab-message show ${type}`;clearTimeout(show.timer);show.timer=setTimeout(()=>el.abMessage.className="ab-message",6500);}
 function human(v){return String(v||"—").replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase());}
 function dateTime(v){if(!v)return"—";const d=new Date(v);return Number.isNaN(d.getTime())?"—":d.toLocaleString(undefined,{year:"numeric",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});}
 function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}

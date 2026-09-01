@@ -300,7 +300,13 @@
         error
       );
 
-      return [];
+      /*
+       * A database/RLS/read failure is not the same thing as a user
+       * having no roles. Throw so the caller can treat this as an
+       * authentication-verification error instead of signing out a
+       * valid session.
+       */
+      throw error;
 
     }
 
@@ -369,6 +375,50 @@
     return normalizedUserRoles.some(
       (role) => allowedRoles.includes(role)
     );
+
+  }
+
+
+
+  /* ============================================================
+     VERIFY ADMIN ACCESS
+
+     The database already exposes public.is_admin() as a
+     SECURITY DEFINER function. Use it as a reliable fallback when
+     direct role-table reads are restricted by RLS.
+     ============================================================ */
+
+  async function verifyAdminAccess(userRoles = []) {
+
+    if (userCanAccessPortal(userRoles, "admin")) {
+      return true;
+    }
+
+    try {
+
+      const client = getClient();
+
+      const {
+        data,
+        error
+      } = await client.rpc("is_admin");
+
+      if (error) {
+        throw error;
+      }
+
+      return data === true;
+
+    } catch (error) {
+
+      console.error(
+        "[S4UAuth] Unable to verify admin access:",
+        error
+      );
+
+      throw error;
+
+    }
 
   }
 
@@ -465,15 +515,30 @@
 
 
     const [
-      profile,
-      roles
-    ] = await Promise.all([
+      profileResult,
+      rolesResult
+    ] = await Promise.allSettled([
 
       getProfile(user.id),
 
       getRoles(user.id)
 
     ]);
+
+    const profile =
+      profileResult.status === "fulfilled"
+        ? profileResult.value
+        : null;
+
+    const roles =
+      rolesResult.status === "fulfilled"
+        ? rolesResult.value
+        : [];
+
+    const roleLoadError =
+      rolesResult.status === "rejected"
+        ? rolesResult.reason
+        : null;
 
 
     state = {
@@ -489,7 +554,9 @@
       roles,
 
       primaryRole:
-        getPrimaryRole(roles)
+        getPrimaryRole(roles),
+
+      roleLoadError
 
     };
 
@@ -687,9 +754,37 @@
        STRICT PORTAL ACCESS
        ---------------------------------------------------------- */
 
-    const allowed = portal === "training"
-      ? await hasRole("training", authState.user?.id)
-      : userCanAccessPortal(authState.roles, portal);
+    let allowed = false;
+
+    if (portal === "training") {
+
+      allowed =
+        await hasRole(
+          "training",
+          authState.user?.id
+        );
+
+    } else if (portal === "admin") {
+
+      /*
+       * Admin access must remain secure, but it should not depend
+       * exclusively on a client-side direct read of the role table.
+       * public.is_admin() is the database-authoritative fallback.
+       */
+      allowed =
+        await verifyAdminAccess(
+          authState.roles
+        );
+
+    } else {
+
+      allowed =
+        userCanAccessPortal(
+          authState.roles,
+          portal
+        );
+
+    }
 
 
     if (!allowed) {
@@ -958,6 +1053,8 @@
     normalizeRole,
 
     userCanAccessPortal,
+
+    verifyAdminAccess,
 
     getPrimaryRole,
 

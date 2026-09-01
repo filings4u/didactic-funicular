@@ -20,6 +20,76 @@
 .courses-bottom-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}.courses-action-card{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--c-line);border-radius:9px;padding:18px}.courses-action-icon{width:42px;height:42px;border-radius:9px;background:#eef4fb;color:var(--c-blue);display:grid;place-items:center;flex:0 0 auto}.courses-action-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}.courses-action-card h3{margin:0 0 4px;color:var(--c-blue);font-size:14px}.courses-action-card p{margin:0;color:var(--c-muted);font-size:10px;line-height:1.5}.courses-action-card a{margin-left:auto;color:var(--c-orange);font-size:10px;font-weight:900;text-decoration:none;white-space:nowrap}
 @media(max-width:1050px){.courses-metrics{grid-template-columns:repeat(2,1fr)}.courses-toolbar{grid-template-columns:1fr 1fr}.courses-toolbar input{grid-column:1/-1}}
 @media(max-width:760px){.courses-page{padding:18px}.courses-heading,.courses-panel-head,.courses-pagination{flex-direction:column;align-items:stretch}.courses-heading h1{font-size:31px}.courses-metrics,.courses-toolbar,.courses-bottom-grid{grid-template-columns:1fr}.courses-btn{width:100%}}
+
+/* ============================================================
+   COURSE PAGE TYPOGRAPHY — MATCH REST OF ADMIN SITE
+   ============================================================ */
+@media (min-width: 761px){
+  .courses-kicker{font-size:12px}
+  .courses-heading p,
+  .courses-panel-head p{font-size:14px;line-height:1.6}
+
+  .courses-btn{font-size:13px;min-height:40px;padding:0 16px}
+
+  .courses-metric span{font-size:11px}
+  .courses-metric strong{font-size:30px}
+  .courses-metric small{font-size:11px}
+
+  .courses-panel-head h2{font-size:20px}
+  .courses-count{font-size:12px}
+
+  .courses-toolbar input,
+  .courses-toolbar select{font-size:13px;height:40px}
+
+  .courses-table th{font-size:11px;padding:12px 14px}
+  .courses-table td{font-size:12px;padding:14px}
+  .course-name strong{font-size:13px}
+  .course-name small{font-size:11px}
+  .course-badge{font-size:10px;min-height:25px;padding:0 9px}
+  .course-row-btn{font-size:11px;padding:8px 10px}
+
+  .courses-pagination{font-size:11px}
+  .courses-pagination button{font-size:11px}
+
+  .courses-action-card h3{font-size:16px}
+  .courses-action-card p{font-size:12px}
+  .courses-action-card a{font-size:12px}
+}
+
+
+/* Larger course-page typography */
+@media (min-width:761px){
+  .courses-heading p,.courses-panel-head p{font-size:15px}
+  .courses-kicker{font-size:13px}
+  .courses-btn{font-size:14px}
+  .courses-metric span{font-size:12px}
+  .courses-metric strong{font-size:32px}
+  .courses-metric small{font-size:12px}
+  .courses-panel-head h2{font-size:21px}
+  .courses-count{font-size:13px}
+  .courses-toolbar input,.courses-toolbar select{font-size:14px}
+  .courses-table th{font-size:12px}
+  .courses-table td{font-size:13px}
+  .course-name strong{font-size:14px}
+  .course-name small{font-size:12px}
+  .course-badge{font-size:11px}
+  .course-row-btn{font-size:12px;padding:9px 11px}
+  .courses-pagination,.courses-pagination button{font-size:12px}
+}
+.course-row-btn.danger,.courses-btn.danger{border-color:#efc7c4;background:#fff;color:var(--c-bad)}
+.course-row-btn.danger:hover,.courses-btn.danger:hover{background:#fff3f2;border-color:var(--c-bad)}
+.course-delete-modal[hidden]{display:none!important}
+.course-delete-modal{position:fixed;inset:0;z-index:12000;display:grid;place-items:center;padding:22px}
+.course-delete-backdrop{position:absolute;inset:0;background:rgba(15,30,50,.56)}
+.course-delete-dialog{position:relative;z-index:1;width:min(520px,100%);overflow:hidden;border:1px solid var(--c-line);border-radius:12px;background:#fff;box-shadow:0 22px 60px rgba(15,30,50,.22)}
+.course-delete-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:20px;border-bottom:1px solid var(--c-line)}
+.course-delete-head h2{margin:5px 0 7px;color:var(--c-blue);font-size:23px}
+.course-delete-head p{margin:0;color:var(--c-muted);font-size:14px;line-height:1.6}
+.course-delete-close{width:35px;height:35px;flex:0 0 auto;border:1px solid #d5dde7;border-radius:7px;background:#fff;color:var(--c-blue);font-size:21px;cursor:pointer}
+.course-delete-warning{margin:18px 20px 0;padding:13px 14px;border:1px solid #f0cfcc;border-radius:8px;background:#fff6f5;color:var(--c-bad);font-size:13px;font-weight:700;line-height:1.5}
+.course-delete-actions{display:flex;justify-content:flex-end;gap:9px;padding:18px 20px}
+body.course-delete-open{overflow:hidden}
+
 </style>
 </head>
 <body class="admin-lms-courses-page">
@@ -50,7 +120,7 @@
 <div><span class="courses-kicker">LEARNING CONTENT</span><h1>Courses</h1><p>Create, manage, publish, and organize the training courses available throughout the screenings4u Learning Center.</p></div>
 <div class="courses-heading-actions">
 <a class="courses-btn" href="admin-lms-course-manager.html">Course Manager</a>
-<a class="courses-btn orange" href="admin-lms-course-builder.html">+ Create Course</a>
+<a class="courses-btn orange" href="admin-lms-creation.html">+ Create Course</a>
 </div>
 </header>
 
@@ -83,13 +153,30 @@
 <div class="courses-pagination-nav"><button id="coursePrevious" type="button">Previous</button><strong id="coursePage">1</strong><button id="courseNext" type="button">Next</button></div>
 </div>
 </section>
-
-<section class="courses-bottom-grid">
-<article class="courses-action-card"><div class="courses-action-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></div><div><h3>Create a Course</h3><p>Build a new course, configure learner rules, and organize the training structure.</p></div><a href="admin-lms-course-builder.html">Create Course ›</a></article>
-<article class="courses-action-card"><div class="courses-action-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 8h10M7 12h7M7 16h5"></path></svg></div><div><h3>Manage Course Content</h3><p>Open the course manager to work with sections, lessons, assessments, and settings.</p></div><a href="admin-lms-course-manager.html">Course Manager ›</a></article>
-</section>
 </section>
 </main>
+
+<div class="course-delete-modal" id="courseDeleteModal" hidden>
+  <div class="course-delete-backdrop" data-course-delete-close></div>
+  <div class="course-delete-dialog" role="dialog" aria-modal="true" aria-labelledby="courseDeleteTitle">
+    <div class="course-delete-head">
+      <div>
+        <span class="courses-kicker">DELETE COURSE</span>
+        <h2 id="courseDeleteTitle">Are you sure?</h2>
+        <p>This will permanently delete <strong id="courseDeleteName">this course</strong> and its course content. This action cannot be undone.</p>
+      </div>
+      <button type="button" class="course-delete-close" data-course-delete-close aria-label="Close">×</button>
+    </div>
+    <div class="course-delete-warning">
+      Only delete the course if you are certain it is no longer needed.
+    </div>
+    <div class="course-delete-actions">
+      <button type="button" class="courses-btn" data-course-delete-close>Cancel</button>
+      <button type="button" class="courses-btn danger" id="courseDeleteConfirm">Delete Course</button>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
