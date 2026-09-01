@@ -7,7 +7,11 @@
 (function () {
   "use strict";
 
-  document.addEventListener("DOMContentLoaded", initializeCustomerPortal);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeCustomerPortal, { once: true });
+  } else {
+    initializeCustomerPortal();
+  }
 
   /* ==========================================================
      INITIALIZE
@@ -25,6 +29,7 @@
     initializeAccountMenu();
     initializeNotificationButton();
     initializeSignOutButtons();
+    initializeTrainingNavigation();
 
     applyPageMetadata();
   }
@@ -380,6 +385,44 @@
 
                   <span class="customer-nav-text">
                     My Account
+                  </span>
+                </a>
+
+              </nav>
+
+            </div>
+
+            <!-- TRAINING — shown only after a qualifying purchase -->
+
+            <div class="customer-nav-group" id="customer-training-group" hidden style="display:none;">
+
+              <span class="customer-nav-label">
+                Training
+              </span>
+
+              <nav class="customer-nav">
+
+                 <a
+                  href="https://training.screenings4u.com"
+                  class="customer-nav-link"
+                  id="customer-training-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span class="customer-nav-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <circle
+                        cx="12"
+                        cy="8"
+                        r="4"
+                      ></circle>
+
+                      <path d="M4 21c.8-4 3.4-6 8-6s7.2 2 8 6"></path>
+                    </svg>
+                  </span>
+
+                  <span class="customer-nav-text">
+                    Training Center
                   </span>
                 </a>
 
@@ -1129,6 +1172,61 @@
     );
   }
 
+
+  /* ==========================================================
+     TRAINING PURCHASE ACCESS
+     ========================================================== */
+
+  async function initializeTrainingNavigation() {
+    const group = document.getElementById("customer-training-group");
+    if (!group) return;
+
+    try {
+      const client = await waitForSupabaseClient();
+      const result = await client.rpc("customer_has_training_purchase");
+
+      if (result.error) {
+        throw result.error;
+      }
+
+      if (result.data === true) {
+        group.hidden = false;
+        group.style.removeProperty("display");
+      }
+    } catch (error) {
+      // Fail closed: customers without a verified purchase never see the link.
+      console.warn("[Customer Portal] Training access check failed:", error);
+      group.hidden = true;
+      group.style.display = "none";
+    }
+  }
+
+  async function waitForSupabaseClient(timeout) {
+    const limit = Number(timeout) || 6000;
+    const started = Date.now();
+
+    while (Date.now() - started < limit) {
+      let client = null;
+
+      if (typeof window.getScreenings4uSupabase === "function") {
+        try {
+          client = await window.getScreenings4uSupabase();
+        } catch (_) {}
+      }
+
+      client = client || window.screenings4uSupabase ||
+        window.supabaseClient || window.supabaseAdmin ||
+        (window.supabase && typeof window.supabase.from === "function" ? window.supabase : null);
+
+      if (client && typeof client.rpc === "function") {
+        return client;
+      }
+
+      await new Promise(function (resolve) { window.setTimeout(resolve, 75); });
+    }
+
+    throw new Error("Supabase client is unavailable.");
+  }
 
   /* ==========================================================
      NOTIFICATIONS

@@ -10,7 +10,8 @@
     courses: "lms_courses",
     media: "lms_media",
     services: "services",
-    prices: "service_prices"
+    prices: "service_prices",
+    instructors: "lms_course_instructors"
   });
 
   const STORAGE_BUCKET = "lms-media";
@@ -20,17 +21,31 @@
     course: null,
     service: null,
     prices: [],
+    instructors: [],
+    instructorCandidates: [],
     thumbnailMedia: null,
     thumbnailUrl: "",
     client: null,
-    uploadingImage: false
+    uploadingImage: false,
+    initialized: false,
+    bound: false
   };
 
   const $ = (id) => document.getElementById(id);
 
-  document.addEventListener("DOMContentLoaded", init);
+  // This file is sometimes injected after DOMContentLoaded by the admin shell.
+  // In that case, registering only a DOMContentLoaded listener leaves the whole
+  // page uninitialized and every button appears dead.
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  } else {
+    init();
+  }
 
   async function init() {
+    if (state.initialized) return;
+    state.initialized = true;
+
     try {
       bind();
 
@@ -145,7 +160,8 @@
 
     await Promise.all([
       loadPricing(),
-      loadThumbnail()
+      loadThumbnail(),
+      loadInstructors()
     ]);
 
     setLoading(false);
@@ -257,6 +273,19 @@
         error
       );
     }
+  }
+
+  async function loadInstructors() {
+    const [assignmentsResult, candidatesResult] = await Promise.all([
+      db().from(TABLES.instructors).select("user_id,is_primary").eq("course_id", state.courseId),
+      db().rpc("lms_instructor_candidates")
+    ]);
+
+    if (assignmentsResult.error) throw assignmentsResult.error;
+    if (candidatesResult.error) throw candidatesResult.error;
+
+    state.instructors = assignmentsResult.data || [];
+    state.instructorCandidates = candidatesResult.data || [];
   }
 
   function render() {
@@ -389,6 +418,7 @@
       pricingText()
     );
 
+    renderInstructorSummary();
     fillModals();
     renderCourseImage();
 
@@ -509,51 +539,12 @@
   }
 
   function bind() {
-    document
-      .querySelectorAll("[data-course-tab]")
-      .forEach((anchor) => {
-        anchor.onclick = (event) => {
-          event.preventDefault();
-          nav(
-            anchor.dataset.courseTab
-          );
-        };
-      });
+    if (state.bound) return;
+    state.bound = true;
 
-    document
-      .querySelectorAll(
-        "[data-close-settings-modal]"
-      )
-      .forEach((button) => {
-        button.onclick = closeModals;
-      });
-
-    document
-      .querySelectorAll("[data-edit-card]")
-      .forEach((button) => {
-        button.onclick = () =>
-          editCard(
-            button.dataset.editCard
-          );
-      });
-
-    $("saveBasicSettings")
-      ?.addEventListener(
-        "click",
-        saveBasic
-      );
-
-    $("saveContentSettings")
-      ?.addEventListener(
-        "click",
-        saveContent
-      );
-
-    $("saveCompletionSettings")
-      ?.addEventListener(
-        "click",
-        saveCompletion
-      );
+    document.querySelectorAll("button").forEach((button) => {
+      if (!button.hasAttribute("type")) button.type = "button";
+    });
 
     document.addEventListener(
       "change",
@@ -577,6 +568,44 @@
     document.addEventListener(
       "click",
       async function (event) {
+        const tab = event.target.closest("[data-course-tab]");
+        if (tab) {
+          event.preventDefault();
+          nav(tab.dataset.courseTab);
+          return;
+        }
+
+        if (event.target.closest("[data-close-settings-modal]")) {
+          event.preventDefault();
+          closeModals();
+          return;
+        }
+
+        const editButton = event.target.closest("[data-edit-card]");
+        if (editButton) {
+          event.preventDefault();
+          editCard(editButton.dataset.editCard);
+          return;
+        }
+
+        const saveButton = event.target.closest(
+          "#saveBasicSettings, #saveContentSettings, #saveCompletionSettings, #saveInstructorSettings"
+        );
+        if (saveButton) {
+          event.preventDefault();
+          if (saveButton.id === "saveBasicSettings") await saveBasic();
+          if (saveButton.id === "saveContentSettings") await saveContent();
+          if (saveButton.id === "saveCompletionSettings") await saveCompletion();
+          if (saveButton.id === "saveInstructorSettings") await saveInstructors();
+          return;
+        }
+
+        if (event.target.closest("#settingsMoreButton")) {
+          event.preventDefault();
+          toggleMoreMenu();
+          return;
+        }
+
         const removeButton =
           event.target.closest(
             "#removeCourseImageButton"
@@ -639,18 +668,41 @@
     }
 
     if (kind === "instructors") {
-      toast(
-        "Instructor assignment needs a confirmed course-instructor relationship before wiring.",
-        "error"
-      );
-      return;
+      ensureInstructorModal();
+      renderInstructorOptions();
+      return open("instructorSettingsModal");
     }
 
     if (kind === "seo") {
-      toast(
-        "Course title, slug, and description are currently used for course SEO.",
-        "success"
-      );
+      // SEO currently uses the course title, slug, short description, and
+      // description, so open the real editor for those persisted fields.
+      return open("basicSettingsModal");
+    }
+  }
+
+  function toggleMoreMenu() {
+    let menu = $("settingsMoreMenu");
+
+    if (!menu) {
+      const button = $("settingsMoreButton");
+      if (!button) return;
+
+      menu = document.createElement("div");
+      menu.id = "settingsMoreMenu";
+      menu.setAttribute("role", "menu");
+      menu.style.cssText = "position:absolute;right:0;top:calc(100% + 8px);z-index:50;min-width:190px;padding:8px;background:#fff;border:1px solid #d8e0ec;border-radius:10px;box-shadow:0 14px 35px rgba(15,45,90,.16)";
+      menu.innerHTML = `
+        <a role="menuitem" href="admin-lms-course-overview.html?course=${encodeURIComponent(state.courseId)}" style="display:block;padding:10px 12px;color:#0b326f;text-decoration:none">Course overview</a>
+        <a role="menuitem" href="admin-lms-course-participants.html?course=${encodeURIComponent(state.courseId)}" style="display:block;padding:10px 12px;color:#0b326f;text-decoration:none">Participants</a>
+        <a role="menuitem" href="admin-lms-courses.html" style="display:block;padding:10px 12px;color:#0b326f;text-decoration:none">All courses</a>`;
+
+      const parent = button.parentElement;
+      if (parent) {
+        parent.style.position = "relative";
+        parent.appendChild(menu);
+      }
+    } else {
+      menu.hidden = !menu.hidden;
     }
   }
 
@@ -748,6 +800,103 @@
       payload,
       "Completion settings saved."
     );
+  }
+
+  async function saveInstructors() {
+    const selected = Array.from(document.querySelectorAll("[data-instructor-user-id]:checked"))
+      .map((input) => input.dataset.instructorUserId);
+    const button = $("saveInstructorSettings");
+    if (button) button.disabled = true;
+
+    try {
+      const result = await db().rpc("lms_set_course_instructors", {
+        p_course_id: state.courseId,
+        p_user_ids: selected
+      });
+      if (result.error) throw result.error;
+
+      await loadInstructors();
+      closeModals();
+      renderInstructorSummary();
+      toast("Instructor assignments saved.", "success");
+    } catch (error) {
+      console.error("[Course Instructor Save]", error);
+      toast(error?.message || "Unable to save instructors.", "error");
+    } finally {
+      if (button) button.disabled = false;
+    }
+  }
+
+  function instructorName(candidate) {
+    return candidate?.display_name ||
+      [candidate?.first_name, candidate?.last_name].filter(Boolean).join(" ") ||
+      candidate?.email || "Instructor";
+  }
+
+  function renderInstructorSummary() {
+    const card = document.querySelector('[data-edit-card="instructors"]')?.closest(".settings-card");
+    if (!card) return;
+
+    const assignedIds = new Set(state.instructors.map((row) => row.user_id));
+    const names = state.instructorCandidates
+      .filter((candidate) => assignedIds.has(candidate.id))
+      .map(instructorName);
+    const value = card.querySelector(".settings-row strong");
+    if (value) value.textContent = names.length ? names.join(", ") : "None assigned";
+
+    const note = card.querySelector(".settings-card-note");
+    if (note) note.textContent = names.length
+      ? `${names.length} instructor${names.length === 1 ? "" : "s"} assigned to this course.`
+      : "No instructors are currently assigned to this course.";
+  }
+
+  function ensureInstructorModal() {
+    if ($("instructorSettingsModal")) return;
+
+    const modal = document.createElement("div");
+    modal.id = "instructorSettingsModal";
+    modal.className = "settings-modal-backdrop";
+    modal.hidden = true;
+    modal.setAttribute("aria-hidden", "true");
+    modal.innerHTML = `
+      <section class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="instructorSettingsTitle">
+        <header>
+          <div><small>COURSE TEAM</small><h2 id="instructorSettingsTitle">Instructors</h2></div>
+          <button type="button" data-close-settings-modal aria-label="Close">×</button>
+        </header>
+        <div class="settings-modal-body">
+          <p>Select the platform staff members who teach or manage this course.</p>
+          <div id="instructorSettingsOptions" style="display:grid;gap:10px"></div>
+        </div>
+        <footer>
+          <button type="button" class="settings-pill secondary" data-close-settings-modal>Cancel</button>
+          <button type="button" class="settings-pill primary" id="saveInstructorSettings">Save instructors</button>
+        </footer>
+      </section>`;
+    document.body.appendChild(modal);
+  }
+
+  function renderInstructorOptions() {
+    const container = $("instructorSettingsOptions");
+    if (!container) return;
+
+    const assignedIds = new Set(state.instructors.map((row) => row.user_id));
+    if (!state.instructorCandidates.length) {
+      container.innerHTML = "<p>No eligible instructors were found. Add an active admin or content staff account first.</p>";
+      return;
+    }
+
+    container.innerHTML = state.instructorCandidates.map((candidate) => `
+      <label style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #d8e0ec;border-radius:9px;cursor:pointer">
+        <input type="checkbox" data-instructor-user-id="${html(candidate.id)}" ${assignedIds.has(candidate.id) ? "checked" : ""}>
+        <span><strong style="display:block">${html(instructorName(candidate))}</strong><small>${html(candidate.email || "")}</small></span>
+      </label>`).join("");
+  }
+
+  function html(value) {
+    const node = document.createElement("div");
+    node.textContent = String(value ?? "");
+    return node.innerHTML;
   }
 
   async function update(payload, message) {
@@ -1561,6 +1710,9 @@
 
     if (node) {
       node.hidden = false;
+      node.removeAttribute("hidden");
+      node.setAttribute("aria-hidden", "false");
+      node.querySelector("input, select, textarea, button")?.focus();
     }
   }
 
@@ -1571,6 +1723,7 @@
       )
       .forEach((modal) => {
         modal.hidden = true;
+        modal.setAttribute("aria-hidden", "true");
       });
   }
 

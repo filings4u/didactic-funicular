@@ -2582,6 +2582,41 @@
   }
 
   async function duplicateCourseDeep(courseId) {
+    /*
+     * The complete authored course is copied inside one atomic Supabase
+     * transaction. Browser navigation, refreshes, or a closed tab can no
+     * longer stop the copy halfway through and leave a partial course.
+     */
+    const { data: copiedCourseId, error } = await db()
+      .rpc("duplicate_lms_course_deep", {
+        p_course_id: courseId
+      });
+
+    if (error) throw error;
+
+    if (!copiedCourseId) {
+      throw new Error(
+        "Supabase did not return the duplicated course ID."
+      );
+    }
+
+    const { data: copiedCourse, error: copiedCourseError } = await db()
+      .from(TABLES.courses)
+      .select("*")
+      .eq("id", copiedCourseId)
+      .single();
+
+    if (copiedCourseError) throw copiedCourseError;
+
+    return copiedCourse;
+  }
+
+
+  /*
+   * Retained for reference only. The browser-based deep copy is no longer
+   * called because a page change can interrupt its many individual requests.
+   */
+  async function duplicateCourseDeepLegacy(courseId) {
     let newCourse = null;
 
     try {
@@ -2644,13 +2679,55 @@
 
       newCourse = createdCourse;
 
+      /*
+       * Do not load lessons through an embedded lms_sections relationship
+       * here. The live PostgREST response returned only one embedded lesson
+       * per section, which reduced a 42-lesson course to six lessons and made
+       * the verification step delete the incomplete copy.
+       *
+       * Load both tables independently, then group every lesson under its
+       * source section before beginning the copy.
+       */
       const { data: sourceSections, error: sectionError } = await db()
         .from(TABLES.sections)
-        .select("*, lms_lessons(*)")
+        .select("*")
         .eq("course_id", courseId)
         .order("sort_order", { ascending: true });
 
       if (sectionError) throw sectionError;
+
+      const sourceSectionIds =
+        (sourceSections || []).map(
+          (section) => section.id
+        );
+
+      let sourceLessons = [];
+
+      if (sourceSectionIds.length) {
+        const { data, error: lessonError } = await db()
+          .from(TABLES.lessons)
+          .select("*")
+          .in("section_id", sourceSectionIds)
+          .order("sort_order", { ascending: true });
+
+        if (lessonError) throw lessonError;
+
+        sourceLessons = data || [];
+      }
+
+      const lessonsBySection =
+        sourceLessons.reduce(
+          (map, lesson) => {
+            if (!map.has(lesson.section_id)) {
+              map.set(lesson.section_id, []);
+            }
+
+            map.get(lesson.section_id).push(lesson);
+
+            return map;
+          },
+          new Map()
+        );
 
       for (const sourceSection of sourceSections || []) {
         const sectionPayload = copyRow(
@@ -2658,7 +2735,6 @@
           [
             "id",
             "course_id",
-            "lms_lessons",
             "created_at",
             "updated_at"
           ]
@@ -2681,7 +2757,7 @@
         if (newSectionError) throw newSectionError;
 
         const lessons =
-          [...(sourceSection.lms_lessons || [])]
+          [...(lessonsBySection.get(sourceSection.id) || [])]
             .sort(
               (a, b) =>
                 number(a.sort_order) -
