@@ -1,6 +1,6 @@
 (() => {
 "use strict";
-const S={db:null,user:null,profile:null,orders:[],results:[],documents:[],notifications:[],donorPasses:[]};
+const S={db:null,user:null,profile:null,orders:[],results:[],notifications:[],donorPasses:[]};
 const $=id=>document.getElementById(id);
 document.addEventListener("DOMContentLoaded",init);
 
@@ -15,7 +15,6 @@ async function init(){
     S.profile=d.profile||null;
     S.orders=d.orders||[];
     S.results=d.results||[];
-    S.documents=d.documents||[];
     S.notifications=d.notifications||[];
     S.donorPasses=d.donor_passes||[];
     render();
@@ -27,7 +26,7 @@ async function invoke(){
   if(error){let m=error.message;try{const j=await error.context?.clone?.().json();if(j?.error)m=j.error}catch{}throw Error(m)}
   if(data?.error)throw Error(data.error);return data||{};
 }
-function render(){renderWelcome();renderStats();renderOrders();renderResults();renderDocuments();renderNotifications();renderDonorFeature()}
+function render(){renderWelcome();renderStats();renderOrders();renderResults();renderReceipts();renderNotifications();renderDonorFeature()}
 function renderWelcome(){text("customer-welcome-name",displayName())}
 function displayName(){return S.profile?.first_name||S.profile?.display_name||S.user?.user_metadata?.first_name||pretty((S.user?.email||"Customer").split("@")[0])}
 function renderStats(){
@@ -35,7 +34,7 @@ function renderStats(){
   text("customer-stat-active-orders",active);
   text("customer-stat-results",S.results.length);
   text("customer-stat-donor-passes",S.donorPasses.filter(p=>!["completed","cancelled","expired","used"].includes(String(p.status||"").toLowerCase())).length);
-  text("customer-stat-documents",S.documents.length);
+  text("customer-stat-completed-orders",S.orders.filter(o=>o.payment_status==="paid"||o.status==="completed").length);
 }
 function renderOrders(){
   const box=$("customer-recent-orders"),empty=$("customer-orders-empty"),load=$("customer-orders-loading"); if(load)load.remove(); if(!box)return;
@@ -46,18 +45,19 @@ function renderOrders(){
 function renderResults(){
  const box=$("customer-recent-results"),empty=$("customer-results-empty"),load=$("customer-results-loading");if(load)load.remove();if(!box)return;const rows=S.results.slice(0,5);box.querySelectorAll(".customer-result-item").forEach(x=>x.remove());if(!rows.length){if(empty)empty.hidden=false;return}if(empty)empty.hidden=true;rows.forEach(r=>{const el=document.createElement("article");el.className="customer-result-item";el.innerHTML=`<div class="customer-result-icon">${icon("result")}</div><div class="customer-result-copy"><div class="customer-result-name"></div><div class="customer-result-meta"></div></div><a class="customer-result-action" href="customer-results.html">View</a>`;el.querySelector(".customer-result-name").textContent=r.title||"Screening Result";el.querySelector(".customer-result-meta").textContent=date(r.updated_at||r.created_at);box.appendChild(el)})
 }
-function renderDocuments(){
- const box=$("customer-recent-documents"),empty=$("customer-documents-empty"),load=$("customer-documents-loading");if(load)load.remove();if(!box)return;const rows=S.documents.slice(0,5);box.querySelectorAll(".customer-document-item").forEach(x=>x.remove());if(!rows.length){if(empty)empty.hidden=false;return}if(empty)empty.hidden=true;rows.forEach(d=>{const el=document.createElement("article");el.className="customer-document-item";el.innerHTML=`<div class="customer-document-icon">${icon("document")}</div><div class="customer-document-copy"><div class="customer-document-name"></div><div class="customer-document-meta"></div></div><a class="customer-document-action" href="customer-documents.html">View</a>`;el.querySelector(".customer-document-name").textContent=d.title||"Document";el.querySelector(".customer-document-meta").textContent=`${pretty(d.document_type||"document")} · ${date(d.created_at)}`;box.appendChild(el)})
+function renderReceipts(){
+ const box=$("customer-recent-receipts"),empty=$("customer-receipts-empty"),load=$("customer-receipts-loading");if(load)load.remove();if(!box)return;const rows=S.orders.filter(o=>o.payment_status==="paid"||o.status==="completed").slice(0,5);box.querySelectorAll(".customer-order-item").forEach(x=>x.remove());if(!rows.length){if(empty)empty.hidden=false;return}if(empty)empty.hidden=true;rows.forEach(o=>{const el=document.createElement("article");el.className="customer-order-item";el.innerHTML=`<div class="customer-order-icon">${icon("order")}</div><div class="customer-order-copy"><div class="customer-order-name"></div><div class="customer-order-meta"></div></div><a class="customer-result-action" href="customer-receipt.html?id=${encodeURIComponent(o.id)}">View Receipt</a>`;el.querySelector(".customer-order-name").textContent=o.order_number||"Paid Order";el.querySelector(".customer-order-meta").textContent=`${money(o.total,o.currency)} · ${date(o.paid_at||o.created_at)}`;box.appendChild(el)})
 }
 function renderNotifications(){
  const box=$("customer-dashboard-notifications"),empty=$("customer-notifications-empty"),load=$("customer-notifications-loading");if(load)load.remove();if(!box)return;const rows=S.notifications.slice(0,5);box.querySelectorAll(".customer-notification-item").forEach(x=>x.remove());if(!rows.length){if(empty)empty.hidden=false;return}if(empty)empty.hidden=true;rows.forEach(n=>{const el=document.createElement("article");el.className="customer-notification-item";el.innerHTML=`<div class="customer-notification-dot"></div><div class="customer-notification-copy"><strong></strong><p></p><span></span></div>`;el.querySelector("strong").textContent=n.subject||"Account Notification";el.querySelector("p").textContent=n.body||"";el.querySelector("span").textContent=date(n.sent_at||n.created_at);box.appendChild(el)})
 }
 function renderDonorFeature(){const el=$("customer-dashboard-donor-feature");if(!el)return;const active=S.donorPasses.filter(p=>!["completed","cancelled","expired","used"].includes(String(p.status||"").toLowerCase()));const copy=el.querySelector(".customer-donor-feature-copy p");if(copy&&active.length){const p=active[0];copy.textContent=p.location_name?`Your donor pass is ready. Assigned collection site: ${p.location_name}.`:`You have ${active.length} active donor pass${active.length===1?"":"es"} ready to review.`}}
-function showError(){["customer-orders-loading","customer-results-loading","customer-documents-loading","customer-notifications-loading"].forEach(id=>$(id)?.remove());["customer-orders-empty","customer-results-empty","customer-documents-empty","customer-notifications-empty"].forEach(id=>{if($(id))$(id).hidden=false})}
+function showError(){["customer-orders-loading","customer-results-loading","customer-receipts-loading","customer-notifications-loading"].forEach(id=>$(id)?.remove());["customer-orders-empty","customer-results-empty","customer-receipts-empty","customer-notifications-empty"].forEach(id=>{if($(id))$(id).hidden=false})}
 function statusClass(v){if(v.includes("complete")||v.includes("fulfilled"))return"completed";if(v.includes("cancel")||v.includes("refund"))return"cancelled";return"pending"}
 function labelType(v){return pretty(String(v||"Service").replaceAll("_"," "))}
 function pretty(v){return String(v||"").replace(/[._-]+/g," ").replace(/\b\w/g,c=>c.toUpperCase())}
 function date(v){const d=new Date(v);return Number.isNaN(d.getTime())?"—":new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",year:"numeric"}).format(d)}
+function money(v,c="USD"){return new Intl.NumberFormat("en-US",{style:"currency",currency:String(c||"USD").toUpperCase()}).format(Number(v||0))}
 function text(id,v){if($(id))$(id).textContent=String(v)}
 function icon(t){return t==="result"?`<svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"></path><path d="M14 3v5h5"></path><path d="m9 13 2 2 4-4"></path></svg>`:t==="document"?`<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg>`:`<svg viewBox="0 0 24 24"><path d="M6 3h12"></path><path d="M6 7h12"></path><path d="M6 11h12"></path><path d="M6 15h8"></path></svg>`}
 })();

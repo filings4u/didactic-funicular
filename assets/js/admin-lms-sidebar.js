@@ -340,6 +340,31 @@ bindUserDropdown();
       label: "System",
       items: [
         {
+          label: "URL Redirects",
+          href: "admin-url-redirects.html",
+          icon: "globe"
+        },
+        {
+          label: "SEO Management",
+          href: "admin-seo.html",
+          icon: "results"
+        },
+        {
+          label: "Search Submission",
+          href: "admin-search-submissions.html",
+          icon: "globe"
+        },
+        {
+          label: "Forms Editor",
+          href: "admin-forms.html",
+          icon: "document"
+        },
+        {
+          label: "Task Manager",
+          href: "admin-tasks.html",
+          icon: "clipboard"
+        },
+        {
           label: "Accounts",
           href: "admin-accounts.html",
           icon: "users"

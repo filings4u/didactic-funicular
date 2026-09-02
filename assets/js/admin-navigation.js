@@ -437,6 +437,12 @@ function getAdminNavigationMarkup() {
           class="admin-nav-group-items"
           id="admin-nav-system"
         >
+          <a href="${prefix}admin-url-redirects.html" data-nav-page="admin-url-redirects.html">URL Redirects</a>
+          <a href="${prefix}admin-seo.html" data-nav-page="admin-seo.html">SEO Management</a>
+          <a href="${prefix}admin-search-submissions.html" data-nav-page="admin-search-submissions.html">Search Submission</a>
+          <a href="${prefix}admin-forms.html" data-nav-page="admin-forms.html">Forms Editor</a>
+          <a href="${prefix}admin-tasks.html" data-nav-page="admin-tasks.html">Task Manager</a>
+
           <a
             href="${prefix}admin-automations.html"
             data-nav-page="admin-automations.html"

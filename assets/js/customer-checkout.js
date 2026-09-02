@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const STRIPE_PUBLISHABLE_KEY = "pk_test_51U8CQQ2QEeEuL3QXzML14sIufQvcjU2fxNkTCylTwCR2cJvtx4nBVbiZ2bvbD97oFL2aScbitB21htQyxoETfY2x00rtvDvxUm";
+  const STRIPE_PUBLISHABLE_KEY = "pk_live_51U8CQJEHE8bc4Otur9RVR1HsajJbmSbmRr5z0jGw1v5jgrKrzmnaaRTIV5v5CbEZIwFJLujrU0AI3lOZFDaNg4CG005XAPqkx3";
   const $ = (id) => document.getElementById(id);
 
   let db = null;

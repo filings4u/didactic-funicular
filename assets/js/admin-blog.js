@@ -14,6 +14,29 @@
 (() => {
   "use strict";
 
+  const WEBSITE_ORIGIN = "https://www.screenings4u.com";
+
+  const WEBSITE_IMAGES = [
+    ["Home", "index.html", "images/home-hero.png"],
+    ["Workplace Drug & Alcohol Testing", "workplace-drug-and-alcohol-testing.html", "images/workplace-drug-and-alcohol-testing-hero.png"],
+    ["DOT Services", "dot-services.html", "images/dot-hero.png"],
+    ["DOT Urine Drug Testing", "dot-urine-drug-tests.html", "images/dot-urine-hero.png"],
+    ["DOT Breath Alcohol Testing", "dot-breathalyzer-services.html", "images/dot-breathalyzer-hero.png"],
+    ["DOT Physical Exams", "dot-physical-exam-services.html", "images/dot-physical-hero.png"],
+    ["Personal Drug & Alcohol Testing", "personal-drug-and-alcohol-testing.html", "images/personal-drug-and-alcohol-testing-hero.png"],
+    ["Non-DOT Breath Alcohol Testing", "non-dot-breathalyzer-services.html", "images/non-dot-breathalyzer-hero.png"],
+    ["Mobile Drug & Alcohol Testing", "mobile-drug-and-alcohol-testing.html", "images/mobile-drug-and-alcohol-testing-hero.png"],
+    ["Background Checks", "background-checks.html", "images/background-check-hero.png"],
+    ["Business Services", "business-services.html", "images/business-services-hero.png"],
+    ["Consulting Services", "consulting-services.html", "images/consulting-services-hero.png"],
+    ["Court-Ordered Testing", "court-ordered-etg-drug-and-alcohol-testing.html", "images/court-ordered-testing-hero.png"],
+    ["DOT Collector Training", "dot-specimen-collector-training.html", "images/dot-specimen-collector-training-hero.png"],
+    ["Drug & Alcohol Policy Creation", "drug-alcohol-policy-creation.html", "images/drug-alcohol-policy-hero.png"],
+    ["Industries Served", "industries-served.html", "images/industries-served-hero.png"],
+    ["New Entrant Audit", "new-entrant-audit.html", "images/new-entrant-audit-hero.png"],
+    ["Post-Accident Testing", "post-accident-testing.html", "images/post-accident-testing-hero.png"]
+  ];
+
   let db = null;
   let items = [];
   let current = null;
@@ -31,6 +54,7 @@
 
 
   async function init() {
+    installFeaturedImageFields();
     cache();
     bind();
 
@@ -86,6 +110,12 @@
       "category",
       "tags",
       "excerpt",
+
+      "imageSourcePage",
+      "featuredImageUrl",
+      "featuredImagePreview",
+      "featuredImagePreviewWrap",
+      "clearFeaturedImageBtn",
 
       "editor",
       "editorToolbar",
@@ -148,6 +178,21 @@
     E.categoryFilter?.addEventListener(
       "change",
       draw
+    );
+
+    E.imageSourcePage?.addEventListener(
+      "change",
+      applySelectedWebsiteImage
+    );
+
+    E.featuredImageUrl?.addEventListener(
+      "input",
+      updateFeaturedImagePreview
+    );
+
+    E.clearFeaturedImageBtn?.addEventListener(
+      "click",
+      clearFeaturedImage
     );
 
     E.refreshBtn?.addEventListener(
@@ -300,6 +345,117 @@
         }
       }
     );
+  }
+
+
+  function installFeaturedImageFields() {
+    if (document.getElementById("featuredImageUrl")) return;
+
+    const excerpt = document.getElementById("excerpt");
+    const anchor = excerpt?.closest(".blog-field");
+    if (!anchor) return;
+
+    const section = document.createElement("section");
+    section.className = "blog-image-picker blog-field-span-2";
+    section.innerHTML = `
+      <div class="blog-section-head">
+        <div>
+          <span class="blog-eyebrow">Featured image</span>
+          <h3>Use an existing website image</h3>
+        </div>
+      </div>
+      <div class="blog-grid-2">
+        <label class="blog-field">
+          <span>Service page</span>
+          <select id="imageSourcePage">
+            <option value="">Choose a website page...</option>
+            ${WEBSITE_IMAGES.map(([label, page, image]) =>
+              `<option value="${escapeAttribute(image)}" data-page="${escapeAttribute(page)}">${escapeHtmlText(label)}</option>`
+            ).join("")}
+          </select>
+          <small>Selecting a page fills its existing hero image automatically.</small>
+        </label>
+        <label class="blog-field">
+          <span>Image URL or website path</span>
+          <input id="featuredImageUrl" type="text" placeholder="https://www.screenings4u.com/images/example.png" autocomplete="off">
+          <small>Only the URL is saved. The image is not uploaded to Supabase.</small>
+        </label>
+      </div>
+      <div id="featuredImagePreviewWrap" class="blog-image-preview" hidden>
+        <img id="featuredImagePreview" alt="Featured image preview">
+        <div class="blog-image-preview-actions">
+          <a id="featuredImageOpen" class="blog-button secondary" href="#" target="_blank" rel="noopener">Open image</a>
+          <button id="clearFeaturedImageBtn" class="blog-button danger" type="button">Remove image</button>
+        </div>
+      </div>`;
+
+    anchor.insertAdjacentElement("afterend", section);
+  }
+
+
+  function applySelectedWebsiteImage() {
+    if (!E.imageSourcePage?.value || !E.featuredImageUrl) return;
+
+    E.featuredImageUrl.value = absoluteWebsiteUrl(E.imageSourcePage.value);
+    updateFeaturedImagePreview(
+      new URL(E.imageSourcePage.value, window.location.href).href
+    );
+  }
+
+
+  function updateFeaturedImagePreview(previewOverride = null) {
+    const value = E.featuredImageUrl?.value.trim() || "";
+    const previewValue = previewOverride || value;
+    const valid = validImageUrl(previewValue);
+
+    if (E.featuredImagePreviewWrap) {
+      E.featuredImagePreviewWrap.hidden = !valid;
+    }
+
+    if (E.featuredImagePreview) {
+      E.featuredImagePreview.src = valid ? previewValue : "";
+    }
+
+    const open = document.getElementById("featuredImageOpen");
+    if (open) open.href = valid ? previewValue : "#";
+  }
+
+
+  function clearFeaturedImage() {
+    if (E.imageSourcePage) E.imageSourcePage.value = "";
+    if (E.featuredImageUrl) E.featuredImageUrl.value = "";
+    updateFeaturedImagePreview();
+  }
+
+
+  function absoluteWebsiteUrl(path) {
+    try {
+      return new URL(path, `${WEBSITE_ORIGIN}/`).href;
+    } catch {
+      return "";
+    }
+  }
+
+
+  function validImageUrl(value) {
+    try {
+      const url = new URL(value);
+      return ["http:", "https:"].includes(url.protocol);
+    } catch {
+      return false;
+    }
+  }
+
+
+  function escapeAttribute(value) {
+    return String(value).replace(/[&<>"']/g, (character) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[character]);
+  }
+
+
+  function escapeHtmlText(value) {
+    return escapeAttribute(value);
   }
 
 
@@ -749,6 +905,40 @@
       item?.excerpt ||
       "";
 
+    if (E.featuredImageUrl) {
+      E.featuredImageUrl.value =
+        item?.featured_image_url ||
+        "";
+    }
+
+    let selectedImagePath = "";
+
+    if (E.imageSourcePage) {
+      const currentImage =
+        item?.featured_image_url ||
+        "";
+
+      const match = WEBSITE_IMAGES.find(
+        ([, , image]) =>
+          currentImage === image ||
+          currentImage.endsWith(`/${image}`)
+      );
+
+      E.imageSourcePage.value =
+        match?.[2] ||
+        "";
+
+      selectedImagePath =
+        match?.[2] ||
+        "";
+    }
+
+    updateFeaturedImagePreview(
+      selectedImagePath
+        ? new URL(selectedImagePath, window.location.href).href
+        : null
+    );
+
     E.editor.innerHTML =
       item?.content_html ||
       item?.content ||
@@ -1086,6 +1276,10 @@
 
       excerpt:
         E.excerpt.value.trim() ||
+        null,
+
+      featured_image_url:
+        E.featuredImageUrl?.value.trim() ||
         null,
 
       content_html:

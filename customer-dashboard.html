@@ -8,7 +8,7 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Customer Dashboard | Screenings4u</title>
+  <title>Customer Dashboard | screenings4u</title>
 
   <link
     rel="icon"
@@ -99,7 +99,7 @@
 
             <p class="customer-welcome-description">
               Manage your services, track your orders, access
-              available results, and keep your important documents
+              available results, receipts, and account activity
               all in one place.
             </p>
 
@@ -321,14 +321,14 @@
         </article>
 
 
-        <!-- DOCUMENTS -->
+        <!-- COMPLETED ORDERS -->
 
         <article class="customer-summary-card">
 
           <div class="customer-summary-card-top">
 
             <div
-              class="customer-summary-icon documents"
+              class="customer-summary-icon completed-orders"
               aria-hidden="true"
             >
               <svg viewBox="0 0 24 24">
@@ -341,9 +341,9 @@
 
 
             <a
-              href="customer-documents.html"
+              href="customer-orders.html"
               class="customer-summary-link"
-              aria-label="View all documents"
+              aria-label="View completed orders"
             >
               View All
             </a>
@@ -353,7 +353,7 @@
 
           <div class="customer-summary-value">
 
-            <span id="customer-stat-documents">
+            <span id="customer-stat-completed-orders">
               --
             </span>
 
@@ -361,12 +361,12 @@
 
 
           <div class="customer-summary-label">
-            Documents Available
+            Completed Orders
           </div>
 
 
           <p class="customer-summary-description">
-            Important files ready for you.
+            Paid orders in your account.
           </p>
 
         </article>
@@ -788,12 +788,12 @@
 
 
               <a
-                href="customer-documents.html"
+                href="customer-billing.html"
                 class="customer-quick-action"
               >
 
                 <span
-                  class="customer-quick-action-icon documents"
+                  class="customer-quick-action-icon billing"
                 >
 
                   <svg viewBox="0 0 24 24">
@@ -809,11 +809,11 @@
                 <span class="customer-quick-action-copy">
 
                   <strong>
-                    My Documents
+                    Billing &amp; Receipts
                   </strong>
 
                   <small>
-                    Access important files
+                    Review payments and receipts
                   </small>
 
                 </span>
@@ -1011,12 +1011,12 @@
 
 
       <!-- ====================================================
-           RECENT DOCUMENTS
+           RECENT RECEIPTS
            ==================================================== -->
 
       <section
-        class="customer-dashboard-card customer-documents-dashboard-card"
-        aria-labelledby="recent-documents-title"
+        class="customer-dashboard-card customer-receipts-dashboard-card"
+        aria-labelledby="recent-receipts-title"
       >
 
         <div class="customer-card-header">
@@ -1024,24 +1024,24 @@
           <div>
 
             <span class="customer-card-eyebrow">
-              YOUR FILES
+              PAYMENT HISTORY
             </span>
 
             <h2
               class="customer-card-title"
-              id="recent-documents-title"
+              id="recent-receipts-title"
             >
-              Recent Documents
+              Recent Receipts
             </h2>
 
           </div>
 
 
           <a
-            href="customer-documents.html"
+            href="customer-billing.html"
             class="customer-card-action-link"
           >
-            View All Documents
+            View Billing
 
             <svg
               viewBox="0 0 24 24"
@@ -1056,8 +1056,8 @@
 
 
         <div
-          class="customer-dashboard-documents"
-          id="customer-recent-documents"
+          class="customer-dashboard-receipts"
+          id="customer-recent-receipts"
         >
 
 
@@ -1065,13 +1065,13 @@
 
           <div
             class="customer-dashboard-loading"
-            id="customer-documents-loading"
+            id="customer-receipts-loading"
           >
 
             <span class="customer-loading-spinner"></span>
 
             <span>
-              Loading your documents...
+              Loading your receipts...
             </span>
 
           </div>
@@ -1083,7 +1083,7 @@
 
         <div
           class="customer-dashboard-empty"
-          id="customer-documents-empty"
+          id="customer-receipts-empty"
           hidden
         >
 
@@ -1099,13 +1099,13 @@
 
 
           <h3>
-            No documents available yet
+            No receipts available yet
           </h3>
 
 
           <p>
-            Documents associated with your services and
-            orders will appear here.
+            Receipts will appear here after an order has
+            been paid.
           </p>
 
         </div>

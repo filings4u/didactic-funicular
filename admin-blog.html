@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Blog Management | screenings4u Management Portal</title>
-
+<link rel="icon" type="image/png" href="images/fav.png">
   <link rel="stylesheet" href="assets/css/admin-lms.css">
-  <link rel="stylesheet" href="assets/css/admin-blog.css?v=20260901-1">
+  <link rel="stylesheet" href="assets/css/admin-blog.css?v=20260901-2">
 </head>
 
 <body class="admin-blog-page" data-kind="blog">
@@ -207,6 +207,57 @@
             </div>
           </div>
 
+          <section class="blog-image-picker blog-field-span-2">
+            <div class="blog-section-head">
+              <div>
+                <span class="blog-eyebrow">FEATURED IMAGE</span>
+                <h3>Use an Existing Website Image</h3>
+              </div>
+            </div>
+
+            <div class="blog-grid-2">
+              <label class="blog-field">
+                <span>Service Page</span>
+                <select id="imageSourcePage">
+                  <option value="">Choose a website page...</option>
+                  <option value="images/home-hero.png">Home</option>
+                  <option value="images/workplace-drug-and-alcohol-testing-hero.png">Workplace Drug &amp; Alcohol Testing</option>
+                  <option value="images/dot-hero.png">DOT Services</option>
+                  <option value="images/dot-urine-hero.png">DOT Urine Drug Testing</option>
+                  <option value="images/dot-breathalyzer-hero.png">DOT Breath Alcohol Testing</option>
+                  <option value="images/dot-physical-hero.png">DOT Physical Exams</option>
+                  <option value="images/personal-drug-and-alcohol-testing-hero.png">Personal Drug &amp; Alcohol Testing</option>
+                  <option value="images/non-dot-breathalyzer-hero.png">Non-DOT Breath Alcohol Testing</option>
+                  <option value="images/mobile-drug-and-alcohol-testing-hero.png">Mobile Drug &amp; Alcohol Testing</option>
+                  <option value="images/background-check-hero.png">Background Checks</option>
+                  <option value="images/business-services-hero.png">Business Services</option>
+                  <option value="images/consulting-services-hero.png">Consulting Services</option>
+                  <option value="images/court-ordered-testing-hero.png">Court-Ordered Testing</option>
+                  <option value="images/dot-specimen-collector-training-hero.png">DOT Collector Training</option>
+                  <option value="images/drug-alcohol-policy-hero.png">Drug &amp; Alcohol Policy Creation</option>
+                  <option value="images/industries-served-hero.png">Industries Served</option>
+                  <option value="images/new-entrant-audit-hero.png">New Entrant Audit</option>
+                  <option value="images/post-accident-testing-hero.png">Post-Accident Testing</option>
+                </select>
+                <small>Selecting a page fills its existing hero image automatically.</small>
+              </label>
+
+              <label class="blog-field">
+                <span>Image URL or Website Path</span>
+                <input id="featuredImageUrl" type="text" placeholder="https://www.screenings4u.com/images/example.png" autocomplete="off">
+                <small>Only the URL is saved. The image is not uploaded to Supabase.</small>
+              </label>
+            </div>
+
+            <div id="featuredImagePreviewWrap" class="blog-image-preview" hidden>
+              <img id="featuredImagePreview" alt="Featured image preview">
+              <div class="blog-image-preview-actions">
+                <a id="featuredImageOpen" class="blog-button secondary" href="#" target="_blank" rel="noopener">Open Image</a>
+                <button id="clearFeaturedImageBtn" class="blog-button danger" type="button">Remove Image</button>
+              </div>
+            </div>
+          </section>
+
           <div class="blog-section">
             <div class="blog-section-head">
               <div>
@@ -406,6 +457,6 @@
   <script src="assets/js/portal-auth-guard.js"></script>
   <script src="assets/js/admin-auth-guard.js"></script>
   <script src="assets/js/admin-lms-sidebar.js"></script>
-  <script src="assets/js/admin-blog.js?v=20260901-1"></script>
+  <script src="assets/js/admin-blog.js?v=20260901-2"></script>
 </body>
 </html>

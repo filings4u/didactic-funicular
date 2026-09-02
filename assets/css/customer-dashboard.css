@@ -260,7 +260,7 @@
   color: #ff6b00;
 }
 
-.customer-summary-icon.documents {
+.customer-summary-icon.completed-orders {
   background: rgba(126, 87, 194, 0.1);
   color: #6f42c1;
 }
@@ -633,7 +633,7 @@
   color: #325aa3;
 }
 
-.customer-quick-action-icon.documents {
+.customer-quick-action-icon.billing {
   background: rgba(111, 66, 193, 0.1);
   color: #6f42c1;
 }
@@ -843,14 +843,14 @@
 
 
 /* ============================================================
-   DOCUMENTS CARD
+   RECEIPTS CARD
    ============================================================ */
 
-.customer-documents-dashboard-card {
+.customer-receipts-dashboard-card {
   margin-bottom: 28px;
 }
 
-.customer-dashboard-documents {
+.customer-dashboard-receipts {
   min-height: 120px;
 }
 
