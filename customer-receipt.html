@@ -193,13 +193,38 @@
     [hidden]{display:none!important}
 
     @media(max-width:720px){
-      .receipt-header{flex-direction:column}
+      html{font-size:16px}
+      body{overflow-x:hidden}
+      .receipt-page{width:100%;margin:0;padding:0}
+      .receipt-shell{border-left:0;border-right:0;border-radius:0;box-shadow:none}
+      .receipt-header{flex-direction:column;padding:24px 16px}
       .receipt-header-meta{text-align:left;min-width:0}
+      .receipt-header h1{font-size:28px}
+      .receipt-logo-wrap{min-width:0;width:100%}
+      .receipt-logo{width:180px}
+      .receipt-body{padding:22px 16px}
       .receipt-grid{grid-template-columns:1fr}
-      .kv{grid-template-columns:110px minmax(0,1fr)}
-      .receipt-footer{align-items:flex-start;flex-direction:column}
-      .receipt-actions{width:100%}
-      .receipt-btn{flex:1}
+      .receipt-card{width:100%;padding:16px}
+      .kv{grid-template-columns:1fr;gap:3px}
+      .kv strong{margin-bottom:10px}
+      .items-wrap{overflow:visible}
+      table,tbody,tr,td{display:block;width:100%}
+      thead{display:none}
+      tbody{display:grid;grid-template-columns:1fr;gap:12px}
+      tr{padding:14px;border:1px solid var(--s4u-border);border-radius:10px;background:#fff}
+      td{display:grid;grid-template-columns:100px minmax(0,1fr);gap:12px;padding:7px 0;border:0;text-align:right!important;font-size:14px}
+      td:before{color:var(--s4u-muted);font-size:11px;font-weight:800;text-align:left}
+      td:nth-child(1):before{content:"Service"}
+      td:nth-child(2):before{content:"Quantity"}
+      td:nth-child(3):before{content:"Unit Price"}
+      td:nth-child(4):before{content:"Line Total"}
+      .totals{width:100%;margin-top:20px}
+      .total-line{font-size:14px}
+      .receipt-note{font-size:13px}
+      .receipt-footer{align-items:stretch;flex-direction:column;padding:20px 16px}
+      .receipt-actions{display:grid;grid-template-columns:1fr;width:100%}
+      .receipt-btn{width:100%;min-height:46px;font-size:13px}
+      .receipt-loading,.receipt-error{margin:30px 16px;padding:22px 16px}
     }
 
     @media print{
