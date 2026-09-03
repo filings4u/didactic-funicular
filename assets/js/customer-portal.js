@@ -403,9 +403,11 @@
               <nav class="customer-nav">
 
                  <a
-                  href="https://training.screenings4u.com/lms-dashboard.html"
+                  href="https://training.screenings4u.com"
                   class="customer-nav-link"
                   id="customer-training-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <span class="customer-nav-icon">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -443,7 +445,7 @@
               <!-- BACK TO MAIN WEBSITE -->
 
               <a
-                href="https://screenings4u.com"
+                href="index.html"
                 class="customer-footer-link"
               >
                 <span class="customer-footer-icon">
@@ -609,9 +611,7 @@
               <span
                 class="customer-account-name"
                 id="customer-account-name"
-              >
-                Customer
-              </span>
+              ></span>
 
               <span class="customer-account-role">
                 Customer Account
@@ -643,16 +643,12 @@
               <span
                 class="customer-dropdown-name"
                 id="customer-dropdown-name"
-              >
-                Customer
-              </span>
+              ></span>
 
               <span
                 class="customer-dropdown-email"
                 id="customer-dropdown-email"
-              >
-                customer@example.com
-              </span>
+              ></span>
 
             </div>
 
@@ -1177,11 +1173,7 @@
 
   async function initializeTrainingNavigation() {
     const group = document.getElementById("customer-training-group");
-    const link = document.getElementById("customer-training-link");
-
-    if (!group) {
-      return;
-    }
+    if (!group) return;
 
     try {
       const client = await waitForSupabaseClient();
@@ -1191,240 +1183,15 @@
         throw result.error;
       }
 
-      if (result.data !== true) {
-        group.hidden = true;
-        group.style.display = "none";
-        return;
+      if (result.data === true) {
+        group.hidden = false;
+        group.style.removeProperty("display");
       }
-
-      group.hidden = false;
-      group.style.removeProperty("display");
-
-      if (link) {
-        link.addEventListener(
-          "click",
-          handleTrainingNavigation
-        );
-      }
-
     } catch (error) {
-      // Fail closed: customers without verified Training access never see the link.
-      console.warn(
-        "[Customer Portal] Training access check failed:",
-        error
-      );
-
+      // Fail closed: customers without a verified purchase never see the link.
+      console.warn("[Customer Portal] Training access check failed:", error);
       group.hidden = true;
       group.style.display = "none";
-    }
-  }
-
-
-  /* ==========================================================
-     CUSTOMER -> TRAINING SECURE HANDOFF
-     ========================================================== */
-
-  const TRAINING_ORIGIN =
-    "https://training.screenings4u.com";
-
-  const TRAINING_DEFAULT_DESTINATION =
-    "/lms-dashboard.html";
-
-  const TRAINING_HANDOFF_FUNCTION =
-    "create-training-handoff";
-
-  let trainingHandoffInProgress = false;
-
-
-  function getSafeTrainingDestination(href) {
-    try {
-      const target = new URL(
-        href || TRAINING_DEFAULT_DESTINATION,
-        TRAINING_ORIGIN + "/"
-      );
-
-      if (target.origin !== TRAINING_ORIGIN) {
-        return TRAINING_DEFAULT_DESTINATION;
-      }
-
-      const filename =
-        target.pathname
-          .split("/")
-          .filter(Boolean)
-          .pop()
-          ?.toLowerCase() || "";
-
-      if (
-        filename === "training-login.html" ||
-        filename === "reset-password.html" ||
-        filename === "training-handoff.html"
-      ) {
-        return TRAINING_DEFAULT_DESTINATION;
-      }
-
-      return (
-        target.pathname +
-        target.search +
-        target.hash
-      ) || TRAINING_DEFAULT_DESTINATION;
-
-    } catch (_) {
-      return TRAINING_DEFAULT_DESTINATION;
-    }
-  }
-
-
-  async function handleTrainingNavigation(event) {
-    event.preventDefault();
-
-    if (trainingHandoffInProgress) {
-      return;
-    }
-
-    const link =
-      event.currentTarget;
-
-    const destination =
-      getSafeTrainingDestination(
-        link?.getAttribute("href")
-      );
-
-    trainingHandoffInProgress = true;
-
-    if (link) {
-      link.setAttribute(
-        "aria-busy",
-        "true"
-      );
-
-      link.classList.add(
-        "s4u-training-handoff-pending"
-      );
-    }
-
-    try {
-      const client =
-        await waitForSupabaseClient();
-
-      const {
-        data: {
-          session
-        },
-        error: sessionError
-      } = await client.auth.getSession();
-
-      if (sessionError) {
-        throw sessionError;
-      }
-
-      if (!session?.access_token) {
-        const loginUrl =
-          new URL(
-            "customer-login.html",
-            window.location.origin + "/"
-          );
-
-        loginUrl.searchParams.set(
-          "returnTo",
-          window.location.pathname +
-            window.location.search +
-            window.location.hash
-        );
-
-        window.location.assign(
-          loginUrl.href
-        );
-
-        return;
-      }
-
-      const {
-        data,
-        error
-      } = await client.functions.invoke(
-        TRAINING_HANDOFF_FUNCTION,
-        {
-          body: {
-            next: destination
-          }
-        }
-      );
-
-      if (error) {
-        let message =
-          error.message ||
-          "Unable to open Training.";
-
-        try {
-          const response =
-            error.context?.clone?.();
-
-          if (response) {
-            const body =
-              await response.json();
-
-            if (body?.error) {
-              message = body.error;
-            }
-          }
-        } catch (_) {}
-
-        throw new Error(message);
-      }
-
-      if (data?.error) {
-        throw new Error(
-          data.error
-        );
-      }
-
-      if (!data?.handoff_url) {
-        throw new Error(
-          "Automatic Training sign-in could not be created."
-        );
-      }
-
-      const handoffUrl =
-        new URL(
-          data.handoff_url
-        );
-
-      if (
-        handoffUrl.origin !==
-        TRAINING_ORIGIN
-      ) {
-        throw new Error(
-          "The Training destination could not be verified."
-        );
-      }
-
-      window.location.assign(
-        handoffUrl.href
-      );
-
-    } catch (error) {
-      console.error(
-        "[Customer Portal] Training handoff failed:",
-        error
-      );
-
-      trainingHandoffInProgress =
-        false;
-
-      if (link) {
-        link.removeAttribute(
-          "aria-busy"
-        );
-
-        link.classList.remove(
-          "s4u-training-handoff-pending"
-        );
-      }
-
-      alert(
-        error?.message ||
-        "Unable to open Training right now. Please try again."
-      );
     }
   }
 
@@ -1537,14 +1304,16 @@
       const name =
         user.fullName ||
         user.name ||
-        "Customer";
+        "";
 
       const email =
         user.email ||
         "";
 
       const initials =
-        getInitials(name);
+        name
+          ? getInitials(name)
+          : "";
 
 
       const accountName =
@@ -1675,7 +1444,7 @@ function initializeSignOutButtons() {
 
   function getInitials(name) {
     if (!name) {
-      return "CU";
+      return "";
     }
 
     const parts =
@@ -1685,7 +1454,7 @@ function initializeSignOutButtons() {
         .filter(Boolean);
 
     if (parts.length === 0) {
-      return "CU";
+      return "";
     }
 
     if (parts.length === 1) {
