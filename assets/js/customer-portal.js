@@ -21,6 +21,7 @@
     injectCustomerSidebar();
     injectCustomerHeader();
     injectSidebarReopenButton();
+    injectMobileDropdownNavigation();
 
     setActiveNavigation();
     initializeSidebarControls();
@@ -998,6 +999,320 @@
   }
 
 
+
+  /* ==========================================================
+     MOBILE DROPDOWN NAVIGATION
+     ========================================================== */
+
+  function injectMobileDropdownNavigation() {
+    if (document.getElementById("customer-mobile-dropdown")) {
+      return;
+    }
+
+    const header =
+      document.getElementById(
+        "customer-portal-header"
+      );
+
+    if (!header) {
+      return;
+    }
+
+    const dropdown =
+      document.createElement("div");
+
+    dropdown.id = "customer-mobile-dropdown";
+    dropdown.className = "customer-mobile-dropdown";
+    dropdown.hidden = true;
+
+    header.appendChild(dropdown);
+
+    injectMobileDropdownStyles();
+  }
+
+
+  function rebuildMobileDropdown() {
+    const sidebar =
+      document.getElementById(
+        "customer-sidebar"
+      );
+
+    const dropdown =
+      document.getElementById(
+        "customer-mobile-dropdown"
+      );
+
+    if (!sidebar || !dropdown) {
+      return;
+    }
+
+    dropdown.innerHTML = "";
+
+    const groups =
+      sidebar.querySelectorAll(
+        ".customer-nav-group"
+      );
+
+    groups.forEach(function (group) {
+      if (
+        group.hidden ||
+        group.style.display === "none"
+      ) {
+        return;
+      }
+
+      const label =
+        group.querySelector(
+          ".customer-nav-label"
+        );
+
+      const links =
+        group.querySelectorAll(
+          ".customer-nav-link"
+        );
+
+      if (!links.length) {
+        return;
+      }
+
+      const section =
+        document.createElement("div");
+
+      section.className =
+        "customer-mobile-dropdown-section";
+
+      if (label) {
+        const heading =
+          document.createElement("div");
+
+        heading.className =
+          "customer-mobile-dropdown-label";
+
+        heading.textContent =
+          label.textContent.trim();
+
+        section.appendChild(heading);
+      }
+
+      links.forEach(function (sourceLink) {
+        if (
+          sourceLink.hidden ||
+          sourceLink.style.display === "none"
+        ) {
+          return;
+        }
+
+        const link =
+          document.createElement("a");
+
+        link.href =
+          sourceLink.getAttribute("href") || "#";
+
+        link.className =
+          "customer-mobile-dropdown-link";
+
+        link.textContent =
+          sourceLink.textContent
+            .replace(/\s+/g, " ")
+            .trim();
+
+        if (
+          sourceLink.classList.contains("active")
+        ) {
+          link.classList.add("active");
+          link.setAttribute(
+            "aria-current",
+            "page"
+          );
+        }
+
+        if (
+          sourceLink.target
+        ) {
+          link.target = sourceLink.target;
+        }
+
+        if (
+          sourceLink.rel
+        ) {
+          link.rel = sourceLink.rel;
+        }
+
+        section.appendChild(link);
+      });
+
+      if (section.querySelector("a")) {
+        dropdown.appendChild(section);
+      }
+    });
+  }
+
+
+  function injectMobileDropdownStyles() {
+    if (
+      document.getElementById(
+        "customer-mobile-dropdown-styles"
+      )
+    ) {
+      return;
+    }
+
+    const style =
+      document.createElement("style");
+
+    style.id =
+      "customer-mobile-dropdown-styles";
+
+    style.textContent = `
+      @media (max-width: 860px) {
+        .customer-sidebar,
+        #customer-sidebar,
+        .customer-sidebar-overlay,
+        #customer-sidebar-overlay,
+        .customer-sidebar-reopen,
+        #customer-sidebar-reopen {
+          display: none !important;
+        }
+
+        body.sidebar-open {
+          overflow: auto !important;
+        }
+
+        .customer-portal-header {
+          position: relative;
+          z-index: 80;
+        }
+
+        .customer-mobile-dropdown {
+          position: absolute;
+          left: 12px;
+          right: 12px;
+          top: calc(100% + 8px);
+          max-height: calc(100vh - 110px);
+          overflow-y: auto;
+          background: #ffffff;
+          border: 1px solid #d8e0ec;
+          border-radius: 12px;
+          box-shadow: 0 16px 38px rgba(18, 45, 82, .16);
+          z-index: 1000;
+        }
+
+        .customer-mobile-dropdown[hidden] {
+          display: none !important;
+        }
+
+        .customer-mobile-dropdown-section {
+          padding: 8px;
+          border-bottom: 1px solid #edf1f5;
+        }
+
+        .customer-mobile-dropdown-section:last-child {
+          border-bottom: 0;
+        }
+
+        .customer-mobile-dropdown-label {
+          padding: 7px 10px 5px;
+          color: #748197;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: .08em;
+          text-transform: uppercase;
+        }
+
+        .customer-mobile-dropdown-link {
+          display: flex;
+          align-items: center;
+          min-height: 42px;
+          padding: 0 10px;
+          border-radius: 8px;
+          color: #273348;
+          text-decoration: none;
+          font-size: 14px;
+          font-weight: 700;
+        }
+
+        .customer-mobile-dropdown-link:hover,
+        .customer-mobile-dropdown-link.active {
+          background: #f2f6fb;
+          color: #173d78;
+        }
+
+        .customer-mobile-menu[aria-expanded="true"] {
+          background: #f2f6fb;
+        }
+      }
+
+      @media (min-width: 861px) {
+        .customer-mobile-dropdown {
+          display: none !important;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+
+  function openMobileDropdown() {
+    const button =
+      document.getElementById(
+        "customer-mobile-menu"
+      );
+
+    const dropdown =
+      document.getElementById(
+        "customer-mobile-dropdown"
+      );
+
+    if (!button || !dropdown) {
+      return;
+    }
+
+    rebuildMobileDropdown();
+
+    dropdown.hidden = false;
+
+    button.setAttribute(
+      "aria-expanded",
+      "true"
+    );
+
+    button.setAttribute(
+      "aria-label",
+      "Close navigation"
+    );
+  }
+
+
+  function closeMobileDropdown() {
+    const button =
+      document.getElementById(
+        "customer-mobile-menu"
+      );
+
+    const dropdown =
+      document.getElementById(
+        "customer-mobile-dropdown"
+      );
+
+    if (dropdown) {
+      dropdown.hidden = true;
+    }
+
+    if (button) {
+      button.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
+      button.setAttribute(
+        "aria-label",
+        "Open navigation"
+      );
+    }
+  }
+
+
   /* ==========================================================
      MOBILE NAVIGATION
      ========================================================== */
@@ -1008,59 +1323,91 @@
         "customer-mobile-menu"
       );
 
-    const sidebar =
+    const dropdown =
       document.getElementById(
-        "customer-sidebar"
+        "customer-mobile-dropdown"
       );
 
-    const overlay =
-      document.getElementById(
-        "customer-sidebar-overlay"
-      );
-
-    if (
-      !menuButton ||
-      !sidebar ||
-      !overlay
-    ) {
+    if (!menuButton || !dropdown) {
       return;
     }
 
+    menuButton.setAttribute(
+      "aria-expanded",
+      "false"
+    );
+
+    menuButton.setAttribute(
+      "aria-controls",
+      "customer-mobile-dropdown"
+    );
 
     menuButton.addEventListener(
       "click",
-      openMobileSidebar
+      function (event) {
+        if (window.innerWidth > 860) {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const isOpen =
+          menuButton.getAttribute(
+            "aria-expanded"
+          ) === "true";
+
+        if (isOpen) {
+          closeMobileDropdown();
+        } else {
+          openMobileDropdown();
+        }
+      }
     );
 
-    overlay.addEventListener(
+    dropdown.addEventListener(
       "click",
-      closeMobileSidebar
+      function (event) {
+        event.stopPropagation();
+
+        const link =
+          event.target.closest("a");
+
+        if (link) {
+          closeMobileDropdown();
+        }
+      }
     );
 
+    document.addEventListener(
+      "click",
+      function (event) {
+        if (
+          window.innerWidth <= 860 &&
+          !dropdown.contains(event.target) &&
+          !menuButton.contains(event.target)
+        ) {
+          closeMobileDropdown();
+        }
+      }
+    );
 
-    const navigationLinks =
-      sidebar.querySelectorAll(
-        ".customer-nav-link"
-      );
-
-    navigationLinks.forEach(function (link) {
-      link.addEventListener(
-        "click",
-        closeMobileSidebar
-      );
-    });
-
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Escape") {
+          closeMobileDropdown();
+        }
+      }
+    );
 
     window.addEventListener(
       "resize",
       function () {
-        if (window.innerWidth > 860) {
-          closeMobileSidebar();
-        }
+        closeMobileDropdown();
       }
     );
   }
-
 
   function openMobileSidebar() {
     const sidebar =
