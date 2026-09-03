@@ -75,6 +75,17 @@
             <div class="employee-nav-group">
               <span class="employee-nav-label">Overview</span>
               <nav class="employee-nav">
+                <a href="employee-welcome.html" class="employee-nav-link" data-employee-page="employee-welcome.html">
+                  <span class="employee-nav-icon">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M3 11.5 12 4l9 7.5"></path>
+                      <path d="M5.5 10.5V20h13v-9.5"></path>
+                      <path d="M9.5 20v-6h5v6"></path>
+                    </svg>
+                  </span>
+                  <span class="employee-nav-text">Welcome</span>
+                </a>
+
                 <a href="employee-dashboard.html" class="employee-nav-link" data-employee-page="employee-dashboard.html">
                   <span class="employee-nav-icon">
                     <svg viewBox="0 0 24 24">
@@ -298,7 +309,6 @@
               class="employee-account-avatar"
               id="employee-account-avatar"
             >
-              CU
             </span>
 
 
@@ -308,7 +318,6 @@
                 class="employee-account-name"
                 id="employee-account-name"
               >
-                Employee
               </span>
 
               <span class="employee-account-role">
@@ -342,14 +351,12 @@
                 class="employee-dropdown-name"
                 id="employee-dropdown-name"
               >
-                Employee
               </span>
 
               <span
                 class="employee-dropdown-email"
                 id="employee-dropdown-email"
               >
-                employee@example.com
               </span>
 
             </div>
@@ -905,7 +912,7 @@
 
       const navBadge =
         document.getElementById(
-          "employer-notification-count"
+          "employee-notification-count"
         );
 
       const headerIndicator =
@@ -951,7 +958,7 @@
       const name =
         user.fullName ||
         user.name ||
-        "Employee";
+        "";
 
       const email =
         user.email ||
@@ -1011,28 +1018,66 @@
       );
 
     buttons.forEach(function (button) {
-
       button.addEventListener(
         "click",
         async function () {
+          if (button.disabled) {
+            return;
+          }
 
-          /*
-           ------------------------------------------------------
-           SUPABASE WIRING WILL GO HERE.
+          button.disabled = true;
 
-           Example:
+          try {
+            let client = null;
 
-           if (window.supabaseClient) {
-             await window.supabaseClient.auth.signOut();
-           }
-           ------------------------------------------------------
-          */
+            if (
+              typeof window.getScreenings4uSupabase ===
+              "function"
+            ) {
+              client =
+                await window.getScreenings4uSupabase();
+            } else {
+              client =
+                window.screenings4uSupabase ||
+                window.supabaseClient ||
+                null;
+            }
 
-          window.location.href =
-            "employee-login.html";
+            if (!client?.auth) {
+              throw new Error(
+                "Supabase auth client is unavailable."
+              );
+            }
+
+            const { error } =
+              await client.auth.signOut({
+                scope: "local"
+              });
+
+            if (error) {
+              throw error;
+            }
+
+          } catch (error) {
+            console.error(
+              "[Employee Portal] Sign out failed:",
+              error
+            );
+
+            button.disabled = false;
+
+            alert(
+              "We could not sign you out. Please try again."
+            );
+
+            return;
+          }
+
+          window.location.replace(
+            "employee-login.html"
+          );
         }
       );
-
     });
   }
 
@@ -1061,7 +1106,7 @@
 
   function getInitials(name) {
     if (!name) {
-      return "CU";
+      return "";
     }
 
     const parts =
@@ -1071,7 +1116,7 @@
         .filter(Boolean);
 
     if (parts.length === 0) {
-      return "CU";
+      return "";
     }
 
     if (parts.length === 1) {
