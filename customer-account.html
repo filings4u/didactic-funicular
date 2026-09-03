@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -9,6 +9,33 @@
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="stylesheet" href="assets/css/customer-portal.css">
   <link rel="stylesheet" href="assets/css/customer-account.css">
+  <style>
+    *{box-sizing:border-box}
+    html,body{max-width:100%;overflow-x:hidden}
+    @media(max-width:767px){
+      html{font-size:16px}
+      .customer-account-content{width:100%;padding:20px 16px 40px}
+      .customer-account-hero{display:block;padding:22px 0}
+      .customer-account-hero h1{font-size:30px;line-height:1.15}
+      .customer-account-hero p{font-size:15px;line-height:1.6}
+      .customer-account-layout{display:grid;grid-template-columns:1fr;gap:16px}
+      .customer-account-profile-card,.customer-account-panels,.customer-account-panel{width:100%;min-width:0}
+      .customer-account-profile-card,.customer-account-panel,.customer-account-danger-panel{padding:20px 16px}
+      .customer-account-form-grid{display:grid;grid-template-columns:1fr;gap:16px}
+      .customer-account-form label,.customer-account-form input{width:100%;min-width:0}
+      .customer-account-form input{min-height:46px;font-size:16px}
+      .customer-account-panel-header{display:flex;align-items:stretch;flex-direction:column;gap:14px}
+      .customer-account-edit-btn{width:100%;min-height:44px;justify-content:center}
+      .customer-account-form-actions{display:grid;grid-template-columns:1fr;gap:10px}
+      .customer-account-form-actions button{width:100%;min-height:46px}
+      .customer-account-security-row,.customer-account-toggle-row,.customer-account-danger-panel{display:flex;align-items:flex-start;flex-direction:column;gap:14px}
+      .customer-account-security-copy{width:100%}
+      .customer-account-secondary-btn,.customer-account-support-btn,.customer-account-notification-actions,.customer-account-notification-actions button{width:100%;min-height:46px}
+      .customer-account-switch{align-self:flex-start}
+      .customer-account-modal{padding:16px}
+      .customer-account-modal-card{width:100%;max-width:440px;padding:26px 20px}
+    }
+  </style>
 </head>
 
 <body
@@ -421,3 +448,4 @@
   <script src="assets/js/customer-account.js?v=20260830-0700"></script>
 
 </body>
+</html>
