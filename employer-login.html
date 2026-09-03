@@ -428,7 +428,7 @@ $("forgotPasswordBtn").addEventListener("click", async () => {
     const client = getSupabaseClient();
 
     const redirectTo =
-      `${window.location.origin}/reset-password.html`;
+      `${window.location.origin}/reset-password.html?portal=employer`;
 
     const { error } = await client.auth.resetPasswordForEmail(email, {
       redirectTo
