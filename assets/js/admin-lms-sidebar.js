@@ -216,6 +216,11 @@ bindUserDropdown();
           icon: "plus"
         },
         {
+          label: "Discount Codes",
+          href: "admin-discounts.html",
+          icon: "discount"
+        },
+        {
           label: "Quotes",
           href: "admin-quotes.html",
           icon: "quote"
@@ -500,6 +505,11 @@ bindUserDropdown();
       plus:
         '<circle cx="12" cy="12" r="9"></circle>' +
         '<path d="M12 8v8M8 12h8"></path>',
+
+      discount:
+        '<path d="M4 5h9l7 7-8 8-7-7z"></path>' +
+        '<circle cx="9" cy="9" r="1.5"></circle>' +
+        '<path d="M9 16l6-6"></path>',
 
       quote:
         '<path d="M7 8H4v5h4v-3H6"></path>' +
