@@ -11,7 +11,13 @@
 (function () {
   "use strict";
 
-  document.addEventListener("DOMContentLoaded", initializeAdminLmsSidebar);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeAdminLmsSidebar, {
+      once: true
+    });
+  } else {
+    initializeAdminLmsSidebar();
+  }
 
   function initializeAdminLmsSidebar() {
     const target = document.getElementById("admin-lms-sidebar-target");
@@ -789,70 +795,445 @@ bindUserDropdown();
         "[data-admin-menu-toggle]"
       );
 
-    const sidebar =
-      document.querySelector(
-        ".admin-lms-sidebar"
+    if (!button) {
+      return;
+    }
+
+    injectAdminMobileDropdown();
+
+    const dropdown =
+      document.getElementById(
+        "admin-mobile-dropdown"
       );
 
-    const overlay =
-      document.querySelector(
-        "[data-admin-sidebar-overlay]"
+    const backdrop =
+      document.getElementById(
+        "admin-mobile-dropdown-backdrop"
       );
+
+    if (!dropdown) {
+      return;
+    }
+
+    button.setAttribute(
+      "aria-controls",
+      "admin-mobile-dropdown"
+    );
+
+    button.setAttribute(
+      "aria-expanded",
+      "false"
+    );
 
 
     function closeMenu() {
 
-      if (sidebar) {
+      dropdown.hidden = true;
 
-        sidebar.classList.remove("is-open");
-
+      if (backdrop) {
+        backdrop.hidden = true;
       }
 
-      if (overlay) {
+      button.setAttribute(
+        "aria-expanded",
+        "false"
+      );
 
-        overlay.classList.remove("is-visible");
+      button.setAttribute(
+        "aria-label",
+        "Open navigation"
+      );
+    }
 
+
+    function openMenu() {
+
+      rebuildAdminMobileDropdown();
+
+      positionAdminMobileDropdown(
+        button,
+        dropdown
+      );
+
+      if (backdrop) {
+        backdrop.hidden = false;
       }
 
-    }
+      dropdown.hidden = false;
 
-
-    function toggleMenu() {
-
-      if (!sidebar || !overlay) return;
-
-
-      const open =
-        sidebar.classList.toggle("is-open");
-
-
-      overlay.classList.toggle(
-        "is-visible",
-        open
+      button.setAttribute(
+        "aria-expanded",
+        "true"
       );
 
-    }
-
-
-    if (button) {
-
-      button.addEventListener(
-        "click",
-        toggleMenu
+      button.setAttribute(
+        "aria-label",
+        "Close navigation"
       );
-
     }
 
 
-    if (overlay) {
+    button.addEventListener(
+      "click",
+      function (event) {
 
-      overlay.addEventListener(
+        if (window.innerWidth > 1100) {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const isOpen =
+          button.getAttribute(
+            "aria-expanded"
+          ) === "true";
+
+        if (isOpen) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      }
+    );
+
+
+    dropdown.addEventListener(
+      "click",
+      function (event) {
+
+        event.stopPropagation();
+
+        const link =
+          event.target.closest("a");
+
+        if (link) {
+          closeMenu();
+        }
+      }
+    );
+
+
+    if (backdrop) {
+      backdrop.addEventListener(
         "click",
         closeMenu
       );
-
     }
 
+
+    document.addEventListener(
+      "click",
+      function (event) {
+
+        if (
+          window.innerWidth <= 1100 &&
+          !dropdown.contains(event.target) &&
+          !button.contains(event.target)
+        ) {
+          closeMenu();
+        }
+      }
+    );
+
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+
+        if (event.key === "Escape") {
+          closeMenu();
+        }
+      }
+    );
+
+
+    window.addEventListener(
+      "resize",
+      function () {
+        closeMenu();
+      }
+    );
+  }
+
+
+  function injectAdminMobileDropdown() {
+
+    if (
+      document.getElementById(
+        "admin-mobile-dropdown"
+      )
+    ) {
+      return;
+    }
+
+    const backdrop =
+      document.createElement("div");
+
+    backdrop.id =
+      "admin-mobile-dropdown-backdrop";
+
+    backdrop.className =
+      "admin-mobile-dropdown-backdrop";
+
+    backdrop.hidden = true;
+
+
+    const dropdown =
+      document.createElement("div");
+
+    dropdown.id =
+      "admin-mobile-dropdown";
+
+    dropdown.className =
+      "admin-mobile-dropdown";
+
+    dropdown.hidden = true;
+
+    dropdown.setAttribute(
+      "role",
+      "navigation"
+    );
+
+    dropdown.setAttribute(
+      "aria-label",
+      "Management Portal navigation"
+    );
+
+
+    document.body.append(
+      backdrop,
+      dropdown
+    );
+
+    injectAdminMobileDropdownStyles();
+  }
+
+
+  function rebuildAdminMobileDropdown() {
+
+    const dropdown =
+      document.getElementById(
+        "admin-mobile-dropdown"
+      );
+
+    if (!dropdown) {
+      return;
+    }
+
+    const currentPage =
+      getCurrentPage();
+
+    dropdown.innerHTML = "";
+
+
+    groups.forEach(function (group) {
+
+      const section =
+        document.createElement("section");
+
+      section.className =
+        "admin-mobile-dropdown-section";
+
+
+      const heading =
+        document.createElement("div");
+
+      heading.className =
+        "admin-mobile-dropdown-label";
+
+      heading.textContent =
+        group.label;
+
+      section.appendChild(heading);
+
+
+      group.items.forEach(function (item) {
+
+        const link =
+          document.createElement("a");
+
+        link.href =
+          item.href;
+
+        link.className =
+          "admin-mobile-dropdown-link";
+
+        link.textContent =
+          item.label;
+
+
+        if (item.href === currentPage) {
+
+          link.classList.add("active");
+
+          link.setAttribute(
+            "aria-current",
+            "page"
+          );
+        }
+
+
+        section.appendChild(link);
+      });
+
+
+      dropdown.appendChild(section);
+    });
+  }
+
+
+  function positionAdminMobileDropdown(
+    button,
+    dropdown
+  ) {
+
+    const topbar =
+      button.closest(
+        ".admin-lms-topbar, .admin-lms-header, header"
+      );
+
+    const referenceRect =
+      topbar
+        ? topbar.getBoundingClientRect()
+        : button.getBoundingClientRect();
+
+    const top =
+      Math.max(
+        8,
+        Math.round(
+          referenceRect.bottom + 8
+        )
+      );
+
+    dropdown.style.top =
+      top + "px";
+
+    dropdown.style.maxHeight =
+      "calc(100vh - " +
+      (top + 12) +
+      "px)";
+  }
+
+
+  function injectAdminMobileDropdownStyles() {
+
+    if (
+      document.getElementById(
+        "screenings4u-admin-mobile-dropdown-styles"
+      )
+    ) {
+      return;
+    }
+
+    const style =
+      document.createElement("style");
+
+    style.id =
+      "screenings4u-admin-mobile-dropdown-styles";
+
+    style.textContent = `
+      @media (max-width: 1100px) {
+
+        /*
+         * Mobile uses the dropdown only.
+         * The desktop accordion sidebar stays completely separate.
+         */
+        .admin-lms-sidebar,
+        .admin-lms-sidebar-overlay,
+        [data-admin-sidebar-overlay] {
+          display: none !important;
+        }
+
+        .admin-lms-main {
+          width: 100% !important;
+          margin-left: 0 !important;
+          max-width: 100% !important;
+        }
+
+        .admin-mobile-dropdown-backdrop {
+          position: fixed;
+          inset: 0;
+          z-index: 9998;
+          background: rgba(17, 36, 67, .18);
+        }
+
+        .admin-mobile-dropdown {
+          position: fixed;
+          left: 12px;
+          right: 12px;
+          top: 76px;
+          z-index: 9999;
+
+          overflow-y: auto;
+          overscroll-behavior: contain;
+
+          background: #ffffff;
+          border: 1px solid #d8e0ec;
+          border-radius: 12px;
+          box-shadow: 0 18px 42px rgba(18, 45, 82, .18);
+        }
+
+        .admin-mobile-dropdown[hidden],
+        .admin-mobile-dropdown-backdrop[hidden] {
+          display: none !important;
+        }
+
+        .admin-mobile-dropdown-section {
+          padding: 8px;
+          border-bottom: 1px solid #edf1f5;
+        }
+
+        .admin-mobile-dropdown-section:last-child {
+          border-bottom: 0;
+        }
+
+        .admin-mobile-dropdown-label {
+          padding: 8px 10px 6px;
+
+          color: #748197;
+          font-size: 10px;
+          font-weight: 900;
+          letter-spacing: .08em;
+          text-transform: uppercase;
+        }
+
+        .admin-mobile-dropdown-link {
+          display: flex;
+          align-items: center;
+
+          min-height: 42px;
+          padding: 0 10px;
+          border-radius: 8px;
+
+          color: #273348;
+          text-decoration: none;
+          font-size: 14px;
+          font-weight: 700;
+        }
+
+        .admin-mobile-dropdown-link:hover,
+        .admin-mobile-dropdown-link.active {
+          background: #f2f6fb;
+          color: #173d78;
+        }
+
+        [data-admin-menu-toggle][aria-expanded="true"] {
+          background: #f2f6fb;
+        }
+      }
+
+
+      @media (min-width: 1101px) {
+
+        .admin-mobile-dropdown,
+        .admin-mobile-dropdown-backdrop {
+          display: none !important;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
   }
 
 
@@ -1012,7 +1393,14 @@ function bindSidebarCollapse() {
   setCollapsed(savedState === 'true');
 
   collapseButton.addEventListener('click', function () {
-    setCollapsed(!app.classList.contains('sidebar-collapsed'));
+
+    if (window.innerWidth <= 1100) {
+      return;
+    }
+
+    setCollapsed(
+      !app.classList.contains('sidebar-collapsed')
+    );
   });
 }
 
