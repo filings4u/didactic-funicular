@@ -44,13 +44,54 @@
   let signingOut = false;
 
   function getPortal() {
-    return String(
+    const explicitPortal = String(
       document.body?.dataset?.s4uPortal ||
       document.documentElement?.dataset?.s4uPortal ||
       ""
     )
       .trim()
       .toLowerCase();
+
+    if (Object.prototype.hasOwnProperty.call(IDLE_LIMITS, explicitPortal)) {
+      return explicitPortal;
+    }
+
+    // Fallback for existing protected pages that do not yet include
+    // data-s4u-portal. The page filename already follows a portal prefix
+    // convention throughout Screenings4u.
+    const pageName = String(window.location.pathname || "")
+      .split("/")
+      .pop()
+      .toLowerCase();
+
+    const inferredPortal =
+      pageName.startsWith("customer-")
+        ? "customer"
+        : pageName.startsWith("employer-")
+          ? "employer"
+          : pageName.startsWith("employee-")
+            ? "employee"
+            : pageName.startsWith("admin-")
+              ? "admin"
+              : (
+                  pageName.startsWith("lms-") ||
+                  pageName.startsWith("training-")
+                )
+                ? "training"
+                : "";
+
+    if (inferredPortal) {
+      // Normalize the page for every other shared security/auth script.
+      if (document.body) {
+        document.body.dataset.s4uPortal = inferredPortal;
+      } else {
+        document.documentElement.dataset.s4uPortal = inferredPortal;
+      }
+
+      return inferredPortal;
+    }
+
+    return "";
   }
 
   function getIdleLimit() {
@@ -344,7 +385,7 @@
 
     if (!getIdleLimit()) {
       console.error(
-        "[Session security] Missing or invalid data-s4u-portal value."
+        "[Session security] Unable to determine portal. Add data-s4u-portal=\"admin|customer|employer|employee|training\" to <body>."
       );
       return;
     }
