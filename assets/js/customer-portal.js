@@ -443,7 +443,7 @@
               <!-- BACK TO MAIN WEBSITE -->
 
               <a
-                href="index.html"
+                href="https://screenings4u.com"
                 class="customer-footer-link"
               >
                 <span class="customer-footer-icon">

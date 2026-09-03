@@ -167,7 +167,7 @@
 
           <div class="employee-sidebar-footer">
             <div class="employee-sidebar-footer-links">
-              <a href="index.html" class="employee-footer-link">
+              <a href="https://screenings4u.com" class="employee-footer-link">
                 <span class="employee-footer-icon">
                   <svg viewBox="0 0 24 24">
                     <path d="M19 12H5"></path>
