@@ -25,7 +25,27 @@
 <section class="card"><h2>Customer Information</h2><div class="grid">
 <div class="field full"><label>Existing Customer</label><select id="customer"><option value="">New / Guest Customer</option></select></div>
 <div class="field"><label>First Name *</label><input id="first"></div><div class="field"><label>Last Name *</label><input id="last"></div><div class="field"><label>Email *</label><input id="email" type="email"></div>
-<div class="field"><label>Phone</label><input id="phone"></div><div class="field w2"><label>Employer</label><select id="employer"><option value="">Individual / None</option></select></div>
+<div class="field">
+  <label>Phone</label>
+  <input id="phone">
+</div>
+
+<div class="field">
+  <label>Existing Employer</label>
+  <select id="employer">
+    <option value="">Individual / None</option>
+  </select>
+</div>
+
+<div class="field">
+  <label>Company Name</label>
+  <input
+    id="companyName"
+    type="text"
+    placeholder="Enter company name"
+    autocomplete="organization"
+  >
+</div>
 </div></section>
 <section class="card"><h2>Billing Address</h2><div class="grid">
 <div class="field w2"><label>Address</label><input id="address"></div><div class="field"><label>Address 2</label><input id="address2"></div><div class="field"><label>City</label><input id="city"></div><div class="field"><label>State</label><input id="state"></div><div class="field"><label>ZIP</label><input id="zip"></div>
