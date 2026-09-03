@@ -260,6 +260,23 @@ async function saveCode(event) {
     service_ids: serviceIds,
     channels
   };
+  const numericDiscountValue = Number(payload.discount_value);
+  if (!Number.isFinite(numericDiscountValue) || numericDiscountValue <= 0) {
+    showMessage("Discount value must be greater than zero.", "error");
+    return;
+  }
+  if (payload.discount_type === "percent" && numericDiscountValue > 100) {
+    showMessage("Percentage discounts cannot exceed 100%.", "error");
+    return;
+  }
+  if (!payload.applies_to_all_services && serviceIds.length === 0) {
+    showMessage("Select at least one service or enable Apply to all services.", "error");
+    return;
+  }
+  if (channels.length === 0) {
+    showMessage("Select at least one allowed channel / portal.", "error");
+    return;
+  }
   if (payload.starts_at && payload.ends_at && new Date(payload.ends_at) <= new Date(payload.starts_at)) {
     showMessage("End date must be after the start date.", "error");
     return;
