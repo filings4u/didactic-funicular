@@ -707,7 +707,7 @@
         "employee-portal-header"
       );
 
-    if (!header) {
+    if (!header || !document.body) {
       return;
     }
 
@@ -718,7 +718,14 @@
     dropdown.className = "employee-mobile-dropdown";
     dropdown.hidden = true;
 
-    header.appendChild(dropdown);
+    const backdrop = document.createElement("div");
+    backdrop.id = "employee-mobile-dropdown-backdrop";
+    backdrop.className = "employee-mobile-dropdown-backdrop";
+    backdrop.hidden = true;
+
+    // Keep the dropdown outside the header so portal CSS such as
+    // overflow:hidden or stacking contexts cannot clip the menu.
+    document.body.append(backdrop, dropdown);
 
     injectMobileDropdownStyles();
   }
@@ -876,22 +883,35 @@
           z-index: 80;
         }
 
+        /* Mobile header: keep only navigation/account controls. */
+        .employee-header-title-wrap {
+          display: none !important;
+        }
+
         .employee-mobile-dropdown {
-          position: absolute;
+          position: fixed;
           left: 12px;
           right: 12px;
-          top: calc(100% + 8px);
-          max-height: calc(100vh - 110px);
+          top: 76px;
+          max-height: calc(100vh - 96px);
           overflow-y: auto;
           background: #ffffff;
           border: 1px solid #d8e0ec;
           border-radius: 12px;
           box-shadow: 0 16px 38px rgba(18, 45, 82, .16);
-          z-index: 1000;
+          z-index: 1001;
         }
 
-        .employee-mobile-dropdown[hidden] {
+        .employee-mobile-dropdown[hidden],
+        .employee-mobile-dropdown-backdrop[hidden] {
           display: none !important;
+        }
+
+        .employee-mobile-dropdown-backdrop {
+          position: fixed;
+          inset: 0;
+          background: rgba(17, 36, 67, .18);
+          z-index: 999;
         }
 
         .employee-mobile-dropdown-section {
@@ -963,6 +983,29 @@
 
     rebuildMobileDropdown();
 
+    const header =
+      document.getElementById(
+        "employee-portal-header"
+      );
+
+    if (header) {
+      const rect = header.getBoundingClientRect();
+      const top = Math.max(8, Math.round(rect.bottom + 8));
+
+      dropdown.style.top = `${top}px`;
+      dropdown.style.maxHeight =
+        `calc(100vh - ${top + 12}px)`;
+    }
+
+    const backdrop =
+      document.getElementById(
+        "employee-mobile-dropdown-backdrop"
+      );
+
+    if (backdrop) {
+      backdrop.hidden = false;
+    }
+
     dropdown.hidden = false;
 
     button.setAttribute(
@@ -988,8 +1031,17 @@
         "employee-mobile-dropdown"
       );
 
+    const backdrop =
+      document.getElementById(
+        "employee-mobile-dropdown-backdrop"
+      );
+
     if (dropdown) {
       dropdown.hidden = true;
+    }
+
+    if (backdrop) {
+      backdrop.hidden = true;
     }
 
     if (button) {
@@ -1072,6 +1124,18 @@
       }
     );
 
+    const backdrop =
+      document.getElementById(
+        "employee-mobile-dropdown-backdrop"
+      );
+
+    if (backdrop) {
+      backdrop.addEventListener(
+        "click",
+        closeMobileDropdown
+      );
+    }
+
     document.addEventListener(
       "click",
       function (event) {
@@ -1102,62 +1166,6 @@
     );
   }
 
-  function openMobileSidebar() {
-    const sidebar =
-      document.getElementById(
-        "employee-sidebar"
-      );
-
-    const overlay =
-      document.getElementById(
-        "employee-sidebar-overlay"
-      );
-
-    if (!sidebar || !overlay) {
-      return;
-    }
-
-    sidebar.classList.add(
-      "mobile-open"
-    );
-
-    overlay.classList.add(
-      "active"
-    );
-
-    document.body.classList.add(
-      "sidebar-open"
-    );
-  }
-
-
-  function closeMobileSidebar() {
-    const sidebar =
-      document.getElementById(
-        "employee-sidebar"
-      );
-
-    const overlay =
-      document.getElementById(
-        "employee-sidebar-overlay"
-      );
-
-    if (sidebar) {
-      sidebar.classList.remove(
-        "mobile-open"
-      );
-    }
-
-    if (overlay) {
-      overlay.classList.remove(
-        "active"
-      );
-    }
-
-    document.body.classList.remove(
-      "sidebar-open"
-    );
-  }
 
 
   /* ==========================================================
