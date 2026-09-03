@@ -101,10 +101,6 @@
           </div>
 
 
-          <!-- =================================================
-               NAVIGATION
-               ================================================= -->
-
           <div class="customer-sidebar-scroll">
 
             <!-- OVERVIEW -->
@@ -116,6 +112,29 @@
               </span>
 
               <nav class="customer-nav">
+
+                <!-- WELCOME -->
+
+                <a
+                  href="customer-welcome.html"
+                  class="customer-nav-link"
+                  data-customer-page="customer-welcome.html"
+                >
+                  <span class="customer-nav-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M3 11.5 12 4l9 7.5"></path>
+                      <path d="M5.5 10.5V20h13v-9.5"></path>
+                      <path d="M9 20v-6h6v6"></path>
+                    </svg>
+                  </span>
+
+                  <span class="customer-nav-text">
+                    Welcome
+                  </span>
+                </a>
+
+
+                <!-- DASHBOARD -->
 
                 <a
                   href="customer-dashboard.html"
@@ -162,6 +181,7 @@
                     Dashboard
                   </span>
                 </a>
+
 
               </nav>
 
