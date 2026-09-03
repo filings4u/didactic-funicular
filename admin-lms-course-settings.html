@@ -71,10 +71,9 @@
           <section class="settings-card">
             <header><h2>Schedule</h2><button class="settings-edit" data-edit-card="schedule">Edit</button></header>
             <div class="settings-rows">
-              <div class="settings-row"><span>Pace</span><strong>Self-Paced</strong></div>
-              <div class="settings-row"><span>Time limit</span><strong>Unlimited</strong></div>
+              <div class="settings-row"><span>Pace</span><strong id="settingPace">Self-Paced</strong></div>
+              <div class="settings-row"><span>Time limit</span><strong id="settingTimeLimit">Unlimited</strong></div>
             </div>
-            <div class="settings-card-note">Your current <code>lms_courses</code> schema does not yet store schedule/time-limit fields, so this section is visually ready but will not write unsupported columns.</div>
           </section>
 
           <section class="settings-card">
@@ -84,7 +83,7 @@
               <div class="settings-row"><span>Visibility</span><strong id="settingVisibility">Published course</strong></div>
               <div class="settings-row"><span>Participation limit</span><strong>Unlimited</strong></div>
             </div>
-            <div class="settings-card-note">Pricing is intentionally read from your linked product/service. The LMS course remains the content record.</div>
+            <div class="settings-card-note">Pricing is managed through the linked course service. Changing it here does not alter Stripe payment processing.</div>
           </section>
 
           <section class="settings-card">
@@ -143,7 +142,33 @@
       <div class="settings-modal-body">
         <label><span>Course name</span><input id="basicCourseTitle" maxlength="160"></label>
         <label><span>Short description</span><input id="basicShortDescription" maxlength="240"></label>
-        <label><span>Description</span><textarea id="basicDescription" rows="6"></textarea></label>
+        <label>
+          <span>Description</span>
+          <div class="settings-rich-editor">
+            <div class="settings-rich-toolbar" id="basicDescriptionToolbar" role="toolbar" aria-label="Description formatting">
+              <button type="button" data-rich-command="bold" title="Bold"><strong>B</strong></button>
+              <button type="button" data-rich-command="italic" title="Italic"><em>I</em></button>
+              <button type="button" data-rich-command="underline" title="Underline"><u>U</u></button>
+              <span class="settings-rich-divider"></span>
+              <button type="button" data-rich-command="formatBlock" data-rich-value="h2" title="Heading">H2</button>
+              <button type="button" data-rich-command="formatBlock" data-rich-value="h3" title="Subheading">H3</button>
+              <button type="button" data-rich-command="formatBlock" data-rich-value="p" title="Paragraph">P</button>
+              <span class="settings-rich-divider"></span>
+              <button type="button" data-rich-command="insertUnorderedList" title="Bulleted list">• List</button>
+              <button type="button" data-rich-command="insertOrderedList" title="Numbered list">1. List</button>
+              <button type="button" data-rich-command="createLink" title="Add link">Link</button>
+              <button type="button" data-rich-command="removeFormat" title="Clear formatting">Clear</button>
+            </div>
+            <div
+              id="basicDescriptionEditor"
+              class="settings-rich-editor-surface"
+              contenteditable="true"
+              role="textbox"
+              aria-multiline="true"
+              data-placeholder="Enter the full course description..."
+            ></div>
+          </div>
+        </label>
         <label><span>Course URL slug</span><input id="basicSlug"></label>
       </div>
       <footer><button class="settings-pill secondary" data-close-settings-modal>Cancel</button><button class="settings-pill primary" id="saveBasicSettings">Save</button></footer>
@@ -180,6 +205,72 @@
     </section>
   </div>
 
+
+  <!-- SCHEDULE MODAL -->
+  <div class="settings-modal-backdrop" id="scheduleSettingsModal" hidden>
+    <section class="settings-modal">
+      <header><div><small>COURSE DELIVERY</small><h2>Schedule</h2></div><button data-close-settings-modal>×</button></header>
+      <div class="settings-modal-body">
+        <label><span>Pace</span>
+          <select id="schedulePace">
+            <option value="self_paced">Self-Paced</option>
+            <option value="scheduled">Scheduled</option>
+          </select>
+        </label>
+        <label><span>Time limit (days)</span><input id="scheduleTimeLimitDays" type="number" min="1" placeholder="Leave blank for unlimited"></label>
+      </div>
+      <footer><button class="settings-pill secondary" data-close-settings-modal>Cancel</button><button class="settings-pill primary" id="saveScheduleSettings">Save</button></footer>
+    </section>
+  </div>
+
+  <!-- PRODUCT / PAYMENT MODAL -->
+  <div class="settings-modal-backdrop" id="paymentSettingsModal" hidden>
+    <section class="settings-modal">
+      <header><div><small>ENROLLMENT &amp; PAYMENT</small><h2>Course product</h2></div><button data-close-settings-modal>×</button></header>
+      <div class="settings-modal-body">
+        <label><span>Course visibility</span>
+          <select id="paymentCourseStatus">
+            <option value="draft">Draft</option>
+            <option value="review">Review</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+        </label>
+        <label><span>Product / service name</span><input id="paymentProductName" maxlength="180"></label>
+        <label><span>Price (USD)</span><input id="paymentPrice" type="number" min="0" step="0.01"></label>
+        <label class="settings-check"><input type="checkbox" id="paymentProductActive"><span>Product is active and available for checkout</span></label>
+        <p class="settings-card-note">This updates the linked screenings4u service and active service price only. Stripe keys, PaymentIntents, webhooks, and card collection are not changed here.</p>
+      </div>
+      <footer><button class="settings-pill secondary" data-close-settings-modal>Cancel</button><button class="settings-pill primary" id="savePaymentSettings">Save</button></footer>
+    </section>
+  </div>
+
+  <!-- SEO MODAL -->
+  <div class="settings-modal-backdrop" id="seoSettingsModal" hidden>
+    <section class="settings-modal">
+      <header><div><small>SEARCH &amp; SHARING</small><h2>SEO</h2></div><button data-close-settings-modal>×</button></header>
+      <div class="settings-modal-body">
+        <label><span>SEO title</span><input id="seoTitle" maxlength="160" placeholder="Leave blank to use course title"></label>
+        <label><span>SEO description</span><textarea id="seoDescription" rows="5" maxlength="320" placeholder="Leave blank to use the short description"></textarea></label>
+      </div>
+      <footer><button class="settings-pill secondary" data-close-settings-modal>Cancel</button><button class="settings-pill primary" id="saveSeoSettings">Save</button></footer>
+    </section>
+  </div>
+
+  <style>
+    .settings-rich-editor{border:1px solid #d8e0ec;border-radius:10px;background:#fff;overflow:hidden}
+    .settings-rich-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px;border-bottom:1px solid #e5eaf1;background:#f7f9fc}
+    .settings-rich-toolbar button{min-width:34px;height:32px;padding:0 9px;border:1px solid #d4dce7;border-radius:6px;background:#fff;color:#173d78;font:800 12px Arial,sans-serif;cursor:pointer}
+    .settings-rich-toolbar button:hover{border-color:#9fb1c8;background:#edf3fb}
+    .settings-rich-divider{width:1px;height:22px;background:#d8e0ec;margin:0 2px}
+    .settings-rich-editor-surface{min-height:190px;padding:14px 15px;outline:none;color:#273348;font-size:14px;line-height:1.65}
+    .settings-rich-editor-surface:empty:before{content:attr(data-placeholder);color:#8995a6;pointer-events:none}
+    .settings-rich-editor-surface h2,.settings-rich-editor-surface h3{color:#173d78;margin:14px 0 7px}
+    .settings-rich-editor-surface p{margin:0 0 10px}
+    .settings-rich-editor-surface ul,.settings-rich-editor-surface ol{margin:8px 0 12px;padding-left:26px}
+    .settings-rich-editor-surface a{color:#325aa3}
+  </style>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/supabase-config.js"></script>
   <script src="assets/js/core-auth.js"></script>
@@ -189,5 +280,5 @@
   <script src="assets/js/admin-auth-guard.js"></script>
   <script src="assets/js/admin-lms-sidebar.js"></script>
 <script src="assets/js/lms-course-image.js"></script>
-<script src="assets/js/admin-lms-course-settings.js"></script></body>
+<script src="assets/js/admin-lms-course-settings.js?v=20260903-4"></script></body>
 </html>
