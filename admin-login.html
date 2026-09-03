@@ -421,12 +421,65 @@
         $("passwordToggle").setAttribute("aria-label", show ? "Hide password" : "Show password");
       });
 
-      $("forgotPasswordBtn").addEventListener("click", () => {
-        showModal(
-          "Password Assistance",
-          "Password recovery will be available through the screenings4u account recovery process. Please contact your system administrator if you need immediate access."
-        );
-      });
+$("forgotPasswordBtn").addEventListener("click", async () => {
+  const email = $("email").value.trim().toLowerCase();
+
+  if (!email) {
+    showModal(
+      "Email Required",
+      "Enter your staff email address first, then click Forgot password?",
+      "error"
+    );
+    $("email").focus();
+    return;
+  }
+
+  if (!email.endsWith("@screenings4u.com")) {
+    showModal(
+      "Staff Account Required",
+      "Password recovery from the Admin Console is available only for Screenings4u staff accounts.",
+      "error"
+    );
+    return;
+  }
+
+  try {
+    const client = getSupabaseClient();
+
+    const redirectTo =
+      `${window.location.origin}/reset-password.html?portal=admin`;
+
+    const { error } = await client.auth.resetPasswordForEmail(email, {
+      redirectTo
+    });
+
+    if (error) {
+      console.error("Admin password recovery request failed:", error);
+
+      showModal(
+        "Password Reset Error",
+        "We could not start the password reset process. Please try again or contact a system administrator.",
+        "error"
+      );
+
+      return;
+    }
+
+    showModal(
+      "Check Your Email",
+      "If an eligible staff account exists for that email address, password reset instructions have been sent. Open the email and follow the link to create a new password."
+    );
+
+  } catch (error) {
+    console.error("Admin password recovery failed:", error);
+
+    showModal(
+      "Connection Error",
+      "The password recovery service could not be reached. Please try again.",
+      "error"
+    );
+  }
+});
 
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
