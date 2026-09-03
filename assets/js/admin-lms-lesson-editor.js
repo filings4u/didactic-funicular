@@ -862,11 +862,11 @@
         eyebrow: type === "audio" ? "AUDIO" : "FILE",
         title: block ? `Edit ${label}` : `Add ${label}`,
         accept,
-        sourceModes: [["upload", `Upload ${label}`], ["link", `${label} Link`]],
+        sourceModes: [["upload", `Upload ${label}`], ["link", `External ${label} Link`]],
         extraFields: [
           field("description", "Description", "textarea", settings.description || "", false, { rows: 3 }),
           checkboxField("downloadable", "Allow learner download", settings.downloadable !== false),
-          checkboxField("open_new_tab", "Open link in new tab", settings.open_new_tab === true)
+          checkboxField("open_new_tab", "Open link in new tab", type === "download" ? settings.open_new_tab !== false : settings.open_new_tab === true)
         ]
       });
     }
@@ -935,7 +935,9 @@
     return {
       eyebrow,
       title,
-      description: `Upload a ${typeLabel(type).toLowerCase()} or insert a link.`,
+      description: type === "download"
+        ? "Upload a file or paste an external download link. External links are recommended for large PowerPoint files that exceed your Supabase Storage limit."
+        : `Upload a ${typeLabel(type).toLowerCase()} or insert a link.`,
       confirmLabel: block ? `Save ${typeLabel(type)}` : `Add ${typeLabel(type)}`,
       fields: [
         selectField(
@@ -1039,6 +1041,12 @@
       settings.description = values.description.trim();
       settings.downloadable = values.downloadable;
       settings.open_new_tab = values.open_new_tab;
+
+      if (type === "download" && values.source_mode === "link") {
+        settings.external_download = true;
+        settings.downloadable = true;
+        settings.open_new_tab = true;
+      }
 
       return await resolveUploadOrLinkPayload(type, values, block, settings);
     }
