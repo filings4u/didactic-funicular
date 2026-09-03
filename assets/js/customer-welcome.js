@@ -57,7 +57,7 @@
         user
       );
 
-      await updateTrainingLink(
+      await updateTrainingCard(
         client
       );
 
@@ -108,8 +108,7 @@
     user
   ) {
     if (
-      typeof
-        window.updateCustomerPortalUser !==
+      typeof window.updateCustomerPortalUser !==
       "function"
     ) {
       return;
@@ -130,17 +129,20 @@
   }
 
 
-  async function updateTrainingLink(
+  async function updateTrainingCard(
     client
   ) {
-    const link =
+    const card =
       document.getElementById(
-        "customer-welcome-training-link"
+        "customer-welcome-training-card"
       );
 
-    if (!link) {
+    if (!card) {
       return;
     }
+
+    // Fail closed. The card stays hidden unless access is verified.
+    card.hidden = true;
 
     try {
       const {
@@ -155,7 +157,7 @@
       }
 
       if (data === true) {
-        link.hidden = false;
+        card.hidden = false;
       }
 
     } catch (error) {
@@ -163,6 +165,8 @@
         "[Customer Welcome] Training access check failed:",
         error
       );
+
+      card.hidden = true;
     }
   }
 

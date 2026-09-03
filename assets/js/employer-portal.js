@@ -66,6 +66,10 @@
             <div class="employer-nav-group">
               <span class="employer-nav-label">Overview</span>
               <nav class="employer-nav">
+                <a href="employer-welcome.html" class="employer-nav-link" data-employer-page="employer-welcome.html">
+                  <span class="employer-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path></svg></span>
+                  <span class="employer-nav-text">Welcome</span>
+                </a>
                 <a href="employer-dashboard.html" class="employer-nav-link" data-employer-page="employer-dashboard.html">
                   <span class="employer-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg></span>
                   <span class="employer-nav-text">Dashboard</span>
@@ -235,7 +239,6 @@
               class="employer-account-avatar"
               id="employer-account-avatar"
             >
-              CU
             </span>
 
 
@@ -245,7 +248,6 @@
                 class="employer-account-name"
                 id="employer-account-name"
               >
-                Employer
               </span>
 
               <span class="employer-account-role">
@@ -279,14 +281,12 @@
                 class="employer-dropdown-name"
                 id="employer-dropdown-name"
               >
-                Employer
               </span>
 
               <span
                 class="employer-dropdown-email"
                 id="employer-dropdown-email"
               >
-                employer@example.com
               </span>
 
             </div>
@@ -888,7 +888,7 @@
       const name =
         user.fullName ||
         user.name ||
-        "Employer";
+        "";
 
       const email =
         user.email ||
@@ -948,28 +948,65 @@
       );
 
     buttons.forEach(function (button) {
-
       button.addEventListener(
         "click",
         async function () {
+          if (button.disabled) {
+            return;
+          }
 
-          /*
-           ------------------------------------------------------
-           SUPABASE WIRING WILL GO HERE.
+          button.disabled = true;
 
-           Example:
+          try {
+            let client = null;
 
-           if (window.supabaseClient) {
-             await window.supabaseClient.auth.signOut();
-           }
-           ------------------------------------------------------
-          */
+            if (
+              typeof window.getScreenings4uSupabase ===
+              "function"
+            ) {
+              client =
+                await window.getScreenings4uSupabase();
+            } else {
+              client =
+                window.screenings4uSupabase ||
+                window.supabaseClient ||
+                null;
+            }
 
-          window.location.href =
-            "employer-login.html";
+            if (!client?.auth) {
+              throw new Error(
+                "Supabase auth client is unavailable."
+              );
+            }
+
+            const { error } =
+              await client.auth.signOut();
+
+            if (error) {
+              throw error;
+            }
+
+          } catch (error) {
+            console.error(
+              "[Employer Portal] Sign out failed:",
+              error
+            );
+
+            button.disabled = false;
+
+            alert(
+              "We could not sign you out. Please try again."
+            );
+
+            return;
+          }
+
+          // replace() prevents Back from reopening the protected page.
+          window.location.replace(
+            "employer-login.html"
+          );
         }
       );
-
     });
   }
 
@@ -998,7 +1035,7 @@
 
   function getInitials(name) {
     if (!name) {
-      return "CU";
+      return "";
     }
 
     const parts =
@@ -1008,7 +1045,7 @@
         .filter(Boolean);
 
     if (parts.length === 0) {
-      return "CU";
+      return "";
     }
 
     if (parts.length === 1) {

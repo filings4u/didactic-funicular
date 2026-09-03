@@ -3,48 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Employer Dashboard | screenings4u</title>
-<link rel="icon" type="image/png" href="images/fav.png">
+
+  <link rel="icon" type="image/png" href="images/fav.png">
   <link rel="stylesheet" href="assets/css/employer-portal.css">
   <link rel="stylesheet" href="assets/css/employer-dashboard.css">
 </head>
 
-<body class="employer-dashboard-page"
-      data-page-title="Dashboard"
-      data-page-subtitle="Manage your workforce, programs, training, and services from one place.">
+<body
+  class="employer-dashboard-page"
+  data-page-title="Dashboard"
+  data-page-subtitle="Manage your workforce, programs, training, and services from one place."
+>
 
   <div id="employer-portal-sidebar"></div>
 
   <main class="employer-portal-main">
+
     <div id="employer-portal-header"></div>
 
     <div class="employer-dashboard-content">
 
       <section class="employer-welcome-card">
+
         <div class="employer-welcome-copy">
-          <span class="employer-eyebrow">EMPLOYER PORTAL</span>
-          <h1 id="employer-welcome-name">Welcome back</h1>
-          <p>Keep track of your employees, active programs, training activity, and workplace screening services.</p>
+
+          <span class="employer-eyebrow">
+            EMPLOYER PORTAL
+          </span>
+
+          <h1 id="employer-welcome-name"></h1>
+
+          <p>
+            Keep track of your employees, active programs,
+            training activity, and workplace screening services.
+          </p>
+
         </div>
 
         <div class="employer-welcome-actions">
-          <a href="employer-service-catalog.html" class="employer-primary-action">Purchase Services</a>
-          <a href="employer-employees.html" class="employer-secondary-action">Manage Employees</a>
+
+          <a
+            href="employer-catalog.html"
+            class="employer-primary-action"
+          >
+            Purchase Services
+          </a>
+
+          <a
+            href="employer-employees.html"
+            class="employer-secondary-action"
+          >
+            Manage Employees
+          </a>
+
         </div>
+
       </section>
 
+
       <section class="employer-stat-grid">
+
         <article class="employer-stat-card">
           <div class="employer-stat-icon employees-icon">👥</div>
+
           <div>
             <span>Total Employees</span>
             <strong id="stat-total-employees">—</strong>
-            <small id="stat-active-employees">Loading...</small>
+            <small id="stat-active-employees"></small>
           </div>
         </article>
 
+
         <article class="employer-stat-card">
           <div class="employer-stat-icon training-icon">🎓</div>
+
           <div>
             <span>Training In Progress</span>
             <strong id="stat-training-progress">—</strong>
@@ -52,8 +86,10 @@
           </div>
         </article>
 
+
         <article class="employer-stat-card">
           <div class="employer-stat-icon program-icon">✓</div>
+
           <div>
             <span>Active Programs</span>
             <strong id="stat-active-programs">—</strong>
@@ -61,19 +97,24 @@
           </div>
         </article>
 
+
         <article class="employer-stat-card">
           <div class="employer-stat-icon order-icon">▣</div>
+
           <div>
             <span>Open Orders</span>
             <strong id="stat-open-orders">—</strong>
             <small>Orders requiring attention</small>
           </div>
         </article>
+
       </section>
+
 
       <section class="employer-dashboard-grid">
 
         <article class="employer-dashboard-panel employer-dashboard-panel-wide">
+
           <div class="employer-panel-heading">
             <div>
               <h2>Quick Actions</h2>
@@ -82,88 +123,182 @@
           </div>
 
           <div class="employer-quick-actions">
-            <a href="employer-employees.html" class="employer-quick-action">
+
+            <a
+              href="employer-employees.html"
+              class="employer-quick-action"
+            >
               <span class="quick-icon">+</span>
-              <div><strong>Add Employee</strong><small>Add or manage your workforce</small></div>
+
+              <div>
+                <strong>Add Employee</strong>
+                <small>Add or manage your workforce</small>
+              </div>
             </a>
 
-            <a href="employer-training.html" class="employer-quick-action">
+
+            <a
+              href="employer-training-management.html"
+              class="employer-quick-action"
+            >
               <span class="quick-icon">🎓</span>
-              <div><strong>Assign Training</strong><small>Manage employee course access</small></div>
+
+              <div>
+                <strong>Assign Training</strong>
+                <small>Manage employee course access</small>
+              </div>
             </a>
 
-            <a href="employer-post-accident.html" class="employer-quick-action">
+
+            <a
+              href="employer-request-post-accident.html"
+              class="employer-quick-action"
+            >
               <span class="quick-icon">!</span>
-              <div><strong>Request Post-Accident Testing</strong><small>Start an urgent testing request</small></div>
+
+              <div>
+                <strong>Request Post-Accident Testing</strong>
+                <small>Start an urgent testing request</small>
+              </div>
             </a>
 
-            <a href="employer-service-catalog.html" class="employer-quick-action">
+
+            <a
+              href="employer-catalog.html"
+              class="employer-quick-action"
+            >
               <span class="quick-icon">▣</span>
-              <div><strong>Purchase Services</strong><small>Browse tests, services, and training</small></div>
+
+              <div>
+                <strong>Purchase Services</strong>
+                <small>Browse tests, services, and training</small>
+              </div>
             </a>
+
           </div>
+
         </article>
 
+
         <article class="employer-dashboard-panel">
+
           <div class="employer-panel-heading">
+
             <div>
               <h2>Recent Activity</h2>
               <p>Latest activity for your organization.</p>
             </div>
-            <a href="employer-notifications.html" class="employer-panel-link">View All</a>
+
+            <a
+              href="employer-notifications.html"
+              class="employer-panel-link"
+            >
+              View All
+            </a>
+
           </div>
 
-          <div id="employer-recent-activity" class="employer-activity-list">
-            <div class="employer-empty-state">Activity will appear here as your organization uses the portal.</div>
-          </div>
+          <div
+            id="employer-recent-activity"
+            class="employer-activity-list"
+          ></div>
+
         </article>
 
+
         <article class="employer-dashboard-panel">
+
           <div class="employer-panel-heading">
+
             <div>
               <h2>Training Overview</h2>
               <p>Employee learning activity.</p>
             </div>
-            <a href="employer-training.html" class="employer-panel-link">Manage</a>
+
+            <a
+              href="employer-training-management.html"
+              class="employer-panel-link"
+            >
+              Manage
+            </a>
+
           </div>
 
           <div class="employer-training-summary">
-            <div class="employer-progress-circle"><strong id="training-completion-rate">—</strong><span>Complete</span></div>
-            <div class="employer-training-details">
-              <div><span>Assigned Courses</span><strong id="training-assigned-count">—</strong></div>
-              <div><span>Completed Courses</span><strong id="training-completed-count">—</strong></div>
-              <div><span>Needs Attention</span><strong id="training-attention-count">—</strong></div>
+
+            <div class="employer-progress-circle">
+              <strong id="training-completion-rate">—</strong>
+              <span>Complete</span>
             </div>
+
+            <div class="employer-training-details">
+
+              <div>
+                <span>Assigned Courses</span>
+                <strong id="training-assigned-count">—</strong>
+              </div>
+
+              <div>
+                <span>Completed Courses</span>
+                <strong id="training-completed-count">—</strong>
+              </div>
+
+              <div>
+                <span>Needs Attention</span>
+                <strong id="training-attention-count">—</strong>
+              </div>
+
+            </div>
+
           </div>
+
         </article>
 
+
         <article class="employer-dashboard-panel employer-dashboard-panel-wide">
+
           <div class="employer-panel-heading">
+
             <div>
-              <h2>Upcoming & Open Items</h2>
-              <p>Items that may need action from your organization.</p>
+              <h2>Upcoming &amp; Open Items</h2>
+              <p>
+                Items that may need action from your organization.
+              </p>
             </div>
-            <a href="employer-orders.html" class="employer-panel-link">View Orders</a>
+
+            <a
+              href="employer-orders.html"
+              class="employer-panel-link"
+            >
+              View Orders
+            </a>
+
           </div>
 
-          <div id="employer-open-items" class="employer-open-items">
-            <div class="employer-empty-state">Open orders, invoices, and program items will appear here.</div>
-          </div>
+          <div
+            id="employer-open-items"
+            class="employer-open-items"
+          ></div>
+
         </article>
 
       </section>
+
     </div>
+
   </main>
 
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script src="assets/js/supabase-config.js"></script>
-<script src="assets/js/core-auth.js"></script>
-<script src="assets/js/ui.js"></script>
-<script src="assets/js/portal-auth-guard.js"></script>
-<script src="assets/js/employer-auth-guard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script src="assets/js/employer-portal.js"></script>
-<script src="assets/js/employer-dashboard.js"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/core-auth.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/portal-auth-guard.js"></script>
+  <script src="assets/js/employer-auth-guard.js"></script>
+
+  <script src="assets/js/employer-portal.js"></script>
+  <script src="assets/js/employer-dashboard.js?v=20260903-2"></script>
+
 </body>
 </html>
